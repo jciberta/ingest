@@ -137,7 +137,8 @@ CREATE TABLE NOTES
     exempt 		BIT,
     convalidat 		BIT,
     junta 		BIT,
-    convocatoria	INT,
+	baixa 		BIT,
+    convocatoria 	INT,
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),

@@ -6,20 +6,24 @@
  * Visualitza la matrícula d’un alumne.
  */
 
+require_once('Config.php');
 require_once('LibDB.php');
 require_once('LibHTML.php');
 
-$conn = new mysqli("localhost", "root", "root", "InGest");
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 
 
 CreaIniciHTML('Visualitza matrícula');
+echo '<script language="javascript" src="js/jquery-3.3.1.min.js" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Matricula.js" type="text/javascript"></script>';
 
 $alumne = $_POST['alumne'];
 
 $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS NomCF, '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+	' N.notes_id AS NotaId, N.baixa AS Baixa, '.
 	' UF.*, MP.*, CF.* '.
 	' FROM UNITAT_FORMATIVA UF '.
 	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
@@ -32,6 +36,7 @@ $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS
 
 $ResultSet = $conn->query($SQL);
 
+echo "<FORM>";
 if ($ResultSet->num_rows > 0) {
 	echo "<TABLE>";
 	echo "<TH>Cicle</TH>";
@@ -49,11 +54,21 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD>".$row["NomMP"]."</TD>";
 		echo "<TD>".$row["NomUF"]."</TD>";
 		echo "<TD>".$row["HoresUF"]."</TD>";
+		if ($row["Baixa"] == True) 
+			$sChecked = '';
+		else
+			$sChecked = ' checked';
+		echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+//		echo "<TD>".$row["NotaId"]."</TD>";
 		echo "</TR>";
 		$row = $ResultSet->fetch_assoc();
 	}
 	echo "</TABLE>";
 };	
+echo "</FORM>";
+
+echo "<DIV id=debug></DIV>";
+
 $ResultSet->close();
 
 $conn->close();

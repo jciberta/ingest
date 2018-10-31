@@ -6,10 +6,11 @@
  * Formulari de matriculació d’un alumne.
  */
 
+require_once('Config.php');
 require_once('LibDB.php');
 require_once('LibHTML.php');
 
-$conn = new mysqli("localhost", "root", "root", "InGest");
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 

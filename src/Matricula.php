@@ -10,11 +10,12 @@
  * 2. Si l’alumne és a 2n, l’aplicació ha de buscar les que li han quedar de primer per afegir-les
  */
 
+require_once('Config.php');
 require_once('LibDB.php');
 require_once('LibHTML.php');
 require_once('LibMatricula.php');
 
-$conn = new mysqli("localhost", "root", "root", "InGest");
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 
