@@ -21,7 +21,7 @@ function CreaIniciHTML($Titol)
 	echo "	<META charset=UTF8>";
 	echo "</HEAD>";
 	echo '<BODY>';
-	echo '<H1>'.$Titol.'</H1>';
+	echo '<H1>'.utf8_encode($Titol).'</H1>';
 }
  
 /**
@@ -46,7 +46,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 	$LongitudCodi = count($Codi); 
 	for ($i = 0; $i < $LongitudCodi; $i++)
 	{
-    echo '<option value="'.$Codi[$i].'">'.$Valor[$i].'</option>';
+    echo '<option value="'.$Codi[$i].'">'.utf8_encode($Valor[$i]).'</option>';
 	} 	
 	echo "</select>";
 	echo '<BR>';

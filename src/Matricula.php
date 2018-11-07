@@ -46,33 +46,21 @@ else {
 	if ($ResultSet->num_rows > 0) {
 		echo "<TABLE>";
 		echo "<TH>Cicle</TH>";
-		echo "<TH>Mòdul</TH>";
+		echo utf8_encode("<TH>Mòdul</TH>");
 		echo "<TH>UF</TH>";
 		echo "<TH>Hores</TH>";
 		while($row = $ResultSet->fetch_assoc()) {
 			echo "<TR>";
-			echo "<TD>".$row["NomCF"]."</TD>";
-			echo "<TD>".$row["NomMP"]."</TD>";
-			echo "<TD>".$row["NomUF"]."</TD>";
+			echo utf8_encode("<TD>".$row["NomCF"]."</TD>");
+			echo utf8_encode("<TD>".$row["NomMP"]."</TD>");
+			echo utf8_encode("<TD>".$row["NomUF"]."</TD>");
 			echo "<TD>".$row["HoresUF"]."</TD>";
 			echo "</TR>";
 		}
 		echo "</TABLE>";
 	};	
 	$ResultSet->close();
-	//	print_r($Codi);
-	//	print_r($Valor);
 }
-
-/*
-
-SELECT * FROM UNITAT_FORMATIVA UF
-LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
-LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id);
-
-*/
-
-
 
 $conn->close();
 

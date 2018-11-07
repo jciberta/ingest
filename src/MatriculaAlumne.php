@@ -19,7 +19,10 @@ CreaIniciHTML('Visualitza matrícula');
 echo '<script language="javascript" src="js/jquery-3.3.1.min.js" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Matricula.js" type="text/javascript"></script>';
 
-$alumne = $_POST['alumne'];
+if (!empty($_POST))
+	$alumne = $_POST['alumne'];
+else
+	$alumne = $_GET['AlumneId'];
 
 $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS NomCF, '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
@@ -40,19 +43,19 @@ echo "<FORM>";
 if ($ResultSet->num_rows > 0) {
 	echo "<TABLE>";
 	echo "<TH>Cicle</TH>";
-	echo "<TH>Mòdul</TH>";
+	echo utf8_encode("<TH>Mòdul</TH>");
 	echo "<TH>UF</TH>";
 	echo "<TH>Hores</TH>";
-	echo "<TH>Matrícula</TH>";
+	echo utf8_encode("<TH>Matrícula</TH>");
 	
 	$row = $ResultSet->fetch_assoc();
-	echo $row["NomAlumne"]." ".$row["Cognom1Alumne"];
+	echo utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]);
 	
 	while($row) {
 		echo "<TR>";
-		echo "<TD>".$row["NomCF"]."</TD>";
-		echo "<TD>".$row["NomMP"]."</TD>";
-		echo "<TD>".$row["NomUF"]."</TD>";
+		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
+		echo "<TD>".utf8_encode($row["NomMP"])."</TD>";
+		echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
 		echo "<TD>".$row["HoresUF"]."</TD>";
 		if ($row["Baixa"] == True) 
 			$sChecked = '';
