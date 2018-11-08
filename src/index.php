@@ -36,6 +36,8 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD>".$row["codi_xtec"]."</TD>";
 		echo "<TD>".utf8_encode($row["nom"])."</TD>";
 		echo "<TD><A HREF=AlumnesCicle.php?CicleId=".$row["cicle_formatiu_id"].">Alumnes</A></TD>";
+		echo "<TD><A HREF=Notes.php?CicleId=".$row["cicle_formatiu_id"]."&Nivell=1>Notes 1r</A></TD>";
+		echo "<TD><A HREF=Notes.php?CicleId=".$row["cicle_formatiu_id"]."&Nivell=2>Notes 2n</A></TD>";
 		$row = $ResultSet->fetch_assoc();
 	}
 	echo "</TABLE>";

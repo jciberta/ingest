@@ -23,6 +23,14 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$conn->query($SQL);
 		print $SQL;
 	}
+	else if ($_REQUEST['accio'] == 'ActualitzaNota') {
+		$nom = $_REQUEST['nom'];
+		$valor = $_REQUEST['valor'];
+		$data = explode("_", $nom);
+		$SQL = 'UPDATE NOTES SET nota'.$data[2].'='.$valor.' WHERE notes_id='.$data[1];	
+		$conn->query($SQL);
+		print $SQL;
+	}
 	else
         print "Acció no suportada.";
 }
