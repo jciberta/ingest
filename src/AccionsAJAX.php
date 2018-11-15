@@ -7,6 +7,7 @@
  */
  
 require_once('Config.php');
+require_once('lib/LibNotes.php');
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -25,11 +26,21 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaNota') {
 		$nom = $_REQUEST['nom'];
-		$valor = $_REQUEST['valor'];
 		$data = explode("_", $nom);
-		$SQL = 'UPDATE NOTES SET nota'.$data[2].'='.$valor.' WHERE notes_id='.$data[1];	
-		$conn->query($SQL);
-		print $SQL;
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			$SQL = 'UPDATE NOTES SET nota'.$data[2].'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		} 
+		else
+			print "Valor no vàlid: ".$valor;
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaNotes') {
+		$CicleId = $_REQUEST['CicleId'];
+		$Nivell = $_REQUEST['Nivell'];
+		print ObteTaulaNotesJSON($conn, $CicleId, $Nivell);
 	}
 	else
         print "Acció no suportada.";

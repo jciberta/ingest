@@ -37,6 +37,27 @@ function ObteCodiValorDesDeSQL($Connexio, $SQL, $CampCodi, $CampValor)
 	
 	return array($Codi, $Valor);
 }
+
+/** 
+ * ResultSetAJSON
+ *
+ * Passa un ResultSet de MySQL a JSON.
+ * https://stackoverflow.com/questions/3430492/convert-mysql-record-set-to-json-string-in-php
+ *
+ * @param object $ResultSet ResultSet de MySQL.
+ * @return string ResultSet en format JSON.
+ */
+function ResultSetAJSON($ResultSet)
+{
+	$JSON = '{ "notes": [';
+	while($row = $ResultSet->fetch_assoc()) {
+		$jsonRow = json_encode($row);
+		if ($jsonRow != '')
+			$JSON .= $jsonRow.',';
+	}
+	$JSON = rtrim($JSON, ',').']}';
+	return $JSON;
+}
  
  ?>
  

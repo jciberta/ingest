@@ -7,7 +7,8 @@
  */
 
 require_once('Config.php');
-require_once('LibHTML.php');
+require_once('lib/LibHTML.php');
+require_once('lib/LibNotes.php');
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -17,25 +18,14 @@ if ($conn->connect_error) {
 CreaIniciHTML('Notes cicle/nivell');
 echo '<script language="javascript" src="js/jquery-3.3.1.min.js" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Notes.js" type="text/javascript"></script>';
+echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 echo "<P><font color=blue>S'ha de sortir de la cel·la per que quedi desada.</font></P>";
 
 $CicleId = $_GET['CicleId'];
 $Nivell = $_GET['Nivell'];
 
-$SQL = ' SELECT M.alumne_id AS AlumneId, '.
-	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' UF.codi AS CodiUF, '.
-	' MP.codi AS CodiMP, '.
-	' N.notes_id AS NotaId, N.baixa AS Baixa, N.convocatoria AS Convocatoria, '.
-	' N.*, U.* '.
-	' FROM NOTES N '.
-	' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-	' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell='.$Nivell.
-	' ORDER BY M.alumne_id, MP.codi, UF.codi ';
+$SQL = CreaSQLNotes($CicleId, $Nivell);
 //print_r($SQL);
 
 $ResultSet = $conn->query($SQL);
@@ -65,8 +55,9 @@ if ($ResultSet->num_rows > 0) {
 
 
 
-	echo '<FORM method="post" action="">';
-//	echo '<TABLE border=1 width='.(100*count($Notes->UF[0])+10*(count($Notes->UF[0])-1)).'>';
+	echo '<FORM id=form method="post" action="">';
+	echo '<input type=hidden id=CicleId value='.$CicleId.'>';
+	echo '<input type=hidden id=Nivell value='.$Nivell.'>';
 	echo '<TABLE border=0 width="100%">';
 
 	// Capçalera de la taula
@@ -89,29 +80,31 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD width=200>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
-			$ValorNota = $row["nota".$row["Convocatoria"]];
+			$ValorNota = NumeroANota($row["nota".$row["Convocatoria"]]);
 			echo "<TD width=2><input type=text name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 onBlur='ActualitzaNota(this);'></TD>";
 		}
 		echo "<TD></TD></TR>";
 	}
 	echo "</TABLE>";
-
-echo '<BR><input type="text" value="Hi!" name="nom" id="nom" size=4><BR>';
-
-
 	echo "</FORM>";
 	
 	
-echo '<form> <label for="ccnum">CC Number</label><br> <input size="16" name="ccnum" id="ccnum">
-<br> <label for="ccv">CCV</label> <input id="ccv" name="ccv" size="4"> </form>';
-
-	
+//echo '<form> <label for="ccnum">CC Number</label><br> <input size="16" name="ccnum" id="ccnum">
+//<br> <label for="ccv">CCV</label> <input id="ccv" name="ccv" size="4"> </form>';
 	
 	
 
 }
 
+/*
+echo "<script>function test() {var s='input[name=txtNotaId_1_1]'; $(s).val('XXX'); var s='input[id=txt]'; $(s).val('XXX');}</script>";
+echo '<form id=form2 method="post" action="">';
+echo '<input maxlength=6 size=6 id=txtNotaId_100_100 value=#EEEEEE type=text onBlur="ActualitzaNota(this);">';
+echo '</form>';
+echo '<button onclick="test()">Test</button>';*/
+
 echo "<DIV id=debug></DIV>";
+echo "<DIV id=debug2></DIV>";
 
 $ResultSet->close();
 

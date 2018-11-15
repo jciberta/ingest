@@ -7,7 +7,7 @@
  */
 
 require_once('Config.php');
-require_once('LibHTML.php');
+require_once('lib/LibHTML.php');
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {

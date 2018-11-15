@@ -11,9 +11,9 @@
  */
 
 require_once('Config.php');
-require_once('LibDB.php');
-require_once('LibHTML.php');
-require_once('LibMatricula.php');
+require_once('lib/LibDB.php');
+require_once('lib/LibHTML.php');
+require_once('lib/LibMatricula.php');
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
