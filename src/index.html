@@ -1,0 +1,42 @@
+﻿<html>
+
+<head>
+	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">
+	<script src="vendor/jquery-3.3.1.min.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+	<div class="header clearfix">
+		<nav>
+		<ul class="nav nav-pills float-right">
+			<li class="nav-item"><a class="nav-link" href="#">Quant a...</a></li>
+		</ul>
+		</nav>
+	</div>
+	<div class="jumbotron">
+		<div class="d-flex justify-content-center">
+			<form action="Autenticacio.php" method="post">
+				<h2 class="d-flex justify-content-center">inGest</h2>
+				<div class="form-group">
+					<label for="usuari">Usuari</label>
+					<input type="text" class="form-control" name="usuari" placeholder="Introdueix usuari" required>
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" class="form-control" name="password" placeholder="Introdueix password" required>
+				</div>
+				<button type="submit" class="btn btn-primary">Inicia sessió</button>
+			</form>
+		</div>
+	</div>
+	<footer class="footer">
+	<p>Institut de Palamós</p>
+	</footer>
+</div>
+</body> 
+
+</html>
+

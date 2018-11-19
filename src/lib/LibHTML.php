@@ -19,8 +19,19 @@ function CreaIniciHTML($Titol)
 	echo "<HTML>";
 	echo "<HEAD>";
 	echo "	<META charset=UTF8>";
+	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+	echo '	<script src="vendor/jquery-3.3.1.min.js"></script>';
+	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
 	echo "</HEAD>";
 	echo '<BODY>';
+	echo '	<div class="header clearfix">';
+	echo '		<nav>';
+	echo '		<ul class="nav nav-pills float-right">';
+	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
+	echo '		</ul>';
+	echo '		</nav>';
+	echo '	</div>';
 	echo '<H1>'.utf8_encode($Titol).'</H1>';
 }
  
@@ -50,6 +61,37 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 	} 	
 	echo "</select>";
 	echo '<BR>';
+}
+
+/**
+ * PaginaHTMLMissatge
+ *
+ * Crea una pàgina HTML amb un missatge i un link a la pàgina principal.
+ *
+ * @param string $Titol Títol de la pàgina.
+ * @param string $Missatge Missatge a mostrar.
+ * @return void
+ */
+function PaginaHTMLMissatge($Titol, $Missatge)
+{
+	echo "<HTML>";
+	echo "<HEAD>";
+	echo "	<META charset=UTF8>";
+	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+	echo '	<script src="vendor/jquery-3.3.1.min.js"></script>';
+	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	echo "</HEAD>";
+	echo '<BODY>';
+	echo '<div class="container">';
+	echo '<div class="alert alert-success" role="alert">';
+	echo utf8_encode('<h4 class="alert-heading">'.$Titol.'</h4>');
+	echo utf8_encode('<p>'.$Missatge.'</p>');
+	echo '<hr>';
+	echo utf8_encode('<p>Retorna a la <a href="index.html" class="alert-link">pàgina principal</a>.</p>');
+	echo '</div>';	
+	echo '</div>';	
+	echo '</BODY>';	
 }
  
  ?>
