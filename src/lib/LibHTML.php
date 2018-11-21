@@ -105,7 +105,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
 //	echo '          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">';
 //	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>';
-	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Surt</button>';
+	echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
 	echo '        </form>';
 //	echo '		<ul class="nav nav-pills float-right">';
 //	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
