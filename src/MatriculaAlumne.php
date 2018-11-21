@@ -20,7 +20,6 @@ if ($conn->connect_error) {
 } 
 
 CreaIniciHTML('Visualitza matrícula');
-echo '<script language="javascript" src="js/jquery-3.3.1.min.js" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Matricula.js" type="text/javascript"></script>';
 
 if (!empty($_POST))

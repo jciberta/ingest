@@ -41,6 +41,23 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		else
 			print "Valor no vàlid: ".$valor;
 	}
+	else if ($_REQUEST['accio'] == 'AssignaUF') {
+		$nom = $_REQUEST['nom'];
+		$check = $_REQUEST['check'];
+		$data = explode("_", $nom);
+		if ($check) {
+			// Assignem UF
+			$SQL = 'INSERT INTO PROFESSOR_UF (professor_id, uf_id) VALUES ('.$data[2].', '.$data[1].')';	
+			$conn->query($SQL);
+			print $SQL;
+		}
+		else {
+			// Desassignem UF
+			$SQL = 'DELETE FROM PROFESSOR_UF WHERE professor_id='.$data[2].' AND uf_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		}
+	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaNotes') {
 		$CicleId = $_REQUEST['CicleId'];
 		$Nivell = $_REQUEST['Nivell'];

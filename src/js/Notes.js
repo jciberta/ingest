@@ -6,6 +6,23 @@
 
 
 /**
+ * ObteNota
+ *
+ * Obté la nota d'un input i la manté per comprovar si ha canviat en sortir de l'element.
+ *
+ * @param element Input que ha fet la crida.
+ */
+function ObteNota(element) { 
+//alert(1);
+	sText = 'Executant ObteNota... ';
+//	$('#debug').html(sText);
+	var sNota = element.value;
+	$('input[name="TempNota"]').val(sNota);
+	sText = sText + 'Valor desat: ' + sNota;
+//	$('#debug').html(sText);
+}
+
+/**
  * ActualitzaNota
  *
  * Actualitza la nota d'un input.
@@ -13,24 +30,36 @@
  * @param element Input que ha fet la crida.
  */
 function ActualitzaNota(element) { 
-	$('#debug').html('Executant ActualitzaNota...');
+	sText = 'Executant ActualitzaNota... ';
+	$('#debug').html(sText);
+	
+	var sNota = $('input[name="TempNota"]').val();	
+console.log(sNota);
+console.log(element.value);
+	if (sNota == element.value) {
+		sText = sText + 'No ha calgut actualitzar';
+		$('#debug').html(sText);
+	}
+	else {
+		$('input[name="TempNota"]').val(sNota);	
 //console.log(element.value);
 //console.dir(element);
-    $.ajax( {
-        type: 'POST',
-        url: 'AccionsAJAX.php',
-        data:{
-			'accio': 'ActualitzaNota',
-            'nom': element.name,
-            'valor': element.value
-            },
-        success: function(data) {
-            $('#debug').html(data);
-        }, 
-		error: function (data) {
-			$('#debug').html('Hi ha hagut un error.');
-		}
-    } );
+		$.ajax( {
+			type: 'POST',
+			url: 'AccionsAJAX.php',
+			data:{
+				'accio': 'ActualitzaNota',
+				'nom': element.name,
+				'valor': element.value
+				},
+			success: function(data) {
+				$('#debug').html(data);
+			}, 
+			error: function (data) {
+				$('#debug').html('Hi ha hagut un error.');
+			}
+		} );
+	}
 }
 
 /**

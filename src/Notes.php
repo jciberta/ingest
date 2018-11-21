@@ -20,7 +20,6 @@ if ($conn->connect_error) {
 } 
 
 CreaIniciHTML('Notes cicle/nivell');
-echo '<script language="javascript" src="js/jquery-3.3.1.min.js" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Notes.js" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
@@ -85,11 +84,13 @@ if ($ResultSet->num_rows > 0) {
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
 			$ValorNota = NumeroANota($row["nota".$row["Convocatoria"]]);
-			echo "<TD width=2><input type=text name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 onBlur='ActualitzaNota(this);'></TD>";
+			$Deshabilitat = ($row["baixa"] == 1)? ' disabled ' : '';
+			echo "<TD width=2><input type=text name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 ".$Deshabilitat." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
 		}
 		echo "<TD></TD></TR>";
 	}
 	echo "</TABLE>";
+	echo "<input type=hidden name=TempNota value=''>";
 	echo "</FORM>";
 	
 	

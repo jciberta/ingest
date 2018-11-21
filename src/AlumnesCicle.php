@@ -45,6 +45,7 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD>".$row["grup"]."</TD>";
 		echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 		echo utf8_encode("<TD><A HREF=MatriculaAlumne.php?AlumneId=".$row["alumne_id"].">Matrícula</A></TD>");
+		echo utf8_encode("<TD><A HREF=MatriculaAlumne.php?AlumneId=".$row["alumne_id"].">Expedient</A></TD>");
 		echo "</TR>";
 	}
 	echo "</TABLE>";

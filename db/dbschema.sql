@@ -48,7 +48,7 @@ CREATE TABLE UNITAT_FORMATIVA
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
-    nivell INT, /* NULL, 1, 2 */
+    nivell INT CHECK (nivell IN (1, 2)),
     modul_professional_id INT NOT NULL,
 
     CONSTRAINT UnitatFormativaPK PRIMARY KEY (unitat_formativa_id),
@@ -109,12 +109,12 @@ CREATE TABLE CURS
 CREATE TABLE MATRICULA
 (
     /* MAT */
-    matricula_id 	INT NOT NULL AUTO_INCREMENT,
-    curs_id 		INT NOT NULL, 
-    alumne_id 		INT NOT NULL,
-    cicle_formatiu_id 	INT NOT NULL,
-    nivell 		INT NOT NULL,
-    grup 		CHAR(1),
+    matricula_id INT NOT NULL AUTO_INCREMENT,
+    curs_id INT NOT NULL, 
+    alumne_id INT NOT NULL,
+    cicle_formatiu_id INT NOT NULL,
+    nivell INT CHECK (nivell IN (1, 2)),
+    grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
@@ -126,19 +126,20 @@ CREATE TABLE MATRICULA
 CREATE TABLE NOTES
 (
     /* N */
-    notes_id 		INT NOT NULL AUTO_INCREMENT,
-    matricula_id 	INT NOT NULL,
-    uf_id 		INT NOT NULL,
-    nota1  		INT, /* NP: -1, A: -10, A: -11 */
-    nota2  		INT,
-    nota3  		INT,
-    nota4  		INT,
-    nota5  		INT, /* Gràcia */
-    exempt 		BIT,
-    convalidat 		BIT,
-    junta 		BIT,
-	baixa 		BIT,
-    convocatoria 	INT,
+    /* Notes: NP: -1, A: 100, NA: -100 */
+    notes_id INT NOT NULL AUTO_INCREMENT,
+    matricula_id INT NOT NULL,
+    uf_id INT NOT NULL,
+    nota1 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota2 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota3 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota4 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota5 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gràcia */
+    exempt BIT,
+    convalidat BIT,
+    junta BIT,
+    baixa BIT,
+    convocatoria INT,
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),

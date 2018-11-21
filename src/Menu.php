@@ -19,19 +19,19 @@ if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 
 
-CreaIniciHTML('inGest');
+CreaIniciHTML('');
+
+echo "<h3>Cicles formatius</h3>";
 
 $SQL = ' SELECT * FROM CICLE_FORMATIU ORDER BY grau';
-
 $ResultSet = $conn->query($SQL);
-
 if ($ResultSet->num_rows > 0) {
 	echo "<TABLE>";
 	echo "<TH>Grau</TH>";
 	echo "<TH>Codi</TH>";
 	echo "<TH>Codi XTEC</TH>";
 	echo "<TH>Nom</TH>";
-	
+
 	$row = $ResultSet->fetch_assoc();
 	while($row) {
 		echo "<TR>";
@@ -48,6 +48,27 @@ if ($ResultSet->num_rows > 0) {
 };	
 
 echo "<A HREF=FormMatricula.php>Matriculació alumnes</A>";
+
+echo "<h3>Professors</h3>";
+$SQL = ' SELECT * FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
+$ResultSet = $conn->query($SQL);
+if ($ResultSet->num_rows > 0) {
+	echo "<TABLE>";
+	echo "<TH>Cognom</TH>";
+	echo "<TH>Nom</TH>";
+	echo "<TH>Usuari</TH>";
+
+	$row = $ResultSet->fetch_assoc();
+	while($row) {
+		echo "<TR>";
+		echo utf8_encode("<TD>".$row["cognom1"]." ".$row["cognom2"]."</TD>");
+		echo utf8_encode("<TD>".$row["nom"]."</TD>");
+		echo utf8_encode("<TD>".$row["username"]."</TD>");
+		echo "<TD><A HREF=AssignaUFs.php?ProfessorId=".$row["usuari_id"].">Assigna UFs</A></TD>";
+		$row = $ResultSet->fetch_assoc();
+	}
+	echo "</TABLE>";
+};	
 
 echo "<DIV id=debug></DIV>";
 
