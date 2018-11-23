@@ -7,6 +7,7 @@
  */
 
 require_once('Config.php');
+require_once('lib/LibStr.php');
 require_once('lib/LibHTML.php');
 require_once('lib/LibNotes.php');
 
@@ -61,19 +62,31 @@ if ($ResultSet->num_rows > 0) {
 	echo '<FORM id=form method="post" action="">';
 	echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 	echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-	echo '<TABLE border=0 width="100%">';
+//	echo '<TABLE border=0 width="100%">';
+	echo '<TABLE border=0>';
 
 	// Capçalera de la taula
-	echo "<TR><TD width=200></TD>";
+	$aModuls = [];
+//	echo "<TR><TD width=200></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
-		echo "<TD width=25>".utf8_encode($row["CodiMP"])."</TD>";
+		$aModuls[$j] = utf8_encode($row["CodiMP"]);
+//		echo "<TD width=25>".utf8_encode($row["CodiMP"])."</TD>";
 	}
+	$aOcurrenciesModuls = Ocurrencies($aModuls);
+//print_r($aOcurrenciesModuls);
+
+	echo "<TR><TD width=200></TD>";
+	for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
+		$iOcurrencies = $aOcurrenciesModuls[$i][1];
+		echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
+	}
+	
 	echo "<TD></TD></TR>";
 	echo "<TR><TD width=200></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
-		echo "<TD width=25>".utf8_encode($row["CodiUF"])."</TD>";
+		echo "<TD width=20>".utf8_encode($row["CodiUF"])."</TD>";
 	}
 	echo "<TD></TD></TR>";
 

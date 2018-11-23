@@ -38,22 +38,22 @@ $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS
 	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 	' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
 	' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id= '.$alumne;
-//print_r($SQL);
+print_r($SQL);
 
 $ResultSet = $conn->query($SQL);
 
-echo "<FORM>";
 if ($ResultSet->num_rows > 0) {
-	echo "<TABLE>";
+	$row = $ResultSet->fetch_assoc();
+	echo '<div class="alert alert-primary" role="alert">Alumne: <B>'.utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]).'</B></div>';
+	
+	echo '<TABLE class="table table-striped">';
+	echo '<thead class="thead-dark">';
 	echo "<TH>Cicle</TH>";
 	echo utf8_encode("<TH>Mòdul</TH>");
 	echo "<TH>UF</TH>";
 	echo "<TH>Hores</TH>";
 	echo utf8_encode("<TH>Matrícula</TH>");
-	
-	$row = $ResultSet->fetch_assoc();
-	echo utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]);
-	
+	echo '</thead>';
 	while($row) {
 		echo "<TR>";
 		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
@@ -71,7 +71,6 @@ if ($ResultSet->num_rows > 0) {
 	}
 	echo "</TABLE>";
 };	
-echo "</FORM>";
 
 echo "<DIV id=debug></DIV>";
 
