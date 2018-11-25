@@ -13,7 +13,7 @@ require_once('lib/LibNotes.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.php");
+	header("Location: index.html");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -58,7 +58,7 @@ if ($ResultSet->num_rows > 0) {
 //print_r($Notes);
 
 
-
+	// Formulari amb les notes
 	echo '<FORM id=form method="post" action="">';
 	echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 	echo '<input type=hidden id=Nivell value='.$Nivell.'>';

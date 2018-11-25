@@ -10,9 +10,8 @@
  * CreaIniciHTML
  *
  * Crea l'inici del document HTML.
- * Ús: 
  *
- * @param string $Titol Títol de la pagina.
+ * @param string $Titol TÃ­tol de la pagina.
  */
 function CreaIniciHTML($Titol)
 {
@@ -39,7 +38,7 @@ function CreaIniciHTML($Titol)
 /**
  * CreaFinalHTML
  *
- * Crea el final del document HTML
+ * Crea el final del document HTML.
  */
 function CreaFinalHTML()
 {
@@ -52,7 +51,7 @@ function CreaFinalHTML()
  * Crea l'inici del document HTML amb el template "Bootstrap starter template".
  * https://getbootstrap.com/docs/4.0/examples/starter-template/
  *
- * @param string $Titol Títol de la pagina.
+ * @param string $Titol TÃ­tol de la pÃ gina.
  */
 function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 {
@@ -64,7 +63,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
-	echo '	<script src="vendor/bootstrap/css/starter-template.css"></script>';
+//	echo '	<script src="vendor/bootstrap/css/starter-template.css"></script>';
 	echo "</HEAD>";
 	echo '<BODY>';
 	echo '    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
@@ -84,6 +83,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
 	echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
 	echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
+	echo '              <a class="dropdown-item" href="FormUsuari.php">Alumnes (formulari genÃ¨ric)</a>';
 	echo '            </div>';
 	echo '          </li>';
 	echo '          <li class="nav-item dropdown">';
@@ -113,7 +113,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '      </div>';
 	echo '    </nav>';
 	echo '      <div class="starter-template">';
-	echo '<BR><BR>'; // Pedaç!
+	echo '<BR><BR>'; // PedaÃ§!
 	echo '<H1>'.utf8_encode($Titol).'</H1>';
 }
 
@@ -127,6 +127,7 @@ function CreaFinalHTML_BootstrapStarterTemplate()
 {
 	echo "</div>";
 	echo "<DIV id=debug></DIV>";
+	echo "<DIV id=debug2></DIV>";
 	echo '</BODY>';
 }
  
@@ -134,9 +135,9 @@ function CreaFinalHTML_BootstrapStarterTemplate()
  * CreaDesplegable
  *
  * Crea un desplegable (combobox) HTML.
- * Ús: CreaDesplegable(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
+ * Ãšs: CreaDesplegable(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
  *
- * @param string $Titol Títol del desplegable.
+ * @param string $Titol TÃ­tol del desplegable.
  * @param string $Nom Nom del desplegable.
  * @param array $Codi Codis de la llista.
  * @param array $Valor Valors de la llista.
@@ -152,7 +153,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 	$LongitudCodi = count($Codi); 
 	for ($i = 0; $i < $LongitudCodi; $i++)
 	{
-    echo '<option value="'.$Codi[$i].'">'.utf8_encode($Valor[$i]).'</option>';
+    	echo '<option value="'.$Codi[$i].'">'.utf8_encode($Valor[$i]).'</option>';
 	} 	
 	echo "</select>";
 	echo '<BR>';
@@ -163,7 +164,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
  *
  * Crea una pagina HTML amb un missatge i un link a la pagina principal.
  *
- * @param string $Titol Títol de la pagina.
+ * @param string $Titol TÃ­tol de la pagina.
  * @param string $Missatge Missatge a mostrar.
  * @return void
  */

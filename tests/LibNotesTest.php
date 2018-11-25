@@ -6,11 +6,11 @@
  * Test de la llibreria d'utilitats per a les notes.
  */
 
- use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
  
- require_once('../src/lib/LibNotes.php');
+require_once('../src/lib/LibNotes.php');
 
- final class Notes extends TestCase
+final class Notes extends TestCase
 {
     public function testEsNotaValida()
     {

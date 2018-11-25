@@ -3,11 +3,11 @@
 /** 
  * Matricula.php
  *
- * Matriculació d’un alumne.
+ * Matriculació d'un alumne.
  *
- * Quan es crea la matrícula d’un alumne:
- * 1. Pel nivell que sigui, es creen les notes, una per cada UF d’aquell cicle
- * 2. Si l’alumne és a 2n, l’aplicació ha de buscar les que li han quedar de primer per afegir-les
+ * Quan es crea la matrícula d'un alumne:
+ * 1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
+ * 2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
  */
 
 require_once('Config.php');

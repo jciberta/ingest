@@ -1,0 +1,5 @@
+Per a Windows amb XAMPP:
+c:\xampp\php\php.exe phpunitX.phar .
+
+Per a Linux:
+php phpunitX.phar .

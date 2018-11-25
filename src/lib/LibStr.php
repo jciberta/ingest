@@ -5,11 +5,41 @@
  *
  * Llibreria d'utilitats per a cadenes de caràcters (strings).
  */
+
+ /**
+ * TrimX
+ *
+ * Elimina els espais innecessaris, és a dir, els espais inicials, finals, i més de dos espais seguits.
+ *
+ * @param string $Text Text a suprimir els espais.
+ * @return string Text amb els espais suprimits.
+ */
+function TrimX($Text)
+{
+	$sRetorn = trim($Text);
+	while (strpos($sRetorn, '  ') > 0)
+		$sRetorn = str_replace('  ', ' ', $sRetorn);
+	return $sRetorn;
+}
+
+ /**
+ * TrimXX
+ *
+ * Elimina tots els espais.
+ *
+ * @param string $Text Text a suprimir els espais.
+ * @return string Text amb els espais suprimits.
+ */
+function TrimXX($Text)
+{
+	$sRetorn = str_replace(' ', '', $Text);
+	return $sRetorn;
+}
  
  /**
  * Ocurrencies
  *
- * Compta les ocurrències d'un array ordenat i en ho retorne en forma de 2 arrays.
+ * Compta les ocurrències d'un array ordenat i ho retorna en forma de 2 arrays.
  *
  * @param array $Connexio Connexió a la base de dades.
  * @param string $SQL Sentència SQL.

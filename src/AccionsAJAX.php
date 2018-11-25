@@ -11,7 +11,7 @@ require_once('lib/LibNotes.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.php");
+	header("Location: index.html");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
