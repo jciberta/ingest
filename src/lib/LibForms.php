@@ -3,7 +3,13 @@
 /** 
  * LibForms.php
  *
- * Llibreria de formularis.
+ * Llibreria de formularis:
+ *  - {@link FormRecerca}
+ *  - {@link FormFitxa} -> PENDENT!
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
+ * @version 1.0
  */
 
 require_once('LibStr.php');
@@ -23,12 +29,37 @@ class Form {
  * Classe per als formularis de recerca.
  */
 class FormRecerca extends Form {
-    private $Connexio;
+	/**
+	* Connexió a la base de dades.
+	* @access private
+	* @var object
+	*/    
+	private $Connexio;
     public $SQL = '';
+	/**
+	* Títol del formulari de recerca.
+	* @access public
+	* @var string
+	*/    
     public $Titol = '';
-    public $Camps = ''; // Camps separats per comes.
-    public $Descripcions = ''; // Títols de columnes separats per comes. 
-    public $Filtre = ''; // Paraules a filtrar separades per espai.
+	/**
+	* Camps a visualitzar separats per comes.
+	* @access public
+	* @var string
+	*/    
+    public $Camps = '';
+	/**
+	* Títols de columnes separats per comes.
+	* @access public
+	* @var string
+	*/    
+    public $Descripcions = ''; 
+	/**
+	* Paraules a filtrar separades per espai (formaran part del WHERE).
+	* @access public
+	* @var string
+	*/    
+    public $Filtre = ''; 
 
 	/**
 	 * Constructor de l'objecte.
@@ -40,7 +71,7 @@ class FormRecerca extends Form {
 	}
 
 	/**
-	 * Crea la nova SQL a partir de la propietat SQL i el filtre.
+	 * Crea la nova SQL a partir de les propietats {@link $SQL} i {@link $Filtre}.
      *
      * @return string Sentència SQL.
 	 */

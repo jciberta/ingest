@@ -2,6 +2,9 @@
  * Professor.js
  *
  * Accions AJAX diverses.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
 

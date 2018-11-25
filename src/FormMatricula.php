@@ -3,7 +3,10 @@
 /** 
  * FormMatricula.php
  *
- * Formulari de matriculació d’un alumne.
+ * Formulari de matriculaciÃ³ d'un alumne.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
 require_once('Config.php');
@@ -19,7 +22,7 @@ if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 
 
-CreaIniciHTML('Matriculació');
+CreaIniciHTML('MatriculaciÃ³');
 
 
 echo '<form action="Matricula.php" method="post" id="FormMatricula">';
@@ -41,7 +44,7 @@ echo '</form>';
 echo '<button type="submit" form="FormMatricula" value="Submit">Matricula</button>';
 
 
-echo utf8_encode('<h1>Matrícula alumne</h1>');
+echo utf8_encode('<h1>MatrÃ­cula alumne</h1>');
 echo '<form action="MatriculaAlumne.php" method="post" id="MatriculaAlumne">';
 
 $aAlumne = ObteCodiValorDesDeSQL($conn, "SELECT usuari_id, CONCAT_WS(' ', nom, cognom1, cognom2) AS nom FROM USUARI WHERE es_alumne=1", "usuari_id", "nom");

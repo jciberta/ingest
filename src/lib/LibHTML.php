@@ -4,6 +4,9 @@
  * LibHTML.php
  *
  * Llibreria d'HTML.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
  /**
@@ -96,6 +99,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '          <li class="nav-item dropdown">';
 	echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
 	echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
+	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
+	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
+	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
+	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
 	echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
 	echo '            </div>';
 	echo '          </li>';
@@ -114,7 +121,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '    </nav>';
 	echo '      <div class="starter-template">';
 	echo '<BR><BR>'; // Pedaç!
-	echo '<H1>'.utf8_encode($Titol).'</H1>';
+//	echo '<H1>'.utf8_encode($Titol).'</H1>';
+	echo '<H1>'.$Titol.'</H1>';
 }
 
 /**

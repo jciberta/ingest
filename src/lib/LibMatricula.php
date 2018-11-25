@@ -4,14 +4,17 @@
  * LibMatricula.php
  *
  * Llibreria d'utilitats per a la matriculació.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
 /**
  * CreaMatricula
  *
  * Crea la matrícula per a un alumne. Quan es crea la matrícula:
- *   1. Pel nivell que sigui, es creen les notes, una per cada UF d’aquell cicle
- *   2. Si l’alumne és a 2n, l’aplicació ha de buscar les que li han quedar de primer per afegir-les
+ *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
+ *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
  * Ús: 
  *
  * @param object $Connexio Connexió a la base de dades.

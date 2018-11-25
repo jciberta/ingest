@@ -4,6 +4,9 @@
  * LibNotesTest.php
  *
  * Test de la llibreria d'utilitats per a les notes.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
 use PHPUnit\Framework\TestCase;
