@@ -87,6 +87,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
 	echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
 	echo '              <a class="dropdown-item" href="FormUsuari.php">Alumnes (formulari genèric)</a>';
+	echo '              <div class="dropdown-divider"></div>';
+	echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 	echo '            </div>';
 	echo '          </li>';
 	echo '          <li class="nav-item dropdown">';
@@ -103,6 +105,9 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
 	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
 	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
+	echo '              <div class="dropdown-divider"></div>';
+	echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+	echo '              <div class="dropdown-divider"></div>';
 	echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
 	echo '            </div>';
 	echo '          </li>';

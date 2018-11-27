@@ -44,7 +44,7 @@ echo '</form>';
 echo '<button type="submit" form="FormMatricula" value="Submit">Matricula</button>';
 
 
-echo utf8_encode('<h1>Matrícula alumne</h1>');
+echo '<h1>Matrícula alumne</h1>';
 echo '<form action="MatriculaAlumne.php" method="post" id="MatriculaAlumne">';
 
 $aAlumne = ObteCodiValorDesDeSQL($conn, "SELECT usuari_id, CONCAT_WS(' ', nom, cognom1, cognom2) AS nom FROM USUARI WHERE es_alumne=1", "usuari_id", "nom");

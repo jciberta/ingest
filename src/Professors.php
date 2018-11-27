@@ -27,7 +27,7 @@ CreaIniciHTML('Professors');
 $SQL = ' SELECT * FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
 $ResultSet = $conn->query($SQL);
 if ($ResultSet->num_rows > 0) {
-	echo "<TABLE>";
+	echo '<TABLE class="table table-striped">';
 	echo "<TH>Cognom</TH>";
 	echo "<TH>Nom</TH>";
 	echo "<TH>Usuari</TH>";

@@ -3,11 +3,11 @@
 /** 
  * Matricula.php
  *
- * Matriculació d'un alumne.
+ * MatriculaciÃ³ d'un alumne.
  *
- * Quan es crea la matrícula d'un alumne:
+ * Quan es crea la matrÃ­cula d'un alumne:
  * 1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
- * 2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
+ * 2. Si l'alumne Ã©s a 2n, l'aplicaciÃ³ ha de buscar les que li han quedar de primer per afegir-les
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -27,7 +27,7 @@ if ($conn->connect_error) {
   die("ERROR: Unable to connect: " . $conn->connect_error);
 } 
 
-CreaIniciHTML('Matrícula');
+CreaIniciHTML('MatrÃ­cula');
 
 $curs = $_POST['curs'];
 $alumne = $_POST['alumne'];
@@ -36,7 +36,7 @@ $nivell = $_POST['nivell'];
 $grup = $_POST['grup'];
 
 if (CreaMatricula($conn, $curs, $alumne, $cicle, $nivell, $grup) == -1) {
-	echo "L'alumne ja està matriculat!";
+	echo "L'alumne ja estÃ  matriculat!";
 }
 else {
 	// Llistem les UF del cicle/nivell
@@ -53,7 +53,7 @@ else {
 	if ($ResultSet->num_rows > 0) {
 		echo "<TABLE>";
 		echo "<TH>Cicle</TH>";
-		echo utf8_encode("<TH>Mòdul</TH>");
+		echo "<TH>MÃ²dul</TH>";
 		echo "<TH>UF</TH>";
 		echo "<TH>Hores</TH>";
 		while($row = $ResultSet->fetch_assoc()) {
