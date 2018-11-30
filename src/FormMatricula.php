@@ -23,7 +23,7 @@ if ($conn->connect_error) {
 } 
 
 CreaIniciHTML('Matriculació');
-
+echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
 
 echo '<form action="Matricula.php" method="post" id="FormMatricula">';
 
@@ -49,6 +49,7 @@ echo '<form action="MatriculaAlumne.php" method="post" id="MatriculaAlumne">';
 
 $aAlumne = ObteCodiValorDesDeSQL($conn, "SELECT usuari_id, CONCAT_WS(' ', nom, cognom1, cognom2) AS nom FROM USUARI WHERE es_alumne=1", "usuari_id", "nom");
 CreaDesplegable('Alumne', 'alumne', $aAlumne[0], $aAlumne[1]);
+CreaLookUp('Alumne', 'lkpAlumne', 'UsuariRecerca.php');
 
 echo '</form>';
 echo '<button type="submit" form="MatriculaAlumne" value="Submit">Veure</button>';

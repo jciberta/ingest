@@ -173,6 +173,34 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 }
 
 /**
+ * CreaLookup
+ *
+ * Crea un 
+ *
+ * @param string $Titol Títol del desplegable.
+ * @param string $Nom Nom del desplegable.
+ * @param array $Codi Codis de la llista.
+ * @param array $Valor Valors de la llista.
+ * @return void
+ */
+function CreaLookup($Titol, $Nom, $URL)
+{
+	echo $Titol.':';
+
+	echo '<div class="input-group mb-3">';
+	echo '  <input type="text" class="form-control" name="'.$Nom.'">';
+	echo '  <div class="input-group-append">';
+	$onClick = "Cerca(this, '".$Nom."', '".$URL."');";
+//	$onClick = 'Cerca();';
+	echo '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+//	echo '    <button class="btn btn-outline-secondary" type="button" onclick="">Cerca</button>';
+	echo '  </div>';
+	echo '</div>';
+	
+	echo '<BR>';
+}
+
+/**
  * PaginaHTMLMissatge
  *
  * Crea una pagina HTML amb un missatge i un link a la pagina principal.

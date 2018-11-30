@@ -44,6 +44,17 @@ class Form {
  * Classe per als formularis de recerca.
  */
 class FormRecerca extends Form {
+	// Modalitats del formulari.
+	const mfLLISTA = 1;
+	const mfBUSCA = 2;
+
+	/**
+	* Modalitat del formulari.
+	*  - mfLLISTA: Formulari de recerca on es poden visualitzar cada registre individualment (amb FormFitxa).
+	*  - mfBUSCA: Formulari de recerca que serveix d'ajuda per a les seleccions de registres. 
+	* @access public
+	*/    
+    public $Modalitat = self::mfLLISTA;
 	/**
 	* Sentència SQL per obtenir els registres a mostrar.
 	* @access public
@@ -131,7 +142,7 @@ class FormRecerca extends Form {
 			foreach ($aDescripcions as $sValor) {
 				$sRetorn .= "<TH>" . utf8_encode($sValor) . "</TH>";
 			}
-			if ($this->PermetEditar || $this->PermetSuprimir)
+//			if ($this->Modalitat == self::mfLLISTA && ($this->PermetEditar || $this->PermetSuprimir))
 				$sRetorn .= '<TH></TH>';
 			$sRetorn .= '</THEAD>';
 			// Dades
@@ -140,13 +151,22 @@ class FormRecerca extends Form {
 				$sRetorn .= "<TR>";
 				foreach($aCamps as $data) {
 					$sValor = $row[$data];
-					$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+
+					if ($this->Modalitat == self::mfBUSCA) {
+//						$ParametreJS = "'".$sValor."'";
+						$ParametreJS = "'".implode(",", $row)."'"; 
+//						$ParametreJS = "'".json_encode($row)."'"; 
+						$sRetorn .= utf8_encode('<TD><A href=# onclick="returnYourChoice('.$ParametreJS.')">'.$sValor.'</A></TD>');
+					}
+					else
+						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+
 				}
 				$sRetorn .= "<TD>";
-				if ($this->PermetEditar) {
+				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
 					$sRetorn .= "<A href='".$this->URLEdicio."?Id=".$row[$this->ClauPrimaria]."'><IMG src=../img/edit.svg></A>&nbsp&nbsp";
 				}
-				if ($this->PermetSuprimir) {
+				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
 					$sRetorn .= "<IMG src=../img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";

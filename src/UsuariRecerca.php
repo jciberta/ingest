@@ -21,9 +21,17 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
+// Obtenció de la modalitat del formulari.
+$Modalitat = (!empty($_GET) && $_GET['Modalitat']=='mfBusca') ? FormRecerca::mfBUSCA : FormRecerca::mfLLISTA;
+/*if (!empty($_GET) && $_GET['Modalitat']=='mfBusca')
+	$Modalitat = FormRecerca::mfBUSCA;
+else
+	$Modalitat = FormRecerca::mfLLISTA;*/
+
 $frm = new FormRecerca($conn);
+$frm->Modalitat = $Modalitat;
 $frm->Titol = 'Usuaris';
-$frm->SQL = 'SELECT * FROM USUARI';
+$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI';
 $frm->ClauPrimaria = 'usuari_id';
 $frm->Camps = 'nom, cognom1, cognom2, username';
 $frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';

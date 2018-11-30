@@ -111,3 +111,40 @@ console.dir('jsonForm: ' + jsonForm);
 		}
     } );
 }
+
+/**
+ * Cerca
+ *
+ * @param element Element que fa la crida.
+ * @param nom Nom del component que serà el destinatari de la selecció.
+ * @param url Pàgina per fer la recerca.
+ */
+function Cerca(element, nom, url) { 
+	targetField = document.getElementsByName(nom)[0];
+
+	w = screen.width - 100;
+	h = screen.height - 100;
+	var left = (screen.width/2)-(w/2);
+	var top = (screen.height/2)-(h/2);
+
+	var w = window.open(url + '?Modalitat=mfBusca','_blank','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+//	var w = window.open(url,'_blank','width=400,height=400,scrollbars=1');
+	// pass the targetField to the pop up window
+	w.targetField = targetField;
+	w.focus();
+}
+
+// this function is called by the pop up window
+function setSearchResult(targetField, returnValue) {
+//	alert("setSearchResult");
+console.dir(targetField);
+	targetField.value = returnValue;
+	window.focus();
+}
+
+// return the value to the parent window
+function returnYourChoice(choice){
+//	alert("returnYourChoice");
+	opener.setSearchResult(targetField, choice);
+	close();
+}
