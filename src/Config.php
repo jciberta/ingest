@@ -17,5 +17,6 @@ $CFG->Host       = 'localhost';
 $CFG->BaseDades  = 'InGest';
 $CFG->Usuari     = 'root';
 $CFG->Password   = 'root';
+$CFG->Debug      = True; // Si esta activat mostrara més informació.
 
 ?>

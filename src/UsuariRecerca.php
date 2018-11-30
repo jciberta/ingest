@@ -1,9 +1,9 @@
 <?php
 
 /** 
- * FormUsuari.php
+ * UsuariRecerca.php
  *
- * Formulari de l'usuari.
+ * Formulari de la recerca de l'usuari.
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -18,14 +18,18 @@ if (!isset($_SESSION['usuari_id']))
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
-  die("ERROR: Unable to connect: " . $conn->connect_error);
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
 $frm = new FormRecerca($conn);
 $frm->Titol = 'Usuaris';
 $frm->SQL = 'SELECT * FROM USUARI';
+$frm->ClauPrimaria = 'usuari_id';
 $frm->Camps = 'nom, cognom1, cognom2, username';
 $frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
+$frm->PermetEditar = True;
+$frm->URLEdicio = 'UsuariFitxa.php';
+$frm->PermetSuprimir = True;
 $frm->GeneraHTML();
 
 ?>
