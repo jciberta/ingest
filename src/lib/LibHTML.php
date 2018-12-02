@@ -14,11 +14,12 @@
  *
  * Crea l'inici del document HTML.
  *
- * @param string $Titol Títol de la pagina.
+ * @param string $Titol Títol de la pàgina.
+ * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
  */
-function CreaIniciHTML($Titol)
+function CreaIniciHTML($Titol, $bMenu = True)
 {
-	CreaIniciHTML_BootstrapStarterTemplate($Titol);
+	CreaIniciHTML_BootstrapStarterTemplate($Titol, $bMenu);
 /*	echo "<HTML>";
 	echo "<HEAD>";
 	echo "	<META charset=UTF8>";
@@ -55,8 +56,9 @@ function CreaFinalHTML()
  * https://getbootstrap.com/docs/4.0/examples/starter-template/
  *
  * @param string $Titol Títol de la pàgina.
+ * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
  */
-function CreaIniciHTML_BootstrapStarterTemplate($Titol)
+function CreaIniciHTML_BootstrapStarterTemplate($Titol, $bMenu = True)
 {
 	echo "<HTML>";
 	echo "<HEAD>";
@@ -66,66 +68,67 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol)
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
-//	echo '	<script src="vendor/bootstrap/css/starter-template.css"></script>';
 	echo "</HEAD>";
 	echo '<BODY>';
-	echo '    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
-	echo '      <span class="navbar-brand">inGest</span>';
-	echo '      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">';
-	echo '        <span class="navbar-toggler-icon"></span>';
-	echo '      </button>';
+	if ($bMenu) {
+		echo '    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
+		echo '      <span class="navbar-brand">inGest</span>';
+		echo '      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">';
+		echo '        <span class="navbar-toggler-icon"></span>';
+		echo '      </button>';
 
-	echo '      <div class="collapse navbar-collapse" id="navbarsExampleDefault">';
-	echo '        <ul class="navbar-nav mr-auto">';
-	echo '          <li class="nav-item active">';
-	echo '            <a class="nav-link" href="Menu.php">Inici <span class="sr-only">(current)</span></a>';
-	echo '          </li>';
-//	echo '          <li class="nav-item"><a class="nav-link" href="#">Link</a></li>';
-//	echo '          <li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a></li>';
-	echo '          <li class="nav-item dropdown">';
-	echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
-	echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
-	echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
-	echo '              <a class="dropdown-item" href="UsuariRecerca.php">Alumnes (formulari genèric)</a>';
-	echo '              <div class="dropdown-divider"></div>';
-	echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-	echo '            </div>';
-	echo '          </li>';
-	echo '          <li class="nav-item dropdown">';
-	echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
-	echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
-	echo '              <a class="dropdown-item" href="Professors.php">Professors</a>';
-	echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
-	echo '            </div>';
-	echo '          </li>';
-	echo '          <li class="nav-item dropdown">';
-	echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
-	echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
-	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
-	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
-	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
-	echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
-	echo '              <div class="dropdown-divider"></div>';
-	echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-	echo '              <div class="dropdown-divider"></div>';
-	echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
-	echo '            </div>';
-	echo '          </li>';
-	echo '        </ul>';
+		echo '      <div class="collapse navbar-collapse" id="navbarsExampleDefault">';
+		echo '        <ul class="navbar-nav mr-auto">';
+		echo '          <li class="nav-item active">';
+		echo '            <a class="nav-link" href="Menu.php">Inici <span class="sr-only">(current)</span></a>';
+		echo '          </li>';
+	//	echo '          <li class="nav-item"><a class="nav-link" href="#">Link</a></li>';
+	//	echo '          <li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a></li>';
+		echo '          <li class="nav-item dropdown">';
+		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
+		echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
+		echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
+		echo '              <a class="dropdown-item" href="UsuariRecerca.php">Alumnes (formulari genèric)</a>';
+		echo '              <div class="dropdown-divider"></div>';
+		echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+		echo '            </div>';
+		echo '          </li>';
+		echo '          <li class="nav-item dropdown">';
+		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
+		echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
+		echo '              <a class="dropdown-item" href="Professors.php">Professors</a>';
+		echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
+		echo '            </div>';
+		echo '          </li>';
+		echo '          <li class="nav-item dropdown">';
+		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
+		echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
+		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
+		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
+		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
+		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
+		echo '              <div class="dropdown-divider"></div>';
+		echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+		echo '              <div class="dropdown-divider"></div>';
+		echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
+		echo '            </div>';
+		echo '          </li>';
+		echo '        </ul>';
 
-	echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
-//	echo '          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">';
-//	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>';
-	echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
-	echo '        </form>';
-//	echo '		<ul class="nav nav-pills float-right">';
-//	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
-//	echo '		</ul>';
+		echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
+	//	echo '          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">';
+	//	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>';
+		echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
+		echo '        </form>';
+	//	echo '		<ul class="nav nav-pills float-right">';
+	//	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
+	//	echo '		</ul>';
 
-	echo '      </div>';
-	echo '    </nav>';
+		echo '      </div>';
+		echo '    </nav>';
+		echo '<BR><BR>'; // Pedaç!
+	}
 	echo '      <div class="starter-template">';
-	echo '<BR><BR>'; // Pedaç!
 //	echo '<H1>'.utf8_encode($Titol).'</H1>';
 	echo '<H1>'.$Titol.'</H1>';
 }

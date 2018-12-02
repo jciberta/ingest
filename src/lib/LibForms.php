@@ -212,7 +212,7 @@ class FormRecerca extends Form {
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function GeneraHTML() {
-		CreaIniciHTML($this->Titol);
+		CreaIniciHTML($this->Titol, ($this->Modalitat == self::mfLLISTA));
 		echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
