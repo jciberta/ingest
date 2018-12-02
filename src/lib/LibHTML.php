@@ -175,29 +175,31 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 /**
  * CreaLookup
  *
- * Crea un 
+ * Crea un "lookup" (element INPUT + BUTTON per cercar les dades en una altra finestra).
+ * Conté:
+ *  - Camp amagat on hi haurà el identificador (camp lkh_).
+ *  - Camp amagat on hi haurà els camps a mostrar dels retornats (camp lkh_X_camps).
+ *  - Camp text on hi haurà la descripció (camp lkp_).
+ *  - Botó per fer la recerca.
  *
- * @param string $Titol Títol del desplegable.
- * @param string $Nom Nom del desplegable.
- * @param array $Codi Codis de la llista.
- * @param array $Valor Valors de la llista.
- * @return void
+ * @param string $Nom Nom del lookup.
+ * @param string $URL Pàgina web de recerca.
+ * @param string $Id Identificador del registre que es mostra.
+ * @param string $Camps Camps a mostrar al lookup separats per comes.
+ * @return string Codi HTML del lookup.
  */
-function CreaLookup($Titol, $Nom, $URL)
+function CreaLookup($Nom, $URL, $Id, $Camps)
 {
-	echo $Titol.':';
-
-	echo '<div class="input-group mb-3">';
-	echo '  <input type="text" class="form-control" name="'.$Nom.'">';
-	echo '  <div class="input-group-append">';
-	$onClick = "Cerca(this, '".$Nom."', '".$URL."');";
-//	$onClick = 'Cerca();';
-	echo '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
-//	echo '    <button class="btn btn-outline-secondary" type="button" onclick="">Cerca</button>';
-	echo '  </div>';
-	echo '</div>';
-	
-	echo '<BR>';
+	$sRetorn .= '<div class="input-group mb-3">';
+	$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=''>";
+	$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
+	$sRetorn .= '  <input type="text" class="form-control" name="lkp_'.$Nom.'">';
+	$sRetorn .= '  <div class="input-group-append">';
+	$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+	$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+	$sRetorn .= '  </div>';
+	$sRetorn .= '</div>';
+	return $sRetorn;
 }
 
 /**

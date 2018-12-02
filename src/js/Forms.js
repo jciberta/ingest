@@ -92,7 +92,6 @@ console.dir('jsonForm: ' + jsonForm);
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());
 //console.dir('jsonForm2: ' + jsonForm2);
 
-
 	$.ajax( {
 		type: 'POST',
 		url: 'lib/LibFormsAJAX.php',
@@ -112,15 +111,27 @@ console.dir('jsonForm: ' + jsonForm);
     } );
 }
 
+// http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
+function encode_utf8(s) {
+  return unescape(encodeURIComponent(s));
+}
+
+function decode_utf8(s) {
+  return decodeURIComponent(escape(s));
+}
+
 /**
- * Cerca
+ * CercaLookup
  *
- * @param element Element que fa la crida.
- * @param nom Nom del component que serà el destinatari de la selecció.
+ * @param codi Nom del component lookup que conté el codi.
+ * @param valor Nom del component lookup que conté la descripció.
  * @param url Pàgina per fer la recerca.
+ * @param camps Camps a mostrar al lookup.
  */
-function Cerca(element, nom, url) { 
-	targetField = document.getElementsByName(nom)[0];
+function CercaLookup(codi, valor, url, camps) { 
+	targetFieldCodi = document.getElementsByName(codi)[0];
+	targetFieldValor = document.getElementsByName(valor)[0];
+	targetCamps = camps;
 
 	w = screen.width - 100;
 	h = screen.height - 100;
@@ -128,23 +139,56 @@ function Cerca(element, nom, url) {
 	var top = (screen.height/2)-(h/2);
 
 	var w = window.open(url + '?Modalitat=mfBusca','_blank','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-//	var w = window.open(url,'_blank','width=400,height=400,scrollbars=1');
 	// pass the targetField to the pop up window
-	w.targetField = targetField;
+	w.targetFieldCodi = targetFieldCodi;
+	w.targetFieldValor = targetFieldValor;
+	w.targetCamps = targetCamps;
 	w.focus();
 }
 
 // this function is called by the pop up window
-function setSearchResult(targetField, returnValue) {
-//	alert("setSearchResult");
-console.dir(targetField);
-	targetField.value = returnValue;
+function setSearchResult(targetFieldCodi, targetFieldValor, returnValue) {
+	//alert("returnValue:" + returnValue);
+console.dir(targetFieldValor);
+
+	// Obtenim els camps que s'han de mostrar al lookup.
+	var objCamps = document.getElementsByName(targetFieldCodi.name + '_camps')[0];
+	var sCamps = (objCamps.value).replace(/ /g, '');;
+console.log("sCamps: " + sCamps);
+	var aCamps = sCamps.split(',');
+console.dir("aCamps: " + aCamps);
+
+	// El replace no substitueix totes les ocurrències de forma "normal". S'ha de fer amb una expressió regular.
+	// https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+	var jsonValorRetorn = returnValue.replace(/~/g, '"');
+console.dir("jsonValorRetorn: " + jsonValorRetorn);
+//alert("jsonValorRetorn: " + jsonValorRetorn);
+	var obj = JSON.parse(jsonValorRetorn);
+
+	// Recorrem les propietats (del 1r nivell) de l'objecte.
+	// La primera propietat és l'identificador.
+	// https://stackoverflow.com/questions/684672/how-do-i-loop-through-or-enumerate-a-javascript-object 
+	var bPrimer = true;
+	var sText = '';
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			if (bPrimer) {
+				targetFieldCodi.value = obj[key]; 
+				bPrimer = false;
+			}
+			else {
+				if (aCamps.indexOf(key) > -1)
+					sText += decode_utf8(obj[key]) + ' ';
+			}
+		}
+	}
+	targetFieldValor.value = sText.trim();
+
 	window.focus();
 }
 
 // return the value to the parent window
-function returnYourChoice(choice){
-//	alert("returnYourChoice");
-	opener.setSearchResult(targetField, choice);
+function returnYourChoice(choice) {
+	opener.setSearchResult(targetFieldCodi, targetFieldValor, choice);
 	close();
 }

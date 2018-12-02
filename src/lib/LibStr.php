@@ -69,4 +69,26 @@ function Ocurrencies($array)
 	return $aRetorn;
 }
  
- ?>
+/**
+ * JSONEncodeUTF8Especial
+ *
+ * La funció de PHP json_encode no funciona si té caràcters que no són UTF8 i no retorna res.
+ * Error: "Malformed UTF-8 characters, possibly incorrectly encoded".
+ * https://stackoverflow.com/questions/41972084/php-json-encode-not-working
+ *
+ * @param array $row Fila retornada per un ResultSet d'una query.
+ * @return string Fila del ResultSet en format JSON. // especial (sense cometes dobles).
+ */
+function JSONEncodeUTF8($row)
+{
+	$sRetorn = '{';
+	foreach($row as $clau => $valor) {
+		$sRetorn .= '"'.$clau.'":"'.utf8_encode($valor).'",';
+//		$sRetorn .= ''.$clau.':'.utf8_encode($valor).',';
+	}
+	$sRetorn = substr($sRetorn, 0, -1);
+	$sRetorn .= '}';
+	return $sRetorn;
+}
+
+?>

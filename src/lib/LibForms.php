@@ -154,8 +154,10 @@ class FormRecerca extends Form {
 
 					if ($this->Modalitat == self::mfBUSCA) {
 //						$ParametreJS = "'".$sValor."'";
-						$ParametreJS = "'".implode(",", $row)."'"; 
+//						$ParametreJS = "'".implode(",", $row)."'"; 
 //						$ParametreJS = "'".json_encode($row)."'"; 
+						$ParametreJS = JSONEncodeUTF8($row); 
+						$ParametreJS = "'".str_replace('"', '~', $ParametreJS)."'"; 
 						$sRetorn .= utf8_encode('<TD><A href=# onclick="returnYourChoice('.$ParametreJS.')">'.$sValor.'</A></TD>');
 					}
 					else
