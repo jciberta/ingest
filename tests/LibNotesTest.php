@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  
 require_once('../src/lib/LibNotes.php');
 
-final class Notes extends TestCase
+final class NotesTest extends TestCase
 {
     public function testEsNotaValida()
     {
@@ -39,4 +39,4 @@ final class Notes extends TestCase
     }
 }
   
- ?>
+?>

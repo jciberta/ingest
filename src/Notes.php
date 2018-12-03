@@ -79,17 +79,28 @@ if ($ResultSet->num_rows > 0) {
 	$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
 
+	// Mòdul
 	echo "<TR><TD width=200></TD>";
 	for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 		$iOcurrencies = $aOcurrenciesModuls[$i][1];
 		echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
 	}
 	
+	// Unitat formativa
 	echo "<TD></TD></TR>";
 	echo "<TR><TD width=200></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
-		echo "<TD width=20>".utf8_encode($row["CodiUF"])."</TD>";
+		echo "<TD width=20 align=center>".utf8_encode($row["CodiUF"])."</TD>";
+	}
+	echo "<TD></TD></TR>";
+
+	// Hores
+	echo "<TD></TD></TR>";
+	echo "<TR><TD width=200></TD>";
+	for($j = 0; $j < count($Notes->UF[0]); $j++) {
+		$row = $Notes->UF[0][$j];
+		echo "<TD width=20 align=center>".utf8_encode($row["Hores"])."</TD>";
 	}
 	echo "<TD></TD></TR>";
 

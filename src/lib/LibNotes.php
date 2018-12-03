@@ -24,7 +24,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 {
 return ' SELECT M.alumne_id AS AlumneId, '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' UF.codi AS CodiUF, '.
+	' UF.codi AS CodiUF, UF.hores AS Hores, '.
 	' MP.codi AS CodiMP, '.
 	' N.notes_id AS NotaId, N.baixa AS Baixa, N.convocatoria AS Convocatoria, '.
 	' N.*, U.* '.
@@ -34,7 +34,8 @@ return ' SELECT M.alumne_id AS AlumneId, '.
 	' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
 	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 	' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell='.$Nivell.
-	' ORDER BY M.alumne_id, MP.codi, UF.codi ';	
+	' ORDER BY U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+//	' ORDER BY M.alumne_id, MP.codi, UF.codi ';	
 }
  
  /**
