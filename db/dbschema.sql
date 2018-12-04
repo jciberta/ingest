@@ -1,4 +1,4 @@
-CREATE DATABASE InGest;
+﻿CREATE DATABASE InGest;
 
 USE InGest;
 
@@ -150,5 +150,55 @@ CREATE TABLE NOTES
     CONSTRAINT N_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 );
 
+/*
+ * CreaMatricula
+ *
+ * Crea la matrícula per a un alumne. Quan es crea la matrícula:
+ *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
+ *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
+ *
+ * Ús:
+ *   CALL CreaMatricula(1, 1013, 1, 1, 'A', @retorn);
+ *   SELECT @retorn; 
+ *
+ * @param integer CursId Id del curs.
+ * @param integer AlumneId Id de l'alumne.
+ * @param integer CicleId Id del cicle.
+ * @param integer Nivell Nivell (1r o 2n).
+ * @param integer Grup Grup (cap, A, B, C).
+ * @return integer Retorn Valor de retorn: 0 Ok, -1 Alumne ja matriculat.
+ */
+DELIMITER //
+CREATE PROCEDURE CreaMatricula
+(
+    IN CursId INT, 
+    IN AlumneId INT, 
+    IN CicleId INT, 
+    IN Nivell INT, 
+    IN Grup CHAR(1), 
+    OUT Retorn INT
+)
+BEGIN
+    IF EXISTS (SELECT * FROM MATRICULA WHERE curs_id=CursId AND alumne_id=AlumneId) THEN
+    BEGIN
+        SELECT -1 INTO Retorn;
+    END;
+    ELSE
+    BEGIN
+        INSERT INTO MATRICULA (curs_id, alumne_id, cicle_formatiu_id, nivell, grup) 
+            VALUES (CursId, AlumneId, CicleId, Nivell, Grup);
+        SET @MatriculaId = LAST_INSERT_ID();
+        SELECT 0 INTO Retorn;
+            INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
+            SELECT @MatriculaId, UF.unitat_formativa_id, 1 
+            FROM UNITAT_FORMATIVA UF
+            LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
+            LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
+            WHERE CF.cicle_formatiu_id=CicleId
+            AND UF.nivell=Nivell;
+    END;
+    END IF;
+END //
+DELIMITER ;
 
 
