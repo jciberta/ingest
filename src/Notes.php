@@ -70,25 +70,23 @@ if ($ResultSet->num_rows > 0) {
 
 	// Capçalera de la taula
 	$aModuls = [];
-//	echo "<TR><TD width=200></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
 		$aModuls[$j] = utf8_encode($row["CodiMP"]);
-//		echo "<TD width=25>".utf8_encode($row["CodiMP"])."</TD>";
 	}
 	$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
 
 	// Mòdul
-	echo "<TR><TD width=200></TD>";
+	echo "<TR><TD></TD><TD></TD>";
 	for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 		$iOcurrencies = $aOcurrenciesModuls[$i][1];
 		echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
 	}
+	echo "<TD></TD></TR>";
 	
 	// Unitat formativa
-	echo "<TD></TD></TR>";
-	echo "<TR><TD width=200></TD>";
+	echo "<TR><TD></TD><TD></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
 		echo "<TD width=20 align=center>".utf8_encode($row["CodiUF"])."</TD>";
@@ -96,8 +94,9 @@ if ($ResultSet->num_rows > 0) {
 	echo "<TD align=center>Hores</TD></TR>";
 
 	// Hores
-	echo "<TD></TD></TR>";
-	echo "<TR><TD width=200></TD>";
+//	echo "<TD></TD></TR>";
+	echo "<TR><TD></TD>";
+	echo "<TD style='text-align:center'>Grup</TD>";
 	$TotalHores = 0;
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
@@ -109,33 +108,21 @@ if ($ResultSet->num_rows > 0) {
 	for($i = 0; $i < count($Notes->Alumne); $i++) {
 		echo "<TR>";
 		$row = $Notes->Alumne[$i];
-		echo "<TD width=200>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+//		echo "<TD width=200>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+		echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+		echo "<TD style='text-align:center'>".$row["Grup"]."</TD>";
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
 			$ValorNota = NumeroANota($row["nota".$row["Convocatoria"]]);
 			$Deshabilitat = ($row["baixa"] == 1)? ' disabled ' : '';
-			echo "<TD width=2><input type=text name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 ".$Deshabilitat." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
+			echo "<TD width=2><input type=text style='text-align:center' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 ".$Deshabilitat." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
 		}
 		echo "<TD></TD></TR>";
 	}
 	echo "</TABLE>";
 	echo "<input type=hidden name=TempNota value=''>";
 	echo "</FORM>";
-	
-	
-//echo '<form> <label for="ccnum">CC Number</label><br> <input size="16" name="ccnum" id="ccnum">
-//<br> <label for="ccv">CCV</label> <input id="ccv" name="ccv" size="4"> </form>';
-	
-	
-
 }
-
-/*
-echo "<script>function test() {var s='input[name=txtNotaId_1_1]'; $(s).val('XXX'); var s='input[id=txt]'; $(s).val('XXX');}</script>";
-echo '<form id=form2 method="post" action="">';
-echo '<input maxlength=6 size=6 id=txtNotaId_100_100 value=#EEEEEE type=text onBlur="ActualitzaNota(this);">';
-echo '</form>';
-echo '<button onclick="test()">Test</button>';*/
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
