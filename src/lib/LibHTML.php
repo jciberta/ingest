@@ -193,7 +193,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
  */
 function CreaLookup($Nom, $URL, $Id, $Camps)
 {
-	$sRetorn .= '<div class="input-group mb-3">';
+	$sRetorn = '<div class="input-group mb-3">';
 	$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=''>";
 	$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
 	$sRetorn .= '  <input type="text" class="form-control" name="lkp_'.$Nom.'">';

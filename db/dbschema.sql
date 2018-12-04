@@ -50,6 +50,9 @@ CREATE TABLE UNITAT_FORMATIVA
     hores INT NOT NULL,
     nivell INT CHECK (nivell IN (1, 2)),
     modul_professional_id INT NOT NULL,
+	data_inici DATE,
+	data_final DATE,
+    orientativa BIT,
 
     CONSTRAINT UnitatFormativaPK PRIMARY KEY (unitat_formativa_id),
     CONSTRAINT MP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
@@ -115,6 +118,7 @@ CREATE TABLE MATRICULA
     cicle_formatiu_id INT NOT NULL,
     nivell INT CHECK (nivell IN (1, 2)),
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
+    grup_tutoria VARCHAR(2),
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
@@ -134,7 +138,7 @@ CREATE TABLE NOTES
     nota2 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
     nota3 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
     nota4 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
-    nota5 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gr‡cia */
+    nota5 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gr√†cia */
     exempt BIT,
     convalidat BIT,
     junta BIT,
