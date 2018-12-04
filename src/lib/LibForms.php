@@ -118,15 +118,17 @@ class FormRecerca extends Form {
 			$sWhere = '';
 			$aFiltre = explode(" ", TrimX($this->Filtre));
 			$aCamps = explode(",", TrimXX($this->Camps));
-			foreach ($aCamps as $sCamp) {
-				foreach ($aFiltre as $sValor) {
+			foreach ($aFiltre as $sValor) {
+				$sWhere .= '(';
+				foreach ($aCamps as $sCamp) {
 					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
 						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
 					else
 						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
 				}
+				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			$sRetorn .= ' WHERE ' . substr($sWhere, 0, -4);
+			$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
 		}
 		return $sRetorn;
 	}
