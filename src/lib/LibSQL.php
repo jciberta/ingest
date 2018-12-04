@@ -100,6 +100,7 @@ class SQL {
      * @return void.
 	 */
 	private function CreaCampAlies() {
+		$this->CampAlies = array();
 		$aCamps = explode(',', $this->Select);
 		foreach ($aCamps as $data) {
 			$i = strpos(strtoupper($data), ' AS ');

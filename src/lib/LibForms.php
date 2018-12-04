@@ -120,10 +120,10 @@ class FormRecerca extends Form {
 			$aCamps = explode(",", TrimXX($this->Camps));
 			foreach ($aCamps as $sCamp) {
 				foreach ($aFiltre as $sValor) {
-					if ($obj->CampAlies[$sCamp] == '')
-						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
-					else
+					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
 						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
+					else
+						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
 				}
 			}
 			$sRetorn .= ' WHERE ' . substr($sWhere, 0, -4);
