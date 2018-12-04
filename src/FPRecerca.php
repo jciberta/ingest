@@ -45,8 +45,10 @@ switch ($accio) {
     case "CiclesFormatius":
 		$frm = new FormRecerca($conn);
 		$frm->Titol = 'Cicles formatius';
-		$frm->SQL = 'SELECT * FROM CICLE_FORMATIU';
-		$frm->Camps = 'nom, grau, codi, codi_xtec, familia_id';
+		$frm->SQL = ' SELECT CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
+			' FROM CICLE_FORMATIU CF '.
+			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
+		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP';
 		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família';
 		$frm->GeneraHTML();
         break;

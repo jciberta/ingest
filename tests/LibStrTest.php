@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  
 require_once('../src/lib/LibStr.php');
 
-final class Cadenes extends TestCase
+final class StrTest extends TestCase
 {
     public function testTrimX()
     {

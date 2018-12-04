@@ -93,16 +93,18 @@ if ($ResultSet->num_rows > 0) {
 		$row = $Notes->UF[0][$j];
 		echo "<TD width=20 align=center>".utf8_encode($row["CodiUF"])."</TD>";
 	}
-	echo "<TD></TD></TR>";
+	echo "<TD align=center>Hores</TD></TR>";
 
 	// Hores
 	echo "<TD></TD></TR>";
 	echo "<TR><TD width=200></TD>";
+	$TotalHores = 0;
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
-		echo "<TD width=20 align=center>".utf8_encode($row["Hores"])."</TD>";
+		$TotalHores += $row["Hores"];
+		echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
 	}
-	echo "<TD></TD></TR>";
+	echo "<TD align=center>".$TotalHores."</TD></TR>";
 
 	for($i = 0; $i < count($Notes->Alumne); $i++) {
 		echo "<TR>";

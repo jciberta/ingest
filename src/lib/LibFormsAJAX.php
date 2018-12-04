@@ -34,8 +34,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$camps = $_REQUEST['camps'];
 		$descripcions = $_REQUEST['descripcions'];
 
-//		print 'AJAX';
-//		print $descripcions;
+		//print_r($_REQUEST);
+		//exit(1);
 
 		$frm = new FormRecerca($conn);
 		$frm->SQL = $SQL;

@@ -13,6 +13,7 @@
  */
 
 require_once('LibStr.php');
+require_once('LibSQL.php');
 require_once('LibHTML.php');
 
 /**
@@ -26,7 +27,7 @@ class Form {
 	* @access protected 
 	* @var object
 	*/    
-	protected  $Connexio;
+	protected $Connexio;
 
 	/**
 	 * Constructor de l'objecte.
@@ -112,12 +113,17 @@ class FormRecerca extends Form {
 	public function CreaSQL() {
 		$sRetorn = $this->SQL;
 		if ($this->Filtre != '') {
+			$obj = new SQL($this->SQL);
+
 			$sWhere = '';
 			$aFiltre = explode(" ", TrimX($this->Filtre));
 			$aCamps = explode(",", TrimXX($this->Camps));
 			foreach ($aCamps as $sCamp) {
 				foreach ($aFiltre as $sValor) {
-					$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
+					if ($obj->CampAlies[$sCamp] == '')
+						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
+					else
+						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
 				}
 			}
 			$sRetorn .= ' WHERE ' . substr($sWhere, 0, -4);
@@ -133,6 +139,7 @@ class FormRecerca extends Form {
 	public function GeneraTaula() {
 		$sRetorn = '<DIV id=taula>';
 		$SQL = $this->CreaSQL();
+//print $SQL;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$sRetorn .= '<TABLE class="table table-striped">';
@@ -148,19 +155,20 @@ class FormRecerca extends Form {
 			// Dades
 			$aCamps = explode(",", TrimXX($this->Camps));
 			while($row = $ResultSet->fetch_assoc()) {
-				$sRetorn .= "<TR>";
+//print_r($row);
+				$ParametreJS = JSONEncodeUTF8($row); 
+				$ParametreJS = "'".str_replace('"', '~', $ParametreJS)."'"; 
+				if ($this->Modalitat == self::mfBUSCA)
+					$sRetorn .= '<TR style="cursor: pointer;" onClick="returnYourChoice('.$ParametreJS.')">';
+				else
+					$sRetorn .= "<TR>";
 				foreach($aCamps as $data) {
 					$sValor = $row[$data];
 
-					if ($this->Modalitat == self::mfBUSCA) {
-//						$ParametreJS = "'".$sValor."'";
-//						$ParametreJS = "'".implode(",", $row)."'"; 
-//						$ParametreJS = "'".json_encode($row)."'"; 
-						$ParametreJS = JSONEncodeUTF8($row); 
-						$ParametreJS = "'".str_replace('"', '~', $ParametreJS)."'"; 
-						$sRetorn .= utf8_encode('<TD><A href=# onclick="returnYourChoice('.$ParametreJS.')">'.$sValor.'</A></TD>');
-					}
-					else
+//					if ($this->Modalitat == self::mfBUSCA) {
+//						$sRetorn .= utf8_encode('<TD><A href=# onclick="returnYourChoice('.$ParametreJS.')">'.$sValor.'</A></TD>');
+//					}
+//					else
 						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
 
 				}
