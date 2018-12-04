@@ -178,7 +178,7 @@ console.dir("jsonValorRetorn: " + jsonValorRetorn);
 			}
 			else {
 				if (aCamps.indexOf(key) > -1)
-					sText += decode_utf8(obj[key]) + ' ';
+					sText += obj[key] + ' ';
 			}
 		}
 	}
