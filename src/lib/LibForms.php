@@ -147,11 +147,13 @@ class FormRecerca extends Form {
 			$sRetorn .= '<THEAD class="thead-dark">';
 			$aDescripcions = explode(",", TrimX($this->Descripcions));
 			foreach ($aDescripcions as $sValor) {
-				$sRetorn .= "<TH>" . utf8_encode($sValor) . "</TH>";
+				$sRetorn .= "<TH>" . $sValor . "</TH>";
+//				$sRetorn .= "<TH>" . utf8_encode($sValor) . "</TH>";
 			}
 //			if ($this->Modalitat == self::mfLLISTA && ($this->PermetEditar || $this->PermetSuprimir))
 				$sRetorn .= '<TH></TH>';
 			$sRetorn .= '</THEAD>';
+
 			// Dades
 			$aCamps = explode(",", TrimXX($this->Camps));
 			while($row = $ResultSet->fetch_assoc()) {
