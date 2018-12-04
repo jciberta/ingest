@@ -44,9 +44,9 @@ INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_s
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (6, 'Seguretat informàtica', 'MP06', 132, 4, '507', 'A' ,1);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (7, 'Serveis de xarxa', 'MP07', 132, 4, '507', 'A' ,1);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (8, 'Aplicacions web', 'MP08', 165, 5, '507', 'A' ,1);
-INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (9, 'Anglès', 'MP09', 99, 3, 'AN', 'A' ,1);
-INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (10, 'Formació i orientació laboral', 'MP10', 99, 3, '505', 'A' ,1);
-INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (11, 'Empresa i iniciativa emprenedora', 'MP11', 66, 2, '505', 'A' ,1);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (9, 'Formació i orientació laboral', 'MP09', 99, 3, 'AN', 'A' ,1);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (10, 'Empresa i iniciativa emprenedora', 'MP10', 66, 2, '505', 'A' ,1);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (11, 'Anglès tècnic', 'MP11', 99, 3, '505', 'A' ,1);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (12, 'Síntesi', 'MP12', 99, 3, '505, 507, 627', '' ,1);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (13, 'Formació en centres de treball', 'MP13', 350, NULL, '', '' ,1);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (14, 'Programació', 'MP14', 66, 2, '', '' ,1);
@@ -155,10 +155,10 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (34, 'UF3. Gestors de continguts', 'UF3', 30, 1, 8);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (35, 'UF4. Portals web d’aprenentatge', 'UF4', 30, 1, 8);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (36, 'UF5. Fonaments d´HTML i fulls d´estils', 'UF5', 58, 1, 8);
-INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (37, 'UF1. Anglès tècnic', 'UF1', 66, 1, 9);
-INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (38, 'UF1. Incorporació al treball', 'UF1', 33, 2, 10);
-INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (39, 'UF2. Prevenció de riscos laborals', 'UF2', 66, 2, 10);
-INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (40, 'UF1. Empresa i iniciativa emprenedora', 'UF1', 99, 2, 11);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (37, 'UF1. Incorporació al treball', 'UF1', 66, 2, 9);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (38, 'UF2. Prevenció de riscos laborals', 'UF2', 33, 2, 9);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (39, 'UF1. Empresa i iniciativa emprenedora', 'UF1', 66, 2, 10);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (40, 'UF1. Anglès tècnic', 'UF1', 99, 1, 11);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (41, 'UF1. Síntesi', 'UF1', 99, 2, 12);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (42, 'UF1. Formació en centres de treball', 'UF1', 350, 2, 13);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (43, 'UF1. Programació', 'UF1', 66, 2, 14);
