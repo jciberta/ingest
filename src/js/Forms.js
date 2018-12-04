@@ -35,6 +35,7 @@ console.dir(sDescripcions);
 		},
         success: function(data) {
             $('#taula').html(data);
+            //$('#debug').html('<textarea disabled>'+data+'</textarea>');
         }, 
 		error: function(data) {
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));

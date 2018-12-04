@@ -38,6 +38,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		//exit(1);
 
 		$frm = new FormRecerca($conn);
+		$frm->Modalitat = FormRecerca::mfBUSCA;
 		$frm->SQL = $SQL;
 		$frm->Camps = $camps;
 		$frm->Filtre = $cerca;
