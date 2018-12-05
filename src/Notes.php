@@ -89,9 +89,9 @@ if ($ResultSet->num_rows > 0) {
 	echo "<TR><TD></TD><TD></TD><TD></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
-		echo "<TD width=20 align=center>".utf8_encode($row["CodiUF"])."</TD>";
+		echo "<TD width=20 style='text-align:center'>".utf8_encode($row["CodiUF"])."</TD>";
 	}
-	echo "<TD align=center>Hores</TD></TR>";
+	echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
 	// Hores
 //	echo "<TD></TD></TR>";
@@ -104,7 +104,8 @@ if ($ResultSet->num_rows > 0) {
 		$TotalHores += $row["Hores"];
 		echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
 	}
-	echo "<TD align=center>".$TotalHores."</TD></TR>";
+	echo "<TD style='text-align:center'>".$TotalHores."</TD>";
+	echo "<TD style='text-align:center'>&percnt;</TD></TR>";
 
 	for($i = 0; $i < count($Notes->Alumne); $i++) {
 		echo "<TR>";
@@ -113,12 +114,25 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 		echo "<TD style='text-align:center'>".$row["Grup"]."</TD>";
 		echo "<TD style='text-align:center'>".$row["GrupTutoria"]."</TD>";
+		$Hores = 0;
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
-			$ValorNota = NumeroANota($row["nota".$row["Convocatoria"]]);
-			$Deshabilitat = ($row["baixa"] == 1)? ' disabled ' : '';
-			echo "<TD width=2><input type=text style='text-align:center' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 ".$Deshabilitat." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
+			$style = "text-align:center";
+			$Deshabilitat = ($row["baixa"] == 1) ? ' disabled ' : '';
+			if ($row["Convocatoria"] == 0) {
+				$Nota = UltimaNota($row);
+				$Deshabilitat = " disabled ";
+				$style .= ";background-color:black;color:white";
+			}
+			else
+				$Nota = $row["nota".$row["Convocatoria"]];
+			if ($Nota >= 5)
+				$Hores += $row["Hores"];
+			$ValorNota = NumeroANota($Nota);
+			echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
 		}
+		echo "<TD style='text-align:center'>".$Hores."</TD>";
+		echo "<TD style='text-align:center'>".number_format($Hores/$TotalHores*100, 2)."&percnt;</TD>";
 		echo "<TD></TD></TR>";
 	}
 	echo "</TABLE>";

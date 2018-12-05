@@ -11,7 +11,7 @@
  
 require_once('LibDB.php');
 
- /**
+/**
  * CreaSQLNotes
  *
  * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
@@ -39,7 +39,7 @@ return ' SELECT M.alumne_id AS AlumneId, '.
 //	' ORDER BY M.alumne_id, MP.codi, UF.codi ';	
 }
  
- /**
+/**
  * ObteTaulaNotesJSON
  *
  * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
@@ -104,7 +104,7 @@ function NotaANumero($Valor)
 		return $Valor;
 }
  
- /**
+/**
  * NumeroANota
  *
  * Transforma una nota numèrica al seu valor de text. Valors numèrics:
@@ -122,9 +122,34 @@ function NumeroANota($Valor)
 	else if ($Valor == 100) 
 		return 'A';
 	else if ($Valor == -100) 
-		return -100;
+		return 'NA';
 	else
 		return $Valor;
 }
- 
- ?>
+
+/**
+ * UltimaNota
+ *
+ * Donat un registre de notes, torna la nota de la última convocatòria.
+ *
+ * @param array $Registre Registre de notes corresponent a un alumne i una UF.
+ * @return int nota de la última convocatòria.
+ */
+function UltimaNota($Registre)
+{
+//print_r($Registre['nota5']);
+	if ($Registre['nota5'] != '') 
+		return $Registre['nota5'];
+	else if ($Registre['nota4'] != '') 
+		return $Registre['nota4'];
+	else if ($Registre['nota3'] != '') 
+		return $Registre['nota3'];
+	else if ($Registre['nota2'] != '') 
+		return $Registre['nota2'];
+	else if ($Registre['nota1'] != '') 
+		return $Registre['nota1'];
+	else 
+		return -999;
+}
+
+?>

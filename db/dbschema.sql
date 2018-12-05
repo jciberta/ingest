@@ -143,7 +143,7 @@ CREATE TABLE NOTES
     convalidat BIT,
     junta BIT,
     baixa BIT,
-    convocatoria INT,
+    convocatoria INT, /* 0 (aprovat), 1, 2, 3, 4, 5 */
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),

@@ -37,8 +37,8 @@ function ActualitzaNota(element) {
 	$('#debug').html(sText);
 	
 	var sNota = $('input[name="TempNota"]').val();	
-console.log(sNota);
-console.log(element.value);
+//console.log(sNota);
+//console.log(element.value);
 	if (sNota == element.value) {
 		sText = sText + 'No ha calgut actualitzar';
 		$('#debug').html(sText);
@@ -112,17 +112,18 @@ function ActualitzaTaulaNotes(element) {
 			var jsonData = JSON.parse(data);
 			//console.dir(jsonData);
 			var i, sNota, iNota, iNotaId, sTxtNotaId;
-			var s='input[name="txtNotaId_1_1"]'; $(s).val('XXX');
 			for (i in jsonData.notes) {
-				sNota = 'nota' + jsonData.notes[i].convocatoria;
-				//console.dir(sNota);
-				iNota = jsonData.notes[i][sNota];
-				iNotaId = jsonData.notes[i].notes_id;
-				sTxtNotaId = 'txtNotaId_' + iNotaId + '_' + jsonData.notes[i].convocatoria;
-				//console.dir(sTxtNotaId + ': ' + iNota);
-				sNota = NumeroANota(iNota);
-				console.dir(sNota);
-				$('input[name="' + sTxtNotaId + '"]').val(sNota);
+				if (jsonData.notes[i].convocatoria > 0) {
+					sNota = 'nota' + jsonData.notes[i].convocatoria;
+					//console.dir(sNota);
+					iNota = jsonData.notes[i][sNota];
+					iNotaId = jsonData.notes[i].notes_id;
+					sTxtNotaId = 'txtNotaId_' + iNotaId + '_' + jsonData.notes[i].convocatoria;
+					//console.dir(sTxtNotaId + ': ' + iNota);
+					sNota = NumeroANota(iNota);
+	//				console.dir(sNota);
+					$('input[name="' + sTxtNotaId + '"]').val(sNota);
+				}
 			}		
         }, 
 		error: function (data) {
