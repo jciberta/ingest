@@ -176,6 +176,7 @@ CREATE PROCEDURE CreaMatricula
     IN CicleId INT, 
     IN Nivell INT, 
     IN Grup CHAR(1), 
+    IN GrupTutoria VARCHAR(2), 
     OUT Retorn INT
 )
 BEGIN
@@ -185,8 +186,8 @@ BEGIN
     END;
     ELSE
     BEGIN
-        INSERT INTO MATRICULA (curs_id, alumne_id, cicle_formatiu_id, nivell, grup) 
-            VALUES (CursId, AlumneId, CicleId, Nivell, Grup);
+        INSERT INTO MATRICULA (curs_id, alumne_id, cicle_formatiu_id, nivell, grup, grup_tutoria) 
+            VALUES (CursId, AlumneId, CicleId, Nivell, Grup, GrupTutoria);
         SET @MatriculaId = LAST_INSERT_ID();
         SELECT 0 INTO Retorn;
             INSERT INTO NOTES (matricula_id, uf_id, convocatoria)

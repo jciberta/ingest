@@ -78,7 +78,7 @@ if ($ResultSet->num_rows > 0) {
 //print_r($aOcurrenciesModuls);
 
 	// Mòdul
-	echo "<TR><TD></TD><TD></TD>";
+	echo "<TR><TD></TD><TD></TD><TD></TD>";
 	for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 		$iOcurrencies = $aOcurrenciesModuls[$i][1];
 		echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
@@ -86,7 +86,7 @@ if ($ResultSet->num_rows > 0) {
 	echo "<TD></TD></TR>";
 	
 	// Unitat formativa
-	echo "<TR><TD></TD><TD></TD>";
+	echo "<TR><TD></TD><TD></TD><TD></TD>";
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
 		echo "<TD width=20 align=center>".utf8_encode($row["CodiUF"])."</TD>";
@@ -97,6 +97,7 @@ if ($ResultSet->num_rows > 0) {
 //	echo "<TD></TD></TR>";
 	echo "<TR><TD></TD>";
 	echo "<TD style='text-align:center'>Grup</TD>";
+	echo "<TD style='text-align:center'>Tutoria</TD>";
 	$TotalHores = 0;
 	for($j = 0; $j < count($Notes->UF[0]); $j++) {
 		$row = $Notes->UF[0][$j];
@@ -111,6 +112,7 @@ if ($ResultSet->num_rows > 0) {
 //		echo "<TD width=200>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 		echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 		echo "<TD style='text-align:center'>".$row["Grup"]."</TD>";
+		echo "<TD style='text-align:center'>".$row["GrupTutoria"]."</TD>";
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
 			$ValorNota = NumeroANota($row["nota".$row["Convocatoria"]]);
