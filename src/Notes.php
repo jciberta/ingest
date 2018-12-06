@@ -124,8 +124,12 @@ if ($ResultSet->num_rows > 0) {
 				$Deshabilitat = " disabled ";
 				$style .= ";background-color:black;color:white";
 			}
-			else
+			else {
 				$Nota = $row["nota".$row["Convocatoria"]];
+				if ($row["Orientativa"]) {
+					$style .= ";background-color:yellow";
+				}
+			}
 			if ($Nota >= 5)
 				$Hores += $row["Hores"];
 			$ValorNota = NumeroANota($Nota);

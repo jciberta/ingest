@@ -177,8 +177,9 @@ class FormRecerca extends Form {
 
 				}
 				$sRetorn .= "<TD>";
+				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
-					$sRetorn .= "<A href='".$this->URLEdicio."?Id=".$row[$this->ClauPrimaria]."'><IMG src=../img/edit.svg></A>&nbsp&nbsp";
+					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=../img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
 					$sRetorn .= "<IMG src=../img/delete.svg>&nbsp&nbsp";

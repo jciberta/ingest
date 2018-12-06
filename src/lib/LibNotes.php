@@ -24,7 +24,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 {
 return ' SELECT M.alumne_id AS AlumneId, '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' UF.codi AS CodiUF, UF.hores AS Hores, '.
+	' UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, '.
 	' MP.codi AS CodiMP, '.
 	' N.notes_id AS NotaId, N.baixa AS Baixa, N.convocatoria AS Convocatoria, '.
 	' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, '.
