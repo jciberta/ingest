@@ -119,6 +119,7 @@ CREATE TABLE MATRICULA
     nivell INT CHECK (nivell IN (1, 2)),
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
+    baixa BIT,
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
@@ -142,7 +143,7 @@ CREATE TABLE NOTES
     exempt BIT,
     convalidat BIT,
     junta BIT,
-    baixa BIT,
+    baixa BIT, /* Baixa d'una UF */
     convocatoria INT, /* 0 (aprovat), 1, 2, 3, 4, 5 */
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),

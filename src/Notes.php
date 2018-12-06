@@ -118,7 +118,8 @@ if ($ResultSet->num_rows > 0) {
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
 			$style = "text-align:center";
-			$Deshabilitat = ($row["baixa"] == 1) ? ' disabled ' : '';
+			$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
+			$Deshabilitat = ($Baixa) ? ' disabled ' : '';
 			if ($row["Convocatoria"] == 0) {
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
@@ -126,7 +127,7 @@ if ($ResultSet->num_rows > 0) {
 			}
 			else {
 				$Nota = $row["nota".$row["Convocatoria"]];
-				if ($row["Orientativa"]) {
+				if ($row["Orientativa"] && !$Baixa) {
 					$style .= ";background-color:yellow";
 				}
 			}
