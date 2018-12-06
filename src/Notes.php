@@ -24,10 +24,14 @@ if ($conn->connect_error) {
 } 
 
 CreaIniciHTML('Notes cicle/nivell');
-echo '<script language="javascript" src="js/Notes.js" type="text/javascript"></script>';
+
+// Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
+// https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
+// https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
+echo '<script language="javascript" src="js/Notes.js?v1.0" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
-echo "<P><font color=blue>S'ha de sortir de la cel·la per que quedi desada.</font></P>";
+echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
 $CicleId = $_GET['CicleId'];
 $Nivell = $_GET['Nivell'];
@@ -134,7 +138,8 @@ if ($ResultSet->num_rows > 0) {
 			if ($Nota >= 5)
 				$Hores += $row["Hores"];
 			$ValorNota = NumeroANota($Nota);
-			echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);'></TD>";
+			$Id = 'grd_'.$i.'_'.$j;
+			echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 		}
 		echo "<TD style='text-align:center'>".$Hores."</TD>";
 		echo "<TD style='text-align:center'>".number_format($Hores/$TotalHores*100, 2)."&percnt;</TD>";

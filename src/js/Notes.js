@@ -9,6 +9,66 @@
 
 
 /**
+ * NotaKeyDown
+ *
+ * Funció per moure's per la graella.
+ *
+ * @param obj Objecte que ha provocat la crida.
+ * @param event Event que ha provocat la crida.
+ */
+function NotaKeyDown(obj, event) {
+	var data = (obj.id).split('_');
+	if ((event.keyCode === 13) || (event.keyCode === 40)) {
+		// Avall
+		data[1]++;
+		var grd = data[0] + '_' + data[1] + '_' + data[2];
+		while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+			data[1]++;
+			grd = data[0] + '_' + data[1] + '_' + data[2];
+		}
+		if (document.getElementById(grd) !== null)
+			document.getElementById(grd).focus();
+	}
+	else if (event.keyCode === 38) {
+		// Amunt
+		if (data[1] > 0) {
+			data[1]--;
+			var grd = data[0] + '_' + data[1] + '_' + data[2];
+			while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+				data[1]--;
+				grd = data[0] + '_' + data[1] + '_' + data[2];
+			}
+			if (document.getElementById(grd) !== null)
+				document.getElementById(grd).focus();
+		}
+	}
+	else if (event.keyCode === 37) {
+		// Esquerra
+		if (data[2] > 0) {
+			data[2]--;
+			var grd = data[0] + '_' + data[1] + '_' + data[2];
+			while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+				data[2]--;
+				grd = data[0] + '_' + data[1] + '_' + data[2];
+			}
+			if (document.getElementById(grd) !== null)
+				document.getElementById(grd).focus();
+		}
+	}
+	if (event.keyCode === 39) {
+		// Dreta
+		data[2]++;
+		var grd = data[0] + '_' + data[1] + '_' + data[2];
+		while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+			data[2]++;
+			grd = data[0] + '_' + data[1] + '_' + data[2];
+		}
+		if (document.getElementById(grd) !== null)
+			document.getElementById(grd).focus();
+	}
+}
+
+/**
  * ObteNota
  *
  * Obté la nota d'un input i la manté per comprovar si ha canviat en sortir de l'element.
