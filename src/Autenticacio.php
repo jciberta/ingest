@@ -23,7 +23,7 @@ if (!empty($_POST))
 		{
 			$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 			if ($conn->connect_error) {
-				die("ERROR: Unable to connect: " . $conn->connect_error);
+				die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 			} 
 
 			$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."'";

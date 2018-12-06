@@ -15,11 +15,11 @@ require_once('lib/LibHTML.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.php");
+	header("Location: index.html");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
-  die("ERROR: Unable to connect: " . $conn->connect_error);
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
 CreaIniciHTML('Cicles formatius');
