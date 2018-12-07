@@ -208,7 +208,7 @@ function CreaLookup($Nom, $URL, $Id, $Camps)
 /**
  * PaginaHTMLMissatge
  *
- * Crea una pagina HTML amb un missatge i un link a la pagina principal.
+ * Crea una pàgina HTML amb un missatge i un link a la pàgina principal.
  *
  * @param string $Titol Títol de la pagina.
  * @param string $Missatge Missatge a mostrar.
@@ -227,10 +227,10 @@ function PaginaHTMLMissatge($Titol, $Missatge)
 	echo '<BODY>';
 	echo '<div class="container">';
 	echo '<div class="alert alert-success" role="alert">';
-	echo utf8_encode('<h4 class="alert-heading">'.$Titol.'</h4>');
-	echo utf8_encode('<p>'.$Missatge.'</p>');
+	echo '<h4 class="alert-heading">'.$Titol.'</h4>';
+	echo '<p>'.$Missatge.'</p>';
 	echo '<hr>';
-	echo utf8_encode('<p>Retorna a la <a href="index.html" class="alert-link">pagina principal</a>.</p>');
+	echo '<p>Retorna a la <a href="index.html" class="alert-link">pàgina principal</a>.</p>';
 	echo '</div>';	
 	echo '</div>';	
 	echo '</BODY>';	

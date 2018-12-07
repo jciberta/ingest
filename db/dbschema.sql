@@ -64,6 +64,7 @@ CREATE TABLE USUARI
     usuari_id INT NOT NULL,
     username           VARCHAR(100) NOT NULL,
     password           VARCHAR(255) NOT NULL,
+    imposa_canvi_password BIT,
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),
@@ -81,6 +82,8 @@ CREATE TABLE USUARI
     es_professor BIT,
     es_alumne BIT,
     es_pare BIT,
+    data_ultim_login DATE,
+    ip_ultim_login VARCHAR(15),
  
     CONSTRAINT UsuariPK PRIMARY KEY (usuari_id)
 );

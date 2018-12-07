@@ -34,7 +34,15 @@ if (!empty($_POST))
 				if (password_verify($_POST['password'], $user->password)) 
 				{
 					$_SESSION['usuari_id'] = $user->usuari_id;
-					header('Location: Menu.php');
+					// ToDo: Seguretat a la sessió
+					// https://stackoverflow.com/questions/1442177/storing-objects-in-php-session
+					// https://stackoverflow.com/questions/12233406/preventing-session-hijacking
+					$_SESSION['USUARI'] = serialize($user);
+
+					if ($user->imposa_canvi_password)
+						header('Location: CanviPassword.html');
+					else
+						header('Location: Menu.php');
 				}
 				else 
 				{
