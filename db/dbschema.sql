@@ -82,7 +82,7 @@ CREATE TABLE USUARI
     es_professor BIT,
     es_alumne BIT,
     es_pare BIT,
-    data_ultim_login DATE,
+    data_ultim_login DATETIME,
     ip_ultim_login VARCHAR(15),
  
     CONSTRAINT UsuariPK PRIMARY KEY (usuari_id)

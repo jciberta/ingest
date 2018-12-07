@@ -11,6 +11,7 @@
 
 require_once('Config.php');
 require_once('lib/LibHTML.php');
+require_once('lib/LibInet.php');
 
 session_start();
 
@@ -41,8 +42,11 @@ if (!empty($_POST))
 
 					if ($user->imposa_canvi_password)
 						header('Location: CanviPassword.html');
-					else
+					else {
+						$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
+						$conn->query($SQL);	
 						header('Location: Menu.php');
+					}
 				}
 				else 
 				{
@@ -70,12 +74,6 @@ else
 {
 	PaginaHTMLMissatge("Error", "Accés incorrecte a aquesta pàgina.");
 } 
-
-?>
-
-
-
-
 
 ?>
 
