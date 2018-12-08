@@ -29,15 +29,18 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-CreaIniciHTML($Usuari, 'Visualitza matrícula');
-echo '<script language="javascript" src="js/Matricula.js" type="text/javascript"></script>';
-
 if (!empty($_POST))
 	$alumne = $_POST['alumne'];
 else
 	$alumne = $_GET['AlumneId'];
-
 $accio = $_GET['accio'];
+
+// Si intenta manipular l'usuari des de la URL -> al carrer!
+if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
+	header("Location: Surt.php");
+
+CreaIniciHTML($Usuari, 'Visualitza matrícula');
+echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
 
 $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
@@ -62,7 +65,6 @@ if ($ResultSet->num_rows > 0) {
 	
 	echo '<TABLE class="table table-striped">';
 	echo '<thead class="thead-dark">';
-//	echo "<TH>Cicle</TH>";
 	echo "<TH>Mòdul</TH>";
 	echo "<TH>UF</TH>";
 	echo "<TH>Hores</TH>";
@@ -101,6 +103,12 @@ if ($ResultSet->num_rows > 0) {
 	}
 	echo "</TABLE>";
 };	
+
+if ($accio == 'MostraExpedient') {
+	echo "<DIV id=DescarregaExpedientPDF>";
+	echo '<a href="ExpedientPDF.php?AlumneId='.$Usuari->usuari_id.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+	echo "</DIV>";
+}
 
 echo "<DIV id=debug></DIV>";
 

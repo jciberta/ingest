@@ -11,6 +11,7 @@
  
 require_once('Config.php');
 require_once('lib/LibNotes.php');
+require_once('lib/LibExpedient.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

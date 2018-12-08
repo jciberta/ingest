@@ -117,14 +117,17 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 		}
 		echo '        </ul>';
 
+		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
 		echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
 	//	echo '          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">';
 	//	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>';
+		echo '          <span class="navbar-brand">'.$NomComplet.'</span>';
 		echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
 		echo '        </form>';
-	//	echo '		<ul class="nav nav-pills float-right">';
+//		echo '		<ul class="navbar-nav float-right">';
+//		echo '			<li class="navbar-brand">Surt</li>';
 	//	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
-	//	echo '		</ul>';
+//		echo '		</ul>';
 
 		echo '      </div>';
 		echo '    </nav>';
