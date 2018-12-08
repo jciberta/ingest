@@ -19,6 +19,7 @@ require_once('lib/LibForms.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -44,7 +45,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn);
+		$frm = new FormFitxa($conn, $Usuari);
 		$frm->Titol = 'Edició UF';
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';

@@ -15,6 +15,7 @@ require_once('lib/LibForms.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -28,7 +29,7 @@ $Modalitat = (!empty($_GET) && $_GET['Modalitat']=='mfBusca') ? FormRecerca::mfB
 else
 	$Modalitat = FormRecerca::mfLLISTA;*/
 
-$frm = new FormRecerca($conn);
+$frm = new FormRecerca($conn, $Usuari);
 $frm->Modalitat = $Modalitat;
 $frm->Titol = 'Usuaris';
 $frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI';
@@ -38,6 +39,6 @@ $frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
 $frm->PermetEditar = True;
 $frm->URLEdicio = 'UsuariFitxa.php';
 $frm->PermetSuprimir = True;
-$frm->GeneraHTML();
+$frm->EscriuHTML();
 
 ?>

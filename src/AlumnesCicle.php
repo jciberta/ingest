@@ -15,13 +15,14 @@ require_once('lib/LibHTML.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-CreaIniciHTML('Alumnes cicle');
+CreaIniciHTML($Usuari, 'Alumnes cicle');
 
 $CicleId = $_GET['CicleId'];
 

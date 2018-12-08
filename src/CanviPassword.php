@@ -15,6 +15,7 @@ require_once('lib/LibHTML.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 if (!empty($_POST)) 
 {
@@ -27,8 +28,6 @@ if (!empty($_POST))
 			if ($conn->connect_error) {
 				die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 			} 
-
-			$Usuari = unserialize($_SESSION['USUARI']);
 			if (password_verify($_POST['contrasenya_actual'], $Usuari->password)) {
 				if (($_POST['contrasenya1'] == $_POST['contrasenya2']) && ($_POST['contrasenya1'] != '')) {
 					$SQL = "UPDATE USUARI SET password='".password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT)."', imposa_canvi_password=0 WHERE usuari_id=". $Usuari->usuari_id;

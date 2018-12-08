@@ -104,10 +104,11 @@ CREATE TABLE PROFESSOR_UF
 CREATE TABLE CURS
 (
     /* C */
-    curs_id 	INT NOT NULL AUTO_INCREMENT,
-    any_inici 	INT NOT NULL,
-    any_final 	INT NOT NULL,
-    nom	 	VARCHAR(20),
+    curs_id INT NOT NULL AUTO_INCREMENT,
+    any_inici INT NOT NULL,
+    any_final INT NOT NULL,
+    nom	VARCHAR(20),
+    actual BIT, /* Indica el curs actual. Només n'hi pot haver 1 */
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id)
 );

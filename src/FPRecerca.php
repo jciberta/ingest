@@ -19,6 +19,7 @@ require_once('lib/LibForms.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -35,25 +36,25 @@ unset($frm);
 
 switch ($accio) {
     case "Families":
-		$frm = new FormRecerca($conn);
+		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Titol = 'Famílies';
 		$frm->SQL = 'SELECT * FROM FAMILIA_FP';
 		$frm->Camps = 'nom';
 		$frm->Descripcions = 'Nom';
-		$frm->GeneraHTML();
+		$frm->EscriuHTML();
         break;
     case "CiclesFormatius":
-		$frm = new FormRecerca($conn);
+		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Titol = 'Cicles formatius';
 		$frm->SQL = ' SELECT CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
 			' FROM CICLE_FORMATIU CF '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP';
 		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família';
-		$frm->GeneraHTML();
+		$frm->EscriuHTML();
         break;
     case "ModulsProfessionals":
-		$frm = new FormRecerca($conn);
+		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Titol = 'Mòduls professionals';
 		$frm->SQL = 'SELECT MP.codi AS CodiMP, MP.nom AS NomMP, hores, hores_setmana, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
 			' FROM MODUL_PROFESSIONAL MP '.
@@ -61,10 +62,10 @@ switch ($accio) {
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Camps = 'CodiMP, NomMP, hores, hores_setmana, especialitat, cos, CodiCF, NomCF, NomFFP';
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, Especialitat, Cos, Codi, Cicle Formatiu, Família';
-		$frm->GeneraHTML();
+		$frm->EscriuHTML();
         break;
     case "UnitatsFormatives":
-		$frm = new FormRecerca($conn);
+		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Titol = 'Unitats formatives';
 		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, CF.nom AS NomCF'. 
 			' FROM UNITAT_FORMATIVA UF '.
@@ -75,7 +76,7 @@ switch ($accio) {
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
-		$frm->GeneraHTML();
+		$frm->EscriuHTML();
         break;
 }
 

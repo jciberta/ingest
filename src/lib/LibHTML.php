@@ -14,12 +14,13 @@
  *
  * Crea l'inici del document HTML.
  *
+ * @param object $Usuari Usuari autenticat.
  * @param string $Titol Títol de la pàgina.
- * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
+ * @param boolean $bMenu Indica si el menú ha d'haver menú a la capçalera o no.
  */
-function CreaIniciHTML($Titol, $bMenu = True)
+function CreaIniciHTML($Usuari, $Titol, $bMenu = True)
 {
-	CreaIniciHTML_BootstrapStarterTemplate($Titol, $bMenu);
+	CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu);
 /*	echo "<HTML>";
 	echo "<HEAD>";
 	echo "	<META charset=UTF8>";
@@ -55,10 +56,11 @@ function CreaFinalHTML()
  * Crea l'inici del document HTML amb el template "Bootstrap starter template".
  * https://getbootstrap.com/docs/4.0/examples/starter-template/
  *
+ * @param object $Usuari Usuari autenticat.
  * @param string $Titol Títol de la pàgina.
  * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
  */
-function CreaIniciHTML_BootstrapStarterTemplate($Titol, $bMenu = True)
+function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 {
 	echo "<HTML>";
 	echo "<HEAD>";
@@ -80,39 +82,39 @@ function CreaIniciHTML_BootstrapStarterTemplate($Titol, $bMenu = True)
 		echo '      <div class="collapse navbar-collapse" id="navbarsExampleDefault">';
 		echo '        <ul class="navbar-nav mr-auto">';
 		echo '          <li class="nav-item active">';
-		echo '            <a class="nav-link" href="Menu.php">Inici <span class="sr-only">(current)</span></a>';
+		echo '            <a class="nav-link" href="Escriptori.php">Inici <span class="sr-only">(current)</span></a>';
 		echo '          </li>';
-	//	echo '          <li class="nav-item"><a class="nav-link" href="#">Link</a></li>';
-	//	echo '          <li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a></li>';
-		echo '          <li class="nav-item dropdown">';
-		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
-		echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
-		echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
-		echo '              <a class="dropdown-item" href="UsuariRecerca.php">Alumnes (formulari genèric)</a>';
-		echo '              <div class="dropdown-divider"></div>';
-		echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-		echo '            </div>';
-		echo '          </li>';
-		echo '          <li class="nav-item dropdown">';
-		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
-		echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
-		echo '              <a class="dropdown-item" href="Professors.php">Professors</a>';
-		echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
-		echo '            </div>';
-		echo '          </li>';
-		echo '          <li class="nav-item dropdown">';
-		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
-		echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
-		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
-		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
-		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
-		echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
-		echo '              <div class="dropdown-divider"></div>';
-		echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-		echo '              <div class="dropdown-divider"></div>';
-		echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
-		echo '            </div>';
-		echo '          </li>';
+		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis) || ($Usuari->es_cap_departament) || ($Usuari->es_tutor) || ($Usuari->es_professor)) {
+			echo '          <li class="nav-item dropdown">';
+			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
+			echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
+			echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
+			echo '              <a class="dropdown-item" href="UsuariRecerca.php">Alumnes (formulari genèric)</a>';
+			echo '              <div class="dropdown-divider"></div>';
+			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			echo '            </div>';
+			echo '          </li>';
+			echo '          <li class="nav-item dropdown">';
+			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
+			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
+			echo '              <a class="dropdown-item" href="Professors.php">Professors</a>';
+			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
+			echo '            </div>';
+			echo '          </li>';
+			echo '          <li class="nav-item dropdown">';
+			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
+			echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
+			echo '              <div class="dropdown-divider"></div>';
+			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			echo '              <div class="dropdown-divider"></div>';
+			echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
+			echo '            </div>';
+			echo '          </li>';
+		}
 		echo '        </ul>';
 
 		echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';

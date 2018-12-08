@@ -16,23 +16,28 @@ require_once('lib/LibHTML.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-CreaIniciHTML('Cicles formatius');
+CreaIniciHTML($Usuari, 'Cicles formatius');
 
 $SQL = ' SELECT * FROM CICLE_FORMATIU ORDER BY grau';
 $ResultSet = $conn->query($SQL);
 if ($ResultSet->num_rows > 0) {
-	echo "<TABLE>";
+	echo '<TABLE class="table table-striped">';
+	echo '<THEAD class="thead-dark">';
 	echo "<TH>Grau</TH>";
 	echo "<TH>Codi</TH>";
 	echo "<TH>Codi XTEC</TH>";
 	echo "<TH>Nom</TH>";
-
+	echo "<TH></TH>";
+	echo "<TH></TH>";
+	echo "<TH></TH>";
+	echo '</THEAD>';
 	$row = $ResultSet->fetch_assoc();
 	while($row) {
 		echo "<TR>";

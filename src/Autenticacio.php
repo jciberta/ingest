@@ -45,7 +45,7 @@ if (!empty($_POST))
 					else {
 						$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
 						$conn->query($SQL);	
-						header('Location: Menu.php');
+						header('Location: Escriptori.php');
 					}
 				}
 				else 

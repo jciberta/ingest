@@ -28,14 +28,21 @@ class Form {
 	* @var object
 	*/    
 	protected $Connexio;
+	/**
+	* Usuari autenticat.
+	* @access protected 
+	* @var object
+	*/    
+	protected $Usuari;
 
 	/**
 	 * Constructor de l'objecte.
 	 *
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
-	function __construct($con) {
+	function __construct($con, $user) {
 		$this->Connexio = $con;
+		$this->Usuari = $user;
 	}	
 } 
 
@@ -224,8 +231,8 @@ class FormRecerca extends Form {
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
-	public function GeneraHTML() {
-		CreaIniciHTML($this->Titol, ($this->Modalitat == self::mfLLISTA));
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
 		echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
@@ -469,7 +476,7 @@ class FormFitxa extends Form {
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
-		CreaIniciHTML($this->Titol);
+		CreaIniciHTML($this->Usuari, $this->Titol);
 		echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();

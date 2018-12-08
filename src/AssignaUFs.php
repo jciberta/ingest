@@ -19,6 +19,7 @@ require_once('lib/LibHTML.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -35,7 +36,7 @@ if ($Accio == 'AssignaUF') {
 	$ProfessorId = $_GET['ProfessorId'];
 //print_r($ProfessorId);
 
-	CreaIniciHTML("Assignació d'unitats formatives");
+	CreaIniciHTML($Usuari, "Assignació d'unitats formatives");
 	echo '<script language="javascript" src="js/Professor.js" type="text/javascript"></script>';
 
 	$SQL = ' SELECT  UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS NomCF, '.
@@ -129,7 +130,7 @@ if ($Accio == 'AssignaUF') {
 }
 else if ($Accio == 'ProfessorsUF') {
 	// Mostra els professors que hi ha assignats a les diferents UF.
-	CreaIniciHTML("Professors per unitats formatives");
+	CreaIniciHTML($Usuari, "Professors per unitats formatives");
 	echo '<script language="javascript" src="js/Professor.js" type="text/javascript"></script>';
 
 	$SQL = ' SELECT  UF.nom AS NomUF, UF.hores AS HoresUF, '.
