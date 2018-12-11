@@ -113,7 +113,7 @@ $SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom 
 	' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
 	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 	' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-	' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id= '.$alumne;
+	' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id='.$alumne;
 //print_r($SQL);
 
 $ResultSet = $conn->query($SQL);

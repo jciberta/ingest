@@ -106,7 +106,7 @@ if ($ResultSet->num_rows > 0) {
 
 if ($accio == 'MostraExpedient') {
 	echo "<DIV id=DescarregaExpedientPDF>";
-	echo '<a href="ExpedientPDF.php?AlumneId='.$Usuari->usuari_id.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+	echo '<a href="ExpedientPDF.php?AlumneId='.$alumne.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
 	echo "</DIV>";
 }
 
