@@ -107,7 +107,7 @@ CREATE TABLE ANY_ACADEMIC
     any_academic_id INT NOT NULL AUTO_INCREMENT,
     any_inici INT NOT NULL,
     any_final INT NOT NULL,
-    nom	VARCHAR(20),
+    nom VARCHAR(20),
     actual BIT, /* Indica l'any acadèmic actual. Només n'hi pot haver 1 */
 
     CONSTRAINT AnyAcademicPK PRIMARY KEY (any_academic_id)
@@ -223,7 +223,7 @@ CREATE TABLE DEPARTAMENT
 (
     /* DEP */
     departament_id INT NOT NULL AUTO_INCREMENT,
-    nom	VARCHAR(50),
+    nom VARCHAR(50),
     cap INT NOT NULL,
 
     CONSTRAINT DepartamentPK PRIMARY KEY (departament_id),
