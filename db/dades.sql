@@ -302,5 +302,12 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (173, 'UF1. FCT', 'UF1', 350, 2, 72);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (174, 'UF1. Mòdul DUAL', 'UF1', 0, 2, 73);
 
-/* Curs */
-INSERT INTO CURS (any_inici, any_final, nom) VALUES (2018, 2019, 'Curs 2018-2019');
+/* Any acadèmic */
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2018, 2019, 'Curs 2018-2019');
+
+/* Cursos */
+INSERT INTO CURS (any_academic_id, nom, codi) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE)', 'CFPM IC10');
+
+
+
+

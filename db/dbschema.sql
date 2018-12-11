@@ -101,16 +101,28 @@ CREATE TABLE PROFESSOR_UF
     CONSTRAINT PUF_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 );
 
+CREATE TABLE ANY_ACADEMIC
+(
+    /* AA */
+    any_academic_id INT NOT NULL AUTO_INCREMENT,
+    any_inici INT NOT NULL,
+    any_final INT NOT NULL,
+    nom	VARCHAR(20),
+    actual BIT, /* Indica l'any acadèmic actual. Només n'hi pot haver 1 */
+
+    CONSTRAINT AnyAcademicPK PRIMARY KEY (any_academic_id)
+);
+
 CREATE TABLE CURS
 (
     /* C */
     curs_id INT NOT NULL AUTO_INCREMENT,
-    any_inici INT NOT NULL,
-    any_final INT NOT NULL,
-    nom	VARCHAR(20),
-    actual BIT, /* Indica el curs actual. Només n'hi pot haver 1 */
+    any_academic_id INT NOT NULL,
+    nom VARCHAR(100) NOT NULL,
+    codi VARCHAR(10) NOT NULL,
 
-    CONSTRAINT CursPK PRIMARY KEY (curs_id)
+    CONSTRAINT CursPK PRIMARY KEY (curs_id),
+    CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id)
 );
 
 CREATE TABLE MATRICULA
@@ -207,4 +219,14 @@ BEGIN
 END //
 DELIMITER ;
 
+CREATE TABLE DEPARTAMENT
+(
+    /* DEP */
+    departament_id INT NOT NULL AUTO_INCREMENT,
+    nom	VARCHAR(50),
+    cap INT NOT NULL,
+
+    CONSTRAINT DepartamentPK PRIMARY KEY (departament_id),
+    CONSTRAINT DEP_CapFK FOREIGN KEY (cap) REFERENCES USUARI(usuari_id)
+);
 
