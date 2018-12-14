@@ -88,8 +88,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '          <li class="nav-item dropdown">';
 			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
 			echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
-			echo '              <a class="dropdown-item" href="Alumnes.php">Alumnes</a>';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php">Alumnes (formulari genèric)</a>';
+			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Alumnes">Alumnes</a>';
 			echo '              <div class="dropdown-divider"></div>';
 			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 			echo '            </div>';

@@ -72,7 +72,11 @@ function GetFormDataJSON(oForm) {
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
-		msg += '{"name":"' + controls[i].name + '","value":"' + controls[i].value + '"},';
+		if (controls[i].type && controls[i].type === 'checkbox') {
+			msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
+		}
+		else 
+			msg += '{"name":"' + controls[i].name + '","value":"' + controls[i].value + '"},';
     }
 	msg = msg.slice(0, -1); // Treiem la darrera coma
 	msg += ']';
