@@ -12,14 +12,14 @@
 /**
  * ObteCodiValorDesDeSQL
  *
- * Obté un array que conté 2 arrays (parell codi-valor) a partir d'una SQL.
- * Ús: 
+ * ObtÃ© un array que contÃ© 2 arrays (parell codi-valor) a partir d'una SQL.
+ * Ãšs: 
  *
- * @param object $Connexio Connexió a la base de dades.
- * @param string $SQL Sentència SQL.
+ * @param object $Connexio ConnexiÃ³ a la base de dades.
+ * @param string $SQL SentÃ¨ncia SQL.
  * @param array $CampCodi Nom del camp del codi.
  * @param array $CampValor Nom del camp del valor.
- * @return void Array que conté 2 arrays (parell codi-valor).
+ * @return void Array que contÃ© 2 arrays (parell codi-valor).
  */
 function ObteCodiValorDesDeSQL($Connexio, $SQL, $CampCodi, $CampValor)
 {
@@ -61,6 +61,5 @@ function ResultSetAJSON($ResultSet)
 	$JSON = rtrim($JSON, ',').']}';
 	return $JSON;
 }
- 
- ?>
- 
+
+?>
