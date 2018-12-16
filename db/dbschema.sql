@@ -64,7 +64,6 @@ CREATE TABLE USUARI
     usuari_id INT NOT NULL,
     username           VARCHAR(100) NOT NULL,
     password           VARCHAR(255) NOT NULL,
-    imposa_canvi_password BIT,
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),
@@ -82,10 +81,16 @@ CREATE TABLE USUARI
     es_professor BIT,
     es_alumne BIT,
     es_pare BIT,
+    imposa_canvi_password BIT,
+    usuari_bloquejat BIT,
+    pare_id INT,
+    mare_id INT,
     data_ultim_login DATETIME,
     ip_ultim_login VARCHAR(15),
  
-    CONSTRAINT UsuariPK PRIMARY KEY (usuari_id)
+    CONSTRAINT UsuariPK PRIMARY KEY (usuari_id),
+    CONSTRAINT U_PareFK FOREIGN KEY (pare_id) REFERENCES USUARI(usuari_id),
+    CONSTRAINT U_MareFK FOREIGN KEY (mare_id) REFERENCES USUARI(usuari_id)
 );
 
 CREATE TABLE PROFESSOR_UF

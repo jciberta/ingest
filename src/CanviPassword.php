@@ -11,6 +11,7 @@
 
 require_once('Config.php');
 require_once('lib/LibHTML.php');
+require_once('lib/LibDB.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -30,10 +31,17 @@ if (!empty($_POST))
 			} 
 			if (password_verify($_POST['contrasenya_actual'], $Usuari->password)) {
 				if (($_POST['contrasenya1'] == $_POST['contrasenya2']) && ($_POST['contrasenya1'] != '')) {
-					$SQL = "UPDATE USUARI SET password='".password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT)."', imposa_canvi_password=0 WHERE usuari_id=". $Usuari->usuari_id;
+					$errors = [];
+//print_r($_POST['contrasenya1']);
+					if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
+						$SQL = "UPDATE USUARI SET password='".password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT)."', imposa_canvi_password=0 WHERE usuari_id=". $Usuari->usuari_id;
 //print_r($SQL);
-					$conn->query($SQL);	
-					PaginaHTMLMissatge("Informació", "La contrasenya s'ha desat correctament.");
+						$conn->query($SQL);	
+						PaginaHTMLMissatge("Informació", "La contrasenya s'ha desat correctament.");
+					}
+					else {
+						PaginaHTMLMissatge("Error", "La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres.");
+					}
 				}
 				else {
 					PaginaHTMLMissatge("Error", "Les noves contrasenyes no coincideixen o alguna està en blanc.");

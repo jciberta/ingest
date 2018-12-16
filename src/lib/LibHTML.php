@@ -117,16 +117,22 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 		echo '        </ul>';
 
 		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
-		echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
-	//	echo '          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">';
-	//	echo '          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>';
-		echo '          <span class="navbar-brand">'.$NomComplet.'</span>';
-		echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
-		echo '        </form>';
-//		echo '		<ul class="navbar-nav float-right">';
-//		echo '			<li class="navbar-brand">Surt</li>';
-	//	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
-//		echo '		</ul>';
+//		echo '        <form class="form-inline my-2 my-lg-0" action="Surt.php">';
+//		echo '          <span class="navbar-brand">'.$NomComplet.'</span>';
+//		echo '          <button class="btn btn-primary my-2 my-sm-0" type="submit">Surt</button>';
+
+		echo '        <ul class="navbar-nav ml-auto">';
+		echo '          <li class="nav-item dropdown">';
+		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
+		echo '            <div class="dropdown-menu" aria-labelledby="ddUsuari">';
+		echo '              <a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
+		echo '              <div class="dropdown-divider"></div>';
+		echo '              <a class="dropdown-item" href="Surt.php">Surt</a>';
+		echo '            </div>';
+		echo '          </li>';
+		echo '        </ul>';
+
+//		echo '        </form>';
 
 		echo '      </div>';
 		echo '    </nav>';
