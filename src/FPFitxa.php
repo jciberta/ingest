@@ -50,10 +50,10 @@ switch ($accio) {
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Id = $Id;
-		$frm->AfegeixText('nom', 'Nom', True, 100);
-		$frm->AfegeixText('codi', 'Codi', True, 40);
-		$frm->AfegeixText('hores', 'Hores', True, 40);
-		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 40);
+		$frm->AfegeixText('nom', 'Nom', True, 200);
+		$frm->AfegeixText('codi', 'Codi', True, 20);
+		$frm->AfegeixText('hores', 'Hores', True, 20);
+		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 10);
 
 		$frm->AfegeixCheckBox('orientativa', 'És orientativa?', False);
 		$frm->EscriuHTML();

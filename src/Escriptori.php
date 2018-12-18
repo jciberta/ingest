@@ -68,13 +68,12 @@ if ($Usuari->es_professor) {
 			$row = $ResultSet->fetch_assoc();
 		}
 	}
+	$ResultSet->close();
 }
 
 echo '</div>';
 
 echo "<DIV id=debug></DIV>";
-
-$ResultSet->close();
 
 $conn->close();
 

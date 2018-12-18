@@ -15,13 +15,15 @@
  */
 function ActualitzaTaula(element) { 
 	var sCerca = $('input[name="edtRecerca"]').val();	
-	var sSQL = $('input[name="edtSQL"]').val();	
-	var sCamps = $('input[name="edtCamps"]').val();	
-	var sDescripcions = $('input[name="edtDescripcions"]').val();	
-//console.dir(sCerca);
-//console.dir(sSQL);
-//console.dir(sCamps);
-console.dir(sDescripcions);
+//	var sSQL = $('input[name="edtSQL"]').val();	
+//	var sCamps = $('input[name="edtCamps"]').val();	
+//	var sDescripcions = $('input[name="edtDescripcions"]').val();	
+	
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+	
+console.dir(frm);
+console.dir(sFrm);
 
 	$.ajax( {
 		type: 'POST',
@@ -29,9 +31,10 @@ console.dir(sDescripcions);
 		data:{
 			'accio': 'ActualitzaTaula',
 			'cerca': sCerca,
-			'sql': sSQL,
-			'camps': sCamps,
-			'descripcions': sDescripcions
+//			'sql': sSQL,
+//			'camps': sCamps,
+//			'descripcions': sDescripcions,
+			'frm': sFrm
 		},
         success: function(data) {
             $('#taula').html(data);

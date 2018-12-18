@@ -13,6 +13,7 @@
 
 require_once('../Config.php');
 require_once('LibForms.php');
+require_once('LibCripto.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -29,20 +30,31 @@ if ($conn->connect_error) {
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {
-		$SQL = $_REQUEST['sql'];
 		$cerca = $_REQUEST['cerca'];
-		$camps = $_REQUEST['camps'];
-		$descripcions = $_REQUEST['descripcions'];
 
-		//print_r($_REQUEST);
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
+		$frm = unserialize($FormSerialitzat);
+		
+		// La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; 
+
+		$frm->Filtre = $cerca; 
+		
+		//$Usuari = $frm->Usuari;
+
+		//print_r($FormSerialitzat);
+		//print_r($Usuari->nom);
 		//exit(1);
 
-		$frm = new FormRecerca($conn);
-		$frm->Modalitat = FormRecerca::mfBUSCA;
-		$frm->SQL = $SQL;
-		$frm->Camps = $camps;
-		$frm->Filtre = $cerca;
-		$frm->Descripcions = $descripcions;
+		//$frm = new FormRecerca($conn);
+		//$frm->Modalitat = FormRecerca::mfBUSCA;
+		//$frm->SQL = $SQL;
+		//$frm->Camps = $camps;
+		//$frm->Filtre = $cerca;
+		//$frm->Descripcions = $descripcions;
+		
+		
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
