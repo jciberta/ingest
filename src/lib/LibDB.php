@@ -10,16 +10,39 @@
  */
 
 /**
+ * ComprovaFortalesaPassword
+ *
+ * Comprova la fortalesa d'un password.
+ * https://pages.nist.gov/800-63-3/sp800-63b.html
+ *
+ * @param string $pwd Password a comprovar.
+ * @param array $errors Errors de fortalesa.
+ * @return boolean Cert si supera la fortalesa exigida.
+ */
+function ComprovaFortalesaPassword($pwd, &$errors) {
+    $errors_init = $errors;
+    if (strlen($pwd) < 8) {
+        $errors[] = "Password too short!";
+    }
+    if (!preg_match("#[0-9]+#", $pwd)) {
+        $errors[] = "Password must include at least one number!";
+    }
+    if (!preg_match("#[a-zA-Z]+#", $pwd)) {
+        $errors[] = "Password must include at least one letter!";
+    }     
+    return ($errors == $errors_init);
+}
+
+/**
  * ObteCodiValorDesDeSQL
  *
- * Obté un array que conté 2 arrays (parell codi-valor) a partir d'una SQL.
- * Ús: 
+ * ObtÃ© un array que contÃ© 2 arrays (parell codi-valor) a partir d'una SQL.
  *
- * @param object $Connexio Connexió a la base de dades.
- * @param string $SQL Sentència SQL.
+ * @param object $Connexio ConnexiÃ³ a la base de dades.
+ * @param string $SQL SentÃ¨ncia SQL.
  * @param array $CampCodi Nom del camp del codi.
  * @param array $CampValor Nom del camp del valor.
- * @return void Array que conté 2 arrays (parell codi-valor).
+ * @return void Array que contÃ© 2 arrays (parell codi-valor).
  */
 function ObteCodiValorDesDeSQL($Connexio, $SQL, $CampCodi, $CampValor)
 {
@@ -61,6 +84,5 @@ function ResultSetAJSON($ResultSet)
 	$JSON = rtrim($JSON, ',').']}';
 	return $JSON;
 }
- 
- ?>
- 
+
+?>

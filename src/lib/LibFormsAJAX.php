@@ -60,9 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
 //print 'DesaFitxa.jsonForm: '.$jsonForm;
-
 		$data = json_decode($jsonForm);
-//print 'DesaFitxa.data: '.$data;
 		$sCamps = '';
 		$sValues = '';
 		foreach($data as $Valor) {
@@ -88,7 +86,9 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 					case 'chb':
 						// Camp de tipus text <INPUT type="checkbox">
 						$sCamps .= substr($Valor->name, 4).", ";
-						$sValues .= ($Valor->value == '') ? '0, ' : '1, ';
+						$sValues .= (($Valor->value == '') || ($Valor->value == 0)) ? '0, ' : '1, ';
+//print 'Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r $Valor;
 						break;
 				}
 			}
@@ -96,8 +96,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$sCamps = substr($sCamps, 0, -2);
 		$sValues = substr($sValues, 0, -2);
 //print 'Camps: '.$sCamps . ' <BR> Values: '.$sValues;
-		//print 'Id: '.$Id;
-		//print 'Id: '.$Id;
 		if ($Id == 0) {
 			// INSERT
 			if ($AutoIncrement) {
@@ -121,6 +119,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			$SQL .= ' WHERE '.$ClauPrimaria.'='.$Id;
 			
 		}
+		$SQL = utf8_decode($SQL);
 		$conn->query($SQL);
 print 'SQL: '.$SQL;
 	}

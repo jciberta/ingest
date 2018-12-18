@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /** 
  * LibNotes.php
@@ -8,7 +8,7 @@
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
- 
+
 require_once('LibDB.php');
 
 /**
@@ -133,7 +133,7 @@ function NumeroANota($Valor)
  * Donat un registre de notes, torna la nota de la última convocatòria.
  *
  * @param array $Registre Registre de notes corresponent a un alumne i una UF.
- * @return int nota de la última convocatòria.
+ * @return int Nota de la última convocatòria.
  */
 function UltimaNota($Registre)
 {
@@ -150,6 +150,49 @@ function UltimaNota($Registre)
 		return $Registre['nota1'];
 	else 
 		return -999;
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de les notes.
+ */
+class Notes {
+	/**
+	 * Donat un registre de notes, torna la última convocatòria.
+     * Si la convocatòria és 0, torna la que té l'ultima nota.
+	 * @param array $Registre Registre de notes corresponent a un alumne i una UF.
+	 * @return int Última convocatòria.
+	 */
+	public static function UltimaConvocatoria($Registre) {
+		if ($Registre['convocatoria'] != 0) 
+			return $Registre['convocatoria'];
+		else if ($Registre['nota5'] != '') 
+			return 5;
+		else if ($Registre['nota4'] != '') 
+			return 4;
+		else if ($Registre['nota3'] != '') 
+			return 3;
+		else if ($Registre['nota2'] != '') 
+			return 2;
+		else if ($Registre['nota1'] != '') 
+			return 1;
+
+		// Cas per quan s'usen àlies a la SQL
+		if ($Registre['Convocatoria'] != 0) 
+			return $Registre['Convocatoria'];
+		else if ($Registre['Nota5'] != '') 
+			return 5;
+		else if ($Registre['Nota4'] != '') 
+			return 4;
+		else if ($Registre['Nota3'] != '') 
+			return 3;
+		else if ($Registre['Nota2'] != '') 
+			return 2;
+		else if ($Registre['Nota1'] != '') 
+			return 1;
+
+		else 
+			return -999;
+	}
 }
 
 ?>

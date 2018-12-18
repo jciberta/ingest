@@ -35,6 +35,9 @@ $frm->AfegeixText('nom', 'Nom', True, 100);
 $frm->AfegeixText('cognom1', '1r cognom', True, 100);
 $frm->AfegeixText('cognom2', '2n cognom', False, 100);
 $frm->AfegeixPassword('password', 'Contrasenya', True, 100);
+$frm->AfegeixCheckBox('imposa_canvi_password', 'Imposa nova contrasenya?', False);
+$frm->AfegeixCheckBox('usuari_bloquejat', "Bloqueja l'usuari?", False);
+
 $frm->AfegeixCheckBox('es_direccio', 'És direcció?', False);
 $frm->AfegeixCheckBox('es_cap_estudis', "És cap d'estudis?", False);
 $frm->AfegeixCheckBox('es_cap_departament', "És cap de departament?", False);

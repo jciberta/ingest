@@ -11,32 +11,33 @@
 
 require_once('vendor/TCPDF/tcpdf.php');
 
-
-// Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF {
-    //Page header
-    public function Header() {
-        // Logo
-        $image_file = '../img/logo_inspalamos.jpg';
-        $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        // Set font
-        $this->SetFont('helvetica', 'B', 20);
-        // Title
-        $this->Cell(0, 15, '<< TCPDF Example 003 >>', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-    }
-
-    // Page footer
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+/**
+ * Classe que encapsula les utilitats per al maneig de l'expedient. 
+ */
+class Expedient {
+	/**
+	 * Genera la SQL per obtenir l'expedient d'un alumne.
+	 * @param integer $AlumneId Id de l'alumne.
+	 * @return string Sentència SQL.
+	 */
+	public static function SQL($AlumneId) {
+		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, '.
+			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
+			' CF.nom AS NomCF, CF.nom AS NomCF, '.
+			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			' N.notes_id AS NotaId, N.baixa AS Baixa, '.
+			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
+			' UF.*, MP.*, CF.*, N.* '.
+			' FROM UNITAT_FORMATIVA UF '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
+			' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
+			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
+			' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id='.$AlumneId;
+		return $SQL;
     }
 }
-
-
 
 /**
  * DescarregaExpedientPDF
@@ -46,7 +47,7 @@ class MYPDF extends TCPDF {
  * @param integer $AlumneId Id de l'alumne.
  * @return void.
  */
-function DescarregaExpedientPDF($AlumneId)
+/*function DescarregaExpedientPDF($AlumneId)
 {
 	// create new PDF document
 	$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -95,6 +96,6 @@ function DescarregaExpedientPDF($AlumneId)
 
 	//Close and output PDF document
 	$pdf->Output('Expedient.pdf', 'I');
-}
+}*/
  
 ?>

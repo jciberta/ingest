@@ -11,16 +11,14 @@
 
 require_once('Config.php');
 require_once('vendor/TCPDF/tcpdf.php');
+require_once('lib/LibNotes.php');
+require_once('lib/LibExpedient.php');
+require_once('lib/LibPDF.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.html");
 $Usuari = unserialize($_SESSION['USUARI']);
-
-$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
-	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
 
 if (!empty($_GET))
 	$alumne = $_GET['AlumneId'];
@@ -31,8 +29,14 @@ else
 if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
 	header("Location: Surt.php");
 
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
+if ($conn->connect_error) {
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+} 
+
 // Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF {
+class MYPDF extends DocumentPDF {
+//class MYPDF extends TCPDF {
 
     // Capçalera
     public function Header() {
@@ -45,9 +49,23 @@ class MYPDF extends TCPDF {
         $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
 		$this->SetXY(30, 20);
         $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
-        $this->SetFont('helvetica', '', 14); // Helvetica, 14
-		$this->SetXY(30, 25);
-        $this->Cell(0, 15, utf8_encode("Institut de Palamós"), 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+
+/*        $this->SetFont('helvetica', 'B', 12); 
+		$this->SetXY(30, 30);
+        $this->Cell(0, 15, 'Dades del centre', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+		// print an ending header line
+		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+		$this->SetX($this->original_lMargin);
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, 'PROVA', 'B', 0, 'L');
+*/
+		$this->SetXY(30, 30);
+		$this->Titol1('Informe de qualificacions del curs escolar 2018-2019');
+
+		$this->Titol2('Dades del centre');
+
+
     }
 
     // Peu de pàgina
@@ -55,9 +73,10 @@ class MYPDF extends TCPDF {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
-        $this->SetFont('helvetica', 'I', 8);
+        $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }
 
@@ -101,19 +120,7 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage();
 
-
-$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, '.
-	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' N.notes_id AS NotaId, N.baixa AS Baixa, '.
-	' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, '.
-	' UF.*, MP.*, CF.*, N.* '.
-	' FROM UNITAT_FORMATIVA UF '.
-	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-	' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-	' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-	' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id='.$alumne;
+$SQL = Expedient::SQL($alumne);
 //print_r($SQL);
 
 $ResultSet = $conn->query($SQL);
@@ -122,7 +129,7 @@ if ($ResultSet->num_rows > 0) {
 	$row = $ResultSet->fetch_assoc();
 
 	$X = 10;
-	$Y = 40;
+	$Y = 60;
 	$pdf->SetXY($X, $Y);
 	$Y += 20;
 	$pdf->writeHTML('Alumne: <B>'.utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]).'</B>', True);
@@ -134,29 +141,46 @@ if ($ResultSet->num_rows > 0) {
 	while($row) {
 		if ($row["CodiMP"] != $ModulAnterior) {
 			$pdf->SetX(10);
-			$pdf->writeHTML(utf8_encode($row["CodiMP"].'. '.$row["NomMP"]), True);
+			$pdf->writeHTML(utf8_encode($row["CodiMP"].'. '.$row["NomMP"]), False);
+			$X = 125;
+			$pdf->SetX($X);
+			$pdf->writeHTML($row["HoresMP"], True);
 			$Y += 20;
 		}
 		$ModulAnterior = $row["CodiMP"];
 		$pdf->SetX(20);
 		$pdf->writeHTML(utf8_encode($row["NomUF"]), False);
+		$pdf->SetX(125);
+		$pdf->writeHTML(utf8_encode($row["HoresUF"]), False);
 
 		// Notes
-		$X = 150;
+		$X = 140;
 		$pdf->SetX($X);
 		$pdf->writeHTML($row["Nota1"], False);
-		$X += 10;
+		$X += 5;
 		$pdf->SetX($X);
 		$pdf->writeHTML($row["Nota2"], False);
-		$X += 10;
+		$X += 5;
 		$pdf->SetX($X);
 		$pdf->writeHTML($row["Nota3"], False);
-		$X += 10;
+		$X += 5;
 		$pdf->SetX($X);
 		$pdf->writeHTML($row["Nota4"], False);
-		$X += 10;
+		$X += 5;
 		$pdf->SetX($X);
-		$pdf->writeHTML($row["Nota5"], True);
+		$pdf->writeHTML($row["Nota5"], False);
+
+		$X += 5;
+		$pdf->SetX($X);
+		if ($row["Convocatoria"] == 0)
+			$pdf->writeHTML('A)', False);
+
+		$X += 5;
+		$pdf->SetX($X);
+		$pdf->writeHTML(Notes::UltimaConvocatoria($row), False);
+
+
+		$pdf->writeHTML('', True); // Avancem línia
 
 		$row = $ResultSet->fetch_assoc();
 	}

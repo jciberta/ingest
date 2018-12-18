@@ -20,49 +20,57 @@ if (!empty($_POST))
 	//print_r($_POST);
 	if (isset($_POST['usuari']) && isset($_POST['password'])) 
 	{
-		try
-		{
-			$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-			if ($conn->connect_error) {
-				die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-			} 
+		// Prevenim injecció SQL a l'usuari. Només pot contenir lletres o números.
+		// No cal amb el password ja que es compara amb un hash i no forma part de la sentència SQL.
+		if (ctype_alnum($_POST['usuari'])) {
+			try
+			{
+				$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
+				if ($conn->connect_error) {
+					die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+				} 
 
-			$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."'";
-			$ResultSet = $conn->query($SQL);
-			if ($ResultSet->num_rows > 0) {
-				$user = $ResultSet->fetch_object();
-				//echo "Password: ". $user->password;
-				if (password_verify($_POST['password'], $user->password)) 
-				{
-					$_SESSION['usuari_id'] = $user->usuari_id;
-					// ToDo: Seguretat a la sessió
-					// https://stackoverflow.com/questions/1442177/storing-objects-in-php-session
-					// https://stackoverflow.com/questions/12233406/preventing-session-hijacking
-					$_SESSION['USUARI'] = serialize($user);
+				$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."'";
+				$ResultSet = $conn->query($SQL);
+				if ($ResultSet->num_rows > 0) {
+					$user = $ResultSet->fetch_object();
+					//echo "Password: ". $user->password;
+					if (password_verify($_POST['password'], $user->password)) 
+					{
+						$_SESSION['usuari_id'] = $user->usuari_id;
+						// ToDo: Seguretat a la sessió
+						// https://stackoverflow.com/questions/1442177/storing-objects-in-php-session
+						// https://stackoverflow.com/questions/12233406/preventing-session-hijacking
+						$_SESSION['USUARI'] = serialize($user);
 
-					if ($user->imposa_canvi_password)
-						header('Location: CanviPassword.html');
-					else {
-						$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
-						$conn->query($SQL);	
-						header('Location: Escriptori.php');
+						if ($user->imposa_canvi_password)
+							header('Location: CanviPassword.html');
+						else {
+							$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
+							$conn->query($SQL);	
+							header('Location: Escriptori.php');
+						}
+					}
+					else 
+					{
+						PaginaHTMLMissatge("Error", "El password no és correcte.");
 					}
 				}
 				else 
 				{
-					PaginaHTMLMissatge("Error", "El password no és correcte.");
+					PaginaHTMLMissatge("Error", "Usuari inexistent.");
 				}
 			}
-			else 
+			catch (Exception $e) 
 			{
-				PaginaHTMLMissatge("Error", "Usuari inexistent.");
+				$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+				PaginaHTMLMissatge("Error", $Text);
 			}
 		}
-		catch (Exception $e) 
+		else 
 		{
-			$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
-			PaginaHTMLMissatge("Error", $Text);
-		}
+			PaginaHTMLMissatge("Error", "L'usuari només pot contenir lletres o números.");
+		} 
 	}
 	else 
 	{

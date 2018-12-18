@@ -24,15 +24,19 @@ if ($conn->connect_error) {
 
 // Obtenció de la modalitat del formulari.
 $Modalitat = (!empty($_GET) && $_GET['Modalitat']=='mfBusca') ? FormRecerca::mfBUSCA : FormRecerca::mfLLISTA;
-/*if (!empty($_GET) && $_GET['Modalitat']=='mfBusca')
-	$Modalitat = FormRecerca::mfBUSCA;
-else
-	$Modalitat = FormRecerca::mfLLISTA;*/
+
+$Accio = (!empty($_GET)) ? $_GET['accio'] : '';
+if ($Accio == 'Professors')
+	$Where = ' WHERE es_professor=1';
+else if ($Accio == 'Alumnes')
+	$Where = ' WHERE es_alumne=1';
+else if ($Accio == 'Pares')
+	$Where = ' WHERE es_pare=1';
 
 $frm = new FormRecerca($conn, $Usuari);
 $frm->Modalitat = $Modalitat;
 $frm->Titol = 'Usuaris';
-$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI';
+$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI'.$Where;
 $frm->ClauPrimaria = 'usuari_id';
 $frm->Camps = 'nom, cognom1, cognom2, username';
 $frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';

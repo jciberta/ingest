@@ -137,7 +137,10 @@ class FormRecerca extends Form {
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
+			if ($obj->Where = '')
+				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
+			else
+				$sRetorn .= ' AND ' . substr($sWhere, 0, -5);
 		}
 		return $sRetorn;
 	}
@@ -188,10 +191,10 @@ class FormRecerca extends Form {
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
-					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=../img/edit.svg></A>&nbsp&nbsp";
+					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
-					$sRetorn .= "<IMG src=../img/delete.svg>&nbsp&nbsp";
+					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";
 				$sRetorn .= "</TR>";
@@ -473,7 +476,7 @@ class FormFitxa extends Form {
 		$sRetorn .= "El registre s'ha desat correctament.";
 		$sRetorn .= '</div>';
 		$sRetorn = '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
-		$sRetorn .= "Hi ha hagut un error en desat el registre.";
+		$sRetorn .= "Hi ha hagut un error en desar el registre.";
 		$sRetorn .= '</div>';
 		return $sRetorn;
 	}
@@ -483,7 +486,7 @@ class FormFitxa extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();
