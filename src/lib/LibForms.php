@@ -5,7 +5,7 @@
  *
  * Llibreria de formularis:
  *  - {@link FormRecerca}
- *  - {@link FormFitxa} -> PENDENT!
+ *  - {@link FormFitxa} 
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -14,6 +14,7 @@
 
 require_once('LibStr.php');
 require_once('LibSQL.php');
+require_once('LibCripto.php');
 require_once('LibHTML.php');
 
 /**
@@ -22,18 +23,19 @@ require_once('LibHTML.php');
  * Classe base de la quals descendeixen els formularis.
  */
 class Form {
+	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
 	/**
 	* Connexió a la base de dades.
-	* @access protected 
+	* @access public 
 	* @var object
 	*/    
-	protected $Connexio;
+	public $Connexio;
 	/**
 	* Usuari autenticat.
-	* @access protected 
+	* @access public 
 	* @var object
 	*/    
-	protected $Usuari;
+	public $Usuari;
 
 	/**
 	 * Constructor de l'objecte.
@@ -225,9 +227,13 @@ class FormRecerca extends Form {
 	 * Genera la part oculta per emmagatzemar valors.
 	 */
 	private function GeneraPartOculta() {
-		$sRetorn = "<input type=hidden name=edtSQL value='".$this->SQL."'>";
-		$sRetorn .= "<input type=hidden name=edtCamps value='".$this->Camps."'>";
-		$sRetorn .= "<input type=hidden name=edtDescripcions value='".$this->Descripcions."'>";
+		$sRetorn = "";
+//		$sRetorn = "<input type=hidden name=edtSQL value='".$this->SQL."'>";
+//		$sRetorn .= "<input type=hidden name=edtCamps value='".$this->Camps."'>";
+//		$sRetorn .= "<input type=hidden name=edtDescripcions value='".$this->Descripcions."'>";
+		$FormSerialitzat = serialize($this);
+		$FormSerialitzatEncriptat = SaferCrypto::encrypt($FormSerialitzat, hex2bin(Self::Secret));
+		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
 		return $sRetorn;
 	}
 	
@@ -236,7 +242,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
@@ -335,7 +341,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Requerit = $requerit;
-		$this->Camps[$i]->Longitud = $longitud;
+		$this->Camps[$i]->Longitud = 5*$longitud;
 	}
 
 	/**
@@ -425,13 +431,13 @@ class FormFitxa extends Form {
 				case self::tcTEXT:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.'></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.'></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcPASSWORD:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="password" name="pwd_'.$Valor->Camp.'" '.$this->ValorCampPassword($Valor->Camp).$Requerit.'></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="password" style="width:'.$Valor->Longitud.'px" name="pwd_'.$Valor->Camp.'" '.$this->ValorCampPassword($Valor->Camp).$Requerit.'></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcCHECKBOX:
@@ -442,7 +448,7 @@ class FormFitxa extends Form {
 					break;
 			}
 		}
-		$sRetorn .= '<TR><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TR>';
+		$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TDR></TR>';
 		$sRetorn .= '</TABLE>';
 		$sRetorn .= '</FORM>';
 		$sRetorn .= '</DIV>';
