@@ -9,6 +9,21 @@
 
 
 /**
+ * MostraGraellaNotes
+ *
+ * MostraOculta la graella de notes.
+ *
+ * @param obj Objecte que ha provocat la crida.
+ * @param int nivell Nivell del curs.
+ */
+function MostraGraellaNotes(obj, nivell) {
+	if (element.checked)
+		$("#notes"+nivell).show()
+	else
+		$("#notes"+nivell).hide();
+}
+
+/**
  * NotaKeyDown
  *
  * Funció per moure's per la graella.

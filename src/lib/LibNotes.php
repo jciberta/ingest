@@ -22,21 +22,20 @@ require_once('LibDB.php');
  */
 function CreaSQLNotes($CicleId, $Nivell)
 {
-return ' SELECT M.alumne_id AS AlumneId, '.
-	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, '.
-	' MP.codi AS CodiMP, '.
-	' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, '.
-	' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
-	' N.*, U.* '.
-	' FROM NOTES N '.
-	' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-	' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell='.$Nivell.
-	' ORDER BY U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
-//	' ORDER BY M.alumne_id, MP.codi, UF.codi ';	
+	return ' SELECT M.alumne_id AS AlumneId, '.
+		' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+		' UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+		' MP.codi AS CodiMP, '.
+		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, '.
+		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
+		' N.*, U.* '.
+		' FROM NOTES N '.
+		' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
+		' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
+		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
+		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+		' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell='.$Nivell.
+		' ORDER BY U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
 }
  
 /**
@@ -155,7 +154,101 @@ function UltimaNota($Registre)
 /**
  * Classe que encapsula les utilitats per al maneig de les notes.
  */
-class Notes {
+class Notes 
+{
+	/**
+	 * Escriu el formulari corresponent a les notes d'un cicle i nivell.
+	 * @param string $CicleId Identificador del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param array $Notes Dades amb les notes.
+	 * @return void.
+	 */
+	public static function EscriuFormulari($CicleId, $Nivell, $Notes) {
+		// Formulari amb les notes
+		echo '<DIV id=notes'.$Nivell.'>';
+		echo '<FORM id=form'.$Nivell.' method="post" action="">';
+		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
+		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
+		echo '<TABLE border=0>';
+
+		// Capçalera de la taula
+		$aModuls = [];
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$aModuls[$j] = utf8_encode($row["CodiMP"]);
+		}
+		$aOcurrenciesModuls = Ocurrencies($aModuls);
+	//print_r($aOcurrenciesModuls);
+
+		// Mòdul
+		echo "<TR><TD></TD><TD></TD><TD></TD>";
+		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
+			$iOcurrencies = $aOcurrenciesModuls[$i][1];
+			echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
+		}
+		echo "<TD></TD></TR>";
+	
+		// Unitat formativa
+		echo "<TR><TD></TD><TD></TD><TD></TD>";
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			echo "<TD width=20 style='text-align:center'>".utf8_encode($row["CodiUF"])."</TD>";
+		}
+		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
+
+		// Hores
+	//	echo "<TD></TD></TR>";
+		echo "<TR><TD></TD>";
+		echo "<TD style='text-align:center'>Grup</TD>";
+		echo "<TD style='text-align:center'>Tutoria</TD>";
+		$TotalHores = 0;
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$TotalHores += $row["Hores"];
+			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
+		}
+		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
+		echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+
+		for($i = 0; $i < count($Notes->Alumne); $i++) {
+			echo "<TR>";
+			$row = $Notes->Alumne[$i];
+			echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+			echo "<TD style='text-align:center'>".$row["Grup"]."</TD>";
+			echo "<TD style='text-align:center'>".$row["GrupTutoria"]."</TD>";
+			$Hores = 0;
+			for($j = 0; $j < count($Notes->UF[$i]); $j++) {
+				$row = $Notes->UF[$i][$j];
+				$style = "text-align:center";
+				$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
+				$Deshabilitat = ($Baixa) ? ' disabled ' : '';
+				if ($row["Convocatoria"] == 0) {
+					$Nota = UltimaNota($row);
+					$Deshabilitat = " disabled ";
+					$style .= ";background-color:black;color:white";
+				}
+				else {
+					$Nota = $row["nota".$row["Convocatoria"]];
+					if ($row["Orientativa"] && !$Baixa) {
+						$style .= ";background-color:yellow";
+					}
+				}
+				if ($Nota >= 5)
+					$Hores += $row["Hores"];
+				$ValorNota = NumeroANota($Nota);
+				$Id = 'grd'.$Nivell.'_'.$i.'_'.$j;
+				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+			}
+			echo "<TD style='text-align:center'>".$Hores."</TD>";
+			echo "<TD style='text-align:center'>".number_format($Hores/$TotalHores*100, 2)."&percnt;</TD>";
+			echo "<TD></TD></TR>";
+		}
+		echo "</TABLE>";
+		echo "<input type=hidden name=TempNota value=''>";
+		echo "</FORM>";
+		echo "</DIV>";
+	}
+
 	/**
 	 * Donat un registre de notes, torna la última convocatòria.
      * Si la convocatòria és 0, torna la que té l'ultima nota.

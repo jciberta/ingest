@@ -218,7 +218,7 @@ BEGIN
             LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
             LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
             WHERE CF.cicle_formatiu_id=CicleId
-            AND UF.nivell=Nivell;
+            AND UF.nivell<=Nivell;
     END;
     END IF;
 END //

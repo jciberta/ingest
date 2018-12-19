@@ -14,7 +14,8 @@ require_once('vendor/TCPDF/tcpdf.php');
 /**
  * Classe que encapsula les utilitats per al maneig de l'expedient. 
  */
-class Expedient {
+class Expedient 
+{
 	/**
 	 * Genera la SQL per obtenir l'expedient d'un alumne.
 	 * @param integer $AlumneId Id de l'alumne.
@@ -34,7 +35,7 @@ class Expedient {
 			' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-			' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id='.$AlumneId;
+			' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell<=M.nivell AND M.alumne_id='.$AlumneId;
 		return $SQL;
     }
 }

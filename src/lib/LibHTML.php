@@ -136,9 +136,9 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 
 		echo '      </div>';
 		echo '    </nav>';
-		echo '<BR><BR>'; // Pedaç!
+		echo '<BR>'; // Pedaç!
 	}
-	echo '      <div class="starter-template">';
+	echo '      <div class="starter-template" style="padding:20px">';
 //	echo '<H1>'.utf8_encode($Titol).'</H1>';
 	echo '<H1>'.$Titol.'</H1>';
 }
