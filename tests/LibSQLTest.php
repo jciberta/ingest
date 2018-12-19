@@ -72,6 +72,13 @@ final class SQLTest extends TestCase
         $this->assertEquals($SQL->CampAlies['A'], 'T1.a');
         $this->assertEquals($SQL->CampAlies['B'], 'T2.b');
     }
+    public function testSQL8()
+    {
+		$SQL = new SQL('SELECT UF.unitat_formativa_id, CF.nom AS NomCF FROM UNITAT_FORMATIVA UF LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)');
+        $this->assertEquals($SQL->Select, 'UF.unitat_formativa_id, CF.nom AS NomCF');
+        $this->assertEquals($SQL->From, 'UNITAT_FORMATIVA UF LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)');
+        $this->assertEquals($SQL->Where, '');
+	}
 }
-  
+ 
 ?>
