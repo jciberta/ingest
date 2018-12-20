@@ -35,7 +35,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 		' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell>='.$Nivell.
-		' ORDER BY U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+		' ORDER BY M.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
 }
  
 /**
@@ -148,7 +148,7 @@ function UltimaNota($Registre)
 	else if ($Registre['nota1'] != '') 
 		return $Registre['nota1'];
 	else 
-		return -999;
+		return '';
 }
 
 /**
@@ -223,15 +223,18 @@ class Notes
 					$style = "text-align:center";
 					$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 					$Deshabilitat = ($Baixa) ? ' disabled ' : '';
-					if ($row["Convocatoria"] == 0) {
-						$Nota = UltimaNota($row);
-						$Deshabilitat = " disabled ";
-						$style .= ";background-color:black;color:white";
-					}
-					else {
-						$Nota = $row["nota".$row["Convocatoria"]];
-						if ($row["Orientativa"] && !$Baixa) {
-							$style .= ";background-color:yellow";
+					$Nota = '';
+					if (!$Baixa) {
+						if ($row["Convocatoria"] == 0) {
+							$Nota = UltimaNota($row);
+							$Deshabilitat = " disabled ";
+							$style .= ";background-color:black;color:white";
+						}
+						else {
+							$Nota = $row["nota".$row["Convocatoria"]];
+							if ($row["Orientativa"] && !$Baixa) {
+								$style .= ";background-color:yellow";
+							}
 						}
 					}
 					if ($Nota >= 5)
