@@ -17,7 +17,7 @@
  * @param int nivell Nivell del curs.
  */
 function MostraGraellaNotes(obj, nivell) {
-	if (element.checked)
+	if (obj.checked)
 		$("#notes"+nivell).show()
 	else
 		$("#notes"+nivell).hide();

@@ -163,10 +163,12 @@ class FormRecerca extends Form {
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			if ($obj->Where == '')
-				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
-			else
+			// L'evaluació ha de ser estricta
+			// http://php.net/manual/en/function.strpos.php
+			if (strpos(strtoupper($this->SQL), ' WHERE ') !== false)
 				$sRetorn .= ' AND ' . substr($sWhere, 0, -5);
+			else
+				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
 		}
 		return $sRetorn;
 	}

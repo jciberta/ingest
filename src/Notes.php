@@ -29,7 +29,7 @@ CreaIniciHTML($Usuari, 'Notes cicle/nivell');
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
@@ -85,11 +85,20 @@ if ($ResultSet->num_rows > 0) {
 //print_r($Notes2);
 
 	if ($Nivell == 2) {
-		echo '<input type="checkbox" name="chbNivell1" onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
+		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n';
-		Notes::EscriuFormulari($CicleId, 2, $Notes2);
+		// Notes de 2n 
+		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2);
+		// Notes de 1r d'alumnes de 2n
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1);
 	}
-	Notes::EscriuFormulari($CicleId, 1, $Notes1);
+	else {
+		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n';
+		// Notes de 1r d'alumnes de 1r
+		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1);
+		// Notes de 1r d'alumnes de 2n
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2);
+	}
 
 }
 
