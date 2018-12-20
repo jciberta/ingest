@@ -163,7 +163,7 @@ class FormRecerca extends Form {
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			// L'evaluació ha de ser estricta
+			// L'avaluaciÃ³ de ser estricta
 			// http://php.net/manual/en/function.strpos.php
 			if (strpos(strtoupper($this->SQL), ' WHERE ') !== false)
 				$sRetorn .= ' AND ' . substr($sWhere, 0, -5);
@@ -504,19 +504,16 @@ class FormFitxa extends Form {
 					//$Nom = $Valor->Camp;
 					//$Camps = $Valor->Lookup->Camps;
 					
-	$sRetorn .= '<div class="input-group mb-3">';
-	$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=''>";
-	$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
-
-
-	$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
-
-	$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'">';
-	$sRetorn .= '  <div class="input-group-append">';
-	$onClick = "CercaLookup('lkh_".$Valor->Camp."', 'lkp_".$Valor->Camp."', '".$Valor->Lookup->URL."', '".$Valor->Lookup->Camps."');";
-	$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
-	$sRetorn .= '  </div>';
-	$sRetorn .= '</div>';
+					$sRetorn .= '<div class="input-group mb-3">';
+					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=".$this->Registre[$Valor->Camp].">";
+					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
+					$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
+					$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'">';
+					$sRetorn .= '  <div class="input-group-append">';
+					$onClick = "CercaLookup('lkh_".$Valor->Camp."', 'lkp_".$Valor->Camp."', '".$Valor->Lookup->URL."', '".$Valor->Lookup->Camps."');";
+					$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+					$sRetorn .= '  </div>';
+					$sRetorn .= '</div>';
 				
 					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
