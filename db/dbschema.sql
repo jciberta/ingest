@@ -112,6 +112,8 @@ CREATE TABLE ANY_ACADEMIC
     any_academic_id INT NOT NULL AUTO_INCREMENT,
     any_inici INT NOT NULL,
     any_final INT NOT NULL,
+	data_inici DATE,
+	data_final DATE,
     nom VARCHAR(20),
     actual BIT, /* Indica l'any acadèmic actual. Només n'hi pot haver 1 */
 
@@ -235,3 +237,14 @@ CREATE TABLE DEPARTAMENT
     CONSTRAINT DEP_CapFK FOREIGN KEY (cap) REFERENCES USUARI(usuari_id)
 );
 
+CREATE TABLE PROFESSOR_DEPARTAMENT
+(
+    /* PUD */
+    professor_departament_id INT NOT NULL AUTO_INCREMENT,
+    professor_id INT NOT NULL,
+    departament_id INT NOT NULL,
+
+    CONSTRAINT ProfessorDepartamentPK PRIMARY KEY (professor_departament_id),
+    CONSTRAINT PUD_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
+    CONSTRAINT PUD_DepartamentFK FOREIGN KEY (departament_id) REFERENCES DEPARTAMENT(departament_id)
+);
