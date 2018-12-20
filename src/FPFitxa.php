@@ -53,6 +53,7 @@ switch ($accio) {
 		$frm->AfegeixText('nom', 'Nom', True, 200);
 		$frm->AfegeixText('codi', 'Codi', True, 20);
 		$frm->AfegeixText('hores', 'Hores', True, 20);
+		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', True, 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom');
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 10);
 
 		$frm->AfegeixCheckBox('orientativa', 'És orientativa?', False);

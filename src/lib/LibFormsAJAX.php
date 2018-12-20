@@ -31,30 +31,11 @@ if ($conn->connect_error) {
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {
 		$cerca = $_REQUEST['cerca'];
-
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
 		$frm = unserialize($FormSerialitzat);
-		
-		// La connexió MySQL no es serialitza/deserialitza bé
-		$frm->Connexio = $conn; 
-
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 		$frm->Filtre = $cerca; 
-		
-		//$Usuari = $frm->Usuari;
-
-		//print_r($FormSerialitzat);
-		//print_r($Usuari->nom);
-		//exit(1);
-
-		//$frm = new FormRecerca($conn);
-		//$frm->Modalitat = FormRecerca::mfBUSCA;
-		//$frm->SQL = $SQL;
-		//$frm->Camps = $camps;
-		//$frm->Filtre = $cerca;
-		//$frm->Descripcions = $descripcions;
-		
-		
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
@@ -76,7 +57,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 				$Tipus = substr($Valor->name, 0, 3);
 				switch ($Tipus) {
 					case 'edt':
-						// Camp de tipus text <INPUT type="text">
+						// Camp text
 						$sCamps .= substr($Valor->name, 4).", ";
 						if ($Valor->value == '')
 							$sValues .= "NULL, ";
@@ -84,11 +65,22 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 							$sValues .= "'".$Valor->value."', ";
 						break;
 					case 'chb':
-						// Camp de tipus text <INPUT type="checkbox">
+						// Camp checkbox
 						$sCamps .= substr($Valor->name, 4).", ";
 						$sValues .= (($Valor->value == '') || ($Valor->value == 0)) ? '0, ' : '1, ';
-//print 'Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
-//print_r $Valor;
+						break;
+					case 'lkh':
+						if (substr($Valor->name, -6) != '_camps') {
+							// Camp lookup
+							$sCamps .= substr($Valor->name, 4).", ";
+							$sValues .= ($Valor->value == '') ? "NULL, " : $Valor->value.", ";
+							//if ($Valor->value == '')
+								//$sValues .= "NULL, ";
+							//else
+								//$sValues .= "'".$Valor->value."', ";
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+						}
 						break;
 				}
 			}

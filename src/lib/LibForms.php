@@ -46,6 +46,32 @@ class Form {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
 	}	
+
+	/**
+	 * Obté el valor de diversos camp d'un registre donada una taula.
+	 *
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $CampClau Clau primària de taula.
+	 * @param string $ValorClau Valor de la clau primària de taula.
+	 * @param string $Camps Nom del camps separats per comes del qual es volen obtenir els valors.
+	 * @param string $Separador Separador entre els diferents camps en cas que n'hi haguessin.
+	 * @return string Valor del camp o '' si no existeix.
+	 */
+	public function ObteCampsTaula($Taula, $CampClau, $ValorClau, $Camps, $Separador = ' ') {
+		$Retorn = '';
+		$SQL = 'SELECT '.$Camps.' FROM '.$Taula.' WHERE '.$CampClau.'='.$ValorClau;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			
+			$aCamps = explode(",", TrimXX($Camps));
+			for($i=0; $i < count($aCamps); $i++) {
+				$Retorn .= utf8_encode($row[$aCamps[$i]]).$Separador;
+			}
+			$Retorn = substr($Retorn, 0, -strlen($Separador));
+		}
+		return $Retorn;
+	}	
 } 
 
 /**
@@ -137,7 +163,7 @@ class FormRecerca extends Form {
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			if ($obj->Where = '')
+			if ($obj->Where == '')
 				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
 			else
 				$sRetorn .= ' AND ' . substr($sWhere, 0, -5);
@@ -162,10 +188,8 @@ class FormRecerca extends Form {
 			$aDescripcions = explode(",", TrimX($this->Descripcions));
 			foreach ($aDescripcions as $sValor) {
 				$sRetorn .= "<TH>" . $sValor . "</TH>";
-//				$sRetorn .= "<TH>" . utf8_encode($sValor) . "</TH>";
 			}
-//			if ($this->Modalitat == self::mfLLISTA && ($this->PermetEditar || $this->PermetSuprimir))
-				$sRetorn .= '<TH></TH>';
+			$sRetorn .= '<TH></TH>';
 			$sRetorn .= '</THEAD>';
 
 			// Dades
@@ -174,19 +198,14 @@ class FormRecerca extends Form {
 //print_r($row);
 				$ParametreJS = JSONEncodeUTF8($row); 
 				$ParametreJS = "'".str_replace('"', '~', $ParametreJS)."'"; 
+//print_r($this->Modalitat);
 				if ($this->Modalitat == self::mfBUSCA)
 					$sRetorn .= '<TR style="cursor: pointer;" onClick="returnYourChoice('.$ParametreJS.')">';
 				else
 					$sRetorn .= "<TR>";
 				foreach($aCamps as $data) {
 					$sValor = $row[$data];
-
-//					if ($this->Modalitat == self::mfBUSCA) {
-//						$sRetorn .= utf8_encode('<TD><A href=# onclick="returnYourChoice('.$ParametreJS.')">'.$sValor.'</A></TD>');
-//					}
-//					else
-						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
-
+					$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
 				}
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
@@ -209,9 +228,9 @@ class FormRecerca extends Form {
 	 * Genera el formulari per fer recerques.
 	 */
 	private function GeneraCerca() {
-		$sRetorn = '<DIV id=Recerca>';
+		$sRetorn = '<DIV id=Recerca style="padding:10px">';
 		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
-		$sRetorn .= '    <input class="form-control mr-sm-2" type="text" name="edtRecerca" placeholder="Text a cercar" aria-label="Search" autofocus onkeypress="RecercaKeyPress(event);">';
+		$sRetorn .= '    <input class="form-control mr-sm-2" type="text" style="width:500px" name="edtRecerca" placeholder="Text a cercar" aria-label="Search" autofocus onkeypress="RecercaKeyPress(event);">';
 
 		// *** No pot ser un botó, ja que el submit del form fa recarregar la pàgina! (multitud d'hores perdudes!) ***
 		//$sRetorn .= '    <button class="btn btn-outline-primary my-2 my-sm-0" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</button>';
@@ -264,6 +283,7 @@ class FormFitxa extends Form {
 	const tcDATA = 6;
 	const tcSELECCIO = 7;
 	const tcCHECKBOX = 8;
+	const tcLOOKUP = 9;
 	
 	/**
 	* Taula de la base de dades de la que es fa la fitxa.
@@ -330,7 +350,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
 	 * @param boolean $requerit Indica si el camp és obligatori.
-	 * @param array $longitud Longitud màxima.
+	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
 	private function Afegeix($tipus, $camp, $titol, $requerit, $longitud) {
@@ -350,7 +370,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
 	 * @param boolean $requerit Indica si el camp és obligatori.
-	 * @param array $longitud Longitud màxima.
+	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
 	public function AfegeixText($camp, $titol, $requerit, $longitud) {
@@ -363,7 +383,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
 	 * @param boolean $requerit Indica si el camp és obligatori.
-	 * @param array $longitud Longitud màxima.
+	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
 	public function AfegeixPassword($camp, $titol, $requerit, $longitud) {
@@ -380,6 +400,35 @@ class FormFitxa extends Form {
 	 */
 	public function AfegeixCheckBox($camp, $titol, $requerit) {
 		$this->Afegeix(self::tcCHECKBOX, $camp, $titol, $requerit, 0);
+	}
+
+	/**
+	 * Afegeix un camp de tipus lookup al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
+	 * @param string $URL Pàgina web de recerca.
+	 * @param string $Taula Taula associada.
+	 * @param string $Id Identificador del registre que es mostra.
+	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 * @return void
+	 */
+	public function AfegeixLookup($camp, $titol, $requerit, $longitud, $URL, $Taula, $Id, $Camps) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcLOOKUP;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Lookup = new stdClass();
+		$this->Camps[$i]->Lookup->URL = $URL;
+		$this->Camps[$i]->Lookup->Taula = $Taula;
+		$this->Camps[$i]->Lookup->Id = $Id;
+		$this->Camps[$i]->Lookup->Camps = $Camps;
 	}
 
 	/**
@@ -444,6 +493,30 @@ class FormFitxa extends Form {
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'></TD>';
+					$sRetorn .= '</TR>';
+					break;
+				case self::tcLOOKUP:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD>';
+					//$Nom = $Valor->Camp;
+					//$Camps = $Valor->Lookup->Camps;
+					
+	$sRetorn .= '<div class="input-group mb-3">';
+	$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=''>";
+	$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
+
+
+	$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
+
+	$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'">';
+	$sRetorn .= '  <div class="input-group-append">';
+	$onClick = "CercaLookup('lkh_".$Valor->Camp."', 'lkp_".$Valor->Camp."', '".$Valor->Lookup->URL."', '".$Valor->Lookup->Camps."');";
+	$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+	$sRetorn .= '  </div>';
+	$sRetorn .= '</div>';
+				
+					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
 					break;
 			}

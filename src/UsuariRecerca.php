@@ -22,8 +22,10 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-// ObtenciÃ³ de la modalitat del formulari.
-$Modalitat = (!empty($_GET) && $_GET['Modalitat']=='mfBusca') ? FormRecerca::mfBUSCA : FormRecerca::mfLLISTA;
+// Obtenció de la modalitat del formulari.
+$Modalitat = FormRecerca::mfLLISTA;
+if (isset($_GET) && array_key_exists('Modalitat', $_GET) && $_GET['Modalitat']=='mfBusca') 
+	$Modalitat = FormRecerca::mfBUSCA;
 
 $Accio = (!empty($_GET)) ? $_GET['accio'] : '';
 if ($Accio == 'Professors')

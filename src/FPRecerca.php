@@ -31,12 +31,18 @@ if (empty($_GET))
 else
 	$accio = $_GET['accio'];
 
+// Obtenció de la modalitat del formulari.
+$Modalitat = FormRecerca::mfLLISTA;
+if (isset($_GET) && array_key_exists('Modalitat', $_GET) && $_GET['Modalitat']=='mfBusca') 
+	$Modalitat = FormRecerca::mfBUSCA;
+
 // Destruim l'objecte per si estava ja creat.
 unset($frm);
 
 switch ($accio) {
     case "Families":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Famílies';
 		$frm->SQL = 'SELECT * FROM FAMILIA_FP';
 		$frm->Camps = 'nom';
@@ -45,8 +51,9 @@ switch ($accio) {
         break;
     case "CiclesFormatius":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Cicles formatius';
-		$frm->SQL = ' SELECT CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
+		$frm->SQL = ' SELECT CF.cicle_formatiu_id, CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
 			' FROM CICLE_FORMATIU CF '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP';
@@ -55,17 +62,19 @@ switch ($accio) {
         break;
     case "ModulsProfessionals":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Mòduls professionals';
-		$frm->SQL = 'SELECT MP.codi AS CodiMP, MP.nom AS NomMP, hores, hores_setmana, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
+		$frm->SQL = 'SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
 			' FROM MODUL_PROFESSIONAL MP '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
-		$frm->Camps = 'CodiMP, NomMP, hores, hores_setmana, especialitat, cos, CodiCF, NomCF, NomFFP';
+		$frm->Camps = 'codi, nom, hores, hores_setmana, especialitat, cos, CodiCF, NomCF, NomFFP';
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, Especialitat, Cos, Codi, Cicle Formatiu, Família';
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormatives":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
 		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, CF.nom AS NomCF'. 
 			' FROM UNITAT_FORMATIVA UF '.
