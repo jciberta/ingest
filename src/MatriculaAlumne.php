@@ -44,18 +44,6 @@ CreaIniciHTML($Usuari, 'Visualitza matrícula');
 echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
 
 $SQL = Expedient::SQL($alumne);
-/*$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, '.
-	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-	' N.notes_id AS NotaId, N.baixa AS Baixa, '.
-	' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, '.
-	' UF.*, MP.*, CF.*, N.* '.
-	' FROM UNITAT_FORMATIVA UF '.
-	' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-	' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-	' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-	' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell=M.nivell AND M.alumne_id= '.$alumne;*/
 //print_r($SQL);
 
 $ResultSet = $conn->query($SQL);
@@ -94,9 +82,12 @@ if ($ResultSet->num_rows > 0) {
 		if ($accio == 'MostraExpedient') {
 			for ($i=1; $i<6; $i++) {
 				$style = 'width:2em;text-align:center';
-				if ($row['convocatoria']==$i)
+				if ($row['convocatoria'] == $i) {
 					// Marquem la convocatòria actual
 					$style .= ';border-width:1px;border-color:blue';
+					if ($row['orientativa'])
+						$style .= ";background-color:yellow";
+				}
 				echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$row["Nota".$i]."'></TD>";
 			}
 		}

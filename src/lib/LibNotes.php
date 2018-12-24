@@ -41,7 +41,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 /**
  * ObteTaulaNotesJSON
  *
- * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
+ * Recupera les notes d'un cicle i un nivell concret en format JSON.
  *
  * @param string $CicleId Identificador del cicle formatiu.
  * @param string $Nivell Nivell: 1r o 2n.

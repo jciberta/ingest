@@ -51,6 +51,19 @@ class DocumentPDF extends TCPDF
 	}
 
 	/**
+	 * escriu una línea per als expedients de notes.
+	 * @param string $Text Text a mostrar.
+	 */
+	public function Escriu($Text) {
+		$this->DesaFont();
+		$this->SetX($this->original_lMargin);
+        $this->SetFont('helvetica', '', 12); 
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Text), '', 0, 'L'); 
+		$this->SetY($this->GetY() + 8);
+		$this->RestauraFont();
+	}
+
+	/**
 	 * Títol 1 per als expedients de notes.
 	 * @param string $Titol Títol a mostrar.
 	 */
@@ -59,8 +72,7 @@ class DocumentPDF extends TCPDF
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
-		$this->SetX($this->original_lMargin);
-		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Titol, 'B', 0, 'L'); // B: Bottom
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + 10);
 		$this->RestauraFont();
 	}
@@ -74,8 +86,7 @@ class DocumentPDF extends TCPDF
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', 12); // Helvetica, Bold, 12
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
-		$this->SetX($this->original_lMargin);
-		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Titol, 'B', 0, 'L'); // B: Bottom
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + 8);
 		$this->RestauraFont();
 	}
@@ -89,7 +100,6 @@ class DocumentPDF extends TCPDF
 	 * @param string $Text5 Text per a la 5a columna.
 	 */
 	public function Encolumna5($Text1, $Text2 = '', $Text3 = '', $Text4 = '', $Text5 = '') {
-//		$Pas = intval(($this->original_rMargin - $this->original_lMargin) / 5);
 		$Pas = 38;
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', '', 12); // Helvetica, 12

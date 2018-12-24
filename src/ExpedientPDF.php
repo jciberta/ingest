@@ -51,16 +51,6 @@ class QualificacionsPDF extends DocumentPDF
 		$this->SetXY(30, 20);
         $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
 
-
-/*        $this->SetFont('helvetica', 'B', 12); 
-		$this->SetXY(30, 30);
-        $this->Cell(0, 15, 'Dades del centre', 0, false, 'L', 0, '', 0, false, 'M', 'M');
-
-		// print an ending header line
-		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
-		$this->SetX($this->original_lMargin);
-		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, 'PROVA', 'B', 0, 'L');
-*/
 		$this->SetXY(30, 30);
 		$this->Titol1('Informe de qualificacions del curs escolar 2018-2019');
 
@@ -110,8 +100,6 @@ class QualificacionsPDF extends DocumentPDF
 		$HTML .= "<HR>";
 
 		$this->SetY(110);
-//		$this->writeHTML('<B>HOLA</B><HR>', True, True);
-//		$this->titol2(utf8_encode($HTML));
 		$this->writeHTML(utf8_encode($HTML), True, True);
     }
 
@@ -194,8 +182,15 @@ if ($ResultSet->num_rows > 0) {
 		$Qualificacions[$i]->UF[$j] = new stdClass();
 		$Qualificacions[$i]->UF[$j]->Nom = utf8_encode($row["NomUF"]);
 		$Qualificacions[$i]->UF[$j]->Hores = utf8_encode($row["HoresUF"]);
-		$Qualificacions[$i]->UF[$j]->Qualf = (($row["Convocatoria"] == 0) ? 'A)' : '') . Notes::UltimaConvocatoria($row);
-		$Qualificacions[$i]->UF[$j]->Conv = $row["Convocatoria"];
+		if ($row["Convocatoria"] == 0)
+			$Nota = 'A)'.NumeroANota(UltimaNota($row));
+		else {
+			$Nota = NumeroANota($row["nota".$row["Convocatoria"]]);
+			if ($row["orientativa"])
+				$Nota .= ' *';
+		}
+		$Qualificacions[$i]->UF[$j]->Qualf = $Nota;
+		$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
 		$row = $ResultSet->fetch_assoc();
 	}
 }
@@ -237,6 +232,13 @@ for($i = 0; $i < count($Qualificacions); $i++) {
 	$HTML .= "<HR>";
 	$pdf->writeHTML($HTML, True);
 }
+
+$pdf->Titol2("Comentaris de l'avaluació");
+$pdf->Escriu("Sense comentaris");
+
+$pdf->Titol2("Llegenda");
+$pdf->Escriu("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
+$pdf->Escriu("L'anotació * identifica les qualificacions orientatives");
 
 // Close and output PDF document
 $pdf->Output('Expedient.pdf', 'I');
