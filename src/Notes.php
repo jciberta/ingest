@@ -13,6 +13,7 @@ require_once('Config.php');
 require_once('lib/LibStr.php');
 require_once('lib/LibHTML.php');
 require_once('lib/LibNotes.php');
+require_once('lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -24,6 +25,16 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
+$CicleId = $_GET['CicleId'];
+$Nivell = $_GET['Nivell'];
+
+// Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
+// Si intenta manipular els paràmetres des de la URL -> al carrer!
+$Professor = new Professor($conn, $Usuari);
+$Professor->CarregaUFAssignades();
+if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 CreaIniciHTML($Usuari, 'Notes cicle/nivell');
 
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
@@ -33,9 +44,6 @@ echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
-
-$CicleId = $_GET['CicleId'];
-$Nivell = $_GET['Nivell'];
 
 $SQL = CreaSQLNotes($CicleId, $Nivell);
 //print_r($SQL);
@@ -88,16 +96,16 @@ if ($ResultSet->num_rows > 0) {
 		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n';
 		// Notes de 2n 
-		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2);
+		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1);
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor);
 	}
 	else {
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n';
 		// Notes de 1r d'alumnes de 1r
-		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1);
+		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2);
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor);
 	}
 
 }

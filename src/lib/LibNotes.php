@@ -10,6 +10,7 @@
  */
 
 require_once('LibDB.php');
+require_once('LibProfessor.php');
 
 /**
  * CreaSQLNotes
@@ -24,7 +25,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 {
 	return ' SELECT M.alumne_id AS AlumneId, '.
 		' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-		' UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+		' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
 		' MP.codi AS CodiMP, '.
 		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, '.
 		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, M.nivell AS NivellMAT, '.
@@ -162,9 +163,10 @@ class Notes
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @param array $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
+	 * @param object $Professor Objecte professor.
 	 * @return void.
 	 */
-	public static function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella) {
+	public static function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor) {
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
@@ -222,7 +224,13 @@ class Notes
 					$row = $Notes->UF[$i][$j];
 					$style = "text-align:center";
 					$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
-					$Deshabilitat = ($Baixa) ? ' disabled ' : '';
+
+					$Deshabilitat = '';
+					if ($Baixa)
+						$Deshabilitat = ' disabled ';
+					else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
+						$Deshabilitat = ' disabled ';
+
 					$Nota = '';
 					if (!$Baixa) {
 						if ($row["Convocatoria"] == 0) {
@@ -237,6 +245,8 @@ class Notes
 							}
 						}
 					}
+					else
+						$style .= ";background-color:grey";
 					if ($Nota >= 5)
 						$Hores += $row["Hores"];
 					$ValorNota = NumeroANota($Nota);

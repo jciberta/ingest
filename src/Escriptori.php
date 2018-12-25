@@ -48,21 +48,23 @@ if ($Usuari->es_alumne) {
 }
 
 if ($Usuari->es_professor) {
-	$SQL = ' SELECT DISTINCT M.cicle_formatiu_id, M.nivell, M.grup_tutoria, CF.codi AS CodiCF, CF.nom AS NomCF '.
-		' FROM MATRICULA M '.
-		' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
-		' WHERE C.actual=1 '.
-		' ORDER BY CF.codi, M.nivell, M.grup_tutoria ';
+	$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF '.
+		' FROM PROFESSOR_UF PUF '.
+		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
+		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
+		' WHERE professor_id='.$Usuari->usuari_id .
+		' ORDER BY CF.codi, UF.nivell ';
+
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
 		$row = $ResultSet->fetch_assoc();
 		while($row) {
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
-			echo '      <h5 class="card-title">Alumnes '.$row['CodiCF'].$row['nivell'].' '.$row['grup_tutoria'].'</h5>';
+			echo '      <h5 class="card-title">Notes '.$row['CodiCF'].$row['nivell'].'</h5>';
 			echo '      <p class="card-text">'.utf8_encode($row['NomCF']).'.</p>';
-			echo '      <a href="#" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '      <a href="Notes.php?CicleId='.$row['cicle_formatiu_id'].'&Nivell='.$row['nivell'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
 			echo '    </div>';
 			echo '  </div>';
 			$row = $ResultSet->fetch_assoc();

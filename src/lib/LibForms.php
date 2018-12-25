@@ -24,12 +24,14 @@ require_once('LibHTML.php');
  */
 class Form {
 	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
+
 	/**
 	* Connexió a la base de dades.
 	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
+
 	/**
 	* Usuari autenticat.
 	* @access public 
@@ -39,7 +41,6 @@ class Form {
 
 	/**
 	 * Constructor de l'objecte.
-	 *
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con, $user) {
