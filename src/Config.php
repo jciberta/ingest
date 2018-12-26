@@ -14,7 +14,7 @@ class Config {
 	const BaseDades  = 'InGest';
 	const Usuari     = 'root';
 	const Password   = 'root';
-	const Debug      = True; // Si esta activat mostrara més informació.
+	const Debug      = True; // Si està activat mostrara més informació.
 	const Secret     = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
 }
 

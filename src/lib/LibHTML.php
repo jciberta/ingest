@@ -67,8 +67,11 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo "	<META charset=UTF8>";
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
 	echo "</HEAD>";
 	echo '<BODY>';

@@ -248,3 +248,34 @@ CREATE TABLE PROFESSOR_DEPARTAMENT
     CONSTRAINT PUD_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
     CONSTRAINT PUD_DepartamentFK FOREIGN KEY (departament_id) REFERENCES DEPARTAMENT(departament_id)
 );
+
+CREATE TABLE FESTIU
+(
+    /* F */
+    data DATE NOT NULL,
+    motiu VARCHAR(50) NOT NULL,
+
+    CONSTRAINT FestiuPK PRIMARY KEY (data)
+);
+
+CREATE TABLE DIA_GUARDIA
+(
+    /* DG */
+    dia INT NOT NULL, /* 1, 2, 3, 4, 5 */
+    nom VARCHAR(10) NOT NULL, /* Dilluns, ... divendres */
+    codi CHAR(2) NOT NULL, /* Dl, dm, dc, dj, dv, ds, dg */
+    punter_data DATE,
+
+    CONSTRAINT DiaGuardiaPK PRIMARY KEY (dia)
+);
+
+CREATE TABLE BLOC_GUARDIA
+(
+    /* BG */
+    dia INT NOT NULL, 
+    hora_inici TIME,
+    hora_final TIME,
+
+    CONSTRAINT BG_BlocGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia)
+);
+

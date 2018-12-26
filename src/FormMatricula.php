@@ -55,6 +55,11 @@ echo CreaLookUp('lkpAlumne', 'UsuariRecerca.php', 'usuari_id', 'nom, cognom1, co
 echo '</form>';
 echo '<button type="submit" form="MatriculaAlumne" value="Submit">Veure</button>';
 
+echo '<div class="input-group date">';
+echo '  <input type="text" class="form-control" id="sandbox-container"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>';
+echo '</div>';
+
+echo '<script>$("#sandbox-container").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
 
 
 $conn->close();
