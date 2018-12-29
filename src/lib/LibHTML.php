@@ -110,7 +110,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
 			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
 			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
-			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormatives">Unitats formatives</a>';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesCF">Unitats formatives/MP/CF</a>';
+			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesDates">Unitats formatives/Dates</a>';
 			echo '              <div class="dropdown-divider"></div>';
 			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 			echo '              <div class="dropdown-divider"></div>';

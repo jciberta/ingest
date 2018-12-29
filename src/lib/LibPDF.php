@@ -34,6 +34,40 @@ class DocumentPDF extends TCPDF
 	 */
 	private $FontSizePtDesat = 12;
 
+	public function __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+
+		// set document information
+		$this->SetCreator(PDF_CREATOR);
+		$this->SetAuthor('Institut de Palamós');
+		$this->SetKeywords('INS Palamós, Palamós');
+
+		// set default header data
+		$this->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
+
+		// set header and footer fonts
+		$this->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$this->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+		// set default monospaced font
+		$this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+		// set margins
+		//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$this->SetMargins(PDF_MARGIN_LEFT, 120, PDF_MARGIN_RIGHT);
+		$this->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$this->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		// set auto page breaks
+		$this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+		// set image scale factor
+		$this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		// set font
+		$this->SetFont('helvetica', '', 10);
+    }
+
 	/**
 	 * Desa els valors de la font actual.
 	 */

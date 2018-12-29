@@ -10,12 +10,29 @@
  */
 
 require_once('vendor/TCPDF/tcpdf.php');
+require_once('lib/LibPDF.php');
+require_once('lib/LibNotes.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'expedient. 
  */
 class Expedient 
 {
+	/**
+	* Connexió a la base de dades.
+	* @access public 
+	* @var object
+	*/    
+	public $Connexio;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 */
+	function __construct($con) {
+		$this->Connexio = $con;
+	}	
+
 	/**
 	 * Genera la SQL per obtenir l'expedient d'un alumne.
 	 * @param integer $AlumneId Id de l'alumne.
@@ -38,65 +55,210 @@ class Expedient
 			' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell<=M.nivell AND M.alumne_id='.$AlumneId;
 		return $SQL;
     }
+
+	/**
+	 * Genera l'expedient en PDF per a un alumne.
+	 * @param integer $AlumneId Id de l'alumne.
+	 */
+	public function GeneraPDF($AlumneId) {
+		// create new PDF document
+		$pdf = new QualificacionsPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+		// set document information
+		$pdf->SetTitle('Expedient');
+		$pdf->SetSubject('Expedient');
+
+		$SQL = self::SQL($AlumneId);
+		//print_r($SQL);
+
+		$ResultSet = $this->Connexio->query($SQL);
+
+		// Posem les dades del ResultSet en una estructura de dades pròpia
+		$Qualificacions = [];
+		$i = -1;
+		$j = -1;
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$NomAlumne = $row["NomAlumne"];
+			$Cognom1Alumne = $row["Cognom1Alumne"];
+			$Cognom2Alumne = $row["Cognom2Alumne"];
+			$pdf->NomComplet = trim($NomAlumne . ' ' . $Cognom1Alumne . ', ' . $Cognom2Alumne);
+			$pdf->AddPage(); // Crida al mètode Header
+			$ModulAnterior = '';
+			while($row) {
+				if ($row["CodiMP"] != $ModulAnterior) {
+					$i++;
+					$Qualificacions[$i] = new stdClass();
+					$Qualificacions[$i]->Nom = utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
+					$Qualificacions[$i]->Hores = $row["HoresMP"];
+					$Qualificacions[$i]->Qualf = '*';
+					$Qualificacions[$i]->Conv = 'Ord.';
+					$Qualificacions[$i]->UF = [];
+					$j = -1;
+				}
+				$ModulAnterior = $row["CodiMP"];
+				$j++;
+				$Qualificacions[$i]->UF[$j] = new stdClass();
+				$Qualificacions[$i]->UF[$j]->Nom = utf8_encode($row["NomUF"]);
+				$Qualificacions[$i]->UF[$j]->Hores = utf8_encode($row["HoresUF"]);
+				if ($row["Convocatoria"] == 0)
+					$Nota = 'A)'.NumeroANota(UltimaNota($row));
+				else {
+					$Nota = NumeroANota($row["nota".$row["Convocatoria"]]);
+					if ($row["orientativa"])
+						$Nota .= ' *';
+				}
+				$Qualificacions[$i]->UF[$j]->Qualf = $Nota;
+				$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		$ResultSet->close();
+
+		// Realitzem el layout
+		for($i = 0; $i < count($Qualificacions); $i++) {
+			$HTML = '<TABLE>';
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:50%">';
+	
+			// Mòdul professional
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->Nom."</TD>";
+			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Hores."</TD>";
+			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Qualf."</TD>";
+			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Conv."</TD>";
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+
+			$HTML .= "</TD>";
+			$HTML .= '<TD style="width:50%">';
+
+			// Unitats formatives
+			$HTML .= "<TABLE>";
+			for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+				$HTML .= "</TR>";
+			}
+			$HTML .= "</TABLE>";
+
+			$HTML .= "</TD>";
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "<HR>";
+			$pdf->writeHTML($HTML, True);
+		}
+
+		$pdf->Titol2("Comentaris de l'avaluació");
+		$pdf->Escriu("Sense comentaris");
+
+		$pdf->Titol2("Llegenda");
+		$pdf->Escriu("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
+		$pdf->Escriu("L'anotació * identifica les qualificacions orientatives");
+
+		// Close and output PDF document
+		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
+		$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
+	}
 }
 
 /**
- * DescarregaExpedientPDF
- *
- * Descarrega l'expedient de l'alumne en PDF.
- *
- * @param integer $AlumneId Id de l'alumne.
- * @return void.
+ * Classe per a l'informe de qualificacions en PDF.
  */
-/*function DescarregaExpedientPDF($AlumneId)
+class QualificacionsPDF extends DocumentPDF 
 {
-	// create new PDF document
-	$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	/**
+	* Nom complet de l'alumne.
+	* @access public 
+	* @var string
+	*/    
+	public $NomComplet = '';
 
-	// set document information
-	$pdf->SetCreator(PDF_CREATOR);
-	$pdf->SetAuthor('Institut de Palamós');
-	$pdf->SetTitle('Expedient');
-	$pdf->SetSubject('TCPDF Tutorial');
-	$pdf->SetKeywords('INS Palamós, Palamós, expedient');
+	/**
+	* DNI l'alumne.
+	* @access public 
+	* @var string
+	*/    
+	public $DNI = '';
 
-	// set default header data
-	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+    // Capçalera
+    public function Header() {
+        // Logo
+        $image_file = 'img/logo-gencat.jpg';
+        $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-	// set header and footer fonts
-	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
+		$this->SetXY(30, 15);
+        $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+		$this->SetXY(30, 20);
+        $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
 
-	// set default monospaced font
-	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		$this->SetXY(30, 30);
+		$this->Titol1('Informe de qualificacions del curs escolar 2018-2019');
 
-	// set margins
-	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		$this->Titol2("Dades del centre");
+		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
+		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
 
-	// set auto page breaks
-	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$this->Titol2("Dades de l'alumne");
+		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
+		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", "...");
 
-	// set image scale factor
-	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$this->Titol2("Dades dels estudis");
+		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
+		$this->Encolumna5("...", "", "", "...", "");
 
-	// set font
-	$pdf->SetFont('times', 'BI', 12);
+		$this->Titol2("Qualificacions");
 
-	// add a page
-	$pdf->AddPage();
+		$HTML = '<TABLE>';
+		$HTML .= "<TR>";
+	
+		// Mòdul professional
+		$HTML .= '<TD style="width:50%">';
+		$HTML .= "<TABLE>";
+		$HTML .= "<TR>";
+		$HTML .= '<TD style="width:55%">Mòdul</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+		$HTML .= "</TR>";
+		$HTML .= "</TABLE>";
+		$HTML .= "</TD>";
 
-	// set some text to print
-	$txt = "Custom page header and footer are defined by extending the TCPDF class and overriding the Header() and Footer() methods.";
+		// Unitats formatives
+		$HTML .= '<TD style="width:50%">';
+		$HTML .= "<TABLE>";
+		$HTML .= "<TR>";
+		$HTML .= '<TD style="width:55%">Unitat formativa</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+		$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+		$HTML .= "</TR>";
+		$HTML .= "</TABLE>";
+		$HTML .= "</TD>";
 
-	// print a block of text using Write()
-	$pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
+		$HTML .= "</TR>";
+		$HTML .= "</TABLE>";
+		$HTML .= "<HR>";
 
-	// ---------------------------------------------------------
+		$this->SetY(110);
+		$this->writeHTML(utf8_encode($HTML), True, True);
+    }
 
-	//Close and output PDF document
-	$pdf->Output('Expedient.pdf', 'I');
-}*/
+    // Peu de pàgina
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', '', 8);
+        // Page number
+        $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+    }
+}
  
 ?>

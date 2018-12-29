@@ -55,6 +55,8 @@ switch ($accio) {
 		$frm->AfegeixText('hores', 'Hores', True, 20);
 		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', True, 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom');
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 10);
+		$frm->AfegeixData('data_inici', 'Data inici', False);
+		$frm->AfegeixData('data_final', 'Data final', False);
 
 		$frm->AfegeixCheckBox('orientativa', 'És orientativa?', False);
 		$frm->EscriuHTML();

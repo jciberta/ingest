@@ -70,8 +70,8 @@ function RecercaKeyPress(event) {
  * @return string Elements del formulari en format JSON.
  */
 function GetFormDataJSON(oForm) {
-//console.dir('oForm: ' + oForm);
-//console.dir('elements: ' + oForm.elements);
+console.dir('oForm: ' + oForm);
+console.dir('elements: ' + oForm.elements);
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
@@ -94,7 +94,7 @@ function GetFormDataJSON(oForm) {
 function DesaFitxa(element) { 
 //console.dir('element: ' + element);
 	var frm = document.getElementById('frmFitxa');
-console.dir('frm: ' + frm);
+//console.dir('frm: ' + frm);
 	var jsonForm = GetFormDataJSON(frm);
 console.dir('jsonForm: ' + jsonForm);
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());

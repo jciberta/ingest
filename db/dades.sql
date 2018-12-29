@@ -308,6 +308,45 @@ INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2018, 2019, 'Curs 2
 /* Cursos */
 INSERT INTO CURS (any_academic_id, nom, codi) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE)', 'CFPM IC10');
 
+/* Festius */
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-09-11', '11 de setembre');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-10-12', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-11-01', 'Tots sants');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-11-02', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-06', '6 de desembre');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-07', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-24', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-25', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-26', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-27', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-28', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-29', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-30', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2018-12-31', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-01', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-02', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-03', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-04', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-05', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-06', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-01-07', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-02-04', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-03-01', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-03-04', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-13', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-14', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-15', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-16', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-17', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-18', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-19', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-20', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-21', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-04-22', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-05-01', '1 de maig');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-06-24', 'Sant Joan');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-06-25', 'Festa local');
+INSERT INTO FESTIU (data, motiu) VALUES ('2019-06-26', 'Festa local');
 
 
 

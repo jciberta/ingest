@@ -55,11 +55,22 @@ echo CreaLookUp('lkpAlumne', 'UsuariRecerca.php', 'usuari_id', 'nom, cognom1, co
 echo '</form>';
 echo '<button type="submit" form="MatriculaAlumne" value="Submit">Veure</button>';
 
-echo '<div class="input-group date">';
-echo '  <input type="text" class="form-control" id="sandbox-container"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>';
+//echo '<div class="input-group date">';
+//echo '  <input type="text" class="form-control" id="sandbox-container"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>';
+//echo '</div>';
+
+echo '<BR>';
+
+
+echo '<div id="sandbox-container" class="input-group date" style="width:150px">';
+echo '  <input type="text" class="form-control" value="21/12/2018">';
+echo '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
+echo '<script>$("#sandbox-container").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
 echo '</div>';
 
-echo '<script>$("#sandbox-container").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
+
+
+
 
 
 $conn->close();

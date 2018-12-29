@@ -13,6 +13,7 @@
  */
 
 require_once('LibStr.php');
+require_once('LibDate.php');
 require_once('LibSQL.php');
 require_once('LibCripto.php');
 require_once('LibHTML.php');
@@ -71,6 +72,7 @@ class Form {
 			}
 			$Retorn = substr($Retorn, 0, -strlen($Separador));
 		}
+		$ResultSet->close();
 		return $Retorn;
 	}	
 } 
@@ -250,9 +252,6 @@ class FormRecerca extends Form {
 	 */
 	private function GeneraPartOculta() {
 		$sRetorn = "";
-//		$sRetorn = "<input type=hidden name=edtSQL value='".$this->SQL."'>";
-//		$sRetorn .= "<input type=hidden name=edtCamps value='".$this->Camps."'>";
-//		$sRetorn .= "<input type=hidden name=edtDescripcions value='".$this->Descripcions."'>";
 		$FormSerialitzat = serialize($this);
 		$FormSerialitzatEncriptat = SaferCrypto::encrypt($FormSerialitzat, hex2bin(Self::Secret));
 		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
@@ -338,15 +337,6 @@ class FormFitxa extends Form {
     public $Registre = null;
 
 	/**
-	 * Constructor de l'objecte.
-	 *
-	 * @param objecte $conn Connexió a la base de dades.
-	 */
-/*	function __construct($con) {
-		$this->Connexio = $con;
-	}*/
-
-	/**
 	 * Afegeix un camp del tipus especificat al formulari.
 	 *
 	 * @param string $tipus Tipus de camp.
@@ -406,6 +396,18 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix un camp de tipus data al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @return void
+	 */
+	public function AfegeixData($camp, $titol, $requerit) {
+		$this->Afegeix(self::tcDATA, $camp, $titol, $requerit, 0);
+	}
+
+	/**
 	 * Afegeix un camp de tipus lookup al formulari.
 	 *
 	 * @param string $camp Camp de la taula.
@@ -442,6 +444,16 @@ class FormFitxa extends Form {
 	 */
 	private function ValorCampText($camp) {
 		return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+	}
+
+	/**
+	 * Retorna el valor d'un camp de tipus data que prèviament ha estat carregat de la base de dades.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @return string Valor que conté.
+	 */
+	private function ValorCampData($camp) {
+		return ' value="'.MySQLAData($this->Registre[$camp]).'" ';
 	}
 	
 	/**
@@ -498,13 +510,24 @@ class FormFitxa extends Form {
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'></TD>';
 					$sRetorn .= '</TR>';
 					break;
+				case self::tcDATA:
+					$sRetorn .= '<TR>';
+					$sNom = 'edd_' . $Valor->Camp;
+					$sRetorn .= '<TD><label for='.$sNom.'>'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD>';
+//					$sRetorn .= '<div id='.$sNom.' name='.$sNom.' class="input-group date" style="width:150px">';
+					$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
+					$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$this->ValorCampData($Valor->Camp).$Requerit.'>';
+					$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
+					$sRetorn .= '</div>';
+					$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
+					$sRetorn .= '</TD>';
+					$sRetorn .= '</TR>';
+					break;
 				case self::tcLOOKUP:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
-					//$Nom = $Valor->Camp;
-					//$Camps = $Valor->Lookup->Camps;
-					
 					$sRetorn .= '<div class="input-group mb-3">';
 					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=".$this->Registre[$Valor->Camp].">";
 					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
@@ -515,7 +538,6 @@ class FormFitxa extends Form {
 					$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
 					$sRetorn .= '  </div>';
 					$sRetorn .= '</div>';
-				
 					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
 					break;
@@ -559,7 +581,7 @@ class FormFitxa extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();

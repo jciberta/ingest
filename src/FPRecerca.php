@@ -72,7 +72,7 @@ switch ($accio) {
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, Especialitat, Cos, Codi, Cicle Formatiu, Família';
 		$frm->EscriuHTML();
         break;
-    case "UnitatsFormatives":
+    case "UnitatsFormativesCF":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
@@ -82,6 +82,21 @@ switch ($accio) {
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
 		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, CodiCF, NomCF ';
 		$frm->Descripcions = 'Codi, Nom, Hores, Codi, Mòdul professional, Codi, Cicle Formatiu';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
+		$frm->ClauPrimaria = 'unitat_formativa_id';
+		$frm->EscriuHTML();
+        break;
+    case "UnitatsFormativesDates":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Unitats formatives';
+//		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, UF.data_inici AS data_inici, UF.data_final AS data_final '. 
+		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, DATE_FORMAT(data_inici, '%d/%m/%Y') AS data_inici, DATE_FORMAT(data_final, '%d/%m/%Y') AS data_final ". 
+			' FROM UNITAT_FORMATIVA UF '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) ';
+		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, data_inici, data_final ';
+		$frm->Descripcions = 'Codi, Nom, Hores, Codi, Mòdul professional, Data inici, Data final';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->ClauPrimaria = 'unitat_formativa_id';

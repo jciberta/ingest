@@ -14,6 +14,7 @@
 require_once('../Config.php');
 require_once('LibForms.php');
 require_once('LibCripto.php');
+require_once('LibDate.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -40,7 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
-//print 'DesaFitxa.jsonForm: '.$jsonForm;
+print 'DesaFitxa.jsonForm: '.$jsonForm;
 		$data = json_decode($jsonForm);
 		$sCamps = '';
 		$sValues = '';
@@ -63,6 +64,18 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 							$sValues .= "NULL, ";
 						else
 							$sValues .= "'".$Valor->value."', ";
+						break;
+					case 'edd':
+						// Camp data
+						$sCamps .= substr($Valor->name, 4).", ";
+						if ($Valor->value == '')
+							$sValues .= "NULL, ";
+						else
+print 'Data: '.$Valor->value;
+//							if ComprovaData($Valor->value) 
+								$sValues .= "'".DataAMySQL($Valor->value)."', ";
+//							else
+//								throw new Exception('Data no vàlida.');
 						break;
 					case 'chb':
 						// Camp checkbox
