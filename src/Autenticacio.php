@@ -12,6 +12,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibInet.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 
 session_start();
 
@@ -34,7 +35,7 @@ if (!empty($_POST))
 				$ResultSet = $conn->query($SQL);
 				if ($ResultSet->num_rows > 0) {
 					$user = $ResultSet->fetch_object();
-					//echo "Password: ". $user->password;
+					$log = new Registre($conn, $user);
 					if (password_verify($_POST['password'], $user->password)) 
 					{
 						$_SESSION['usuari_id'] = $user->usuari_id;
@@ -48,11 +49,15 @@ if (!empty($_POST))
 						else {
 							$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
 							$conn->query($SQL);	
+
+							$log->Escriu(Registre::AUTH, 'Entrada al sistema');
+
 							header('Location: Escriptori.php');
 						}
 					}
 					else 
 					{
+						$log->Escriu(Registre::AUTH, 'Password incorrecte');
 						PaginaHTMLMissatge("Error", "El password no és correcte.");
 					}
 				}

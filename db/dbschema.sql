@@ -273,9 +273,34 @@ CREATE TABLE BLOC_GUARDIA
 (
     /* BG */
     dia INT NOT NULL, 
-    hora_inici TIME,
-    hora_final TIME,
+    hora_inici TIME NOT NULL,
+    hora_final TIME NOT NULL,
 
+    CONSTRAINT BlocGuardiaPK PRIMARY KEY (dia, hora_inici),
     CONSTRAINT BG_BlocGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia)
+);
+
+CREATE TABLE PROFESSOR_GUARDIA
+(
+    /* PG */
+    dia INT NOT NULL, 
+    hora_inici TIME NOT NULL,
+    professor_id INT NOT NULL,
+    guardies INT NOT NULL DEFAULT 0,
+    ordre INT NOT NULL,
+
+    CONSTRAINT PG_BlocGuardiaFK FOREIGN KEY (dia, hora_inici) REFERENCES BLOC_GUARDIA(dia, hora_inici),
+    CONSTRAINT PG_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id)
+);
+
+CREATE TABLE REGISTRE
+(
+    /* R */
+    usuari_id INT NOT NULL,
+    nom_usuari VARCHAR(100) NOT NULL, 
+    data DATETIME NOT NULL,
+    ip VARCHAR(15) NOT NULL,
+    seccio VARCHAR(20) NOT NULL, 
+    missatge VARCHAR(255) NOT NULL
 );
 
