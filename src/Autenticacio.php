@@ -10,8 +10,8 @@
  */
 
 require_once('Config.php');
-require_once('lib/LibHTML.php');
-require_once('lib/LibInet.php');
+require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibInet.php');
 
 session_start();
 

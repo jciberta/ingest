@@ -10,8 +10,8 @@
  */
 
 require_once('Config.php');
-require_once('lib/LibDB.php');
-require_once('lib/LibHTML.php');
+require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibHTML.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

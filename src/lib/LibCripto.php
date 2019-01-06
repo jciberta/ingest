@@ -14,7 +14,13 @@
  * $encrypted = SaferCrypto::encrypt($message, $key);
  * $decrypted = SaferCrypto::decrypt($encrypted, $key);
  * var_dump($encrypted, $decrypted);
-*/
+ *
+ * NOTA: la llibreria usa el mòdul mbstrings. Depenent de la versió de PHP no és una extensió per defecte.
+ * http://www.php.net/manual/en/mbstring.installation.php
+ * Per Ubuntu:
+ *   sudo apt-get install php-mbstring
+ *   sudo service apache2 restart
+ */
 
 class UnsafeCrypto
 {

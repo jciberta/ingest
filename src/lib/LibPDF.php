@@ -9,7 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once('vendor/TCPDF/tcpdf.php');
+require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
 
 /**
  * Classe base per a la generació de documents PDF amb mètodes bàsics.
@@ -105,7 +105,8 @@ class DocumentPDF extends TCPDF
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
-		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+//		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + 10);
 		$this->RestauraFont();
@@ -119,7 +120,8 @@ class DocumentPDF extends TCPDF
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', 12); // Helvetica, Bold, 12
-		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+//		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
+		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + 8);
 		$this->RestauraFont();

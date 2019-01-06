@@ -14,7 +14,7 @@
  */
 
 require_once('Config.php');
-require_once('lib/LibForms.php');
+require_once(ROOT.'/lib/LibForms.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

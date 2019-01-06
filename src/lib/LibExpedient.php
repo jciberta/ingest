@@ -9,9 +9,9 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once('vendor/TCPDF/tcpdf.php');
-require_once('lib/LibPDF.php');
-require_once('lib/LibNotes.php');
+require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
+require_once(ROOT.'/lib/LibPDF.php');
+require_once(ROOT.'/lib/LibNotes.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'expedient. 
@@ -164,6 +164,31 @@ class Expedient
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
 		$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
 	}
+
+	/**
+	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
+	 * @param integer $Curs Identificador del curs.
+	 */
+	public function GeneraScript($Curs, $Sufix) {
+		$SQL = ' SELECT U.nom AS NomAlumne, U.*, C.* '.
+			' FROM USUARI U '.
+			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' WHERE C.curs_id='.$Curs;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while ($row = $ResultSet->fetch_array()) {
+				echo "php ../ExpedientPDF.php ".$row["usuari_id"]." >pdf/Expedient_".
+					utf8_encode($row["codi"])."_".
+					$Sufix."_".
+					utf8_encode($row["cognom1"])."_".
+					utf8_encode($row["cognom2"])."_".
+					utf8_encode($row["NomAlumne"]).
+					".pdf\n";
+			}
+		}
+		$ResultSet->close();
+	}
 }
 
 /**
@@ -188,7 +213,7 @@ class QualificacionsPDF extends DocumentPDF
     // Capçalera
     public function Header() {
         // Logo
-        $image_file = 'img/logo-gencat.jpg';
+        $image_file = ROOT.'/img/logo-gencat.jpg';
         $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
         $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
