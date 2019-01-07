@@ -16,6 +16,7 @@ require_once('LibProfessor.php');
  * CreaSQLNotes
  *
  * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
+ * Es fa així (i no per curs) per obtenir també els alumnes d'un altre curs que també fan les UFs.
  *
  * @param string $CicleId Identificador del cicle formatiu.
  * @param string $Nivell Nivell: 1r o 2n.
@@ -28,15 +29,16 @@ function CreaSQLNotes($CicleId, $Nivell)
 		' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
 		' MP.codi AS CodiMP, '.
 		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, '.
-		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, M.nivell AS NivellMAT, '.
+		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
 		' N.*, U.* '.
 		' FROM NOTES N '.
 		' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
+		' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 		' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-		' WHERE M.cicle_formatiu_id='.$CicleId.' AND M.nivell>='.$Nivell.
-		' ORDER BY M.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+		' WHERE C.cicle_formatiu_id='.$CicleId.' AND C.nivell>='.$Nivell.
+		' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
 }
  
 /**
@@ -222,7 +224,7 @@ class Notes
 				$Hores = 0;
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
-					$style = "text-align:center";
+					$style = "text-align:center;text-transform:uppercase";
 					$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 
 					$Deshabilitat = '';

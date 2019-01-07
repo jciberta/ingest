@@ -100,7 +100,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '          <li class="nav-item dropdown">';
 			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
 			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
-			echo '              <a class="dropdown-item" href="Professors.php">Professors</a>';
+			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
 			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
 			echo '            </div>';
 			echo '          </li>';
@@ -115,7 +115,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '              <div class="dropdown-divider"></div>';
 			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 			echo '              <div class="dropdown-divider"></div>';
-			echo '              <a class="dropdown-item" href="Cicles.php">Cicles formatius</a>';
+			echo '              <a class="dropdown-item" href="Escriptori.php">Cursos</a>';
 			echo '            </div>';
 			echo '          </li>';
 		}

@@ -75,11 +75,13 @@ console.dir('elements: ' + oForm.elements);
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
-		if (controls[i].type && controls[i].type === 'checkbox') {
-			msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
+		if (controls[i].name != '') {
+			if (controls[i].type && controls[i].type === 'checkbox') {
+				msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
+			}
+			else 
+				msg += '{"name":"' + controls[i].name + '","value":"' + controls[i].value + '"},';
 		}
-		else 
-			msg += '{"name":"' + controls[i].name + '","value":"' + controls[i].value + '"},';
     }
 	msg = msg.slice(0, -1); // Treiem la darrera coma
 	msg += ']';

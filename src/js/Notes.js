@@ -33,6 +33,7 @@ function MostraGraellaNotes(obj, nivell) {
  */
 function NotaKeyDown(obj, event) {
 	var data = (obj.id).split('_');
+console.log(event.keyCode);
 	if ((event.keyCode === 13) || (event.keyCode === 40)) {
 		// Avall
 		data[1]++;
@@ -70,7 +71,7 @@ function NotaKeyDown(obj, event) {
 				document.getElementById(grd).focus();
 		}
 	}
-	if (event.keyCode === 39) {
+	else if (event.keyCode === 39) {
 		// Dreta
 		data[2]++;
 		var grd = data[0] + '_' + data[1] + '_' + data[2];
@@ -80,6 +81,10 @@ function NotaKeyDown(obj, event) {
 		}
 		if (document.getElementById(grd) !== null)
 			document.getElementById(grd).focus();
+	}
+	else if ([8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 78, 80].indexOf(event.keyCode) === -1) {
+		// Tecles permeses: BS, TAB, DEL, 0..9, A, N, P
+		event.preventDefault();
 	}
 }
 
@@ -158,7 +163,7 @@ function NumeroANota(Valor)
 	else if (Valor == 100) 
 		return 'A';
 	else if (Valor == -100) 
-		return -100;
+		return 'NA';
 	else
 		return Valor;
 }

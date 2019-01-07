@@ -41,7 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
-print 'DesaFitxa.jsonForm: '.$jsonForm;
+print '<br>DesaFitxa.jsonForm: '.$jsonForm;
 		$data = json_decode($jsonForm);
 		$sCamps = '';
 		$sValues = '';
@@ -68,12 +68,9 @@ print 'DesaFitxa.jsonForm: '.$jsonForm;
 					case 'edd':
 						// Camp data
 						$sCamps .= substr($Valor->name, 4).", ";
-						if ($Valor->value == '')
-							$sValues .= "NULL, ";
-						else
-print 'Data: '.$Valor->value;
+print '<br>Data: '.$Valor->value;
 //							if ComprovaData($Valor->value) 
-								$sValues .= "'".DataAMySQL($Valor->value)."', ";
+								$sValues .= DataAMySQL($Valor->value).", ";
 //							else
 //								throw new Exception('Data no vàlida.');
 						break;
@@ -126,7 +123,7 @@ print 'Data: '.$Valor->value;
 		}
 		$SQL = utf8_decode($SQL);
 		$conn->query($SQL);
-print 'SQL: '.$SQL;
+print '<BR>SQL: '.$SQL;
 	}
 	else {
 		if ($CFG->Debug)

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /** 
  * UsuariRecerca.php
@@ -22,29 +22,75 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-// Obtenci� de la modalitat del formulari.
+// Obtenció de la modalitat del formulari.
 $Modalitat = FormRecerca::mfLLISTA;
 if (isset($_GET) && array_key_exists('Modalitat', $_GET) && $_GET['Modalitat']=='mfBusca') 
 	$Modalitat = FormRecerca::mfBUSCA;
 
-$Accio = (!empty($_GET)) ? $_GET['accio'] : '';
-if ($Accio == 'Professors')
-	$Where = ' WHERE es_professor=1';
-else if ($Accio == 'Alumnes')
-	$Where = ' WHERE es_alumne=1';
-else if ($Accio == 'Pares')
-	$Where = ' WHERE es_pare=1';
+$CursId = -1;
+if (isset($_GET) && array_key_exists('CursId', $_GET)) 
+	$CursId = $_GET['CursId'];
 
-$frm = new FormRecerca($conn, $Usuari);
-$frm->Modalitat = $Modalitat;
-$frm->Titol = 'Usuaris';
-$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI'.$Where;
-$frm->ClauPrimaria = 'usuari_id';
-$frm->Camps = 'nom, cognom1, cognom2, username';
-$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
-$frm->PermetEditar = True;
-$frm->URLEdicio = 'UsuariFitxa.php';
-$frm->PermetSuprimir = True;
-$frm->EscriuHTML();
+$Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
+
+switch ($Accio) {
+    case "Professors":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Professors";
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'nom, cognom1, cognom2, username, codi';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Codi';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetSuprimir = True;
+		$frm->AfegeixOpcio('Assigna UFs', 'AssignaUFs.php?accio=AssignaUF&ProfessorId=');
+		$frm->EscriuHTML();
+        break;
+    case "Alumnes":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Alumnes";
+		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
+		
+		$SQL = ' SELECT '.
+			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
+			' C.nom AS NomCurs, C.nivell '.
+			' FROM USUARI U '.
+			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' WHERE es_alumne=1 '.$Where.
+			' ORDER BY C.nom, c.nivell, U.cognom1, U.cognom2, U.nom ';
+		
+		$frm->SQL = $SQL;
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Curs, Nivell';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetSuprimir = True;
+		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?AlumneId=');
+		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&AlumneId=');
+		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?AlumneId=');
+		$frm->EscriuHTML();
+        break;
+    case "Pares":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Pares";
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI WHERE es_pare=1 ORDER BY cognom1, cognom2, nom';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'nom, cognom1, cognom2, username';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetSuprimir = True;
+		$frm->EscriuHTML();
+        break;
+}
+
+$conn->close();
 
 ?>

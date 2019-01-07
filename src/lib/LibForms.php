@@ -142,6 +142,13 @@ class FormRecerca extends Form {
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
+	
+	/**
+	* Opcions per a cada registre.
+	* @access private
+	* @var array
+	*/    
+    private $Opcions = [];	
 
 	/**
 	 * Crea la nova SQL a partir de les propietats {@link $SQL} i {@link $Filtre}.
@@ -152,7 +159,7 @@ class FormRecerca extends Form {
 		$sRetorn = $this->SQL;
 		if ($this->Filtre != '') {
 			$obj = new SQL($this->SQL);
-
+//print_r($obj->CampAlies);
 			$sWhere = '';
 			$aFiltre = explode(" ", TrimX($this->Filtre));
 			$aCamps = explode(",", TrimXX($this->Camps));
@@ -195,6 +202,10 @@ class FormRecerca extends Form {
 				$sRetorn .= "<TH>" . $sValor . "</TH>";
 			}
 			$sRetorn .= '<TH></TH>';
+			if ($this->Modalitat == self::mfLLISTA) 
+				foreach($this->Opcions as $obj) 
+					$sRetorn .= '<TH></TH>';
+						
 			$sRetorn .= '</THEAD>';
 
 			// Dades
@@ -221,6 +232,8 @@ class FormRecerca extends Form {
 					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";
+				if ($this->Modalitat == self::mfLLISTA) 
+					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria]);
 				$sRetorn .= "</TR>";
 			}
 			$sRetorn .= "</TABLE>";
@@ -263,10 +276,37 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
+	}
+	
+	/**
+	 * Afegeix una opció per a cada registre.
+	 * @param string $Titol Títol de l'opció.
+	 * @param string $URL URL de l'opció. Se li afegirà l'identificador del registre.
+	 */
+	public function AfegeixOpcio($Titol, $URL) {
+		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Titol = $Titol;
+		$this->Opcions[$i]->URL = $URL;
+	}
+	
+	/**
+	 * Genera les opcions per a cada registre.
+	 * @param integer $Id Identificafdor del registre.
+	 */
+	private function GeneraOpcions($Id) {
+		$Retorn = '';
+		foreach($this->Opcions as $obj) {
+			$Retorn .= '<TD>';
+			$Retorn .= '<A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+			$Retorn .= '</TD>';
+		}
+		return $Retorn;
 	}
 } 
 
@@ -581,7 +621,7 @@ class FormFitxa extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();

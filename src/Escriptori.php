@@ -12,6 +12,7 @@
 require_once('Config.php');
 require_once('lib/LibDB.php');
 require_once('lib/LibHTML.php');
+require_once('lib/LibCurs.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -23,8 +24,6 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-CreaIniciHTML($Usuari, '');
-
 // L'escriptori està format per una llista de targetes (Bootstrap cards) depenent dels rols assignats.
 //  - admin 
 //  - direcció
@@ -35,9 +34,9 @@ CreaIniciHTML($Usuari, '');
 //  - alumne: Expedient.
 //  - pare: Expedient fills.
 
-echo '<div class="card-columns" style="column-count:6">';
-
 if ($Usuari->es_alumne) {
+	CreaIniciHTML($Usuari, '');
+	echo '<div class="card-columns" style="column-count:6">';
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
 	echo '      <h5 class="card-title">Expedient</h5>';
@@ -48,6 +47,8 @@ if ($Usuari->es_alumne) {
 }
 
 if ($Usuari->es_professor) {
+	CreaIniciHTML($Usuari, '');
+	echo '<div class="card-columns" style="column-count:6">';
 	$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF '.
 		' FROM PROFESSOR_UF PUF '.
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
@@ -71,6 +72,11 @@ if ($Usuari->es_professor) {
 		}
 	}
 	$ResultSet->close();
+}
+
+if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
+	$curs = new Curs($conn, $Usuari);
+	$curs->EscriuFormulariRecera();
 }
 
 echo '</div>';

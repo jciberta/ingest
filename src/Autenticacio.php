@@ -30,18 +30,26 @@ if (!empty($_POST))
 					die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 				} 
 
-				$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."'";
+				$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."' AND NOT usuari_bloquejat=1 ";
 				$ResultSet = $conn->query($SQL);
 				if ($ResultSet->num_rows > 0) {
 					$user = $ResultSet->fetch_object();
 					//echo "Password: ". $user->password;
 					if (password_verify($_POST['password'], $user->password)) 
 					{
+						$SQL = "SELECT * FROM SISTEMA";
+						$ResultSet = $conn->query($SQL);
+						if ($ResultSet->num_rows == 0) 
+							die("El sistema no ha estat configurat.");
+						$sistema = $ResultSet->fetch_object();
+
 						$_SESSION['usuari_id'] = $user->usuari_id;
 						// ToDo: Seguretat a la sessió
 						// https://stackoverflow.com/questions/1442177/storing-objects-in-php-session
 						// https://stackoverflow.com/questions/12233406/preventing-session-hijacking
+						// https://meta.stackexchange.com/questions/69171/why-doesnt-the-stack-overflow-team-fix-the-firesheep-style-cookie-theft
 						$_SESSION['USUARI'] = serialize($user);
+						$_SESSION['SISTEMA'] = serialize($sistema);
 
 						if ($user->imposa_canvi_password)
 							header('Location: CanviPassword.html');
@@ -58,7 +66,7 @@ if (!empty($_POST))
 				}
 				else 
 				{
-					PaginaHTMLMissatge("Error", "Usuari inexistent.");
+					PaginaHTMLMissatge("Error", "Usuari inexistent o bloquejat.");
 				}
 			}
 			catch (Exception $e) 

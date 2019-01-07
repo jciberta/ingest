@@ -50,7 +50,7 @@ echo '<form action="MatriculaAlumne.php" method="post" id="MatriculaAlumne">';
 
 $aAlumne = ObteCodiValorDesDeSQL($conn, "SELECT usuari_id, CONCAT_WS(' ', nom, cognom1, cognom2) AS nom FROM USUARI WHERE es_alumne=1", "usuari_id", "nom");
 CreaDesplegable('Alumne', 'alumne', $aAlumne[0], $aAlumne[1]);
-echo CreaLookUp('lkpAlumne', 'UsuariRecerca.php', 'usuari_id', 'nom, cognom1, cognom2');
+echo CreaLookUp('lkpAlumne', 'UsuariRecerca.php?accio=Alumnes', 'usuari_id', 'nom, cognom1, cognom2');
 
 echo '</form>';
 echo '<button type="submit" form="MatriculaAlumne" value="Submit">Veure</button>';

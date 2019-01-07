@@ -61,18 +61,26 @@ CREATE TABLE UNITAT_FORMATIVA
 CREATE TABLE USUARI
 (
     /* U */
-    usuari_id INT NOT NULL,
+    usuari_id          INT NOT NULL,
     username           VARCHAR(100) NOT NULL,
     password           VARCHAR(255) NOT NULL,
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),
+	codi               VARCHAR(20), /* Codi professor, IDALU per alumne */
+	sexe               CHAR(1), /* Home, Dona, Neutre */
+	tipus_document     CHAR(1), /* Dni, Nie */
+	document           VARCHAR(15),
     email              VARCHAR(100), 
-    telefon            VARCHAR(20),  
+    telefon            VARCHAR(255),  
     adreca             VARCHAR(255), 
     codi_postal		   VARCHAR(10), 
     poblacio           VARCHAR(120),
-    pais               VARCHAR(2),
+    municipi           VARCHAR(120),
+    provincia          VARCHAR(25),
+    data_naixement     DATE,
+    municipi_naixement VARCHAR(100),
+	nacionalitat       VARCHAR(20),
     es_admin           BIT NOT NULL DEFAULT 0,
     es_direccio        BIT NOT NULL DEFAULT 0,
     es_cap_estudis     BIT NOT NULL DEFAULT 0,
@@ -120,6 +128,16 @@ CREATE TABLE ANY_ACADEMIC
     CONSTRAINT AnyAcademicPK PRIMARY KEY (any_academic_id)
 );
 
+CREATE TABLE SISTEMA
+(
+    /* S */
+	/* Ha de contenir un únic registre 	que conté la configuració */
+	nom VARCHAR(100), /* Nom institut */ 
+	any_academic_id INT NOT NULL,
+	
+    CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id)
+);
+
 CREATE TABLE CURS
 (
     /* C */
@@ -127,9 +145,12 @@ CREATE TABLE CURS
     any_academic_id INT NOT NULL,
     nom VARCHAR(100) NOT NULL,
     codi VARCHAR(10) NOT NULL,
+    cicle_formatiu_id INT NOT NULL,
+    nivell INT CHECK (nivell IN (1, 2)),
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
-    CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id)
+    CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
+    CONSTRAINT MAT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
 );
 
 CREATE TABLE MATRICULA
@@ -138,17 +159,13 @@ CREATE TABLE MATRICULA
     matricula_id INT NOT NULL AUTO_INCREMENT,
     curs_id INT NOT NULL, 
     alumne_id INT NOT NULL,
-    cicle_formatiu_id INT NOT NULL,
-    nivell INT CHECK (nivell IN (1, 2)),
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
     baixa BIT,
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
-    CONSTRAINT MAT_UsuariFK FOREIGN KEY (alumne_id) REFERENCES USUARI(usuari_id),
-
-    CONSTRAINT MAT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
+    CONSTRAINT MAT_UsuariFK FOREIGN KEY (alumne_id) REFERENCES USUARI(usuari_id)
 );
 
 CREATE TABLE NOTES
@@ -182,14 +199,13 @@ CREATE TABLE NOTES
  *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
  *
  * Ús:
- *   CALL CreaMatricula(1, 1013, 1, 1, 'A', @retorn);
+ *   CALL CreaMatricula(1, 1013, 'A', 'AB', @retorn);
  *   SELECT @retorn; 
  *
  * @param integer CursId Id del curs.
  * @param integer AlumneId Id de l'alumne.
- * @param integer CicleId Id del cicle.
- * @param integer Nivell Nivell (1r o 2n).
  * @param integer Grup Grup (cap, A, B, C).
+ * @param integer GrupTutoria Grup de tutoria.
  * @return integer Retorn Valor de retorn: 0 Ok, -1 Alumne ja matriculat.
  */
 DELIMITER //
@@ -197,8 +213,6 @@ CREATE PROCEDURE CreaMatricula
 (
     IN CursId INT, 
     IN AlumneId INT, 
-    IN CicleId INT, 
-    IN Nivell INT, 
     IN Grup CHAR(1), 
     IN GrupTutoria VARCHAR(2), 
     OUT Retorn INT
@@ -210,17 +224,19 @@ BEGIN
     END;
     ELSE
     BEGIN
-        INSERT INTO MATRICULA (curs_id, alumne_id, cicle_formatiu_id, nivell, grup, grup_tutoria) 
-            VALUES (CursId, AlumneId, CicleId, Nivell, Grup, GrupTutoria);
+        INSERT INTO MATRICULA (curs_id, alumne_id, grup, grup_tutoria) 
+            VALUES (CursId, AlumneId, Grup, GrupTutoria);
         SET @MatriculaId = LAST_INSERT_ID();
-        SELECT 0 INTO Retorn;
-            INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
+		SET @CicleId = (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId);
+		SET @Nivell = (SELECT nivell FROM CURS WHERE curs_id=CursId);
+		SELECT 0 INTO Retorn;
+        INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
             SELECT @MatriculaId, UF.unitat_formativa_id, 1 
             FROM UNITAT_FORMATIVA UF
             LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
             LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
-            WHERE CF.cicle_formatiu_id=CicleId
-            AND UF.nivell<=Nivell;
+            WHERE CF.cicle_formatiu_id=@CicleId
+            AND UF.nivell<=@Nivell;
     END;
     END IF;
 END //

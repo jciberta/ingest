@@ -42,17 +42,19 @@ class Expedient
 		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, '.
 			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
-			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
 			' N.notes_id AS NotaId, N.baixa AS Baixa, '.
 			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
+			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
 			' UF.*, MP.*, CF.*, N.* '.
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-			' LEFT JOIN MATRICULA M ON (CF.cicle_formatiu_id=M.cicle_formatiu_id) '.
+			' LEFT JOIN CURS C ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN MATRICULA M ON (M.curs_id=C.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-			' WHERE CF.cicle_formatiu_id=M.cicle_formatiu_id AND UF.nivell<=M.nivell AND M.alumne_id='.$AlumneId;
+			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.alumne_id='.$AlumneId;
 		return $SQL;
     }
 
@@ -83,6 +85,10 @@ class Expedient
 			$Cognom1Alumne = $row["Cognom1Alumne"];
 			$Cognom2Alumne = $row["Cognom2Alumne"];
 			$pdf->NomComplet = trim($NomAlumne . ' ' . $Cognom1Alumne . ', ' . $Cognom2Alumne);
+			$pdf->DNI = $row["DNI"];
+			$pdf->CicleFormatiu = $row["NomCF"];
+			$pdf->Grup = $row["Grup"];
+			$pdf->Avaluacio = "?";
 			$pdf->AddPage(); // Crida al mètode Header
 			$ModulAnterior = '';
 			while($row) {
@@ -185,6 +191,27 @@ class QualificacionsPDF extends DocumentPDF
 	*/    
 	public $DNI = '';
 
+	/**
+	* Nom del cicle formatiu.
+	* @access public 
+	* @var string
+	*/    
+	public $CicleFormatiu = '';
+
+	/**
+	* Grup del curs de l'alumne.
+	* @access public 
+	* @var string
+	*/    
+	public $Grup = '';
+
+	/**
+	* Avaluació.
+	* @access public 
+	* @var string
+	*/    
+	public $Avaluacio = '';
+	
     // Capçalera
     public function Header() {
         // Logo
@@ -206,11 +233,11 @@ class QualificacionsPDF extends DocumentPDF
 
 		$this->Titol2("Dades de l'alumne");
 		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
-		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", "...");
+		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
 
 		$this->Titol2("Dades dels estudis");
 		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
-		$this->Encolumna5("...", "", "", "...", "");
+		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
 
 		$this->Titol2("Qualificacions");
 

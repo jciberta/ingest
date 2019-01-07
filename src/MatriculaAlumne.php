@@ -18,6 +18,7 @@
 require_once('Config.php');
 require_once('lib/LibDB.php');
 require_once('lib/LibHTML.php');
+require_once('lib/LibNotes.php');
 require_once('lib/LibExpedient.php');
 
 session_start();
@@ -34,7 +35,8 @@ if (!empty($_POST))
 	$alumne = $_POST['alumne'];
 else
 	$alumne = $_GET['AlumneId'];
-$accio = $_GET['accio'];
+
+$accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
 // Si intenta manipular l'usuari des de la URL -> al carrer!
 if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
@@ -75,20 +77,22 @@ if ($ResultSet->num_rows > 0) {
 		$ModulAnterior = $row["CodiMP"];
 		echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
 		echo "<TD>".$row["HoresUF"]."</TD>";
-		if ($row["Baixa"] == True) 
+		$Baixa = ($row["Baixa"] == True);
+		if ($Baixa) 
 			$sChecked = '';
 		else
 			$sChecked = ' checked';
 		if ($accio == 'MostraExpedient') {
 			for ($i=1; $i<6; $i++) {
 				$style = 'width:2em;text-align:center';
-				if ($row['convocatoria'] == $i) {
+				if (($row['convocatoria'] == $i) && (!$Baixa)) {
 					// Marquem la convocatòria actual
 					$style .= ';border-width:1px;border-color:blue';
 					if ($row['orientativa'])
 						$style .= ";background-color:yellow";
 				}
-				echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$row["Nota".$i]."'></TD>";
+				$Nota = NumeroANota($row["Nota".$i]);
+				echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$Nota."'></TD>";
 			}
 		}
 		else

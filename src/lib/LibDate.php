@@ -39,7 +39,7 @@ function DataAMySQL($date)
 		$Retorn = 'NULL';
 	else if (ComprovaData($date)) {
 		$aTemp = explode('/', $date);
-    	$Retorn = $aTemp[2].'-'.$aTemp[1].'-'.$aTemp[0];
+    	$Retorn = "'".$aTemp[2].'-'.$aTemp[1].'-'.$aTemp[0]."'";
 	}
 	else
 		throw new Exception('Data no vàlida');
