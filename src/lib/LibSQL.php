@@ -10,7 +10,7 @@
  * @version 1.0
  */
 
-require_once('LibStr.php');
+require_once(ROOT.'/lib/LibStr.php');
 
 /**
  * Classe SQL.

@@ -9,7 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once('LibUsuari.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig del professor.

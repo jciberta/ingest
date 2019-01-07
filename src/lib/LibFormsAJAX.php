@@ -9,12 +9,11 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  * @version 1.0
  */
- 
 
 require_once('../Config.php');
-require_once('LibForms.php');
-require_once('LibCripto.php');
-require_once('LibDate.php');
+require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibDate.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -22,12 +21,11 @@ if (!isset($_SESSION['usuari_id']))
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
-  die("ERROR: Unable to connect: " . $conn->connect_error);
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 }
 
-
-// print 'AJAX';
-
+//print 'AJAX';
+//exit;
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {

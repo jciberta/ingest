@@ -10,12 +10,12 @@
  */
 
 require_once('Config.php');
-require_once('lib/LibStr.php');
-require_once('lib/LibHTML.php');
-require_once('lib/LibNotes.php');
-require_once('lib/LibFP.php');
-require_once('lib/LibCurs.php');
-require_once('lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibStr.php');
+require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibNotes.php');
+require_once(ROOT.'/lib/LibFP.php');
+require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

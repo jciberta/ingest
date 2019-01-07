@@ -12,11 +12,11 @@
  * @version 1.0
  */
 
-require_once('LibStr.php');
-require_once('LibDate.php');
-require_once('LibSQL.php');
-require_once('LibCripto.php');
-require_once('LibHTML.php');
+require_once(ROOT.'/lib/LibStr.php');
+require_once(ROOT.'/lib/LibDate.php');
+require_once(ROOT.'/lib/LibSQL.php');
+require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibHTML.php');
 
 /**
  * Classe Form.

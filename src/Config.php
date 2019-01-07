@@ -30,4 +30,13 @@ $CFG->Password   = Config::Password;
 $CFG->Debug      = Config::Debug;
 $CFG->Secret     = hex2bin(Config::Secret); // Clau per a les funcions d'encriptació.
 
+// Definició de l'arrel de l'aplicació.
+if (defined('STDIN')) 
+	// Execució de PHP via CLI.
+	define('ROOT', '/var/www/html/ingest/src');
+else 
+	// Execució de PHP via web.
+	define('ROOT', '/var/www/html/ingest/src');
+//	define('ROOT', 'http://localhost/ingest/src');
+
 ?>
