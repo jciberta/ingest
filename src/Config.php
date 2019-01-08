@@ -36,7 +36,7 @@ if (defined('STDIN'))
 	define('ROOT', '/var/www/html/ingest/src');
 else 
 	// Execució de PHP via web.
-	define('ROOT', '/var/www/html/ingest/src');
+	define('ROOT', __DIR__);
 //	define('ROOT', 'http://localhost/ingest/src');
 
 ?>
