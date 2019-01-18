@@ -104,10 +104,10 @@ CREATE TABLE USUARI
 CREATE TABLE PROFESSOR_UF
 (
     /* PUF */
-    professor_uf_id 	INT NOT NULL AUTO_INCREMENT,
-    professor_id 	INT NOT NULL,
-    uf_id 		INT NOT NULL,
-    grups 		VARCHAR(5),
+    professor_uf_id INT NOT NULL AUTO_INCREMENT,
+    professor_id    INT NOT NULL,
+    uf_id           INT NOT NULL,
+    grups           VARCHAR(5),
 
     CONSTRAINT ProfessorUFPK PRIMARY KEY (professor_uf_id),
     CONSTRAINT PUF_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
