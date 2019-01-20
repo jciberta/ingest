@@ -62,8 +62,8 @@ switch ($Accio) {
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE es_alumne=1 '.$Where.
-			' ORDER BY C.nom, c.nivell, U.cognom1, U.cognom2, U.nom ';
-		
+			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
+
 		$frm->SQL = $SQL;
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell';
