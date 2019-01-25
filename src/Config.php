@@ -31,9 +31,15 @@ $CFG->Debug      = Config::Debug;
 $CFG->Secret     = hex2bin(Config::Secret); // Clau per a les funcions d'encriptació.
 
 // Definició de l'arrel de l'aplicació.
-if (defined('STDIN')) 
+if (defined('STDIN')) {
 	// Execució de PHP via CLI.
-	define('ROOT', '/var/www/html/ingest/src');
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+		define('ROOT', 'D:\CASA\Xiber\ingest\src');
+	}
+	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+		define('ROOT', '/var/www/html/ingest/src');
+	}
+}
 else 
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);

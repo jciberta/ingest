@@ -11,7 +11,8 @@
 
 use PHPUnit\Framework\TestCase;
  
-require_once('../src/lib/LibStr.php');
+require_once('../src/Config.php');
+require_once(ROOT.'/lib/LibStr.php');
 
 final class StrTest extends TestCase
 {

@@ -151,8 +151,7 @@ class FormRecerca extends Form {
     private $Opcions = [];	
 
 	/**
-	 * Crea la nova SQL a partir de les propietats {@link $SQL} i {@link $Filtre}.
-     *
+	 * Crea la nova SQL a partir de les propietats SQL i Filtre.
      * @return string Sentència SQL.
 	 */
 	public function CreaSQL() {
@@ -173,12 +172,22 @@ class FormRecerca extends Form {
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
-			// L'avaluació de ser estricta
+			$sWhere = trim(substr($sWhere, 0, -5));
+			if ($sWhere != '') {
+				if (strlen($obj->Where) > 0)
+					$obj->Where .= ' AND ' . $sWhere;
+				else
+					$obj->Where = $sWhere;
+			}
+
+			$sRetorn = $obj->GeneraSQL();
+			
+/*			// L'avaluació de ser estricta
 			// http://php.net/manual/en/function.strpos.php
 			if (strpos(strtoupper($this->SQL), ' WHERE ') !== false)
 				$sRetorn .= ' AND ' . substr($sWhere, 0, -5);
 			else
-				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);
+				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);*/
 		}
 		return $sRetorn;
 	}

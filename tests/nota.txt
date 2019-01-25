@@ -1,5 +1,5 @@
 Per a Windows amb XAMPP:
-c:\xampp\php\php.exe phpunitX.phar .
+c:\xampp\php\php.exe phpunit-X.phar .
 
 Per a Linux:
 php phpunitX.phar .

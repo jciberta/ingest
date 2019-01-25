@@ -11,7 +11,8 @@
 
 use PHPUnit\Framework\TestCase;
  
-require_once('../src/lib/LibSQL.php');
+require_once('../src/Config.php');
+require_once(ROOT.'/lib/LibSQL.php');
 
 final class SQLTest extends TestCase
 {
@@ -72,12 +73,31 @@ final class SQLTest extends TestCase
         $this->assertEquals($SQL->CampAlies['A'], 'T1.a');
         $this->assertEquals($SQL->CampAlies['B'], 'T2.b');
     }
+	
     public function testSQL8()
     {
 		$SQL = new SQL('SELECT UF.unitat_formativa_id, CF.nom AS NomCF FROM UNITAT_FORMATIVA UF LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)');
         $this->assertEquals($SQL->Select, 'UF.unitat_formativa_id, CF.nom AS NomCF');
         $this->assertEquals($SQL->From, 'UNITAT_FORMATIVA UF LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)');
         $this->assertEquals($SQL->Where, '');
+	}
+	
+    public function testSQL9()
+    {
+		$SQL = new SQL('select a, b, c  from Taula T where a=3 and b=2 ORDER BY a');
+        $this->assertEquals($SQL->Select, 'a, b, c');
+        $this->assertEquals($SQL->From, 'Taula T');
+        $this->assertEquals($SQL->Where, 'a=3 and b=2');
+        $this->assertEquals($SQL->Order, 'a');
+	}
+	
+    public function testSQL10()
+    {
+		$SQL = new SQL('select a, b, c  from Taula T ORDER BY a');
+        $this->assertEquals($SQL->Select, 'a, b, c');
+        $this->assertEquals($SQL->From, 'Taula T');
+        $this->assertEquals($SQL->Where, '');
+        $this->assertEquals($SQL->Order, 'a');
 	}
 }
  

@@ -11,7 +11,8 @@
 
 use PHPUnit\Framework\TestCase;
  
-require_once('../src/lib/LibDate.php');
+require_once('../src/Config.php');
+require_once(ROOT.'/lib/LibDate.php');
 
 final class DateTest extends TestCase
 {
@@ -35,7 +36,7 @@ final class DateTest extends TestCase
 
     public function testDataAMySQL()
     {
-		$this->assertEquals(DataAMySQL('28/02/2012'), '2012-02-28'); 
+		$this->assertEquals(DataAMySQL('28/02/2012'), "'2012-02-28'"); 
 		$this->assertEquals(DataAMySQL(''), 'NULL'); 
 	}
 

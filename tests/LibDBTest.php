@@ -11,7 +11,8 @@
 
 use PHPUnit\Framework\TestCase;
  
-require_once('../src/lib/LibDB.php');
+require_once('../src/Config.php');
+require_once(ROOT.'/lib/LibDB.php');
 
 final class DBTest extends TestCase
 {

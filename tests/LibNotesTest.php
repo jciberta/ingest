@@ -11,7 +11,8 @@
 
 use PHPUnit\Framework\TestCase;
  
-require_once('../src/lib/LibNotes.php');
+require_once('../src/Config.php');
+require_once(ROOT.'/lib/LibNotes.php');
 
 final class NotesTest extends TestCase
 {
