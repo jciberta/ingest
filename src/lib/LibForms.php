@@ -276,7 +276,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
@@ -411,6 +411,32 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix un camp de tipus enter al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
+	 * @return void
+	 */
+	public function AfegeixEnter($camp, $titol, $requerit, $longitud) {
+		$this->Afegeix(self::tcENTER, $camp, $titol, $requerit, $longitud);
+	}
+
+	/**
+	 * Afegeix un camp de tipus real al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
+	 * @return void
+	 */
+	public function AfegeixReal($camp, $titol, $requerit, $longitud) {
+		$this->Afegeix(self::tcREAL, $camp, $titol, $requerit, $longitud);
+	}
+
+	/**
 	 * Afegeix un camp de tipus password al formulari.
 	 *
 	 * @param string $camp Camp de la taula.
@@ -536,6 +562,18 @@ class FormFitxa extends Form {
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.'></TD>';
+					$sRetorn .= '</TR>';
+					break;
+				case self::tcENTER:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="ede_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+					$sRetorn .= '</TR>';
+					break;
+				case self::tcREAL:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcPASSWORD:

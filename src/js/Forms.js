@@ -62,6 +62,32 @@ function RecercaKeyPress(event) {
 }
 
 /**
+ * FormFitxaKeyDown
+ *
+ * Funció per controlar les tecles permeses.
+ *
+ * @param obj Objecte que ha provocat la crida.
+ * @param event Event que ha provocat la crida.
+ * @param tipus 0 per enter, 1 per real.
+ */
+function FormFitxaKeyDown(obj, event, tipus) {
+	switch(tipus) {
+	  case 0:
+		// Enter. Tecles permeses: BS, DEL, 0..9, Esquerra, Dreta, ENTER
+		if ([8, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 37, 39, 13].indexOf(event.keyCode) === -1) {
+			event.preventDefault();
+		}
+		break;
+	  case 1: 
+		// Real. Tecles permeses: BS, DEL, 0..9, Esquerra, Dreta, ENTER, .
+		if ([8, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 37, 39, 13, 46].indexOf(event.keyCode) === -1) {
+			event.preventDefault();
+		}
+		break;
+	}
+}
+
+/**
  * GetFormDataJSON
  *
  * Funció que retorna els elements d'un formulari en format JSON.
