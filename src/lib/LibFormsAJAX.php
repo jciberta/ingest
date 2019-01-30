@@ -13,6 +13,7 @@
 require_once('../Config.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 
 session_start();
@@ -58,10 +59,11 @@ print '<br>DesaFitxa.jsonForm: '.$jsonForm;
 					case 'edt':
 						// Camp text
 						$sCamps .= substr($Valor->name, 4).", ";
-						if ($Valor->value == '')
-							$sValues .= "NULL, ";
-						else
-							$sValues .= "'".$Valor->value."', ";
+						$sValues .= TextAMySQL($Valor->value).', ';
+//						if ($Valor->value == '')
+//							$sValues .= "NULL, ";
+//						else
+//							$sValues .= "'".$Valor->value."', ";
 						break;
 					case 'edd':
 						// Camp data
