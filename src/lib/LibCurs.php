@@ -90,6 +90,7 @@ class Curs
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->Titol = 'Cursos';
 		$frm->SQL = $SQL;
+		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'codi, NomCurs, nivell, any_inici, any_final';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any inici, Any final';

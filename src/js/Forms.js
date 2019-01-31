@@ -89,6 +89,55 @@ console.dir('elements: ' + oForm.elements);
 }
 
 /**
+ * SuprimeixRegistre
+ *
+ * Suprimeix el registre d'una taula.
+ *
+ * @param Taula Taula de la que es vol eliminar el registre.
+ * @param ClauPrimaria Clau primària de la taula.
+ * @param Valor valor de la clau primària del registre que es vol esborrar.
+ */
+function SuprimeixRegistre(Taula, ClauPrimaria, Valor) { 
+	bootbox.confirm({
+	//	title: "Suprimeix",
+		message: "Esteu segur que voleu esborrar el registre?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Suprimeix',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				var frm = document.getElementById('frm');
+				var sFrm = frm.value;	
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibFormsAJAX.php',
+					data:{
+						'accio': 'SuprimeixRegistre',
+						'taula': Taula,
+						'clau_primaria': ClauPrimaria,
+						'valor': Valor,
+						'frm': sFrm
+					},
+					success: function(data) {
+						$('#taula').html(data);
+						//$('#debug').html('<textarea disabled>'+data+'</textarea>');
+					}, 
+					error: function(data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				});		
+			}
+		}
+	});	
+}
+
+/**
  * DesaFitxa
  *
  * @param element Botó que desa la fitxa.

@@ -38,6 +38,20 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Filtre = $cerca; 
 		print $frm->GeneraTaula();
 	}
+	else if ($_REQUEST['accio'] == 'SuprimeixRegistre') {
+		$Taula = $_REQUEST['taula'];
+		$ClauPrimaria = $_REQUEST['clau_primaria'];
+		$Valor = $_REQUEST['valor'];
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+
+		// Esborrem el registre
+		$SQL = 'DELETE FROM '.$Taula.' WHERE '.$ClauPrimaria.'='.$Valor;
+		$frm->Connexio->query($SQL);
+		print $frm->GeneraTaula();
+	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
 print '<br>DesaFitxa.jsonForm: '.$jsonForm;

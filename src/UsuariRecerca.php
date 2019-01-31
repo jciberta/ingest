@@ -39,6 +39,7 @@ switch ($Accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
+		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Codi';
@@ -65,6 +66,7 @@ switch ($Accio) {
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
 
 		$frm->SQL = $SQL;
+		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Curs, Nivell';
@@ -81,6 +83,7 @@ switch ($Accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Pares";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI WHERE es_pare=1 ORDER BY cognom1, cognom2, nom';
+		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
