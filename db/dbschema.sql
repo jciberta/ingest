@@ -289,23 +289,26 @@ CREATE TABLE BLOC_GUARDIA
 (
     /* BG */
     dia INT NOT NULL, 
+    hora INT NOT NULL, 
     hora_inici TIME NOT NULL,
     hora_final TIME NOT NULL,
 
-    CONSTRAINT BlocGuardiaPK PRIMARY KEY (dia, hora_inici),
+    CONSTRAINT BlocGuardiaPK PRIMARY KEY (dia, hora),
     CONSTRAINT BG_BlocGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia)
 );
 
 CREATE TABLE PROFESSOR_GUARDIA
 (
     /* PG */
+    professor_guardia_id INT NOT NULL AUTO_INCREMENT,
     dia INT NOT NULL, 
-    hora_inici TIME NOT NULL,
+    hora INT NOT NULL,
     professor_id INT NOT NULL,
     guardies INT NOT NULL DEFAULT 0,
     ordre INT NOT NULL,
 
-    CONSTRAINT PG_BlocGuardiaFK FOREIGN KEY (dia, hora_inici) REFERENCES BLOC_GUARDIA(dia, hora_inici),
+    CONSTRAINT ProfessorGuardiaPK PRIMARY KEY (professor_guardia_id),
+    CONSTRAINT PG_BlocGuardiaFK FOREIGN KEY (dia, hora) REFERENCES BLOC_GUARDIA(dia, hora),
     CONSTRAINT PG_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id)
 );
 

@@ -67,4 +67,24 @@ function MySQLAData($date)
 	return $Retorn;
 }
 
+/**
+ * DiaSetmana
+ *
+ * Calcula el dia de la setmana a partir d'una data.
+ *
+ * @param string $date Data.
+ * @return string Dia de la setmana (en català).
+ */
+function DiaSetmana($date)
+{
+	$Retorn = '';
+	if ($date != '') {
+		$unixTimestamp = strtotime($date);
+		$dayOfWeek = date("w", $unixTimestamp);
+		$dowMap = array('Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte');
+		$Retorn = $dowMap[$dayOfWeek];
+	}
+	return $Retorn;
+}
+
 ?>

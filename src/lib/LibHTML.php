@@ -102,6 +102,13 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
 			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
 			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
+//			echo '              <div class="dropdown-divider"></div>';
+//			echo '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=1">Guàrdies dilluns</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=2">Guàrdies dimarts</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=3">Guàrdies dimecres</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=4">Guàrdies dijous</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=5">Guàrdies divendres</a>';
 			echo '            </div>';
 			echo '          </li>';
 			echo '          <li class="nav-item dropdown">';
