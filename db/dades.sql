@@ -311,6 +311,8 @@ INSERT INTO SISTEMA (nom, any_academic_id) VALUES ('Institut de Palamós', 1);
 /* Cursos */
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2018-2019 1r', 'SMX1', 1, 1);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2018-2019 2n', 'SMX2', 1, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2018-2019 1r', 'DAM1', 3, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2018-2019 2n', 'DAM2', 3, 2);
 
 /* Festius */
 INSERT INTO FESTIU (data, motiu) VALUES ('2018-09-11', '11 de setembre');

@@ -90,12 +90,14 @@ class Curs
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->Titol = 'Cursos';
 		$frm->SQL = $SQL;
+		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'codi, NomCurs, nivell, any_inici, any_final';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any inici, Any final';
-//		$frm->AfegeixOpcio('Alumnes', 'AlumnesCicle.php?CicleId=');
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes&CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
 		$frm->EscriuHTML();
 	}
 }

@@ -41,6 +41,20 @@ class Form {
 	public $Usuari;
 
 	/**
+	* Taula principal.
+	* @access public
+	* @var string
+	*/    
+    public $Taula = '';	
+
+	/**
+	* Clau primària de la taula.
+	* @access public
+	* @var string
+	*/    
+    public $ClauPrimaria = '';	
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
@@ -238,7 +252,9 @@ class FormRecerca extends Form {
 					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
-					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
+					$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
+					$sRetorn .= "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
+//					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";
 				if ($this->Modalitat == self::mfLLISTA) 
@@ -285,7 +301,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
@@ -336,18 +352,6 @@ class FormFitxa extends Form {
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
 	
-	/**
-	* Taula de la base de dades de la que es fa la fitxa.
-	* @access public
-	* @var string
-	*/    
-    public $Taula = '';	
-	/**
-	* Clau primària de la taula.
-	* @access public
-	* @var string
-	*/    
-    public $ClauPrimaria = '';	
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
 	* @access public
@@ -417,6 +421,32 @@ class FormFitxa extends Form {
 	 */
 	public function AfegeixText($camp, $titol, $requerit, $longitud) {
 		$this->Afegeix(self::tcTEXT, $camp, $titol, $requerit, $longitud);
+	}
+
+	/**
+	 * Afegeix un camp de tipus enter al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
+	 * @return void
+	 */
+	public function AfegeixEnter($camp, $titol, $requerit, $longitud) {
+		$this->Afegeix(self::tcENTER, $camp, $titol, $requerit, $longitud);
+	}
+
+	/**
+	 * Afegeix un camp de tipus real al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
+	 * @return void
+	 */
+	public function AfegeixReal($camp, $titol, $requerit, $longitud) {
+		$this->Afegeix(self::tcREAL, $camp, $titol, $requerit, $longitud);
 	}
 
 	/**
@@ -547,6 +577,18 @@ class FormFitxa extends Form {
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.'></TD>';
 					$sRetorn .= '</TR>';
 					break;
+				case self::tcENTER:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="ede_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+					$sRetorn .= '</TR>';
+					break;
+				case self::tcREAL:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
+					$sRetorn .= '</TR>';
+					break;
 				case self::tcPASSWORD:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
@@ -630,7 +672,7 @@ class FormFitxa extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();

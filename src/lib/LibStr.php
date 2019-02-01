@@ -91,4 +91,22 @@ function JSONEncodeUTF8($row)
 	return $sRetorn;
 }
 
+/**
+ * TextAMySQL
+ *
+ * Prepara un camp de text per a formar part d'una SQL.
+ *
+ * @param string $text data a preparar.
+ * @return string Text preparat.
+ */
+function TextAMySQL($text)
+{
+	if ($text == '')
+		$Retorn = 'NULL';
+	else {
+    	$Retorn = "'".str_replace("'", "''", $text)."'";
+	}
+	return $Retorn;
+}
+
 ?>

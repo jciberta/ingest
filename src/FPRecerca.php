@@ -45,9 +45,11 @@ switch ($accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Famílies';
 		$frm->SQL = 'SELECT * FROM FAMILIA_FP';
+		$frm->Taula = 'FAMILIA_FP';
 		$frm->ClauPrimaria = 'familia_fp_id';
 		$frm->Camps = 'nom';
 		$frm->Descripcions = 'Nom';
+		$frm->PermetSuprimir = True;
 		$frm->EscriuHTML();
         break;
     case "CiclesFormatius":
@@ -57,6 +59,7 @@ switch ($accio) {
 		$frm->SQL = ' SELECT CF.cicle_formatiu_id, CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
 			' FROM CICLE_FORMATIU CF '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
+		$frm->Taula = 'CICLE_FORMATIU';
 		$frm->ClauPrimaria = 'cicle_formatiu_id';
 		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP';
 		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família';
@@ -70,6 +73,7 @@ switch ($accio) {
 			' FROM MODUL_PROFESSIONAL MP '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
+		$frm->Taula = 'MODUL_PROFESSIONAL';
 		$frm->ClauPrimaria = 'modul_professional_id';
 		$frm->Camps = 'codi, nom, hores, hores_setmana, especialitat, cos, CodiCF, NomCF, NomFFP';
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, Especialitat, Cos, Codi, Cicle Formatiu, Família';
@@ -83,6 +87,7 @@ switch ($accio) {
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
+		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, CodiCF, NomCF ';
 		$frm->Descripcions = 'Codi, Nom, Hores, Codi, Mòdul professional, Codi, Cicle Formatiu';
@@ -98,6 +103,7 @@ switch ($accio) {
 		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, DATE_FORMAT(data_inici, '%d/%m/%Y') AS data_inici, DATE_FORMAT(data_final, '%d/%m/%Y') AS data_final ". 
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) ';
+		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, data_inici, data_final ';
 		$frm->Descripcions = 'Codi, Nom, Hores, Codi, Mòdul professional, Data inici, Data final';

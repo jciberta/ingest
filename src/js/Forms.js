@@ -62,6 +62,32 @@ function RecercaKeyPress(event) {
 }
 
 /**
+ * FormFitxaKeyDown
+ *
+ * Funció per controlar les tecles permeses.
+ *
+ * @param obj Objecte que ha provocat la crida.
+ * @param event Event que ha provocat la crida.
+ * @param tipus 0 per enter, 1 per real.
+ */
+function FormFitxaKeyDown(obj, event, tipus) {
+	switch(tipus) {
+	  case 0:
+		// Enter. Tecles permeses: BS, DEL, 0..9, Esquerra, Dreta, ENTER
+		if ([8, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 37, 39, 13].indexOf(event.keyCode) === -1) {
+			event.preventDefault();
+		}
+		break;
+	  case 1: 
+		// Real. Tecles permeses: BS, DEL, 0..9, Esquerra, Dreta, ENTER, .
+		if ([8, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 37, 39, 13, 46].indexOf(event.keyCode) === -1) {
+			event.preventDefault();
+		}
+		break;
+	}
+}
+
+/**
  * GetFormDataJSON
  *
  * Funció que retorna els elements d'un formulari en format JSON.
@@ -86,6 +112,55 @@ console.dir('elements: ' + oForm.elements);
 	msg = msg.slice(0, -1); // Treiem la darrera coma
 	msg += ']';
 	return msg;
+}
+
+/**
+ * SuprimeixRegistre
+ *
+ * Suprimeix el registre d'una taula.
+ *
+ * @param Taula Taula de la que es vol eliminar el registre.
+ * @param ClauPrimaria Clau primària de la taula.
+ * @param Valor valor de la clau primària del registre que es vol esborrar.
+ */
+function SuprimeixRegistre(Taula, ClauPrimaria, Valor) { 
+	bootbox.confirm({
+	//	title: "Suprimeix",
+		message: "Esteu segur que voleu esborrar el registre?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Suprimeix',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				var frm = document.getElementById('frm');
+				var sFrm = frm.value;	
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibFormsAJAX.php',
+					data:{
+						'accio': 'SuprimeixRegistre',
+						'taula': Taula,
+						'clau_primaria': ClauPrimaria,
+						'valor': Valor,
+						'frm': sFrm
+					},
+					success: function(data) {
+						$('#taula').html(data);
+						//$('#debug').html('<textarea disabled>'+data+'</textarea>');
+					}, 
+					error: function(data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				});		
+			}
+		}
+	});	
 }
 
 /**
