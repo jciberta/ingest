@@ -485,7 +485,30 @@ class FormFitxa extends Form {
 	public function AfegeixData($camp, $titol, $requerit) {
 		$this->Afegeix(self::tcDATA, $camp, $titol, $requerit, 0);
 	}
-
+	
+	/**
+	 * Afegeix un ComboBox (desplegable) per triar un valor d'una llista.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param array $aCodis Codis de la llista. Per exemple: array(1, 2, 3, 4)
+	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
+	 * @return void
+	 */
+	public function AfegeixLlista($camp, $titol, $requerit, $aCodis, $aValors) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcSELECCIO;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->Llista = new stdClass();
+		$this->Camps[$i]->Llista->Codis = $aCodis;
+		$this->Camps[$i]->Llista->Valors = $aValors;
+	}
+	
 	/**
 	 * Afegeix un camp de tipus lookup al formulari.
 	 *
@@ -612,6 +635,36 @@ class FormFitxa extends Form {
 					$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
 					$sRetorn .= '</div>';
 					$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
+					$sRetorn .= '</TD>';
+					$sRetorn .= '</TR>';
+					break;
+				case self::tcSELECCIO:
+					$sRetorn .= '<TR>';
+					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					$sRetorn .= '<TD>';
+/*
+	$sRetorn .= '<select name="'.$Nom.'">';
+//  <option value="" selected disabled hidden>Escull...</option>	
+	$LongitudCodi = count($Valor->Llista->Codis); 
+	for ($i = 0; $i < $LongitudCodi; $i++)
+	{
+    	$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'">'.utf8_encode($Valor->Llista->Valors[$i]).'</option>';
+	} 	
+	$sRetorn .= "</select>";
+*/
+
+$sRetorn .= '<div class="input-group mb-3">';
+$sRetorn .= '  <select class="custom-select" name="cmb_'.$Valor->Camp.'">';
+	$LongitudCodi = count($Valor->Llista->Codis); 
+	for ($i = 0; $i < $LongitudCodi; $i++)
+	{
+		$Selected = ($Valor->Llista->Codis[$i] == $this->Registre[$Valor->Camp])? ' selected ' : '';
+    	$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'"'.$Selected.'>'.$Valor->Llista->Valors[$i].'</option>';
+	} 	
+$sRetorn .= '  </select>';
+$sRetorn .= '</div>';
+
+
 					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
 					break;

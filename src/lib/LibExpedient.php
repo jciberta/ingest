@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
+require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
 
@@ -46,7 +47,7 @@ class Expedient
 			' N.notes_id AS NotaId, N.baixa AS Baixa, '.
 			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
 			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
-			' UF.*, MP.*, CF.*, N.* '.
+			' UF.*, MP.*, CF.*, N.*, C.* '.
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
@@ -88,7 +89,8 @@ class Expedient
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
-			$pdf->Avaluacio = "?";
+//			$pdf->Avaluacio = "?";
+			$pdf->Avaluacio = $this->TextAvaluacio($row["avaluacio"], $row["trimestre"]);
 			$pdf->AddPage(); // Crida al mètode Header
 			$ModulAnterior = '';
 			while($row) {
@@ -168,6 +170,8 @@ class Expedient
 
 		// Close and output PDF document
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
+		// Clean any content of the output buffer
+		ob_end_clean();
 		$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
 	}
 
@@ -194,6 +198,15 @@ class Expedient
 			}
 		}
 		$ResultSet->close();
+	}
+	
+	private function TextAvaluacio($Avaluacio, $Trimestre) {
+		if ($Avaluacio == 'ORD')
+			return 'Ordinària '.Ordinal($Trimestre).' T';
+		else if ($Avaluacio == 'EXT')
+			return 'Extraordinària';
+		else
+			return '';
 	}
 }
 

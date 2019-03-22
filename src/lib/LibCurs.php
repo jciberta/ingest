@@ -96,6 +96,7 @@ class Curs
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any inici, Any final';
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes&CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
+//		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
 		$frm->EscriuHTML();

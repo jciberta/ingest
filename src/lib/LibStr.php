@@ -38,6 +38,30 @@ function TrimXX($Text)
 	$sRetorn = str_replace(' ', '', $Text);
 	return $sRetorn;
 }
+
+ /**
+ * Ordinal
+ *
+ * Retorna l'ordinal d'un número.
+ *
+ * @param integer $Numero Número a passar a ordinal (1r, 2n, 3r, etc.).
+ * @return string Ordinal d'un número.
+ */
+function Ordinal($Numero)
+{
+	if ($Numero < 1)
+		return '';
+	else if ($Numero == 1)
+		return '1r';
+	else if ($Numero == 2)
+		return '2n';
+	else if ($Numero == 3)
+		return '3r';
+	else if ($Numero == 4)
+		return '4t';
+	else if ($Numero >4)
+		return $Numero.'è';
+}
  
  /**
  * Ocurrencies

@@ -93,6 +93,14 @@ print '<br>Data: '.$Valor->value;
 						$sCamps .= substr($Valor->name, 4).", ";
 						$sValues .= (($Valor->value == '') || ($Valor->value == 0)) ? '0, ' : '1, ';
 						break;
+					case 'cmb':
+						// Camp combobox (desplegable)
+						$sCamps .= substr($Valor->name, 4).", ";
+						$sValues .= TextAMySQL($Valor->value).', ';
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+//exit;
+						break;
 					case 'lkh':
 						if (substr($Valor->name, -6) != '_camps') {
 							// Camp lookup
