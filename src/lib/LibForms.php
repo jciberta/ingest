@@ -496,7 +496,7 @@ class FormFitxa extends Form {
 	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
 	 * @return void
 	 */
-	public function AfegeixLlista($camp, $titol, $requerit, $aCodis, $aValors) {
+	public function AfegeixLlista($camp, $titol, $requerit, $longitud, $aCodis, $aValors) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -504,6 +504,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->Longitud = 5*$longitud;
 		$this->Camps[$i]->Llista = new stdClass();
 		$this->Camps[$i]->Llista->Codis = $aCodis;
 		$this->Camps[$i]->Llista->Valors = $aValors;
@@ -642,29 +643,14 @@ class FormFitxa extends Form {
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
-/*
-	$sRetorn .= '<select name="'.$Nom.'">';
-//  <option value="" selected disabled hidden>Escull...</option>	
-	$LongitudCodi = count($Valor->Llista->Codis); 
-	for ($i = 0; $i < $LongitudCodi; $i++)
-	{
-    	$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'">'.utf8_encode($Valor->Llista->Valors[$i]).'</option>';
-	} 	
-	$sRetorn .= "</select>";
-*/
-
-$sRetorn .= '<div class="input-group mb-3">';
-$sRetorn .= '  <select class="custom-select" name="cmb_'.$Valor->Camp.'">';
-	$LongitudCodi = count($Valor->Llista->Codis); 
-	for ($i = 0; $i < $LongitudCodi; $i++)
-	{
-		$Selected = ($Valor->Llista->Codis[$i] == $this->Registre[$Valor->Camp])? ' selected ' : '';
-    	$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'"'.$Selected.'>'.$Valor->Llista->Valors[$i].'</option>';
-	} 	
-$sRetorn .= '  </select>';
-$sRetorn .= '</div>';
-
-
+					$sRetorn .= '  <select class="custom-select" style="width:'.$Valor->Longitud.'px" name="cmb_'.$Valor->Camp.'">';
+						$LongitudCodi = count($Valor->Llista->Codis); 
+						for ($i = 0; $i < $LongitudCodi; $i++)
+						{
+							$Selected = ($Valor->Llista->Codis[$i] == $this->Registre[$Valor->Camp])? ' selected ' : '';
+							$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'"'.$Selected.'>'.$Valor->Llista->Valors[$i].'</option>';
+						} 	
+					$sRetorn .= '  </select>';
 					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
 					break;

@@ -49,12 +49,10 @@ switch ($accio) {
 		$frm->AfegeixText('nom', 'Nom', True, 200);
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 10);
 
-		$frm->AfegeixLlista('avaluacio', 'Avaluació', True, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'));
+		$frm->AfegeixLlista('avaluacio', 'Avaluació', True, 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'));
 		$frm->AfegeixEnter('trimestre', 'Trimestre', True, 10);
 		$frm->AfegeixCheckBox('butlleti_visible', 'Butlletí visible', True);
 		$frm->AfegeixCheckBox('finalitzat', 'Curs finalitzat', True);
-	
-		
 		
 //		$frm->AfegeixText('any_inici', 'Any inici', True, 20);
 //		$frm->AfegeixText('any_final', 'Any final', True, 20);
