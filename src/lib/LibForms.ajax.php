@@ -1,7 +1,7 @@
 <?php
 
 /** 
- * LibFormsAJAX.php
+ * LibForms.ajax.php
  *
  * Accions AJAX per a la llibreria de formularis.
  *
@@ -32,7 +32,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {
 		$cerca = $_REQUEST['cerca'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
-		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+//		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 		$frm->Filtre = $cerca; 
@@ -43,12 +44,26 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$ClauPrimaria = $_REQUEST['clau_primaria'];
 		$Valor = $_REQUEST['valor'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
-		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+//		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 
 		// Esborrem el registre
 		$SQL = 'DELETE FROM '.$Taula.' WHERE '.$ClauPrimaria.'='.$Valor;
+		$frm->Connexio->query($SQL);
+		print $frm->GeneraTaula();
+	}
+	else if ($_REQUEST['accio'] == 'BaixaMatricula') {
+		$Id = $_REQUEST['id'];
+		$cerca = $_REQUEST['cerca'];
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Filtre = $cerca; 
+		// Esborrem el registre
+		$SQL = 'UPDATE MATRICULA SET baixa=1 WHERE matricula_id='.$Id;
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}

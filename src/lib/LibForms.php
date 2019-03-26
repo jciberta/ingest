@@ -55,6 +55,13 @@ class Form {
     public $ClauPrimaria = '';	
 
 	/**
+	* Fitxers JavaScript.
+	* @access protected
+	* @var array
+	*/    
+    protected $FitxerJS = [];	
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
@@ -63,6 +70,17 @@ class Form {
 		$this->Usuari = $user;
 	}	
 
+	/**
+	 * Afegeix un fitxer JavaScript.
+	 *
+	 * @param string $Fitxer Fitxer JavaScript.
+	 */
+	public function AfegeixJavaScript($Fitxer) {
+		$i = count($this->FitxerJS);
+		$i++;
+		$this->FitxerJS[$i] = $Fitxer;
+	}
+	
 	/**
 	 * Obté el valor de diversos camp d'un registre donada una taula.
 	 *
@@ -100,6 +118,10 @@ class FormRecerca extends Form {
 	// Modalitats del formulari.
 	const mfLLISTA = 1;
 	const mfBUSCA = 2;
+	
+	// Tipus d'opcions
+	const toURL = 1;
+	const toAJAX = 2;
 
 	/**
 	* Modalitat del formulari.
@@ -158,7 +180,7 @@ class FormRecerca extends Form {
     public $PermetSuprimir = False; 
 	
 	/**
-	* Opcions per a cada registre.
+	* Opcions per a cada registre. Estan incloses les opcions AJAX.
 	* @access private
 	* @var array
 	*/    
@@ -258,7 +280,7 @@ class FormRecerca extends Form {
 				}
 				$sRetorn .= "</TD>";
 				if ($this->Modalitat == self::mfLLISTA) 
-					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria]);
+					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
 				$sRetorn .= "</TR>";
 			}
 			$sRetorn .= "</TABLE>";
@@ -291,7 +313,8 @@ class FormRecerca extends Form {
 	private function GeneraPartOculta() {
 		$sRetorn = "";
 		$FormSerialitzat = serialize($this);
-		$FormSerialitzatEncriptat = SaferCrypto::encrypt($FormSerialitzat, hex2bin(Self::Secret));
+		$FormSerialitzatEncriptat = Encripta($FormSerialitzat);
+//		$FormSerialitzatEncriptat = SaferCrypto::encrypt($FormSerialitzat, hex2bin(Self::Secret));
 		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
 		return $sRetorn;
 	}
@@ -301,7 +324,10 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.4" type="text/javascript"></script>';
+		for($i = 1; $i <= count($this->FitxerJS); $i++) {
+			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+		}
 		echo $this->GeneraCerca();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
@@ -316,19 +342,48 @@ class FormRecerca extends Form {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toURL;
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->URL = $URL;
+	}
+
+	/**
+	 * Afegeix una opció AJAX per a cada registre. Un cop executada es tornarà a cridar ...
+	 * @param string $Titol Títol de l'opció.
+	 * @param string $Funcio Funció JavaScript. 
+	 * @param string $Camp Camp del registre que serveix com a identificador. 
+	 * 		Si no s'especifica, Com a paràmetre es passarà l'identificador del registre. 
+	 */
+	public function AfegeixOpcioAJAX($Titol, $Funcio, $Camp = '') {
+		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toAJAX;
+		$this->Opcions[$i]->Titol = $Titol;
+		$this->Opcions[$i]->Funcio = $Funcio;
+		$this->Opcions[$i]->Camp = $Camp;
 	}
 	
 	/**
 	 * Genera les opcions per a cada registre.
 	 * @param integer $Id Identificafdor del registre.
+	 * @param array $row Registre.
 	 */
-	private function GeneraOpcions($Id) {
+	private function GeneraOpcions($Id, $row) {
 		$Retorn = '';
 		foreach($this->Opcions as $obj) {
 			$Retorn .= '<TD>';
-			$Retorn .= '<A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+			if ($obj->Tipus == self::toURL)
+				$Retorn .= '<A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+			else if ($obj->Tipus == self::toAJAX) {
+				if ($obj->Tipus == '')
+					$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+				else 
+					$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$row[$obj->Camp].')";>'.$obj->Titol.'<A>';
+//				$Retorn .= 'AJAX';
+//				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+//				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+			}
 			$Retorn .= '</TD>';
 		}
 		return $Retorn;
@@ -585,7 +640,7 @@ class FormFitxa extends Form {
 	 */
 	private function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>';
-		$sRetorn .= '<FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibFormsAJAX.php">';
+		$sRetorn .= '<FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">';
 		$sRetorn .= "<input type=hidden name=hid_Taula value='".$this->Taula."'>";
 		$sRetorn .= "<input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>";
 		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";

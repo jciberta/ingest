@@ -27,7 +27,7 @@ console.dir(sFrm);
 
 	$.ajax( {
 		type: 'POST',
-		url: 'lib/LibFormsAJAX.php',
+		url: 'lib/LibForms.ajax.php',
 		data:{
 			'accio': 'ActualitzaTaula',
 			'cerca': sCerca,
@@ -142,7 +142,7 @@ function SuprimeixRegistre(Taula, ClauPrimaria, Valor) {
 				var sFrm = frm.value;	
 				$.ajax( {
 					type: 'POST',
-					url: 'lib/LibFormsAJAX.php',
+					url: 'lib/LibForms.ajax.php',
 					data:{
 						'accio': 'SuprimeixRegistre',
 						'taula': Taula,
@@ -179,7 +179,7 @@ console.dir('jsonForm: ' + jsonForm);
 
 	$.ajax( {
 		type: 'POST',
-		url: 'lib/LibFormsAJAX.php',
+		url: 'lib/LibForms.ajax.php',
 		data:{
 			'accio': 'DesaFitxa',
 			'form': jsonForm

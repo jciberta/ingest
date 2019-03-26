@@ -3,7 +3,7 @@
 /** 
  * LibCripto.php
  *
- * Llibreria d'utilitats criptogràfiques.
+ * Llibreria d'utilitats criptogràfiques. Useu només Encripta i Desencripta.
  *
  * @author Scott Arciszewski
  * @ref https://stackoverflow.com/questions/9262109/simplest-two-way-encryption-using-php
@@ -21,6 +21,27 @@
  *   sudo apt-get install php-mbstring
  *   sudo service apache2 restart
  */
+
+
+/**
+ * Encripta un text pla.
+ * 
+ * @param string $TextPla Text a encriptar.
+ * @return string Text encriptat.
+ */
+function Encripta($TextPla) {
+	return SaferCrypto::encrypt($TextPla, hex2bin(Config::Secret));
+}
+
+/**
+ * Desencripta un text xifrat.
+ * 
+ * @param string $TextXifrat Text a desencriptar.
+ * @return string Text desencriptat.
+ */
+function Desencripta($TextXifrat) {
+	return SaferCrypto::decrypt(hex2bin($TextXifrat), hex2bin(Config::Secret));
+}
 
 class UnsafeCrypto
 {

@@ -33,6 +33,9 @@ if (isset($_GET) && array_key_exists('CursId', $_GET))
 
 $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 switch ($Accio) {
     case "Professors":
 		$frm = new FormRecerca($conn, $Usuari);
@@ -51,13 +54,16 @@ switch ($Accio) {
         break;
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
 		
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
-			' C.nom AS NomCurs, C.nivell '.
+			' M.matricula_id, '.
+			' C.nom AS NomCurs, C.nivell, '.
+			' CASE WHEN M.baixa=1 THEN "'.utf8_decode('Sí').'" ELSE "" END AS baixa '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
@@ -68,14 +74,15 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Curs, Nivell';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell, baixa';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Curs, Nivell, Baixa';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?AlumneId=');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&AlumneId=');
 		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?AlumneId=');
+		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id');
 		$frm->EscriuHTML();
         break;
     case "Pares":

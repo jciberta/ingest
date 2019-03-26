@@ -34,3 +34,33 @@ function MatriculaUF(element) {
     } );
 }
 
+/**
+ * BaixaMatricula
+ *
+ * Baixa de la matrícula d'un alumne.
+ *
+ * @param matricula_id Identificador de la matrícula.
+ */
+function BaixaMatricula(matricula_id) { 
+console.log('BaixaMatricula');
+	var sCerca = $('input[name="edtRecerca"]').val();	
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+    $.ajax( {
+        type: 'POST',
+        url: 'lib/LibForms.ajax.php',
+        data:{
+			'accio': 'BaixaMatricula',
+            'id': matricula_id,
+			'cerca': sCerca,
+			'frm': sFrm
+            },
+        success: function(data) {
+            $('#taula').html(data);
+        }, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error.');
+		}
+    } );
+}
+
