@@ -18,25 +18,30 @@ require_once(ROOT.'/lib/LibForms.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
+
 
 if (empty($_GET))
-	$accio = 'Families';
-else
-	$accio = $_GET['accio'];
+	header("Location: index.html");
 
-// Obtenció de la modalitat del formulari.
+$accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
+
+// Comprovem que el professor coincideix amb l'usuari de la sessió
+$ProfId = (array_key_exists('ProfId', $_GET)) ? $_GET['ProfId'] : '-1'; 
+if ($ProfId != $Usuari->usuari_id && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+	header("Location: Surt.php");
+
+// Obtenció de la modalitat del formulari
 $Modalitat = FormRecerca::mfLLISTA;
 if (isset($_GET) && array_key_exists('Modalitat', $_GET) && $_GET['Modalitat']=='mfBusca') 
 	$Modalitat = FormRecerca::mfBUSCA;
 
-// Destruim l'objecte per si estava ja creat.
+// Destruim l'objecte per si estava ja creat
 unset($frm);
 
 switch ($accio) {
@@ -49,7 +54,7 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'familia_fp_id';
 		$frm->Camps = 'nom';
 		$frm->Descripcions = 'Nom';
-		$frm->PermetSuprimir = True;
+		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;
     case "CiclesFormatius":
@@ -91,7 +96,7 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, CodiCF, NomCF ';
 		$frm->Descripcions = 'Codi, Nom, Hores, Codi, Mòdul professional, Codi, Cicle Formatiu';
-		$frm->PermetEditar = True;
+		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->EscriuHTML();
         break;
@@ -99,10 +104,14 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
-//		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, UF.data_inici AS data_inici, UF.data_final AS data_final '. 
 		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, DATE_FORMAT(data_inici, '%d/%m/%Y') AS data_inici, DATE_FORMAT(data_final, '%d/%m/%Y') AS data_final ". 
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) ';
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			// És professor
+			if ($Usuari->es_professor)
+				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UF.unitat_formativa_id) '.
+					' WHERE PUF.professor_id='.$Usuari->usuari_id;
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, HoresUF, CodiMP, NomMP, data_inici, data_final ';

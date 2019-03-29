@@ -73,6 +73,16 @@ if ($Usuari->es_professor) {
 		}
 	}
 	$ResultSet->close();
+	
+	// Les meves UF
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Unitats formatives</h5>';
+	echo '      <p class="card-text">Les meves UF</p>';
+	echo '      <a href="FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
+	
 }
 
 if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {

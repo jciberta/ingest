@@ -454,7 +454,7 @@ class FormFitxa extends Form {
 	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
-	private function Afegeix($tipus, $camp, $titol, $requerit, $longitud) {
+	private function Afegeix($tipus, $camp, $titol, $requerit, $longitud, $NomesLectura = False) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -462,6 +462,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
 	}
 
@@ -474,8 +475,8 @@ class FormFitxa extends Form {
 	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
-	public function AfegeixText($camp, $titol, $requerit, $longitud) {
-		$this->Afegeix(self::tcTEXT, $camp, $titol, $requerit, $longitud);
+	public function AfegeixText($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
+		$this->Afegeix(self::tcTEXT, $camp, $titol, $requerit, $longitud, $NomesLectura);
 	}
 
 	/**
@@ -487,8 +488,8 @@ class FormFitxa extends Form {
 	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
-	public function AfegeixEnter($camp, $titol, $requerit, $longitud) {
-		$this->Afegeix(self::tcENTER, $camp, $titol, $requerit, $longitud);
+	public function AfegeixEnter($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
+		$this->Afegeix(self::tcENTER, $camp, $titol, $requerit, $longitud, $NomesLectura);
 	}
 
 	/**
@@ -500,8 +501,8 @@ class FormFitxa extends Form {
 	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
-	public function AfegeixReal($camp, $titol, $requerit, $longitud) {
-		$this->Afegeix(self::tcREAL, $camp, $titol, $requerit, $longitud);
+	public function AfegeixReal($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
+		$this->Afegeix(self::tcREAL, $camp, $titol, $requerit, $longitud, $NomesLectura);
 	}
 
 	/**
@@ -513,8 +514,8 @@ class FormFitxa extends Form {
 	 * @param integer $longitud Longitud màxima.
 	 * @return void
 	 */
-	public function AfegeixPassword($camp, $titol, $requerit, $longitud) {
-		$this->Afegeix(self::tcPASSWORD, $camp, $titol, $requerit, $longitud);
+	public function AfegeixPassword($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
+		$this->Afegeix(self::tcPASSWORD, $camp, $titol, $requerit, $longitud, $NomesLectura);
 	}
 
 	/**
@@ -525,8 +526,8 @@ class FormFitxa extends Form {
 	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @return void
 	 */
-	public function AfegeixCheckBox($camp, $titol, $requerit) {
-		$this->Afegeix(self::tcCHECKBOX, $camp, $titol, $requerit, 0);
+	public function AfegeixCheckBox($camp, $titol, $requerit, $NomesLectura = False) {
+		$this->Afegeix(self::tcCHECKBOX, $camp, $titol, $requerit, 0, $NomesLectura);
 	}
 
 	/**
@@ -537,8 +538,8 @@ class FormFitxa extends Form {
 	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @return void
 	 */
-	public function AfegeixData($camp, $titol, $requerit) {
-		$this->Afegeix(self::tcDATA, $camp, $titol, $requerit, 0);
+	public function AfegeixData($camp, $titol, $requerit, $NomesLectura = False) {
+		$this->Afegeix(self::tcDATA, $camp, $titol, $requerit, 0, $NomesLectura);
 	}
 	
 	/**
@@ -551,7 +552,7 @@ class FormFitxa extends Form {
 	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
 	 * @return void
 	 */
-	public function AfegeixLlista($camp, $titol, $requerit, $longitud, $aCodis, $aValors) {
+	public function AfegeixLlista($camp, $titol, $requerit, $longitud, $aCodis, $aValors, $NomesLectura = False) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -559,6 +560,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
 		$this->Camps[$i]->Llista = new stdClass();
 		$this->Camps[$i]->Llista->Codis = $aCodis;
@@ -578,7 +580,7 @@ class FormFitxa extends Form {
 	 * @param string $Camps Camps a mostrar al lookup separats per comes.
 	 * @return void
 	 */
-	public function AfegeixLookup($camp, $titol, $requerit, $longitud, $URL, $Taula, $Id, $Camps) {
+	public function AfegeixLookup($camp, $titol, $requerit, $longitud, $URL, $Taula, $Id, $Camps, $NomesLectura = False) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -586,6 +588,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Requerit = $requerit;
+		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
 		$this->Camps[$i]->Lookup = new stdClass();
 		$this->Camps[$i]->Lookup->URL = $URL;
@@ -649,23 +652,24 @@ class FormFitxa extends Form {
 		$sRetorn .= '<TABLE>';
 		foreach($this->Camps as $Valor) {
 			$Requerit = ($Valor->Requerit ? ' required' : '');
+			$NomesLectura = ($Valor->NomesLectura ? ' readonly' : '');
 			switch ($Valor->Tipus) {
 				case self::tcTEXT:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.'></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcENTER:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="ede_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcREAL:
 					$sRetorn .= '<TR>';
 					$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
 					$sRetorn .= '</TR>';
 					break;
 				case self::tcPASSWORD:
@@ -717,9 +721,10 @@ class FormFitxa extends Form {
 					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=".$this->Registre[$Valor->Camp].">";
 					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
 					$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
-					$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'">';
+					$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'"'.$NomesLectura.'>';
 					$sRetorn .= '  <div class="input-group-append">';
 					$onClick = "CercaLookup('lkh_".$Valor->Camp."', 'lkp_".$Valor->Camp."', '".$Valor->Lookup->URL."', '".$Valor->Lookup->Camps."');";
+					$onClick = ($NomesLectura) ? '': $onClick;
 					$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
 					$sRetorn .= '  </div>';
 					$sRetorn .= '</div>';
