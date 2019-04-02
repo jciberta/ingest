@@ -188,9 +188,10 @@ function ActualitzaTaulaNotes(element) {
             'Nivell': $('input#Nivell').val()
             },
         success: function(data) {
+			$('#debug').html('Executant ActualitzaTaulaNotes... OK');
             //$('#debug2').html(data);
 			var jsonData = JSON.parse(data);
-			//console.dir(jsonData);
+//console.dir(jsonData);
 			var i, sNota, iNota, iNotaId, sTxtNotaId;
 			for (i in jsonData.notes) {
 				if (jsonData.notes[i].convocatoria > 0) {
@@ -207,7 +208,7 @@ function ActualitzaTaulaNotes(element) {
 			}		
         }, 
 		error: function (data) {
-			$('#debug').html('Hi ha hagut un error.');
+			$('#debug').html('Executant ActualitzaTaulaNotes... ERROR');
 		}
     } );
 }
