@@ -212,6 +212,5 @@ class SaferCrypto extends UnsafeCrypto
         return hash_hmac(self::HASH_ALGO, $a, $nonce) === hash_hmac(self::HASH_ALGO, $b, $nonce);
     }
 }
- 
+
 ?>
- 

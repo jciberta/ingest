@@ -9,7 +9,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once('LibForms.php');
+require_once(ROOT.'/lib/LibForms.php');
+
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'usuari.

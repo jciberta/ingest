@@ -62,14 +62,140 @@ function CreaFinalHTML()
  */
 function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 {
+	echo '<HTML>';
+	echo '<HEAD>';
+	echo '	<META charset=UTF8>';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
+//	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+	echo '	<script src="vendor/jquery.min.js"></script>';
+	echo '	<script src="vendor/popper.min.js"></script>';
+	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
+	echo '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
+	echo '	<script src="vendor/bootbox.min.js"></script>';
+	echo '</HEAD>';
+	echo '<BODY>';
+	
+	//$bMenu = false;
+	
+	if ($bMenu) {
+	
+//		echo '<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
+		echo '<nav class="navbar navbar-dark bg-dark navbar-expand-sm">';
+		echo '	<span class="navbar-brand">inGest</span>';
+		echo '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
+		echo '		<span class="navbar-toggler-icon"></span>';
+		echo '	</button>';
+		echo '	<div class="collapse navbar-collapse">';
+		echo '		<ul class="navbar-nav mr-auto">';
+		echo '			<li class="nav-item active">';
+		echo '				<a class="nav-link" href="Escriptori.php">Inici</a>';
+		echo '			</li>';
+			
+		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
+			// Menú alumnes
+			echo '          <li class="nav-item dropdown">';
+			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
+			echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
+			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Alumnes">Alumnes</a>';
+			echo '              <div class="dropdown-divider"></div>';
+			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			echo '            </div>';
+			echo '          </li>';
+
+			// Menú Professors
+			echo '          <li class="nav-item dropdown">';
+			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
+			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
+			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
+			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
+//			echo '              <div class="dropdown-divider"></div>';
+//			echo '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=1">Guàrdies dilluns</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=2">Guàrdies dimarts</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=3">Guàrdies dimecres</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=4">Guàrdies dijous</a>';
+//			echo '              <a class="dropdown-item" href="Guardia.php?Dia=5">Guàrdies divendres</a>';
+			echo '            </div>';
+			echo '          </li>';
+
+			// Menú FP
+			echo '			<li class="nav-item dropdown">';
+			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">FP</a>';
+			echo '				<div class="dropdown-menu" aria-labelledby="ddFP">';
+			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
+			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
+			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
+			echo '					<div class="dropdown dropright dropdown-submenu">';
+			echo '						<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
+			echo '						<div class="dropdown-menu">';
+			echo '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesCF">Unitats formatives/MP/CF</a>';
+			echo '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesDates">Unitats formatives/Dates</a>';
+			echo '						</div>';
+			echo '					<div class="dropdown-divider"></div>';
+			echo '					<a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			echo '					<div class="dropdown-divider"></div>';
+			echo '					<a class="dropdown-item" href="Escriptori.php">Cursos</a>';
+			echo '				</div>';
+			echo '			</li>';
+			echo '		</ul>';
+
+
+	
+		}	
+	
+	
+/*		echo '        <ul class="navbar-nav ml-auto">';
+		echo '          <li class="nav-item dropdown">';
+		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
+		echo '            <div class="dropdown-menu" aria-labelledby="ddUsuari">';
+		echo '              <a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
+		echo '              <div class="dropdown-divider"></div>';
+		echo '              <a class="dropdown-item" href="Surt.php">Surt</a>';
+		echo '            </div>';
+		echo '          </li>';
+		echo '        </ul>';	
+	*/
+		// Menú usuari
+		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
+		echo '		<ul class="navbar-nav">';
+		echo '		  <li class="nav-item dropdown">';
+//		echo '			<a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
+		echo '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
+		echo '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
+		echo '				<a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
+		echo '				<div class="dropdown-divider"></div>';
+		echo '				<a class="dropdown-item" href="Surt.php">Surt</a>';
+		echo '			</div>';
+		echo '		  </li>';
+		echo '		</ul>';
+
+		echo '	</div>';
+		echo '</nav>';
+//		echo '<BR>'; // Pedaç!
+	}
+	echo '      <div class="starter-template" style="padding:20px">';
+//	echo '<H1>'.utf8_encode($Titol).'</H1>';
+	echo '<H1>'.$Titol.'</H1>';
+}
+
+function CreaIniciHTML_BootstrapStarterTemplate2($Usuari, $Titol, $bMenu = True)
+{
 	echo "<HTML>";
 	echo "<HEAD>";
 	echo "	<META charset=UTF8>";
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	echo '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
+//	echo '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
 	echo '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
 	echo '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
@@ -77,6 +203,9 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo "</HEAD>";
 	echo '<BODY>';
 	if ($bMenu) {
+		// Enable Bootstrap-submenu via JavaScript
+//		echo "<script>$('[data-submenu]').submenupicker();</script>";
+
 		echo '    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
 		echo '      <span class="navbar-brand">inGest</span>';
 		echo '      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">';
@@ -98,6 +227,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 			echo '            </div>';
 			echo '          </li>';
+
+			// Menú Professors
 			echo '          <li class="nav-item dropdown">';
 			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
 			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
@@ -112,8 +243,11 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 //			echo '              <a class="dropdown-item" href="Guardia.php?Dia=5">Guàrdies divendres</a>';
 			echo '            </div>';
 			echo '          </li>';
+			
+			// Menú FP
 			echo '          <li class="nav-item dropdown">';
 			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FP</a>';
+//			echo '            <a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu>FP</a>';
 			echo '            <div class="dropdown-menu" aria-labelledby="ddFP">';
 			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
 			echo '              <a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
@@ -124,6 +258,66 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
 			echo '              <div class="dropdown-divider"></div>';
 			echo '              <a class="dropdown-item" href="Escriptori.php">Cursos</a>';
+			echo '              <div class="dropdown-divider"></div>';
+			
+
+//echo ' <li class="nav-item dropdown">';
+//echo '        <a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu>';
+//echo '          Dropdown';
+//echo '        </a>';
+			
+//echo '      <div class="dropdown-menu">';
+echo '        <div class="dropdown dropright dropdown-submenu">';
+echo '          <button class="dropdown-item dropdown-toggle" type="button" data-toggle="dropdown">Unitats formatives</button>';
+echo '          <div class="dropdown-menu">';
+echo '            <button class="dropdown-item" type="button">Sub action</button>';
+echo '            <button class="dropdown-item" type="button">Another sub action</button>';
+echo '            <button class="dropdown-item" type="button">Something else here</button>';
+echo '          </div>';
+echo '        </div>';
+//echo '      </div>';
+
+
+/*
+echo '      <div class="dropdown-menu">';
+echo '        <button class="dropdown-item" type="button">Sub action</button>';
+
+echo '        <div class="dropdown dropright dropdown-submenu">';
+echo '          <button class="dropdown-item dropdown-toggle" type="button">Another sub action</button>';
+
+
+
+echo '        </div>';
+
+echo '        <button class="dropdown-item" type="button">Something else here</button>';
+echo '        <button class="dropdown-item" type="button" disabled>Disabled action</button>';
+
+    echo '    <div class="dropdown dropright dropdown-submenu">';
+    echo '      <button class="dropdown-item dropdown-toggle" type="button">Another action</button>';
+
+echo '          <div class="dropdown-menu">';
+echo '            <button class="dropdown-item" type="button">Sub action</button>';
+echo '            <button class="dropdown-item" type="button">Another sub action</button>';
+echo '            <button class="dropdown-item" type="button">Something else here</button>';
+echo '          </div>';
+echo '        </div>';
+echo '      </div>		';	
+	*/		
+			
+/*			
+echo '    <div class="dropdown dropright dropdown-submenu">';
+echo '      <button class="dropdown-item dropdown-toggle" type="button">Submenú</button>';
+echo '      <div class="dropdown-menu">';
+echo '        <button class="dropdown-item" type="button">Sub action</button>';
+echo '        <button class="dropdown-item" type="button">Another sub action</button>';
+echo '        <button class="dropdown-item" type="button">Something else here</button>';
+echo '      </div>';
+echo '    </div>			';
+			*/
+	
+			
+			
+			
 			echo '            </div>';
 			echo '          </li>';
 		}
@@ -167,6 +361,13 @@ function CreaFinalHTML_BootstrapStarterTemplate()
 	echo "</div>";
 	echo "<DIV id=debug></DIV>";
 	echo "<DIV id=debug2></DIV>";
+/*	
+echo '  <a class="js-scroll-top scroll-top btn btn-primary btn-sm hidden" href="https://vsn4ik.github.io/bootstrap-submenu/#container">';
+echo '    <span class="fas fa-caret-up fa-2x"></span>';
+echo '  </a>';
+*/	
+
+
 	echo '</BODY>';
 }
  
