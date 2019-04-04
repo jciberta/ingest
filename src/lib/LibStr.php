@@ -128,9 +128,22 @@ function TextAMySQL($text)
 	if ($text == '')
 		$Retorn = 'NULL';
 	else {
-    	$Retorn = "'".str_replace("'", "''", $text)."'";
+    	$Retorn = "'".str_replace("'", "''", utf8_decode($text))."'";
 	}
 	return $Retorn;
+}
+
+/**
+ * Elimina si comença per.
+ * @param string $Text Text a comprovar.
+ * @param string $Prefix Prefix a eliminar.
+ * @return string Text sense el prefix.
+ */
+function EliminaSiComencaPer(string $Text, string $Prefix): string
+{
+	if (substr($Text, 0, strlen($Prefix)) == $Prefix)
+		$Text = substr($Text, strlen($Prefix));
+	return $Text;
 }
 
 ?>

@@ -10,8 +10,6 @@
  */
 
  /**
- * EliminaEnArray
- *
  * Elimina un element de l'array d'una determinada posició.
  *
  * @param array $Array Array del que s'ha d'eliminar un element.
@@ -26,8 +24,6 @@ function EliminaEnArray(&$Array, $Index)
 }
 
 /**
- * InsertaEnArray
- *
  * Inserta un element en un array a una determinada posició.
  *
  * @param array $Array Array on s'ha d'insertar un element.
@@ -41,6 +37,20 @@ function InsertaEnArray(& $Array, $Element, $Index)
 		$Array[$i] = $Array[$i-1];
 	}
 	$Array[$Index+1] = $Element;
+}
+
+/**
+ * Codifica tots els valors de l'array amb UTF8.
+ *
+ * @param array $Array Array que s'ha de codificar.
+ * @return array Array codificat..
+ */
+function CodificaArrayUTF8(array $Array): array
+{
+	for ($i=0; $i<count($Array); $i++) {
+		$Array[$i] = utf8_encode($Array[$i]);
+	}
+	return $Array;
 }
 
 ?>

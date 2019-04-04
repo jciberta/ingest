@@ -67,6 +67,7 @@ CREATE TABLE USUARI
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),
+    nom_complet        VARCHAR(255), 
 	codi               VARCHAR(20), /* Codi professor, IDALU per alumne */
 	sexe               CHAR(1), /* Home, Dona, Neutre */
 	tipus_document     CHAR(1), /* Dni, Nie, Passaport */
