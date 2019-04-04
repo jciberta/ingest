@@ -143,24 +143,12 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
 			echo '				</div>';
 			echo '			</li>';
-			echo '		</ul>';
 
 
 	
 		}	
+		echo '		</ul>';
 	
-	
-/*		echo '        <ul class="navbar-nav ml-auto">';
-		echo '          <li class="nav-item dropdown">';
-		echo '            <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
-		echo '            <div class="dropdown-menu" aria-labelledby="ddUsuari">';
-		echo '              <a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
-		echo '              <div class="dropdown-divider"></div>';
-		echo '              <a class="dropdown-item" href="Surt.php">Surt</a>';
-		echo '            </div>';
-		echo '          </li>';
-		echo '        </ul>';	
-	*/
 		// Menú usuari
 		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
 		echo '		<ul class="navbar-nav">';
