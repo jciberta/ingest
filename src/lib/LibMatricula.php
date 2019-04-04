@@ -42,7 +42,5 @@ function CreaMatricula($Connexio, $Curs, $Alumne, $Cicle, $Nivell, $Grup)
 	$row = $res->fetch_assoc();
 	return $row['_retorn'];	
 }
- 
- 
- 
+
  ?>

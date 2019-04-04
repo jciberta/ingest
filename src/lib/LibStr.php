@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /** 
  * LibStr.php

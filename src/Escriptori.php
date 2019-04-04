@@ -20,9 +20,9 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
+ 
 
 // L'escriptori està format per una llista de targetes (Bootstrap cards) depenent dels rols assignats.
 //  - admin 
@@ -95,18 +95,3 @@ echo "<DIV id=debug></DIV>";
 $conn->close();
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
