@@ -99,6 +99,21 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->EscriuHTML();
         break;
+    case "":
+		// Tots
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Usuaris";
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI ORDER BY cognom1, cognom2, nom';
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'nom, cognom1, cognom2, username';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetSuprimir = True;
+		$frm->EscriuHTML();
+        break;
 }
 
 $conn->close();

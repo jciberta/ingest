@@ -80,12 +80,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo '</HEAD>';
 	echo '<BODY>';
 	
-	//$bMenu = false;
-	
 	if ($bMenu) {
-	
-//		echo '<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">';
-		echo '<nav class="navbar navbar-dark bg-dark navbar-expand-sm">';
+		echo '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
 		echo '	<span class="navbar-brand">inGest</span>';
 		echo '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
 		echo '		<span class="navbar-toggler-icon"></span>';
@@ -144,8 +140,13 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '				</div>';
 			echo '			</li>';
 
-
-	
+			// Menú Centre
+			echo '			<li class="nav-item dropdown">';
+			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddCentre" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Centre</a>';
+			echo '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
+			echo '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
+			echo '				</div>';
+			echo '			</li>';
 		}	
 		echo '		</ul>';
 	
@@ -165,7 +166,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 
 		echo '	</div>';
 		echo '</nav>';
-//		echo '<BR>'; // Pedaç!
+		echo '<BR><BR>'; // Per donar espai al menú
 	}
 	echo '      <div class="starter-template" style="padding:20px">';
 //	echo '<H1>'.utf8_encode($Titol).'</H1>';
