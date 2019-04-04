@@ -34,19 +34,11 @@ if ($conn->connect_error) {
 //  - alumne: Expedient.
 //  - pare: Expedient fills.
 
-if ($Usuari->es_alumne) {
-	CreaIniciHTML($Usuari, '');
-	echo '<div class="card-columns" style="column-count:6">';
-	echo '  <div class="card">';
-	echo '    <div class="card-body">';
-	echo '      <h5 class="card-title">Expedient</h5>';
-	echo '      <p class="card-text">Visualitza el teu expedient.</p>';
-	echo '      <a href="MatriculaAlumne.php?accio=MostraExpedient&AlumneId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-	echo '    </div>';
-	echo '  </div>';
+if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
+	$curs = new Curs($conn, $Usuari);
+	$curs->EscriuFormulariRecera();
 }
-
-if ($Usuari->es_professor) {
+else if ($Usuari->es_professor) {
 	CreaIniciHTML($Usuari, '');
 	echo '<div class="card-columns" style="column-count:6">';
 	$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF, C.curs_id '.
@@ -84,10 +76,16 @@ if ($Usuari->es_professor) {
 	echo '  </div>';
 	
 }
-
-if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
-	$curs = new Curs($conn, $Usuari);
-	$curs->EscriuFormulariRecera();
+else if ($Usuari->es_alumne) {
+	CreaIniciHTML($Usuari, '');
+	echo '<div class="card-columns" style="column-count:6">';
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Expedient</h5>';
+	echo '      <p class="card-text">Visualitza el teu expedient.</p>';
+	echo '      <a href="MatriculaAlumne.php?accio=MostraExpedient&AlumneId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
 }
 
 echo '</div>';
