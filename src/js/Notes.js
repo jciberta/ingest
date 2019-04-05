@@ -11,7 +11,7 @@
 /**
  * MostraGraellaNotes
  *
- * MostraOculta la graella de notes.
+ * Mostra/Oculta la graella de notes.
  *
  * @param obj Objecte que ha provocat la crida.
  * @param int nivell Nivell del curs.
@@ -21,6 +21,23 @@ function MostraGraellaNotes(obj, nivell) {
 		$("#notes"+nivell).show()
 	else
 		$("#notes"+nivell).hide();
+}
+
+/**
+ * MostraBaixes
+ *
+ * Mostra/Oculta els alumnes que s'han donat de baixa.
+ *
+ * @param obj Objecte que ha provocat la crida.
+ */
+function MostraBaixes(obj) {
+	// Seleccionem totes les baixes
+	var tr = $('tr[name=Baixa1]')
+	
+	if (obj.checked)
+		tr.show()
+	else
+		tr.hide();
 }
 
 /**

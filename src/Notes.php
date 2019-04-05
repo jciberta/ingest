@@ -48,7 +48,7 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.9" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.0" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
@@ -100,6 +100,7 @@ if ($ResultSet->num_rows > 0) {
 //print_r($Notes1);
 //print_r($Notes2);
 
+	echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 	if ($Nivell == 2) {
 		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n';

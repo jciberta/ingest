@@ -223,10 +223,12 @@ class Notes
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
 			if ($row["NivellMAT"] == $Nivell) {
-				echo "<TR>";
-				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-				echo "<TD style='text-align:center'>".$row["Grup"]."</TD>";
-				echo "<TD style='text-align:center'>".$row["GrupTutoria"]."</TD>";
+				echo "<TR name='Baixa".$row["BaixaMatricula"]."'>";
+				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
+//				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
+				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 				$Hores = 0;
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
