@@ -267,7 +267,7 @@ class Notes
 					$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 					echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 				}
-				echo "<TD style='text-align:center'>".$Hores."</TD>";
+				echo "<TD style='text-align:center;color:grey'>".$Hores."</TD>";
 				echo "<TD style='text-align:center'>".number_format($Hores/$TotalHores*100, 2)."&percnt;</TD>";
 				echo "<TD></TD></TR>";
 			}
