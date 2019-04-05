@@ -14,7 +14,7 @@
  *
  * Crea la matrícula per a un alumne. Quan es crea la matrícula:
  *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
- *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
+ *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les (PENDENT!)
  * Ús: 
  *
  * @param object $Connexio Connexió a la base de dades.
@@ -41,6 +41,58 @@ function CreaMatricula($Connexio, $Curs, $Alumne, $Cicle, $Nivell, $Grup)
 
 	$row = $res->fetch_assoc();
 	return $row['_retorn'];	
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de la matrícula.
+ */
+class Matricula 
+{
+	/**
+	* Connexió a la base de dades.
+	* @access public 
+	* @var object
+	*/    
+	public $Connexio;
+
+	/**
+	* Usuari autenticat.
+	* @access public 
+	* @var object
+	*/    
+	public $Usuari;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 */
+	function __construct($con, $user) {
+		$this->Connexio = $con;
+		$this->Usuari = $user;
+	}	
+	
+	/**
+	 * Convalida una UF (no es pot desfer).
+	 * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
+     * @param array Primera línia.
+	 */
+	public function ConvalidaUF(int $NotaId) {
+		$SQL = 'SELECT * FROM NOTES WHERE notes_id='.$NotaId;	
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$rsNota = $ResultSet->fetch_object();
+
+			$SQL = 'UPDATE NOTES SET convalidat=1 WHERE notes_id='.$NotaId;	
+			$this->Connexio->query($SQL);
+
+			$SQL = 'UPDATE NOTES SET nota'.$rsNota->convocatoria.'=5 WHERE notes_id='.$NotaId;	
+			$this->Connexio->query($SQL);
+
+			$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$NotaId;	
+			$this->Connexio->query($SQL);
+		}
+	}
 }
 
  ?>

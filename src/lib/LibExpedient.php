@@ -44,7 +44,7 @@ class Expedient
 			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
-			' N.notes_id AS NotaId, N.baixa AS Baixa, '.
+			' N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, '.
 			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
 			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
 			' UF.*, MP.*, CF.*, N.*, C.* '.

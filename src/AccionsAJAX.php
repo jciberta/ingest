@@ -11,6 +11,7 @@
  
 require_once('Config.php');
 require_once('lib/LibNotes.php');
+require_once('lib/LibMatricula.php');
 require_once('lib/LibExpedient.php');
 
 session_start();
@@ -32,6 +33,20 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = 'UPDATE NOTES SET baixa='.$Baixa.' WHERE notes_id='.$NotaId;	
 		$conn->query($SQL);
 		print $SQL;
+	}
+	else if ($_REQUEST['accio'] == 'ConvalidaUF') {
+		$nom = $_REQUEST['nom'];
+		$AlumneId = $_REQUEST['alumne'];
+		//$check = $_REQUEST['check'];
+		//$Baixa = ($check == 'true') ? 0 : 1; // Si estava actiu, ara el donem de baixa
+		$NotaId = str_replace('chbConvalidaUFNotaId_', '', $nom);	
+
+		$Matricula = new Matricula($conn, $Usuari);
+		$Matricula->ConvalidaUF($NotaId);
+		
+		//header("Location: MatriculaAlumne.php?AlumneId=".$AlumneId); -> No funciona!
+
+		print 'Id nota convalidada: '.$NotaId;
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaNota') {
 		$nom = $_REQUEST['nom'];

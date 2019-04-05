@@ -43,7 +43,7 @@ if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Visualitza matrícula');
-echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Matricula.js?v1.2" type="text/javascript"></script>';
 
 $SQL = Expedient::SQL($alumne);
 //print_r($SQL);
@@ -62,8 +62,10 @@ if ($ResultSet->num_rows > 0) {
 	echo "<TH>Hores</TH>";
 	if ($accio == 'MostraExpedient')
 		echo "<TH colspan=5>Notes</TH>";
-	else
+	else {
 		echo "<TH>Matrícula</TH>";
+		echo "<TH>Convalidació</TH>";
+	}
 	echo '</thead>';
 
 	$ModulAnterior = '';
@@ -82,6 +84,8 @@ if ($ResultSet->num_rows > 0) {
 			$sChecked = '';
 		else
 			$sChecked = ' checked';
+		$Convalidat = ($row["Convalidat"] == True);
+		$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
 		if ($accio == 'MostraExpedient') {
 			for ($i=1; $i<6; $i++) {
 				$style = 'width:2em;text-align:center';
@@ -95,8 +99,18 @@ if ($ResultSet->num_rows > 0) {
 				echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$Nota."'></TD>";
 			}
 		}
-		else
-			echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+		else {
+			// Columna matriculació
+			if ($Convalidat || ($row['convocatoria'] == 0))
+				echo "<TD></TD>";
+			else
+				echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+			// Columna convalidació
+			if ($row['convocatoria'] == 0)
+				echo "<TD></TD>";
+			else
+				echo "<TD><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
+		}
 		echo "</TR>";
 		$row = $ResultSet->fetch_assoc();
 	}

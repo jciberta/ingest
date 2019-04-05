@@ -35,6 +35,53 @@ function MatriculaUF(element) {
 }
 
 /**
+ * ConvalidaUF
+ *
+ * Donat un checkbox, convalida una UF (només funciona en un sentit).
+ * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
+ *
+ * @param element Checkbox que ha fet la crida.
+ * @param alumne Id de l'alumne.
+ */
+function ConvalidaUF(element, alumne) { 
+	bootbox.confirm({
+	//	title: "Suprimeix",
+		message: "Esteu segur que voleu convalidar la UF?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Convalida',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+						type: 'POST',
+						url: 'AccionsAJAX.php',
+						data:{
+							'accio': 'ConvalidaUF',
+							'alumne': alumne,
+							'nom': element.name
+				//            'check': element.checked
+							},
+						success: function(data) {
+							$('#debug').html(data);
+						}, 
+						error: function (data) {
+							$('#debug').html('Hi ha hagut un error.');
+						}
+					} );
+			}
+			else 
+				element.checked = false;
+		}
+	});	
+}
+
+/**
  * BaixaMatricula
  *
  * Baixa de la matrícula d'un alumne.

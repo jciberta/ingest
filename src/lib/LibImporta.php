@@ -34,7 +34,8 @@ class Importa {
 
 	/**
 	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
 	 */
 	function __construct($con, $user) {
 		$this->Connexio = $con;

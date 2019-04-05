@@ -9,6 +9,12 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+/**
+ * FUNCIONAMEMT DEL LLENÇOL DE NOTES
+ * - Quan s'aprova una UF, la convocatòria passa a 0.
+ * - Quan es convalida una UF, es posa un 5 a la convocatòria actual i la convocatòria passa a 0.
+ */
+
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 
@@ -28,7 +34,7 @@ function CreaSQLNotes($CicleId, $Nivell)
 		' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 		' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
 		' MP.codi AS CodiMP, '.
-		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, '.
+		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
 		' N.*, U.* '.
 		' FROM NOTES N '.
@@ -226,6 +232,7 @@ class Notes
 					$row = $Notes->UF[$i][$j];
 					$style = "text-align:center;text-transform:uppercase";
 					$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
+					$Convalidat = ($row["Convalidat"] == True);
 
 					$Deshabilitat = '';
 					if ($Baixa)
@@ -235,7 +242,12 @@ class Notes
 
 					$Nota = '';
 					if (!$Baixa) {
-						if ($row["Convocatoria"] == 0) {
+						if ($Convalidat) {
+							$Nota = UltimaNota($row);
+							$Deshabilitat = " disabled ";
+							$style .= ";background-color:blue;color:white";
+						}
+						else if ($row["Convocatoria"] == 0) {
 							$Nota = UltimaNota($row);
 							$Deshabilitat = " disabled ";
 							$style .= ";background-color:black;color:white";
