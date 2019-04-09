@@ -180,7 +180,7 @@ class Notes
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-		echo '<TABLE border=0>';
+		echo '<TABLE id="TaulaNotes" border=0>';
 
 		// Capçalera de la taula
 		$aModuls = [];
@@ -192,7 +192,7 @@ class Notes
 	//print_r($aOcurrenciesModuls);
 
 		// Mòdul
-		echo "<TR><TD></TD><TD></TD><TD></TD>";
+		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
 			echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
@@ -200,7 +200,7 @@ class Notes
 		echo "<TD></TD></TR>";
 	
 		// Unitat formativa
-		echo "<TR><TD></TD><TD></TD><TD></TD>";
+		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			echo "<TD width=20 style='text-align:center'>".utf8_encode($row["CodiUF"])."</TD>";
@@ -208,7 +208,7 @@ class Notes
 		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
 		// Hores
-		echo "<TR><TD></TD>";
+		echo "<TR><TD></TD><TD></TD>";
 		echo "<TD style='text-align:center'>Grup</TD>";
 		echo "<TD style='text-align:center'>Tutoria</TD>";
 		$TotalHores = 0;
@@ -227,6 +227,7 @@ class Notes
 				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 //				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+				echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&AlumneId=".$row["AlumneId"]."'><IMG src=img/grades-sm.svg></A></TD>";
 				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 				$Hores = 0;
@@ -243,6 +244,7 @@ class Notes
 						$Deshabilitat = ' disabled ';
 
 					$Nota = '';
+					$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
 					if (!$Baixa) {
 						if ($Convalidat) {
 							$Nota = UltimaNota($row);
@@ -254,6 +256,12 @@ class Notes
 							$Deshabilitat = " disabled ";
 							$style .= ";background-color:black;color:white";
 						}
+						else if ($row["Convocatoria"] != self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
+							// Nota recuperada
+							$Nota = UltimaNota($row);
+							$style .= ";background-color:lime";
+							$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
+						}
 						else {
 							$Nota = $row["nota".$row["Convocatoria"]];
 							if ($row["Orientativa"] && !$Baixa) {
@@ -262,12 +270,13 @@ class Notes
 						}
 					}
 					else
+						// Sense nota
 						$style .= ";background-color:grey";
 					if ($Nota >= 5)
 						$Hores += $row["Hores"];
 					$ValorNota = NumeroANota($Nota);
 					$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
-					echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+					echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 				}
 				echo "<TD style='text-align:center;color:grey'>".$Hores."</TD>";
 				echo "<TD style='text-align:center'>".number_format($Hores/$TotalHores*100, 2)."&percnt;</TD>";
@@ -316,6 +325,64 @@ class Notes
 
 		else 
 			return -999;
+	}
+	
+	/**
+	 * Donat un registre de notes, torna la última convocatòria amb nota.
+	 * @param array $Registre Registre de notes corresponent a un alumne i una UF.
+	 * @return int Última convocatòria.
+	 */
+	public static function UltimaConvocatoriaNota($Registre) {
+//print_r($Registre);
+		if ($Registre['nota5'] != '') 
+			return 5;
+		else if ($Registre['nota4'] != '') 
+			return 4;
+		else if ($Registre['nota3'] != '') 
+			return 3;
+		else if ($Registre['nota2'] != '') 
+			return 2;
+		else if ($Registre['nota1'] != '') 
+			return 1;
+/*
+		// Cas per quan s'usen àlies a la SQL
+		if ($Registre['Nota5'] != '') 
+			return 5;
+		else if ($Registre['Nota4'] != '') 
+			return 4;
+		else if ($Registre['Nota3'] != '') 
+			return 3;
+		else if ($Registre['Nota2'] != '') 
+			return 2;
+		else if ($Registre['Nota1'] != '') 
+			return 1;
+*/
+		else 
+			return -999;
+	}
+	
+	
+	public static function CreaMenuContextual() {
+		// Adaptat de http://jsfiddle.net/KyleMit/X9tgY/
+		echo '<ul id="contextMenu" class="dropdown-menu dropdown-menu-sm" role="menu" style="display:none" >';
+		echo '    <li><a class="dropdown-item" href="#">Introdueix recuperació</a></li>';
+		echo '</ul>';
+
+
+		echo '<script>';
+		echo '$("#TaulaNotes input").contextMenu({';
+		echo '    menuSelector: "#contextMenu",';
+		echo '    menuSelected: function (invokedOn, selectedMenu) {';
+		echo '        var msg = "You selected the menu item " + selectedMenu.text() +';
+		echo '            " on the value " + invokedOn.text() + "";';
+		echo '        IntrodueixRecuperacio(invokedOn);';
+//		echo '        alert(msg);';
+		echo '    }';
+		echo '});';
+		echo '</script>';
+
+
+
 	}
 }
 

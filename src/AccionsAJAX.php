@@ -61,6 +61,20 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		else
 			print "Valor no vàlid: ".$valor;
 	}
+	else if ($_REQUEST['accio'] == 'ActualitzaNotaRecuperacio') {
+		$nom = $_REQUEST['nom'];
+//print $nom;
+		$data = explode("_", $nom);
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			$SQL = 'UPDATE NOTES SET nota'.($data[2]+1).'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		} 
+		else
+			print "Valor no vàlid: ".$valor;
+	}
 	else if ($_REQUEST['accio'] == 'AssignaUF') {
 		$nom = $_REQUEST['nom'];
 		$check = $_REQUEST['check'];

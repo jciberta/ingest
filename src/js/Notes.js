@@ -7,7 +7,6 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-
 /**
  * MostraGraellaNotes
  *
@@ -38,6 +37,29 @@ function MostraBaixes(obj) {
 		tr.show()
 	else
 		tr.hide();
+}
+
+/**
+ * Introdueix una nota de recuperació
+ * @param obj Objecte que ha provocat la crida (INPUT).
+ */
+function IntrodueixRecuperacio(obj) {
+console.dir(obj[0]);
+//alert(obj[0].value);
+
+
+bootbox.prompt({
+    title: "Introdueix la nota de recuperació",
+    inputType: 'number',
+    callback: function (result) {
+        console.log(result);
+		if (result>0 && result <=10) {
+			ActualitzaNotaRecuperacio(obj[0], result);
+		}
+		
+    }
+});
+
 }
 
 /**
@@ -221,6 +243,49 @@ function ActualitzaNota(element) {
 			}
 		} );
 	}
+}
+
+/**
+ * ActualitzaNotaRecuperacio
+ *
+ * Actualitza la nota de recuperació d'un input.
+ *
+ * @param element Input que ha fet la crida.
+ * @param nota Nota de recuperació.
+ */
+function ActualitzaNotaRecuperacio(element, nota) { 
+	sText = 'Executant ActualitzaNotaRecuperacio... ';
+	$('#debug').html(sText);
+/*	
+	var sNota = $('input[name="TempNota"]').val();	
+//console.log(sNota);
+//console.log(element.value);
+	if (sNota == element.value) {
+		sText = sText + 'No ha calgut actualitzar';
+		$('#debug').html(sText);
+	}
+	else { */
+	//	$('input[name="TempNota"]').val(sNota);	
+//console.log(element.value);
+console.dir(element);
+		$.ajax( {
+			type: 'POST',
+			url: 'AccionsAJAX.php',
+			data:{
+				'accio': 'ActualitzaNotaRecuperacio',
+				'nom': element.name,
+				'valor': nota
+				},
+			success: function(data) {
+				element.value = nota;
+				alert(data);
+				$('#debug').html(data);
+			}, 
+			error: function (data) {
+				$('#debug').html('Hi ha hagut un error.');
+			}
+		} );
+//	}
 }
 
 /**

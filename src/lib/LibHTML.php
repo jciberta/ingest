@@ -77,6 +77,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
 	echo '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
 	echo '	<script src="vendor/bootbox.min.js"></script>';
+	echo '	<script src="js/Util.js"></script>';
 	echo '</HEAD>';
 	echo '<BODY>';
 	
