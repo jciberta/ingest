@@ -40,7 +40,6 @@ if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
 }
 else if ($Usuari->es_professor) {
 	CreaIniciHTML($Usuari, '');
-	echo '<div class="card-columns" style="column-count:6">';
 	$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF, C.curs_id '.
 		' FROM PROFESSOR_UF PUF '.
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
@@ -50,6 +49,7 @@ else if ($Usuari->es_professor) {
 		' WHERE professor_id='.$Usuari->usuari_id .
 		' ORDER BY CF.codi, UF.nivell ';
 //print $SQL;
+	echo '<div class="card-columns" style="column-count:6">';
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
 		$row = $ResultSet->fetch_assoc();

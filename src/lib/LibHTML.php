@@ -163,6 +163,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 		echo '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
 		echo '				<a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
 		echo '				<div class="dropdown-divider"></div>';
+		if ($Usuari->es_cap_estudis) {
+			echo '				<a class="dropdown-item" href="CanviaRol.php">Canvia a professor</a>';
+			echo '				<div class="dropdown-divider"></div>';
+		}
 		echo '				<a class="dropdown-item" href="Surt.php">Surt</a>';
 		echo '			</div>';
 		echo '		  </li>';
