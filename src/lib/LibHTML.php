@@ -83,7 +83,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	
 	if ($bMenu) {
 		echo '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
-		echo '	<span class="navbar-brand">inGest</span>';
+		if ($Usuari->es_admin) 
+			echo '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
+		else
+			echo '	<span class="navbar-brand">inGest</span>';
 		echo '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
 		echo '		<span class="navbar-toggler-icon"></span>';
 		echo '	</button>';
