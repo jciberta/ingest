@@ -31,6 +31,7 @@ mysql -u root -p -h 127.0.0.1 -P 3306
 Còpia de seguretat
 ```
 mysqldump -u root -p InGest > InGest.sql
+mysqldump -u root -p InGest > "InGest_$(date +%F_%R).sql"
 ```
 
 Càrrega de dades
