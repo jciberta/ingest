@@ -77,7 +77,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'AssignaUF') {
 		$nom = $_REQUEST['nom'];
-		$check = $_REQUEST['check'];
+		$check = ($_REQUEST['check']=='true');
 		$data = explode("_", $nom);
 		if ($check) {
 			// Assignem UF
