@@ -204,7 +204,7 @@ class FormRecerca extends Form {
 					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
 						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
 					else
-						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
+						$sWhere .= $this->EliminaTipusPredefinit($sCamp) . " LIKE '%" . $sValor . "%' OR ";
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
@@ -226,6 +226,20 @@ class FormRecerca extends Form {
 				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);*/
 		}
 		return $sRetorn;
+	}
+
+	/**
+	 * Elimina el prefix, en el cas de tenir un tipus predefinit (per exemple bool:).
+	 * @param string $camp Camp.
+     * @return string Camp sense el tipus predefinit.
+	 */
+	private function EliminaTipusPredefinit(string $camp): string {
+		// Mirem si té algun tipus predefinit per mostrar
+		$aCamp = explode(':', $camp);
+		if (count($aCamp)>1) 
+			return $aCamp[1];
+		else
+			return $aCamp[0];
 	}
 
 	/**
