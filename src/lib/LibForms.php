@@ -231,7 +231,7 @@ class FormRecerca extends Form {
 	/**
 	 * Genera una taula amb el resultat de la SQL.
      *
-     * @return string Sentència SQL.
+     * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
 		$sRetorn = '<DIV id=taula>';
@@ -265,8 +265,18 @@ class FormRecerca extends Form {
 				else
 					$sRetorn .= "<TR>";
 				foreach($aCamps as $data) {
-					$sValor = $row[$data];
-					$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+					// Mirem si té algun tipus predefinit per mostrar
+					$aData = explode(':', $data);
+					if (count($aData)>1) {
+						if ($aData[0] == 'bool') {
+							$sValor = ($row[$aData[1]]) ? 'Sí' : '';
+						$sRetorn .= "<TD>".$sValor."</TD>";
+						}
+					}
+					else {
+						$sValor = $row[$data];
+						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+					}
 				}
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';

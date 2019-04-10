@@ -32,7 +32,7 @@ if ((empty($_POST)) || (!isset($_POST['submit'])))
 
 // https://www.w3schools.com/php/php_file_upload.asp
 
-$target_dir = "upload/";
+$target_dir = INGEST_DATA."/upload/";
 $target_file = $target_dir . basename($_FILES["FitxerCSV"]["name"]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -64,11 +64,10 @@ if ($uploadOk == 0) {
     }
 }
 
-$inputFileName = 'upload/'.$_FILES["FitxerCSV"]["name"];
-
 CreaIniciHTML($Usuari, "Importació d'usuaris");
 
 $ImportaUsuaris = new ImportaUsuaris($conn, $Usuari);
+$inputFileName = INGEST_DATA.'/upload/'.$_FILES["FitxerCSV"]["name"];
 
 $row = 1;
 if (($handle = fopen($inputFileName, "r")) !== FALSE) {

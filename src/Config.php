@@ -36,14 +36,23 @@ if (defined('STDIN')) {
 	// Execució de PHP via CLI.
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		define('ROOT', 'D:\CASA\Xiber\ingest\src');
+		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('ROOT', '/var/www/html/ingest/src');
+		define('INGEST_DATA', '/var/www/html/ingest-data');
 	}
 }
-else 
+else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
-//	define('ROOT', 'http://localhost/ingest/src');
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+		//define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
+		define('INGEST_DATA', 'D:/jciberta/ingest-data');
+	}
+	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+		define('INGEST_DATA', '/var/www/html/ingest-data');
+	}	
+}
 
 ?>
