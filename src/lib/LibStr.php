@@ -128,7 +128,8 @@ function TextAMySQL($text)
 	if ($text == '')
 		$Retorn = 'NULL';
 	else {
-		if (mb_detect_encoding($text) != 'ASCII')
+		$Codificacio = mb_detect_encoding($text);
+		if (!in_array($Codificacio, ['ASCII', 'UTF-8']))
 			$text = utf8_decode($text);
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
