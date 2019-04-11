@@ -128,7 +128,9 @@ function TextAMySQL($text)
 	if ($text == '')
 		$Retorn = 'NULL';
 	else {
-    	$Retorn = "'".str_replace("'", "''", utf8_decode($text))."'";
+		if (mb_detect_encoding($text) != 'ASCII')
+			$text = utf8_decode($text);
+    	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
 	return $Retorn;
 }
