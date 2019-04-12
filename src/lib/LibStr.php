@@ -123,13 +123,13 @@ function JSONEncodeUTF8($row)
  * @param string $text data a preparar.
  * @return string Text preparat.
  */
-function TextAMySQL($text)
+function TextAMySQL(string $text)
 {
 	if ($text == '')
 		$Retorn = 'NULL';
 	else {
 		$Codificacio = mb_detect_encoding($text);
-		if (!in_array($Codificacio, ['ASCII', 'UTF-8']))
+		if (!in_array($Codificacio, ['ASCII']))
 			$text = utf8_decode($text);
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}

@@ -85,6 +85,27 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id');
 		$frm->EscriuHTML();
         break;
+    case "AlumnesPares":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Alumnes";
+		$frm->SQL = ' SELECT '.
+			' 	U.usuari_id, U.username, U.nom, U.cognom1, U.cognom2, '.
+			' 	UP.username AS NIFPare, UP.nom AS NomPare, UP.cognom1 AS Cognom1Pare, UP.cognom2 AS Cognom2Pare, '.
+			' 	UM.username AS NIFMare, UM.nom AS NomMare, UM.cognom1 AS Cognom1Mare, UM.cognom2 AS Cognom2Mare '.
+			' FROM USUARI U '.
+			' LEFT JOIN USUARI UP ON (UP.usuari_id=U.pare_id) '.
+			' LEFT JOIN USUARI UM ON (UM.usuari_id=U.mare_id) '.
+			' WHERE U.es_alumne=1 ORDER BY U.cognom1, U.cognom2, U.nom';
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'username, nom, cognom1, cognom2, NIFPare, NomPare, Cognom1Pare, Cognom2Pare, NIFMare, NomMare, Cognom1Mare, Cognom2Mare';
+		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, NIF resp1, Nom resp1, 1r cognom resp1, 2n cognom resp1, NIF resp2, Nom resp2, 1r cognom resp2, 2n cognom resp2';
+		//$frm->PermetEditar = True;
+		//$frm->URLEdicio = 'UsuariFitxa.php';
+		//$frm->PermetSuprimir = True;
+		$frm->EscriuHTML();
+        break;
     case "Pares":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;

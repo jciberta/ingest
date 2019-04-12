@@ -162,12 +162,45 @@ class ImportaUsuaris extends Importa {
 	}
 
 	/**
+	 * Obté la clau primària de l'usuari a partit del NIF.
+	 * @param string $NIF NIF de l'usuari
+	 * @return string Clau primària o NULL si no existeix.
+	 */
+	private function ObteIDPerNIF(string $NIF): string {
+		$Retorn = 'NULL';
+		if ($NIF != '') {
+			$SQL = 'SELECT usuari_id FROM USUARI WHERE document="'.$NIF.'"';
+			$ResultSet = $this->Connexio->query($SQL);
+			if ($ResultSet->num_rows > 0) {
+				$row = $ResultSet->fetch_assoc();
+				$Retorn = $row["usuari_id"];
+			}
+			$ResultSet->close();
+		}
+		return $Retorn;
+	}
+
+	/**
 	 * Actualitza un usuari a través del seu NIF.
      * @param string $NIF NIF de l'usuari.
      * @param array $Linia Línia CSV a importar.
 	 */
-	private function Actualitza(string $NIF, array $Linia) {
+	private function Actualitza(string $NIF, array $Linia, string $NIFPare, string $NIFMare) {
+		$IdPare = 'NULL';
+		if ($NIFPare != $NIF)
+			$IdPare = $this->ObteIDPerNIF($NIFPare);
+
+		$IdMare = 'NULL';
+		if ($NIFMare != $NIF)
+			$IdMare = $this->ObteIDPerNIF($NIFMare);
+
+		$Nom = $this->ObteNom($Linia[$this->CampsNom['COGNOMS I NOM']]);
+		$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['COGNOMS I NOM']]);
+
 		$SQL = "UPDATE USUARI SET ".
+			" nom=".TextAMySQL($Nom).", ".
+			" cognom1=".TextAMySQL($aCognoms[0]).", ".
+			" cognom2=".TextAMySQL($aCognoms[1]).", ".				
 			" nom_complet=".TextAMySQL($Linia[$this->CampsNom['COGNOMS I NOM']]).", ".
 			" codi=".$Linia[$this->CampsNom['ID']].", ".
 			" sexe=".TextAMySQL($Linia[$this->CampsNom['SEXE']]).", ".
@@ -181,7 +214,9 @@ class ImportaUsuaris extends Importa {
 			" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA']]).", ".
 			" data_naixement=".DataAMySQL($Linia[$this->CampsNom['DATA NAIXEMENT']]).", ".
 			" municipi_naixement=".TextAMySQL($Linia[$this->CampsNom['NOM MUNICIPI NAIXEMENT']]).", ".
-			" nacionalitat=".TextAMySQL($Linia[$this->CampsNom['NACIONALITAT']]).
+			" nacionalitat=".TextAMySQL($Linia[$this->CampsNom['NACIONALITAT']]).", ".
+			" pare_id=".$IdPare.", ".
+			" mare_id=".$IdMare.
 			" WHERE username='".$NIF."'";
 		$ResultSet = $this->Connexio->query($SQL);
 	}
@@ -193,15 +228,22 @@ class ImportaUsuaris extends Importa {
 	 */
 	private function ActualitzaPareSAGA(string $NIF, array $Linia) {
 		$NIF = trim($NIF);
+//print $NIF . ' <br>';		
 		if ($NIF != '') {
+			$Nom = $this->ObteNom($Linia[$this->CampsNom['RESPONSABLE 1']]);
+			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['RESPONSABLE 1']]);
 			$SQL = "UPDATE USUARI SET ".
 				" es_pare=1, ".
+				" nom=".TextAMySQL($Nom).", ".
+				" cognom1=".TextAMySQL($aCognoms[0]).", ".
+				" cognom2=".TextAMySQL($aCognoms[1]).", ".				
 				" nom_complet=".TextAMySQL($Linia[$this->CampsNom['RESPONSABLE 1']]).", ".
 				" adreca=".TextAMySQL($Linia[$this->CampsNom['ADREÇA RESP. 1']]).", ".
 				" poblacio=".TextAMySQL($Linia[$this->CampsNom['LOCALITAT RESP. 1']]).", ".
 				" municipi=".TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 1']]).", ".
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]).
 				" WHERE username='".$NIF."'";
+//print $SQL . ' <br>';		
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -213,9 +255,15 @@ class ImportaUsuaris extends Importa {
 	 */
 	private function ActualitzaMareSAGA(string $NIF, array $Linia) {
 		$NIF = trim($NIF);
+//print $NIF . ' <br>';		
 		if ($NIF != '') {
+			$Nom = $this->ObteNom($Linia[$this->CampsNom['RESPONSABLE 2']]);
+			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['RESPONSABLE 2']]);
 			$SQL = "UPDATE USUARI SET ".
 				" es_pare=1, ".
+				" nom=".TextAMySQL($Nom).", ".
+				" cognom1=".TextAMySQL($aCognoms[0]).", ".
+				" cognom2=".TextAMySQL($aCognoms[1]).", ".				
 				" nom_complet=".TextAMySQL($Linia[$this->CampsNom['RESPONSABLE 2']]).", ".
 				" codi_postal=".TextAMySQL($Linia[$this->CampsNom['CP RESP. 2']]).", ".
 				" adreca=".TextAMySQL($Linia[$this->CampsNom['ADREÇA RESP. 2']]).", ".
@@ -223,6 +271,7 @@ class ImportaUsuaris extends Importa {
 				" municipi=".TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 2']]).", ".
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]).
 				" WHERE username='".$NIF."'";
+//print $SQL . ' <br>';		
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -231,16 +280,24 @@ class ImportaUsuaris extends Importa {
 	 * Inserta un usuari.
      * @param array $Linia Línia CSV a importar.
 	 */
-	private function Inserta(array $Linia) {
+	private function Inserta(array $Linia, string $NIFPare, string $NIFMare) {
 		// INSERT INTO Taula (...) VALUES (SELECT FROM Taula, ...) -> MySQL no deixa fer-ho
 		// Per tant:
 		// INSERT INTO Taula (...) SELECT (SELECT FROM Taula) AS ...
 		$NIF = $this->ObteNIF($Linia[$this->CampsNom['DOC. IDENTITAT']]); 
 		$NIF = trim($NIF);
 		if ($NIF != '') {
+			$IdPare = 'NULL';
+			if ($NIFPare != $NIF)
+				$IdPare = $this->ObteIDPerNIF($NIFPare);
+
+			$IdMare = 'NULL';
+			if ($NIFMare != $NIF)
+				$IdMare = $this->ObteIDPerNIF($NIFMare);
+
 			$Nom = $this->ObteNom($Linia[$this->CampsNom['COGNOMS I NOM']]);
 			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['COGNOMS I NOM']]);
-			$SQL = "INSERT INTO USUARI (usuari_id, username, password, nom, cognom1, cognom2, nom_complet, codi, sexe, tipus_document, document, telefon, adreca, codi_postal, poblacio, municipi, provincia, data_naixement, municipi_naixement, nacionalitat) ".
+			$SQL = "INSERT INTO USUARI (usuari_id, username, password, nom, cognom1, cognom2, nom_complet, codi, sexe, tipus_document, document, telefon, adreca, codi_postal, poblacio, municipi, provincia, data_naixement, municipi_naixement, nacionalitat, pare_id, mare_id) ".
 				" SELECT ".
 				" (SELECT MAX(usuari_id)+1 FROM USUARI) AS usuari_id, ".
 				TextAMySQL($NIF).", ".
@@ -261,8 +318,10 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA']]).", ".
 				DataAMySQL($Linia[$this->CampsNom['DATA NAIXEMENT']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['NOM MUNICIPI NAIXEMENT']]).", ".
-				TextAMySQL($Linia[$this->CampsNom['NACIONALITAT']]);
-	//print $SQL . ' <br>';		
+				TextAMySQL($Linia[$this->CampsNom['NACIONALITAT']]).", ".
+				$IdPare.", ".
+				$IdMare;
+//print $SQL . ' <br>';		
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -275,16 +334,17 @@ class ImportaUsuaris extends Importa {
 		// INSERT INTO Taula (...) VALUES (SELECT FROM Taula, ...) -> MySQL no deixa fer-ho
 		// Per tant:
 		// INSERT INTO Taula (...) SELECT (SELECT FROM Taula) AS ...
-		$NIF = $this->ObteNIF($Linia[$this->CampsNom['D.N.I. RESP. 1']]); 
+		$NIF = $Linia[$this->CampsNom['D.N.I. RESP. 1']]; 
 		$NIF = trim($NIF);
+//print $NIF . ' <br>';		
 		if ($NIF != '') {
 			$Nom = $this->ObteNom($Linia[$this->CampsNom['RESPONSABLE 1']]);
 			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['RESPONSABLE 1']]);
 			$SQL = "INSERT INTO USUARI (usuari_id, es_pare, username, password, nom, cognom1, cognom2, nom_complet, document, adreca, poblacio, municipi, provincia) ".
 				" SELECT ".
 				" (SELECT MAX(usuari_id)+1 FROM USUARI) AS usuari_id, ".
-				TextAMySQL($NIF).", ".
 				"1, ".
+				TextAMySQL($NIF).", ".
 				TextAMySQL(password_hash($NIF, PASSWORD_DEFAULT)).", ".
 				TextAMySQL($Nom).", ".
 				TextAMySQL($aCognoms[0]).", ".
@@ -295,6 +355,7 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($Linia[$this->CampsNom['LOCALITAT RESP. 1']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 1']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]);
+//print $SQL . ' <br>';		
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -307,16 +368,17 @@ class ImportaUsuaris extends Importa {
 		// INSERT INTO Taula (...) VALUES (SELECT FROM Taula, ...) -> MySQL no deixa fer-ho
 		// Per tant:
 		// INSERT INTO Taula (...) SELECT (SELECT FROM Taula) AS ...
-		$NIF = $this->ObteNIF($Linia[$this->CampsNom['D.N.I. RESP. 2']]); 
+		$NIF = $Linia[$this->CampsNom['D.N.I. RESP. 2']]; 
 		$NIF = trim($NIF);
+//print $NIF . ' <br>';		
 		if ($NIF != '') {
 			$Nom = $this->ObteNom($Linia[$this->CampsNom['RESPONSABLE 2']]);
 			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['RESPONSABLE 2']]);
 			$SQL = "INSERT INTO USUARI (usuari_id, es_pare, username, password, nom, cognom1, cognom2, nom_complet, document, codi_postal, adreca, poblacio, municipi, provincia) ".
 				" SELECT ".
 				" (SELECT MAX(usuari_id)+1 FROM USUARI) AS usuari_id, ".
-				TextAMySQL($NIF).", ".
 				"1, ".
+				TextAMySQL($NIF).", ".
 				TextAMySQL(password_hash($NIF, PASSWORD_DEFAULT)).", ".
 				TextAMySQL($Nom).", ".
 				TextAMySQL($aCognoms[0]).", ".
@@ -328,6 +390,7 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($Linia[$this->CampsNom['LOCALITAT RESP. 2']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 2']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]);
+//print $SQL . ' <br>';		
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -337,7 +400,11 @@ class ImportaUsuaris extends Importa {
      * @param array $Linia Línia CSV a importar.
 	 */
 	public function ImportaPareSAGA(array $Linia) {
+//print_r($Linia);
+//print_r($this->CampsNom);
+
 		$NIF = trim($Linia[$this->CampsNom['D.N.I. RESP. 1']]);
+//print('<br>'.$NIF.'<br>');
 		if ($this->ExisteixUsuariPerNIF($NIF)) {
 			// Actualitza
 			$this->ActualitzaPareSAGA($NIF, $Linia);
@@ -373,7 +440,7 @@ class ImportaUsuaris extends Importa {
      * @param array $Linia Línia CSV a importar.
 	 */
 	public function Importa(array $Linia) {
-print '<pre>';
+		echo '<pre>';
 		$Linia = CodificaArrayUTF8($Linia);
 		switch ($this->Modalitat) {
 			case self::tiSAGA:
@@ -392,19 +459,19 @@ print '<pre>';
 
 				if ($this->ExisteixUsuariPerNIF($NIF)) {
 					// Actualitza
-					$this->Actualitza($NIF, $Linia);
+					$this->Actualitza($NIF, $Linia, $NIFPare, $NIFMare);
 //print $NIF.'<br>';		
-print 'Actualitzat  [alumne] '.trim($Linia[$this->CampsNom['COGNOMS I NOM']]).' <br>';		
+					print 'Actualitzat  [alumne] '.trim($Linia[$this->CampsNom['COGNOMS I NOM']]).' <br>';		
 				}
 				else {
 					// Inserta
-					$this->Inserta($Linia);
+					$this->Inserta($Linia, $NIFPare, $NIFMare);
 //print $NIF.' - NO <br>';		
-print 'Inserit      [alumne] '.trim($Linia[$this->CampsNom['COGNOMS I NOM']]).' <br>';		
+					print 'Inserit      [alumne] '.trim($Linia[$this->CampsNom['COGNOMS I NOM']]).' <br>';		
 				}
 				break;
 		}
-print '</pre>';
+		echo '</pre>';
 	}
 
 } 
