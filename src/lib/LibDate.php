@@ -87,4 +87,25 @@ function DiaSetmana($date)
 	return $Retorn;
 }
 
+/**
+ * ProperDia
+ *
+ * Calcula el proper dia a partir d'una data.
+ * http://php.net/manual/en/datetime.add.php
+ *
+ * @param string $date Data.
+ * @param integer $dies Número de dies a sumar.
+ * @return string Nova data.
+ */
+function ProperDia($date, $dies)
+{
+	$Retorn = '';
+	if ($date != '') {
+		$dt = DateTime::createFromFormat('d/m/Y', $date);
+		$dt->add(new DateInterval('P'.$dies.'D'));
+		$Retorn = $dt->format('d/m/Y');
+	}
+	return $Retorn;
+}
+
 ?>

@@ -45,6 +45,19 @@ final class DateTest extends TestCase
 		$this->assertEquals(MySQLAData('2012-02-28'), '28/02/2012'); 
 		$this->assertEquals(MySQLAData(''), ''); 
 	}
+	
+    public function testProperDia()
+    {
+		$this->assertEquals(ProperDia('', 1), ''); 
+		$this->assertEquals(ProperDia('01/01/2012', 1), '02/01/2012'); 
+		$this->assertEquals(ProperDia('01/01/2012', 2), '03/01/2012'); 
+		$this->assertEquals(ProperDia('31/01/2011', 1), '01/02/2011'); 
+		$this->assertEquals(ProperDia('31/01/2011', 2), '02/02/2011'); 
+		$this->assertEquals(ProperDia('28/02/2011', 1), '01/03/2011'); 
+		$this->assertEquals(ProperDia('31/01/2012', 1), '01/02/2012'); 
+		$this->assertEquals(ProperDia('31/01/2012', 2), '02/02/2012'); 
+		$this->assertEquals(ProperDia('28/02/2012', 1), '29/02/2012'); 
+	}	
 }
  
 ?>

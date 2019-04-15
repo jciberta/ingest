@@ -298,9 +298,11 @@ CREATE TABLE BLOC_GUARDIA
     hora INT NOT NULL, 
     hora_inici TIME NOT NULL,
     hora_final TIME NOT NULL,
+	professor_lavabo_id INT NULL,
 
     CONSTRAINT BlocGuardiaPK PRIMARY KEY (dia, hora),
-    CONSTRAINT BG_BlocGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia)
+    CONSTRAINT BG_DiaGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia),
+    CONSTRAINT BG_ProfessorLavaboFK FOREIGN KEY (professor_lavabo_id) REFERENCES USUARI(usuari_id)
 );
 
 CREATE TABLE PROFESSOR_GUARDIA

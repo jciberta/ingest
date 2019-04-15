@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibInet.php');
 require_once(ROOT.'/lib/LibRegistre.php');
@@ -38,11 +39,22 @@ if (!empty($_POST))
 					$log = new Registre($conn, $user);
 					if (password_verify($_POST['password'], $user->password)) 
 					{
+						// Carreguem la configuració del sistema
 						$SQL = "SELECT * FROM SISTEMA";
 						$ResultSet = $conn->query($SQL);
 						if ($ResultSet->num_rows == 0) 
 							die("El sistema no ha estat configurat.");
 						$sistema = $ResultSet->fetch_object();
+
+						// Carreguem els dies festius
+						$SQL = "SELECT * FROM FESTIU ORDER BY data";
+						$ResultSet = $conn->query($SQL);
+						$festiu = [];
+						if ($ResultSet->num_rows > 0) {
+							while($row = $ResultSet->fetch_object()) {
+								array_push($festiu, MySQLAData($row->data));
+							}
+						}
 
 						$_SESSION['usuari_id'] = $user->usuari_id;
 						// ToDo: Seguretat a la sessió
@@ -51,6 +63,7 @@ if (!empty($_POST))
 						// https://meta.stackexchange.com/questions/69171/why-doesnt-the-stack-overflow-team-fix-the-firesheep-style-cookie-theft
 						$_SESSION['USUARI'] = serialize($user);
 						$_SESSION['SISTEMA'] = serialize($sistema);
+						$_SESSION['FESTIU'] = serialize($festiu);
 
 						if ($user->imposa_canvi_password)
 							header('Location: CanviPassword.html');
