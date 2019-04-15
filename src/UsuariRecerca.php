@@ -123,6 +123,7 @@ switch ($Accio) {
     case "":
 		// Tots
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Usuaris";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, es_alumne, es_professor, es_pare FROM USUARI ORDER BY cognom1, cognom2, nom';
@@ -133,6 +134,7 @@ switch ($Accio) {
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
+		$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 		$frm->EscriuHTML();
         break;
 }

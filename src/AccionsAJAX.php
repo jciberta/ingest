@@ -48,6 +48,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 
 		print 'Id nota convalidada: '.$NotaId;
 	}
+	else if ($_REQUEST['accio'] == 'CanviPassword') {
+		$UsuariId = $_REQUEST['usuari_id'];
+		$Password = $_REQUEST['password'];
+		$SQL = "UPDATE USUARI SET password='".password_hash($Password, PASSWORD_DEFAULT)."', imposa_canvi_password=1 WHERE usuari_id=". $UsuariId;
+		$conn->query($SQL);
+		print 'Contrasenya canviada correctament.';
+	}
 	else if ($_REQUEST['accio'] == 'ActualitzaNota') {
 		$nom = $_REQUEST['nom'];
 		$data = explode("_", $nom);

@@ -59,21 +59,21 @@ function ConvalidaUF(element, alumne) {
 		callback: function (result) {
 			if (result) {
 				$.ajax( {
-						type: 'POST',
-						url: 'AccionsAJAX.php',
-						data:{
-							'accio': 'ConvalidaUF',
-							'alumne': alumne,
-							'nom': element.name
-				//            'check': element.checked
-							},
-						success: function(data) {
-							$('#debug').html(data);
-						}, 
-						error: function (data) {
-							$('#debug').html('Hi ha hagut un error.');
-						}
-					} );
+					type: 'POST',
+					url: 'AccionsAJAX.php',
+					data:{
+						'accio': 'ConvalidaUF',
+						'alumne': alumne,
+						'nom': element.name
+			//            'check': element.checked
+						},
+					success: function(data) {
+						$('#debug').html(data);
+					}, 
+					error: function (data) {
+						$('#debug').html('Hi ha hagut un error.');
+					}
+				} );
 			}
 			else 
 				element.checked = false;
