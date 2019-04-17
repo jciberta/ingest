@@ -198,6 +198,7 @@ class ImportaUsuaris extends Importa {
 		$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['COGNOMS I NOM']]);
 
 		$SQL = "UPDATE USUARI SET ".
+			" es_alumne=1, ".
 			" nom=".TextAMySQL($Nom).", ".
 			" cognom1=".TextAMySQL($aCognoms[0]).", ".
 			" cognom2=".TextAMySQL($aCognoms[1]).", ".				
@@ -297,9 +298,10 @@ class ImportaUsuaris extends Importa {
 
 			$Nom = $this->ObteNom($Linia[$this->CampsNom['COGNOMS I NOM']]);
 			$aCognoms = $this->ObteCognoms($Linia[$this->CampsNom['COGNOMS I NOM']]);
-			$SQL = "INSERT INTO USUARI (usuari_id, username, password, nom, cognom1, cognom2, nom_complet, codi, sexe, tipus_document, document, telefon, adreca, codi_postal, poblacio, municipi, provincia, data_naixement, municipi_naixement, nacionalitat, pare_id, mare_id) ".
+			$SQL = "INSERT INTO USUARI (usuari_id, es_alumne, username, password, nom, cognom1, cognom2, nom_complet, codi, sexe, tipus_document, document, telefon, adreca, codi_postal, poblacio, municipi, provincia, data_naixement, municipi_naixement, nacionalitat, pare_id, mare_id) ".
 				" SELECT ".
 				" (SELECT MAX(usuari_id)+1 FROM USUARI) AS usuari_id, ".
+				"1, ".
 				TextAMySQL($NIF).", ".
 				TextAMySQL(password_hash($NIF, PASSWORD_DEFAULT)).", ".
 				TextAMySQL($Nom).", ".

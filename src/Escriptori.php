@@ -87,6 +87,28 @@ else if ($Usuari->es_alumne) {
 	echo '    </div>';
 	echo '  </div>';
 }
+else if ($Usuari->es_pare) {
+	// Els pares només poden veure el PDF de les notes dels seus fills
+	CreaIniciHTML($Usuari, '');
+	$SQL = ' SELECT * FROM USUARI WHERE pare_id='.$Usuari->usuari_id.' OR mare_id='.$Usuari->usuari_id;
+	echo '<div class="card-columns" style="column-count:6">';
+	$ResultSet = $conn->query($SQL);
+	if ($ResultSet->num_rows > 0) {
+		$row = $ResultSet->fetch_assoc();
+		while($row) {
+			echo '  <div class="card">';
+			echo '    <div class="card-body">';
+			echo '      <h5 class="card-title">Expedient</h5>';
+			$NomComplet = trim(trim($row['nom']).' '.trim($row['cognom1']).' '.trim($row['cognom2']));
+			echo '      <p class="card-text">'.utf8_encode($NomComplet).'</p>';
+			echo '      <a href="ExpedientPDF.php?AlumneId='.$row['usuari_id'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '    </div>';
+			echo '  </div>';
+			$row = $ResultSet->fetch_assoc();
+		}
+	}
+	$ResultSet->close();
+}
 
 echo '</div>';
 

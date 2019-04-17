@@ -90,7 +90,7 @@ switch ($Accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$frm->SQL = ' SELECT '.
-			' 	U.usuari_id, U.username, U.nom, U.cognom1, U.cognom2, '.
+			' 	U.usuari_id, U.username AS NIFAlumne, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' 	UP.username AS NIFPare, UP.nom AS NomPare, UP.cognom1 AS Cognom1Pare, UP.cognom2 AS Cognom2Pare, '.
 			' 	UM.username AS NIFMare, UM.nom AS NomMare, UM.cognom1 AS Cognom1Mare, UM.cognom2 AS Cognom2Mare '.
 			' FROM USUARI U '.
@@ -99,7 +99,7 @@ switch ($Accio) {
 			' WHERE U.es_alumne=1 ORDER BY U.cognom1, U.cognom2, U.nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'username, nom, cognom1, cognom2, NIFPare, NomPare, Cognom1Pare, Cognom2Pare, NIFMare, NomMare, Cognom1Mare, Cognom2Mare';
+		$frm->Camps = 'NIFAlumne, NomAlumne, Cognom1Alumne, Cognom2Alumne, NIFPare, NomPare, Cognom1Pare, Cognom2Pare, NIFMare, NomMare, Cognom1Mare, Cognom2Mare';
 		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, NIF resp1, Nom resp1, 1r cognom resp1, 2n cognom resp1, NIF resp2, Nom resp2, 1r cognom resp2, 2n cognom resp2';
 		//$frm->PermetEditar = True;
 		//$frm->URLEdicio = 'UsuariFitxa.php';

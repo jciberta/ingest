@@ -18,6 +18,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 
@@ -27,9 +28,8 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
 
 if (!empty($_POST))
 	$alumne = $_POST['alumne'];
@@ -40,6 +40,10 @@ $accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '
 
 // Si intenta manipular l'usuari des de la URL -> al carrer!
 if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
+	header("Location: Surt.php");
+
+$objUsuari = new Usuari($conn, $Usuari);
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Visualitza matrícula');

@@ -11,7 +11,12 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibExpedient.php');
+
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
+if ($conn->connect_error)
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 if (defined('STDIN')) 
 {
@@ -39,12 +44,11 @@ else
 	// Si intenta manipular l'usuari des de la URL -> al carrer!
 	if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
 		header("Location: Surt.php");
+	
+	$objUsuari = new Usuari($conn, $Usuari);
+	if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
+		header("Location: Surt.php");
 }
-
-$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
-	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
 
 $Expedient = new Expedient($conn);
 $Expedient->GeneraPDF($alumne);
