@@ -430,6 +430,9 @@ class FormFitxa extends Form {
 	const tcSELECCIO = 7;
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
+	const tcCOLUMNA_INICI = 10;
+	const tcCOLUMNA_SALT = 11;
+	const tcCOLUMNA_FINAL = 12;
 	
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
@@ -622,6 +625,42 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Marca l'inici de l'encolumnat.
+	 */
+	public function IniciaColumnes() {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcCOLUMNA_INICI;
+		$this->Camps[$i]->Requerit = False;
+		$this->Camps[$i]->NomesLectura = False;
+	}
+
+	/**
+	 * Passa a la següent columna.
+	 */
+	public function SaltaColumna() {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcCOLUMNA_SALT;
+		$this->Camps[$i]->Requerit = False;
+		$this->Camps[$i]->NomesLectura = False;
+	}
+
+	/**
+	 * Marca el final de l'encolumnat.
+	 */
+	public function FinalitzaColumnes() {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcCOLUMNA_FINAL;
+		$this->Camps[$i]->Requerit = False;
+		$this->Camps[$i]->NomesLectura = False;
+	}
+
+	/**
 	 * Retorna el valor d'un camp de tipus text que prèviament ha estat carregat de la base de dades.
 	 *
 	 * @param string $camp Camp de la taula.
@@ -754,6 +793,25 @@ class FormFitxa extends Form {
 					$sRetorn .= '</div>';
 					$sRetorn .= '</TD>';
 					$sRetorn .= '</TR>';
+					break;
+				case self::tcCOLUMNA_INICI:
+					$sRetorn .= '<TR><TD>';
+					$sRetorn .= '</TD><TD>';
+					$sRetorn .= '<TABLE>';
+					$sRetorn .= '<TR><TD>';
+					$sRetorn .= '<TABLE>';
+					break;
+				case self::tcCOLUMNA_SALT:
+					$sRetorn .= '</TABLE>';
+					$sRetorn .= '</TD>';
+					$sRetorn .= '<TD>';
+					$sRetorn .= '<TABLE>';
+					break;
+				case self::tcCOLUMNA_FINAL:
+					$sRetorn .= '</TABLE>';
+					$sRetorn .= '</TD></TR>';
+					$sRetorn .= '</TABLE>';
+					$sRetorn .= '</TD></TR>';
 					break;
 			}
 		}

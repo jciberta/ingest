@@ -35,18 +35,23 @@ $frm->AfegeixText('nom', 'Nom', True, 100);
 $frm->AfegeixText('cognom1', '1r cognom', True, 100);
 $frm->AfegeixText('cognom2', '2n cognom', False, 100);
 $frm->AfegeixPassword('password', 'Contrasenya', True, 100);
+$frm->AfegeixData('data_naixement', 'Data naixement', False);
 $frm->AfegeixCheckBox('imposa_canvi_password', 'Imposa nova contrasenya?', False);
 $frm->AfegeixCheckBox('usuari_bloquejat', "Bloqueja l'usuari?", False);
 
+$frm->IniciaColumnes();
 $frm->AfegeixCheckBox('es_direccio', 'És direcció?', False);
 $frm->AfegeixCheckBox('es_cap_estudis', "És cap d'estudis?", False);
 $frm->AfegeixCheckBox('es_cap_departament', "És cap de departament?", False);
+$frm->SaltaColumna();
 $frm->AfegeixCheckBox('es_tutor', "És tutor?", False);
 $frm->AfegeixCheckBox('es_professor', "És professor?", False);
 $frm->AfegeixCheckBox('es_alumne', "És alumne?", False);
+$frm->SaltaColumna();
 $frm->AfegeixCheckBox('es_pare', "És pare?", False);
+$frm->FinalitzaColumnes();
+
 $frm->AfegeixCheckBox('permet_tutor', "Permet tutor? (vàlid pels >=18 anys)", False);
 $frm->EscriuHTML();
-
 
 ?>
