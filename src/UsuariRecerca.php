@@ -61,6 +61,7 @@ switch ($Accio) {
 		
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
+			' Edat(U.data_naixement) AS edat, '.
 			' M.matricula_id, '.
 			' C.nom AS NomCurs, C.nivell, '.
 			' CASE WHEN M.baixa=1 THEN "'.utf8_decode('Sí').'" ELSE "" END AS baixa '.
@@ -74,8 +75,8 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, NomCurs, nivell, baixa';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Curs, Nivell, Baixa';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, edat, NomCurs, nivell, baixa';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Edat, Curs, Nivell, Baixa';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;

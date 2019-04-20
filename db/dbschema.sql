@@ -90,6 +90,7 @@ CREATE TABLE USUARI
     es_professor       BIT NOT NULL DEFAULT 0,
     es_alumne          BIT NOT NULL DEFAULT 0,
     es_pare            BIT NOT NULL DEFAULT 0,
+    permet_tutor       BIT NOT NULL DEFAULT 0,
     imposa_canvi_password BIT,
     usuari_bloquejat BIT,
     pare_id INT,
@@ -330,4 +331,23 @@ CREATE TABLE REGISTRE
     seccio VARCHAR(20) NOT NULL, 
     missatge VARCHAR(255) NOT NULL
 );
+
+/*
+ * Edat
+ *
+ * Calcula l'edat donada una data de naixement.
+ *
+ * Ús:
+ *   SELECT nom, cognom1, data_naixement, Edat(data_naixement) AS edat FROM USUARI;
+ *
+ * @param datetime data_naixement Data per calcular l'edat.
+ * @return integer Anys entre la data de naixement i ara.
+ */
+DELIMITER //
+CREATE FUNCTION Edat(data_naixement DATETIME)
+RETURNS INT
+BEGIN
+    RETURN TIMESTAMPDIFF (YEAR, data_naixement, CURDATE());
+END //
+DELIMITER ;
 

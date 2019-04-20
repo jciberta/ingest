@@ -90,7 +90,9 @@ else if ($Usuari->es_alumne) {
 else if ($Usuari->es_pare) {
 	// Els pares només poden veure el PDF de les notes dels seus fills
 	CreaIniciHTML($Usuari, '');
-	$SQL = ' SELECT * FROM USUARI WHERE pare_id='.$Usuari->usuari_id.' OR mare_id='.$Usuari->usuari_id;
+	$SQL = ' SELECT * FROM USUARI '.
+		' WHERE (pare_id='.$Usuari->usuari_id.' OR mare_id='.$Usuari->usuari_id.') '.
+		' AND (Edat(data_naixement)<18 OR permet_tutor=1) ';
 	echo '<div class="card-columns" style="column-count:6">';
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
@@ -107,6 +109,8 @@ else if ($Usuari->es_pare) {
 			$row = $ResultSet->fetch_assoc();
 		}
 	}
+	else
+		echo 'No hi ha dades a mostrar.';
 	$ResultSet->close();
 }
 

@@ -45,6 +45,7 @@ $frm->AfegeixCheckBox('es_tutor', "És tutor?", False);
 $frm->AfegeixCheckBox('es_professor', "És professor?", False);
 $frm->AfegeixCheckBox('es_alumne', "És alumne?", False);
 $frm->AfegeixCheckBox('es_pare', "És pare?", False);
+$frm->AfegeixCheckBox('permet_tutor', "Permet tutor? (vàlid pels >=18 anys)", False);
 $frm->EscriuHTML();
 
 
