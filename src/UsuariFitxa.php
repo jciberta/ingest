@@ -30,28 +30,28 @@ $frm->Titol = 'Edició usuari';
 $frm->Taula = 'USUARI';
 $frm->ClauPrimaria = 'usuari_id';
 $frm->Id = $Id;
-$frm->AfegeixText('username', 'Usuari', True, 100);
-$frm->AfegeixText('nom', 'Nom', True, 100);
-$frm->AfegeixText('cognom1', '1r cognom', True, 100);
-$frm->AfegeixText('cognom2', '2n cognom', False, 100);
-$frm->AfegeixPassword('password', 'Contrasenya', True, 100);
-$frm->AfegeixData('data_naixement', 'Data naixement', False);
-$frm->AfegeixCheckBox('imposa_canvi_password', 'Imposa nova contrasenya?', False);
-$frm->AfegeixCheckBox('usuari_bloquejat', "Bloqueja l'usuari?", False);
+$frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offREQUERIT]);
+$frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
+$frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offREQUERIT]);
+$frm->AfegeixText('cognom2', '2n cognom', 100);
+$frm->AfegeixPassword('password', 'Contrasenya', 100, [FormFitxa::offREQUERIT]);
+$frm->AfegeixData('data_naixement', 'Data naixement');
+$frm->AfegeixCheckBox('imposa_canvi_password', 'Imposa nova contrasenya?');
+$frm->AfegeixCheckBox('usuari_bloquejat', "Bloqueja l'usuari?");
 
 $frm->IniciaColumnes();
-$frm->AfegeixCheckBox('es_direccio', 'És direcció?', False);
-$frm->AfegeixCheckBox('es_cap_estudis', "És cap d'estudis?", False);
-$frm->AfegeixCheckBox('es_cap_departament', "És cap de departament?", False);
+$frm->AfegeixCheckBox('es_direccio', 'És direcció?');
+$frm->AfegeixCheckBox('es_cap_estudis', "És cap d'estudis?");
+$frm->AfegeixCheckBox('es_cap_departament', "És cap de departament?");
 $frm->SaltaColumna();
-$frm->AfegeixCheckBox('es_tutor', "És tutor?", False);
-$frm->AfegeixCheckBox('es_professor', "És professor?", False);
-$frm->AfegeixCheckBox('es_alumne', "És alumne?", False);
+$frm->AfegeixCheckBox('es_tutor', "És tutor?");
+$frm->AfegeixCheckBox('es_professor', "És professor?");
+$frm->AfegeixCheckBox('es_alumne', "És alumne?");
 $frm->SaltaColumna();
-$frm->AfegeixCheckBox('es_pare', "És pare?", False);
+$frm->AfegeixCheckBox('es_pare', "És pare?");
 $frm->FinalitzaColumnes();
 
-$frm->AfegeixCheckBox('permet_tutor', "Permet tutor? (vàlid pels >=18 anys)", False);
+$frm->AfegeixCheckBox('permet_tutor', "Permet tutor? (vàlid pels >=18 anys)");
 $frm->EscriuHTML();
 
 ?>

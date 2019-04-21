@@ -45,22 +45,25 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 		
+		$Opcions = [FormFitxa::offREQUERIT];
 		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		if ($NomesLectura)
+			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
 
 		$frm = new FormFitxa($conn, $Usuari);
 		$frm->Titol = 'Edició UF';
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Id = $Id;
-		$frm->AfegeixText('nom', 'Nom', True, 200, $NomesLectura);
-		$frm->AfegeixText('codi', 'Codi', True, 20, $NomesLectura);
-		$frm->AfegeixEnter('hores', 'Hores', True, 20);
-		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', True, 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $NomesLectura);
-		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', True, 10, $NomesLectura);
-		$frm->AfegeixData('data_inici', 'Data inici', False);
-		$frm->AfegeixData('data_final', 'Data final', False);
+		$frm->AfegeixText('nom', 'Nom', 200, $Opcions);
+		$frm->AfegeixText('codi', 'Codi', 20, $Opcions);
+		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $Opcions);
+		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
+		$frm->AfegeixData('data_inici', 'Data inici');
+		$frm->AfegeixData('data_final', 'Data final');
 
-		$frm->AfegeixCheckBox('orientativa', 'És orientativa?', False);
+		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->EscriuHTML();
         break;
 }

@@ -434,6 +434,11 @@ class FormFitxa extends Form {
 	const tcCOLUMNA_SALT = 11;
 	const tcCOLUMNA_FINAL = 12;
 	
+	// Opcions del FormFitxa.
+	const offNOMES_LECTURA = 1;  // Indica si el camp és pot escriure o no.
+	const offREQUERIT = 2; // Indica si el camp és obligatori.
+	const offAL_COSTAT = 3;      // Indica si el camp es posiciona al costat de l'anterior (per defecte a sota).
+	
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
 	* @access public
@@ -477,20 +482,19 @@ class FormFitxa extends Form {
 	 * @param string $tipus Tipus de camp.
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	private function Afegeix($tipus, $camp, $titol, $requerit, $longitud, $NomesLectura = False) {
+	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = []) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = $tipus;
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
-		$this->Camps[$i]->Requerit = $requerit;
-		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
 	}
 
 	/**
@@ -498,12 +502,12 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixText($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
-		$this->Afegeix(self::tcTEXT, $camp, $titol, $requerit, $longitud, $NomesLectura);
+	public function AfegeixText(string $camp, string $titol, int $longitud, array $off = []) {
+		$this->Afegeix(self::tcTEXT, $camp, $titol, $longitud, $off);
 	}
 
 	/**
@@ -511,12 +515,12 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixEnter($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
-		$this->Afegeix(self::tcENTER, $camp, $titol, $requerit, $longitud, $NomesLectura);
+	public function AfegeixEnter(string $camp, string $titol, $longitud, array $off = []) {
+		$this->Afegeix(self::tcENTER, $camp, $titol, $longitud, $off);
 	}
 
 	/**
@@ -524,12 +528,12 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixReal($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
-		$this->Afegeix(self::tcREAL, $camp, $titol, $requerit, $longitud, $NomesLectura);
+	public function AfegeixReal(string $camp, string $titol, int $longitud, array $off = []) {
+		$this->Afegeix(self::tcREAL, $camp, $titol, $longitud, $off);
 	}
 
 	/**
@@ -537,12 +541,12 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixPassword($camp, $titol, $requerit, $longitud, $NomesLectura = False) {
-		$this->Afegeix(self::tcPASSWORD, $camp, $titol, $requerit, $longitud, $NomesLectura);
+	public function AfegeixPassword(string $camp, string $titol, int $longitud, array $off = []) {
+		$this->Afegeix(self::tcPASSWORD, $camp, $titol, $longitud, $off);
 	}
 
 	/**
@@ -550,11 +554,11 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixCheckBox($camp, $titol, $requerit, $NomesLectura = False) {
-		$this->Afegeix(self::tcCHECKBOX, $camp, $titol, $requerit, 0, $NomesLectura);
+	public function AfegeixCheckBox(string $camp, string $titol, array $off = []) {
+		$this->Afegeix(self::tcCHECKBOX, $camp, $titol, 0, $off);
 	}
 
 	/**
@@ -562,11 +566,11 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixData($camp, $titol, $requerit, $NomesLectura = False) {
-		$this->Afegeix(self::tcDATA, $camp, $titol, $requerit, 0, $NomesLectura);
+	public function AfegeixData(string $camp, string $titol, array $off = []) {
+		$this->Afegeix(self::tcDATA, $camp, $titol, 0, $off);
 	}
 	
 	/**
@@ -574,21 +578,21 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
+	 * @param integer $longitud Longitud màxima.
 	 * @param array $aCodis Codis de la llista. Per exemple: array(1, 2, 3, 4)
 	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixLlista($camp, $titol, $requerit, $longitud, $aCodis, $aValors, $NomesLectura = False) {
+	public function AfegeixLlista(string $camp, string $titol, int $longitud, array $aCodis, array $aValors, array $off = []) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcSELECCIO;
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
-		$this->Camps[$i]->Requerit = $requerit;
-		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
 		$this->Camps[$i]->Llista = new stdClass();
 		$this->Camps[$i]->Llista->Codis = $aCodis;
 		$this->Camps[$i]->Llista->Valors = $aValors;
@@ -599,24 +603,23 @@ class FormFitxa extends Form {
 	 *
 	 * @param string $camp Camp de la taula.
 	 * @param string $titol Títol del camp.
-	 * @param boolean $requerit Indica si el camp és obligatori.
 	 * @param integer $longitud Longitud màxima.
 	 * @param string $URL Pàgina web de recerca.
 	 * @param string $Taula Taula associada.
 	 * @param string $Id Identificador del registre que es mostra.
 	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 * @param array $off Opcions del formulari.
 	 * @return void
 	 */
-	public function AfegeixLookup($camp, $titol, $requerit, $longitud, $URL, $Taula, $Id, $Camps, $NomesLectura = False) {
+	public function AfegeixLookup(string $camp, string $titol, int $longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = []) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcLOOKUP;
 		$this->Camps[$i]->Camp = $camp;
 		$this->Camps[$i]->Titol = $titol;
-		$this->Camps[$i]->Requerit = $requerit;
-		$this->Camps[$i]->NomesLectura = $NomesLectura;
 		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
 		$this->Camps[$i]->Lookup = new stdClass();
 		$this->Camps[$i]->Lookup->URL = $URL;
 		$this->Camps[$i]->Lookup->Taula = $Taula;
@@ -632,8 +635,7 @@ class FormFitxa extends Form {
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcCOLUMNA_INICI;
-		$this->Camps[$i]->Requerit = False;
-		$this->Camps[$i]->NomesLectura = False;
+		$this->Camps[$i]->Opcions = [];
 	}
 
 	/**
@@ -644,8 +646,7 @@ class FormFitxa extends Form {
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcCOLUMNA_SALT;
-		$this->Camps[$i]->Requerit = False;
-		$this->Camps[$i]->NomesLectura = False;
+		$this->Camps[$i]->Opcions = [];
 	}
 
 	/**
@@ -656,8 +657,7 @@ class FormFitxa extends Form {
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcCOLUMNA_FINAL;
-		$this->Camps[$i]->Requerit = False;
-		$this->Camps[$i]->NomesLectura = False;
+		$this->Camps[$i]->Opcions = [];
 	}
 
 	/**
@@ -666,7 +666,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @return string Valor que conté.
 	 */
-	private function ValorCampText($camp) {
+	private function ValorCampText(string $camp) {
 		return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
 	}
 
@@ -676,7 +676,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @return string Valor que conté.
 	 */
-	private function ValorCampData($camp) {
+	private function ValorCampData(string $camp) {
 		return ' value="'.MySQLAData($this->Registre[$camp]).'" ';
 	}
 	
@@ -686,7 +686,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @return string Valor que conté.
 	 */
-	private function ValorCampPassword($camp) {
+	private function ValorCampPassword(string $camp) {
 		// Falta implementar!
 		return '*****';
 		//return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
@@ -698,7 +698,7 @@ class FormFitxa extends Form {
 	 * @param string $camp Camp de la taula.
 	 * @return string Valor que conté.
 	 */
-	private function ValorCampCheckBox($camp) {
+	private function ValorCampCheckBox(string $camp) {
 		return ($this->Registre[$camp]) ? ' value=1 checked ' : ' value=0 ';
 	}
 	
@@ -714,8 +714,8 @@ class FormFitxa extends Form {
 		$sRetorn .= "<input type=hidden name=hid_Id value='".$this->Id."'>";
 		$sRetorn .= '<TABLE>';
 		foreach($this->Camps as $Valor) {
-			$Requerit = ($Valor->Requerit ? ' required' : '');
-			$NomesLectura = ($Valor->NomesLectura ? ' readonly' : '');
+			$Requerit = (in_array(self::offREQUERIT, $Valor->Opcions) ? ' required' : '');
+			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) ? ' readonly' : '');
 			switch ($Valor->Tipus) {
 				case self::tcTEXT:
 					$sRetorn .= '<TR>';

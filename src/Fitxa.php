@@ -45,14 +45,14 @@ switch ($accio) {
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Id = $Id;
-		$frm->AfegeixText('codi', 'Codi', True, 20);
-		$frm->AfegeixText('nom', 'Nom', True, 200);
-		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', True, 10);
+		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', 10, [FormFitxa::offREQUERIT]);
 
-		$frm->AfegeixLlista('avaluacio', 'Avaluació', True, 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'));
-		$frm->AfegeixEnter('trimestre', 'Trimestre', True, 10);
-		$frm->AfegeixCheckBox('butlleti_visible', 'Butlletí visible', True);
-		$frm->AfegeixCheckBox('finalitzat', 'Curs finalitzat', True);
+		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
+		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixCheckBox('butlleti_visible', 'Butlletí visible', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixCheckBox('finalitzat', 'Curs finalitzat', [FormFitxa::offREQUERIT]);
 		
 //		$frm->AfegeixText('any_inici', 'Any inici', True, 20);
 //		$frm->AfegeixText('any_final', 'Any final', True, 20);
