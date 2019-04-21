@@ -713,56 +713,52 @@ class FormFitxa extends Form {
 		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";
 		$sRetorn .= "<input type=hidden name=hid_Id value='".$this->Id."'>";
 		$sRetorn .= '<TABLE>';
+		$bAlCostat = False;
+		$sRetorn .= '<TR>';
 		foreach($this->Camps as $Valor) {
 			$Requerit = (in_array(self::offREQUERIT, $Valor->Opcions) ? ' required' : '');
 			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) ? ' readonly' : '');
+			$bAlCostat = in_array(self::offAL_COSTAT, $Valor->Opcions);
 			switch ($Valor->Tipus) {
 				case self::tcTEXT:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcENTER:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="ede_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcREAL:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcPASSWORD:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="password" style="width:'.$Valor->Longitud.'px" name="pwd_'.$Valor->Camp.'" '.$this->ValorCampPassword($Valor->Camp).$Requerit.'></TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcCHECKBOX:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'></TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcDATA:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sNom = 'edd_' . $Valor->Camp;
 					$sRetorn .= '<TD><label for='.$sNom.'>'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
-//					$sRetorn .= '<div id='.$sNom.' name='.$sNom.' class="input-group date" style="width:150px">';
 					$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
 					$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$this->ValorCampData($Valor->Camp).$Requerit.'>';
 					$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
 					$sRetorn .= '</div>';
 					$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
 					$sRetorn .= '</TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcSELECCIO:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
 					$sRetorn .= '  <select class="custom-select" style="width:'.$Valor->Longitud.'px" name="cmb_'.$Valor->Camp.'">';
@@ -774,10 +770,9 @@ class FormFitxa extends Form {
 						} 	
 					$sRetorn .= '  </select>';
 					$sRetorn .= '</TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcLOOKUP:
-					$sRetorn .= '<TR>';
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
 					$sRetorn .= '<div class="input-group mb-3">';
@@ -792,7 +787,6 @@ class FormFitxa extends Form {
 					$sRetorn .= '  </div>';
 					$sRetorn .= '</div>';
 					$sRetorn .= '</TD>';
-					$sRetorn .= '</TR>';
 					break;
 				case self::tcCOLUMNA_INICI:
 					$sRetorn .= '<TR><TD>';
@@ -815,6 +809,7 @@ class FormFitxa extends Form {
 					break;
 			}
 		}
+		$sRetorn .= '</TR>';
 		$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TDR></TR>';
 		$sRetorn .= '</TABLE>';
 		$sRetorn .= '</FORM>';
