@@ -430,9 +430,10 @@ class FormFitxa extends Form {
 	const tcSELECCIO = 7;
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
-	const tcCOLUMNA_INICI = 10;
-	const tcCOLUMNA_SALT = 11;
-	const tcCOLUMNA_FINAL = 12;
+	const tcPESTANYA = 10;
+	const tcCOLUMNA_INICI = 11;
+	const tcCOLUMNA_SALT = 12;
+	const tcCOLUMNA_FINAL = 13;
 	
 	// Opcions del FormFitxa.
 	const offNOMES_LECTURA = 1;  // Indica si el camp és pot escriure o no.
@@ -475,6 +476,12 @@ class FormFitxa extends Form {
 	* @var object
 	*/    
     public $Registre = null;
+	/**
+	* Indica si el formulari té pestanyes.
+	* @access private
+	* @var boolean
+	*/    
+    private $HiHaPestanyes = False;	
 
 	/**
 	 * Afegeix un camp del tipus especificat al formulari.
@@ -628,6 +635,19 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Marca l'inici d'una pestanya.
+	 * @param string $titol Títol de la pestanya.
+	 */
+	public function Pestanya(string $titol) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcPESTANYA;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Opcions = [];
+	}
+
+	/**
 	 * Marca l'inici de l'encolumnat.
 	 */
 	public function IniciaColumnes() {
@@ -701,6 +721,28 @@ class FormFitxa extends Form {
 	private function ValorCampCheckBox(string $camp) {
 		return ($this->Registre[$camp]) ? ' value=1 checked ' : ' value=0 ';
 	}
+
+	/**
+	 * Genera la capçalera (navegador) de les pestanyes (si n'hi ha).
+	 * @return string Codi HTML per generar el navegador de les pestanyes.
+	 */
+	private function GeneraNavegadorPestanya() {
+		$sRetorn = '';
+		$Active = 'active';
+		foreach($this->Camps as $Valor) {
+			switch ($Valor->Tipus) {
+				case self::tcPESTANYA:
+					$this->HiHaPestanyes = True;
+					$Titol = $Valor->Titol;
+					$sRetorn .= '<a class="nav-item nav-link '.$Active.'" id="nav-'.$Titol.'-tab" data-toggle="tab" href="#nav-'.$Titol.'" role="tab" aria-controls="nav-'.$Titol.'" aria-selected="true">'.$Titol.'</a>';
+					$Active = '';
+					break;
+			}
+		}
+		if ($sRetorn != '')
+			$sRetorn = '<nav style="padding-top:20px;padding-bottom:20px"><div class="nav nav-tabs" id="nav-tab" role="tablist">'.$sRetorn.'</div></nav>';
+		return $sRetorn;
+	}
 	
 	/**
 	 * Genera la fitxa per l'edició.
@@ -708,12 +750,14 @@ class FormFitxa extends Form {
 	private function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>';
 		$sRetorn .= '<FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">';
+//		$sRetorn .= '<FORM class="form-horizontal" id="frmFitxa" method="post" action="LibForms.ajax.php">';
 		$sRetorn .= "<input type=hidden name=hid_Taula value='".$this->Taula."'>";
 		$sRetorn .= "<input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>";
 		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";
 		$sRetorn .= "<input type=hidden name=hid_Id value='".$this->Id."'>";
-		$sRetorn .= '<TABLE>';
 		$bAlCostat = False;
+		$bPrimeraPestanya = True;
+		$sRetorn .= '<TABLE>';
 		$sRetorn .= '<TR>';
 		foreach($this->Camps as $Valor) {
 			$Requerit = (in_array(self::offREQUERIT, $Valor->Opcions) ? ' required' : '');
@@ -788,6 +832,27 @@ class FormFitxa extends Form {
 					$sRetorn .= '</div>';
 					$sRetorn .= '</TD>';
 					break;
+				case self::tcPESTANYA:
+					$Titol = $Valor->Titol;
+					if ($bPrimeraPestanya) {
+						$sRetorn .= '</TR><TR>';
+						$sRetorn .= '<TD colspan=10>';
+						$sRetorn .= '<DIV>';
+						$sRetorn .= $this->GeneraNavegadorPestanya();
+						$sRetorn .= '<div class="tab-content" id="nav-tabContent">';
+						$sRetorn .= '<div class="tab-pane fade show active" id="nav-'.$Titol.'" role="tabpanel" aria-labelledby="nav-'.$Titol.'-tab">';
+						$bPrimeraPestanya = False;
+						$sRetorn .= '<TABLE>';
+						$sRetorn .= '<TR>';
+					}
+					else {
+						$sRetorn .= '</TR></TABLE>';
+						$sRetorn .= '</div>';
+						$sRetorn .= '<div class="tab-pane fade" id="nav-'.$Titol.'" role="tabpanel" aria-labelledby="nav-'.$Titol.'-tab">';
+						$sRetorn .= '<TABLE>';
+						$sRetorn .= '<TR>';
+					}
+					break;
 				case self::tcCOLUMNA_INICI:
 					$sRetorn .= '<TR><TD>';
 					$sRetorn .= '</TD><TD>';
@@ -809,8 +874,10 @@ class FormFitxa extends Form {
 					break;
 			}
 		}
+		if ($this->HiHaPestanyes)
+			$sRetorn .= '</TD></TR></TABLE></DIV></DIV></DIV></DIV>';
 		$sRetorn .= '</TR>';
-		$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TDR></TR>';
+		$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
 		$sRetorn .= '</TABLE>';
 		$sRetorn .= '</FORM>';
 		$sRetorn .= '</DIV>';
