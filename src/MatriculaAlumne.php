@@ -46,90 +46,105 @@ $objUsuari = new Usuari($conn, $Usuari);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 	header("Location: Surt.php");
 
-CreaIniciHTML($Usuari, 'Visualitza matrícula');
+if ($accio == 'MostraExpedient')
+	CreaIniciHTML($Usuari, 'Visualitza expedient');
+else
+	CreaIniciHTML($Usuari, 'Visualitza matrícula');
+	
 echo '<script language="javascript" src="js/Matricula.js?v1.2" type="text/javascript"></script>';
 
-$SQL = Expedient::SQL($alumne);
-//print_r($SQL);
-
-$ResultSet = $conn->query($SQL);
-
-if ($ResultSet->num_rows > 0) {
-	$row = $ResultSet->fetch_assoc();
-	echo '<div class="alert alert-primary" role="alert">Alumne: <B>'.utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]).'</B></div>';
-	echo '<div class="alert alert-primary" role="alert">Cicle: <B>'.utf8_encode($row["NomCF"]).'</B></div>';
-	
-	echo '<TABLE class="table table-striped">';
-	echo '<thead class="thead-dark">';
-	echo "<TH>Mòdul</TH>";
-	echo "<TH>UF</TH>";
-	echo "<TH>Hores</TH>";
-	if ($accio == 'MostraExpedient')
-		echo "<TH colspan=5>Notes</TH>";
-	else {
-		echo "<TH>Matrícula</TH>";
-		echo "<TH>Convalidació</TH>";
-	}
-	echo '</thead>';
-
-	$ModulAnterior = '';
-	while($row) {
-		echo "<TR>";
-//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
-		if ($row["CodiMP"] != $ModulAnterior)
-			echo "<TD>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
-		else 
-			echo "<TD></TD>";
-		$ModulAnterior = $row["CodiMP"];
-		echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
-		echo "<TD>".$row["HoresUF"]."</TD>";
-		$Baixa = ($row["Baixa"] == True);
-		if ($Baixa) 
-			$sChecked = '';
-		else
-			$sChecked = ' checked';
-		$Convalidat = ($row["Convalidat"] == True);
-		$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
-		if ($accio == 'MostraExpedient') {
-			for ($i=1; $i<6; $i++) {
-				$style = 'width:2em;text-align:center';
-				if (($row['convocatoria'] == $i) && (!$Baixa)) {
-					// Marquem la convocatòria actual
-					$style .= ';border-width:1px;border-color:blue';
-					if ($row['orientativa'])
-						$style .= ";background-color:yellow";
-				}
-				$Nota = NumeroANota($row["Nota".$i]);
-				echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$Nota."'></TD>";
-			}
-		}
-		else {
-			// Columna matriculació
-			if ($Convalidat || ($row['convocatoria'] == 0))
-				echo "<TD></TD>";
-			else
-				echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
-			// Columna convalidació
-			if ($row['convocatoria'] == 0)
-				echo "<TD></TD>";
-			else
-				echo "<TD><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
-		}
-		echo "</TR>";
-		$row = $ResultSet->fetch_assoc();
-	}
-	echo "</TABLE>";
-};	
-
-if ($accio == 'MostraExpedient') {
-	echo "<DIV id=DescarregaExpedientPDF>";
-	echo '<a href="ExpedientPDF.php?AlumneId='.$alumne.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
-	echo "</DIV>";
+// L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
+$ButlletiVisible = True;
+if ($Usuari->es_alumne || $Usuari->es_pare) {
+	$Expedient = new Expedient($conn);
+	$ButlletiVisible = $Expedient->EsVisibleButlleti($alumne);
 }
 
-echo "<DIV id=debug></DIV>";
+if ($ButlletiVisible) {
+	$SQL = Expedient::SQL($alumne);
+	//print_r($SQL);
 
-$ResultSet->close();
+	$ResultSet = $conn->query($SQL);
+
+	if ($ResultSet->num_rows > 0) {
+		$row = $ResultSet->fetch_assoc();
+		echo '<div class="alert alert-primary" role="alert">Alumne: <B>'.utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]).'</B></div>';
+		echo '<div class="alert alert-primary" role="alert">Cicle: <B>'.utf8_encode($row["NomCF"]).'</B></div>';
+		
+		echo '<TABLE class="table table-striped">';
+		echo '<thead class="thead-dark">';
+		echo "<TH>Mòdul</TH>";
+		echo "<TH>UF</TH>";
+		echo "<TH>Hores</TH>";
+		if ($accio == 'MostraExpedient')
+			echo "<TH colspan=5>Notes</TH>";
+		else {
+			echo "<TH>Matrícula</TH>";
+			echo "<TH>Convalidació</TH>";
+		}
+		echo '</thead>';
+
+		$ModulAnterior = '';
+		while($row) {
+			echo "<TR>";
+	//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
+			if ($row["CodiMP"] != $ModulAnterior)
+				echo "<TD>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+			else 
+				echo "<TD></TD>";
+			$ModulAnterior = $row["CodiMP"];
+			echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
+			echo "<TD>".$row["HoresUF"]."</TD>";
+			$Baixa = ($row["Baixa"] == True);
+			if ($Baixa) 
+				$sChecked = '';
+			else
+				$sChecked = ' checked';
+			$Convalidat = ($row["Convalidat"] == True);
+			$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
+			if ($accio == 'MostraExpedient') {
+				for ($i=1; $i<6; $i++) {
+					$style = 'width:2em;text-align:center';
+					if (($row['convocatoria'] == $i) && (!$Baixa)) {
+						// Marquem la convocatòria actual
+						$style .= ';border-width:1px;border-color:blue';
+						if ($row['orientativa'])
+							$style .= ";background-color:yellow";
+					}
+					$Nota = NumeroANota($row["Nota".$i]);
+					echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$Nota."'></TD>";
+				}
+			}
+			else {
+				// Columna matriculació
+				if ($Convalidat || ($row['convocatoria'] == 0))
+					echo "<TD></TD>";
+				else
+					echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+				// Columna convalidació
+				if ($row['convocatoria'] == 0)
+					echo "<TD></TD>";
+				else
+					echo "<TD><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
+			}
+			echo "</TR>";
+			$row = $ResultSet->fetch_assoc();
+		}
+		echo "</TABLE>";
+	};	
+
+	if ($accio == 'MostraExpedient') {
+		echo "<DIV id=DescarregaExpedientPDF>";
+		echo '<a href="ExpedientPDF.php?AlumneId='.$alumne.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+		echo "</DIV>";
+	}
+	
+	$ResultSet->close();
+}
+else
+	echo 'El butlletí de notes no està disponible.';	
+
+echo "<DIV id=debug></DIV>";
 
 $conn->close();
 

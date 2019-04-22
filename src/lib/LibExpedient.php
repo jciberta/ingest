@@ -59,6 +59,26 @@ class Expedient
 		return $SQL;
     }
 
+
+	/**
+	 * Indica si el butlletí de notes és visible o no.
+	 * @param integer $AlumneId Id de l'alumne.
+	 * @return boolena Cert si el butlletí de notes és visible.
+	 */
+	public function EsVisibleButlleti(int $alumne): bool {
+		$SQL = ' SELECT * FROM MATRICULA M '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' WHERE C.finalitzat=0 '.
+			' AND M.alumne_id='.$alumne;
+		$bRetorn = False;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$bRetorn = ($row['butlleti_visible'] == 1);
+		}
+		return $bRetorn;
+	}
+
 	/**
 	 * Genera l'expedient en PDF per a un alumne.
 	 * @param integer $AlumneId Id de l'alumne.
