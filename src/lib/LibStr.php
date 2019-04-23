@@ -129,8 +129,9 @@ function TextAMySQL(string $text)
 		$Retorn = 'NULL';
 	else {
 		$Codificacio = mb_detect_encoding($text);
-		if (!in_array($Codificacio, ['ASCII']))
-			$text = utf8_decode($text);
+//print '*** Codificació('.$text.'): '.$Codificacio.' ***';
+		if (!in_array($Codificacio, ['ASCII', 'UTF-8']))
+			$text = utf8_encode($text); // O decode?
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
 	return $Retorn;
