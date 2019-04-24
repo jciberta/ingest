@@ -1,6 +1,6 @@
 # InGest
 
-## Implanatació
+## Implantació
 
 ### Nova versió
 
