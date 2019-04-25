@@ -259,6 +259,7 @@ class Notes
 						else if ($row["Convocatoria"] != self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
 							// Nota recuperada
 							$Nota = UltimaNota($row);
+							$Deshabilitat = " disabled ";
 							$style .= ";background-color:lime";
 							$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
 						}

@@ -312,6 +312,26 @@ function NumeroANota(Valor)
 }
 
 /**
+ * Donat un registre de notes, torna la última convocatòria amb nota.
+ * @param element Registre amb les dades de la nota.
+ * @return Última convocatòria.
+ */
+function UltimaConvocatoriaNota(element) {
+	if (element.nota5 != '') 
+		return 5;
+	else if (element.nota4 != '') 
+		return 4;
+	else if (element.nota3 != '') 
+		return 3;
+	else if (element.nota2 != '') 
+		return 2;
+	else if (element.nota1 != '') 
+		return 1;
+	else 
+		return -999;
+}
+
+/**
  * ActualitzaTaulaNotes
  *
  * Actualitza la nota d'un input.
@@ -334,7 +354,7 @@ function ActualitzaTaulaNotes(element) {
 			$('#debug').html('Executant ActualitzaTaulaNotes... OK');
             //$('#debug2').html(data);
 			var jsonData = JSON.parse(data);
-//console.dir(jsonData);
+console.dir(jsonData);
 			var i, sNota, iNota, iNotaId, sTxtNotaId;
 			for (i in jsonData.notes) {
 				if (jsonData.notes[i].convocatoria > 0) {
@@ -344,9 +364,17 @@ function ActualitzaTaulaNotes(element) {
 					iNotaId = jsonData.notes[i].notes_id;
 					sTxtNotaId = 'txtNotaId_' + iNotaId + '_' + jsonData.notes[i].convocatoria;
 					//console.dir(sTxtNotaId + ': ' + iNota);
+
+					// Per si hi han recuperacions
+					// iNota = UltimaConvocatoriaNota(jsonData.notes[i]);
+
 					sNota = NumeroANota(iNota);
 	//				console.dir(sNota);
-					$('input[name="' + sTxtNotaId + '"]').val(sNota);
+	
+					casella = $('input[name="' + sTxtNotaId + '"]');
+					if (!casella.disabled)
+						casella.val(sNota);
+//					$('input[name="' + sTxtNotaId + '"]').val(sNota);
 				}
 			}		
         }, 
