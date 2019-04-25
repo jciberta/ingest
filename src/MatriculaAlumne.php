@@ -43,7 +43,7 @@ if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
 	header("Location: Surt.php");
 
 $objUsuari = new Usuari($conn, $Usuari);
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 	header("Location: Surt.php");
 
 if ($accio == 'MostraExpedient')
