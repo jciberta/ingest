@@ -9,6 +9,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibStr.php');
+
  /**
  * Elimina un element de l'array d'una determinada posició.
  *
@@ -48,7 +50,7 @@ function InsertaEnArray(& $Array, $Element, $Index)
 function CodificaArrayUTF8(array $Array): array
 {
 	for ($i=0; $i<count($Array); $i++) {
-		$Array[$i] = utf8_encode($Array[$i]);
+		$Array[$i] = CodificaUTF8($Array[$i]);
 	}
 	return $Array;
 }

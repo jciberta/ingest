@@ -30,6 +30,8 @@ if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 if ((empty($_POST)) || (!isset($_POST['submit'])))
 	header("Location: Surt.php");
 
+CreaIniciHTML($Usuari, "Importació d'usuaris");
+
 // https://www.w3schools.com/php/php_file_upload.asp
 
 $target_dir = INGEST_DATA."/upload/";
@@ -39,8 +41,9 @@ $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
 // Check if file already exists
 if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
+	unlink($target_file);
+//    echo "Sorry, file already exists.";
+//    $uploadOk = 0;
 }
 // Check file size
 if ($_FILES["FitxerCSV"]["size"] > 500000) {
@@ -55,16 +58,16 @@ if ($imageFileType != "csv") {
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
+	exit;
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["FitxerCSV"]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["FitxerCSV"]["name"]). " has been uploaded.";
+        echo "El fitxer ". basename( $_FILES["FitxerCSV"]["name"]). " s'ha penjat correctament.<p>";
     } else {
         echo "Sorry, there was an error uploading your file.";
+		exit;
     }
 }
-
-CreaIniciHTML($Usuari, "Importació d'usuaris");
 
 $ImportaUsuaris = new ImportaUsuaris($conn, $Usuari);
 $inputFileName = INGEST_DATA.'/upload/'.$_FILES["FitxerCSV"]["name"];

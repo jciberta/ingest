@@ -23,7 +23,7 @@ if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 
 CreaIniciHTML($Usuari, "Importació d'usuaris");
 
-echo '<br>';
+echo "<P><font color=blue>El fitxer a importar ha d'estar en UTF-8.</font></P>";
 
 echo '<form action="ImportaUsuaris.php" method="post" enctype="multipart/form-data">';
 echo '	<div class="form-group">';

@@ -116,6 +116,22 @@ function JSONEncodeUTF8($row)
 }
 
 /**
+ * CodificaUTF8
+ *
+ * Codifica un text en UTF8. Si ja ho era, el deixa igual (a diferència de utf8_encode).
+ *
+ * @param string $text text a codificar en UTF8.
+ * @return string Text codificat.
+ */
+function CodificaUTF8(string $text): string
+{
+	$Codificacio = mb_detect_encoding($text);
+	if (!in_array($Codificacio, ['UTF-8', 'ASCII']))
+		$text = utf8_encode($text); 
+	return $text;
+}
+
+/**
  * TextAMySQL
  *
  * Prepara un camp de text per a formar part d'una SQL.
@@ -128,10 +144,8 @@ function TextAMySQL(string $text)
 	if ($text == '')
 		$Retorn = 'NULL';
 	else {
-		$Codificacio = mb_detect_encoding($text);
-//print '*** Codificació('.$text.'): '.$Codificacio.' ***';
-		if (!in_array($Codificacio, ['ASCII', 'UTF-8']))
-			$text = utf8_encode($text); // O decode?
+		$text = CodificaUTF8($text);
+//print $text." -> CodificaUTF8(text): ".$text.'<BR>';
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
 	return $Retorn;

@@ -84,7 +84,7 @@ class ImportaUsuaris extends Importa {
 		switch ($this->Modalitat) {
 			case self::tiSAGA:
 				for ($i=0; $i < count($Linia); $i++) {
-					$nom = utf8_encode($Linia[$i]);
+					$nom = CodificaUTF8($Linia[$i]);
 					$this->Camps[$i] = $nom;
 					$this->CampsNom[$nom] = $i;
 				}
@@ -219,6 +219,8 @@ class ImportaUsuaris extends Importa {
 			" pare_id=".$IdPare.", ".
 			" mare_id=".$IdMare.
 			" WHERE username='".$NIF."'";
+//print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 		$ResultSet = $this->Connexio->query($SQL);
 	}
 
@@ -245,6 +247,7 @@ class ImportaUsuaris extends Importa {
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]).
 				" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -273,6 +276,7 @@ class ImportaUsuaris extends Importa {
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]).
 				" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -324,6 +328,7 @@ class ImportaUsuaris extends Importa {
 				$IdPare.", ".
 				$IdMare;
 //print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -358,6 +363,7 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 1']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]);
 //print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -393,6 +399,7 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 2']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]);
 //print $SQL . ' <br>';		
+			$SQL = utf8_decode($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -443,7 +450,7 @@ class ImportaUsuaris extends Importa {
 	 */
 	public function Importa(array $Linia) {
 		echo '<pre>';
-		$Linia = CodificaArrayUTF8($Linia);
+		//$Linia = CodificaArrayUTF8($Linia);
 		switch ($this->Modalitat) {
 			case self::tiSAGA:
 				$NIF = $this->ObteNIF($Linia[$this->CampsNom['DOC. IDENTITAT']]);
