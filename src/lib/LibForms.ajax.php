@@ -69,7 +69,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
-print '<br>DesaFitxa.jsonForm: '.$jsonForm;
+		if (Config::Debug)		
+			print '<br><b>DesaFitxa.jsonForm</b>: '.$jsonForm;
 		$data = json_decode($jsonForm);
 		$sCamps = '';
 		$sValues = '';
@@ -97,7 +98,7 @@ print '<br>DesaFitxa.jsonForm: '.$jsonForm;
 					case 'edd':
 						// Camp data
 						$sCamps .= substr($Valor->name, 4).", ";
-print '<br>Data: '.$Valor->value;
+//print '<br>Data: '.$Valor->value;
 //							if ComprovaData($Valor->value) 
 								$sValues .= DataAMySQL($Valor->value).", ";
 //							else
@@ -160,7 +161,8 @@ print '<br>Data: '.$Valor->value;
 		}
 		$SQL = utf8_decode($SQL);
 		$conn->query($SQL);
-print '<BR>SQL: '.$SQL;
+		if (Config::Debug)		
+			print '<BR><b>SQL</b>: '.$SQL;
 	}
 	else {
 		if ($CFG->Debug)

@@ -902,10 +902,10 @@ class FormFitxa extends Form {
 	 */
 	private function GeneraMissatges() {
 		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
-		$sRetorn .= "El registre s'ha desat correctament.";
+		$sRetorn .= "Les dades s'han desat correctament.";
 		$sRetorn .= '</div>';
-		$sRetorn = '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
-		$sRetorn .= "Hi ha hagut un error en desar el registre.";
+		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
+		$sRetorn .= "Hi ha hagut un error en desar les dades.";
 		$sRetorn .= '</div>';
 		return $sRetorn;
 	}
@@ -918,8 +918,8 @@ class FormFitxa extends Form {
 		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
-		echo $this->GeneraFitxa();
 		echo $this->GeneraMissatges();
+		echo $this->GeneraFitxa();
 		CreaFinalHTML();
 	}
 } 
