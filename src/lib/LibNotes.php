@@ -275,6 +275,10 @@ class Notes
 						$style .= ";background-color:grey";
 					if ($Nota >= 5)
 						$Hores += $row["Hores"];
+					
+					// <INPUT>
+					// name: conté id i convocatòria
+					// id: conté les coordenades x, y
 					$ValorNota = NumeroANota($Nota);
 					$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 					echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";

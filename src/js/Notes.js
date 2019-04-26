@@ -354,7 +354,7 @@ function ActualitzaTaulaNotes(element) {
 			$('#debug').html('Executant ActualitzaTaulaNotes... OK');
             //$('#debug2').html(data);
 			var jsonData = JSON.parse(data);
-console.dir(jsonData);
+//console.dir(jsonData);
 			var i, sNota, iNota, iNotaId, sTxtNotaId;
 			for (i in jsonData.notes) {
 				if (jsonData.notes[i].convocatoria > 0) {
@@ -372,9 +372,11 @@ console.dir(jsonData);
 	//				console.dir(sNota);
 	
 					casella = $('input[name="' + sTxtNotaId + '"]');
-					if (!casella.disabled)
+					if(typeof casella[0] === 'undefined' || casella[0].style.backgroundColor == 'lime') {
+						// No actualitzem
+					}
+					else 
 						casella.val(sNota);
-//					$('input[name="' + sTxtNotaId + '"]').val(sNota);
 				}
 			}		
         }, 
