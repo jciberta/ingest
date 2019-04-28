@@ -100,6 +100,7 @@ class Curs
 //		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
+		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
 	}
 }

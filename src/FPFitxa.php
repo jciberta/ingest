@@ -36,6 +36,21 @@ unset($frm);
 
 switch ($accio) {
     case "Families":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		
+		$Opcions = [FormFitxa::offREQUERIT];
+		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		if ($NomesLectura)
+			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Edició famílies';
+		$frm->Taula = 'FAMILIA_FP';
+		$frm->ClauPrimaria = 'familia_fp_id';
+		$frm->Id = $Id;
+		$frm->AfegeixText('nom', 'Nom', 200, $Opcions);
+		$frm->EscriuHTML();	
         break;
     case "CiclesFormatius":
         break;

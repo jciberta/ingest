@@ -173,6 +173,12 @@ class FormRecerca extends Form {
 	*/    
     public $URLEdicio = ''; 
 	/**
+	* Permet afegir un registre. Usa la URLEdicio per indicar la fitxa.
+	* @access public
+	* @var boolean
+	*/    
+    public $PermetAfegir = False; 
+	/**
 	* Permet suprimir un registre.
 	* @access public
 	* @var boolean
@@ -319,12 +325,24 @@ class FormRecerca extends Form {
 	private function GeneraCerca() {
 		$sRetorn = '<DIV id=Recerca style="padding:10px">';
 		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
+		$sRetorn .= '    <TABLE style="width:100%">';
+		$sRetorn .= '    <TR>';
+		$sRetorn .= '    <TD>';
 		$sRetorn .= '    <input class="form-control mr-sm-2" type="text" style="width:500px" name="edtRecerca" placeholder="Text a cercar" aria-label="Search" autofocus onkeypress="RecercaKeyPress(event);">';
 
 		// *** No pot ser un botó, ja que el submit del form fa recarregar la pàgina! (multitud d'hores perdudes!) ***
 		//$sRetorn .= '    <button class="btn btn-outline-primary my-2 my-sm-0" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</button>';
 		$sRetorn .= '    <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnRecerca" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</a>';
 
+		$sRetorn .= '    </TD>';
+		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
+			$sRetorn .= '<TD style="align:right">';
+			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
+			$sRetorn .= '  <a href="'.$this->URLEdicio.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
+			$sRetorn .= '</TD>';
+		}
+		$sRetorn .= '    </TR>';
+		$sRetorn .= '    </TABLE>';
 		$sRetorn .= $this->GeneraPartOculta();
 		$sRetorn .= '  </FORM>';
 		$sRetorn .= '</DIV>';
