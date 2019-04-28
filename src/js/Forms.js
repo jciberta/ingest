@@ -256,12 +256,14 @@ console.dir("jsonValorRetorn: " + jsonValorRetorn);
 	// Recorrem les propietats (del 1r nivell) de l'objecte.
 	// La primera propietat és l'identificador.
 	// https://stackoverflow.com/questions/684672/how-do-i-loop-through-or-enumerate-a-javascript-object 
+console.dir(obj);
 	var bPrimer = true;
 	var sText = '';
 	for (var key in obj) {
 		if (obj.hasOwnProperty(key)) {
 			if (bPrimer) {
 				targetFieldCodi.value = obj[key]; 
+console.log("targetFieldCodi: " + obj[key]);
 				bPrimer = false;
 			}
 			else {
@@ -271,6 +273,7 @@ console.dir("jsonValorRetorn: " + jsonValorRetorn);
 		}
 	}
 	targetFieldValor.value = sText.trim();
+console.log("targetFieldValor: " + sText);
 
 	window.focus();
 }

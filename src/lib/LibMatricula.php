@@ -10,40 +10,6 @@
  */
 
 /**
- * CreaMatricula
- *
- * Crea la matrícula per a un alumne. Quan es crea la matrícula:
- *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
- *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les (PENDENT!)
- * Ús: 
- *
- * @param object $Connexio Connexió a la base de dades.
- * @param integer $CursId Id del curs.
- * @param integer $AlumneId Id de l'alumne.
- * @param integer $CicleId Id del cicle.
- * @param integer $Nivell Nivell (1r o 2n).
- * @param integer $Grup Grup (cap, A, B, C).
- * @return integer Valor de retorn: 0 Ok, -1 Alumne ja matriculat, -2 Error.
- */
-function CreaMatricula($Connexio, $Curs, $Alumne, $Cicle, $Nivell, $Grup)
-{
-	$SQL = " CALL CreaMatricula(".$Curs.", ".$Alumne.", ".$Cicle.", ".$Nivell.", '".$Grup."', @retorn)";
-	
-	// Obtenció de la variable d'un procediment emmagatzemat.
-	// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
-	if (!$Connexio->query("SET @retorn = -2") || !$Connexio->query($SQL)) {
-		echo "CALL failed: (" . $Connexio->errno . ") " . $Connexio->error;
-	}
-
-	if (!($res = $Connexio->query("SELECT @retorn as _retorn"))) {
-		echo "Fetch failed: (" . $Connexio->errno . ") " . $Connexio->error;
-	}
-
-	$row = $res->fetch_assoc();
-	return $row['_retorn'];	
-}
-
-/**
  * Classe que encapsula les utilitats per al maneig de la matrícula.
  */
 class Matricula 
@@ -70,7 +36,39 @@ class Matricula
 	function __construct($con, $user) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
-	}	
+	}
+
+	/**
+	 * CreaMatricula
+	 * Crea la matrícula per a un alumne. Quan es crea la matrícula:
+	 *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
+	 *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les (PENDENT!)
+	 *
+	 * @param integer $CursId Id del curs.
+	 * @param integer $AlumneId Id de l'alumne.
+	 * @param integer $Grup Grup (cap, A, B, C).
+	 * @param integer $GrupTutoria Grup de tutoria.
+	 * @return integer Valor de retorn: 0 Ok, -1 Alumne ja matriculat, -2 Error.
+	 */
+	public function CreaMatricula($Curs, $Alumne, $Grup, $GrupTutoria) {
+		$SQL = " CALL CreaMatricula(".$Curs.", ".$Alumne.", '".$Grup."', '".$GrupTutoria."', @retorn)";
+
+		if (Config::Debug)
+			print $SQL.'<br>';		
+		
+		// Obtenció de la variable d'un procediment emmagatzemat.
+		// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
+		if (!$this->Connexio->query("SET @retorn = -2") || !$this->Connexio->query($SQL)) {
+			echo "CALL failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
+		}
+
+		if (!($res = $this->Connexio->query("SELECT @retorn as _retorn"))) {
+			echo "Fetch failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
+		}
+
+		$row = $res->fetch_assoc();
+		return $row['_retorn'];	
+	}
 	
 	/**
 	 * Convalida una UF (no es pot desfer).

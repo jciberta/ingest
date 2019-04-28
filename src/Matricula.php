@@ -24,39 +24,58 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
+
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Matrícula');
 
-$curs = $_POST['curs'];
-$alumne = $_POST['alumne'];
-$cicle = $_POST['cicle'];
-$nivell = $_POST['nivell'];
-$grup = $_POST['grup'];
+$alumne = $_POST['lkh_alumne'];
+$curs = $_POST['cmb_curs'];
+$grup = $_POST['cmb_grup'];
+$GrupTutoria = $_POST['cmb_grup_tutoria'];
 
-if (CreaMatricula($conn, $curs, $alumne, $cicle, $nivell, $grup) == -1) {
+if (($alumne == '') || ($curs == '')) {
+	echo '<div class="alert alert-danger" id="MissatgeError" role="alert">';
+	echo "Error en els paràmetres!";
+	echo '</div>';
+	exit;
+}
+
+$Mat = new Matricula($conn, $Usuari);
+
+if ($Mat->CreaMatricula($curs, $alumne, $grup, $GrupTutoria) == -1) {
+	echo '<div class="alert alert-danger" id="MissatgeError" role="alert">';
 	echo "L'alumne ja està matriculat!";
+	echo '</div>';
 }
 else {
+	echo '<div class="alert alert-success" id="MissatgeCorrecte" role="alert">';
+	echo "La matrícula s'ha creat correctament.";
+	echo '</div>';
+	
 	// Llistem les UF del cicle/nivell
 	$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.* '.
 		' FROM UNITAT_FORMATIVA UF '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-		' WHERE CF.cicle_formatiu_id='.$cicle.
-		' AND UF.nivell='.$nivell;
-	//print_r($SQL);
+		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+		' WHERE C.curs_id='.$curs.
+		' AND C.nivell=UF.nivell';
+//		' AND UF.nivell='.$nivell;
+//	print_r($SQL);
 
 	$ResultSet = $conn->query($SQL);
-
 	if ($ResultSet->num_rows > 0) {
-		echo "<TABLE>";
+		echo '<TABLE class="table table-striped">';
+		echo '<THEAD class="thead-dark">';
 		echo "<TH>Cicle</TH>";
 		echo "<TH>Mòdul</TH>";
 		echo "<TH>UF</TH>";
 		echo "<TH>Hores</TH>";
+		echo '</THEAD>';
 		while($row = $ResultSet->fetch_assoc()) {
 			echo "<TR>";
 			echo utf8_encode("<TD>".$row["NomCF"]."</TD>");
@@ -73,34 +92,3 @@ else {
 $conn->close();
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

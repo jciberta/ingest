@@ -107,6 +107,72 @@ class Form {
 		$ResultSet->close();
 		return $Retorn;
 	}	
+	
+	/**
+	 * CreaDesplegable
+	 *
+	 * Crea un desplegable (combobox) HTML com a 2 cel·les d'una taula.
+	 * Ús: CreaDesplegable(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
+	 *
+	 * @param string $Nom Nom del desplegable.
+	 * @param string $Titol Títol del desplegable.
+	 * @param integer $Longitud Longitud del desplegable.
+	 * @param array $Codi Codis de la llista.
+	 * @param array $Valor Valors de la llista.
+	 * @return void
+	 */
+	public function CreaDesplegable(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor): string
+	{
+		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= '  <select class="custom-select" style="width:'.$Longitud.'px" name="cmb_'.$Nom.'">';
+		$LongitudCodi = count($Codi); 
+		for ($i = 0; $i < $LongitudCodi; $i++)
+		{
+			$Selected = ''; // Falta implementar!
+			$sRetorn .= '<option value="'.$Codi[$i].'"'.$Selected.'>'.$Valor[$i].'</option>';
+		} 	
+		$sRetorn .= '  </select>';
+		$sRetorn .= '</TD>';
+		return $sRetorn;
+	}
+
+	/**
+	 * Crea un "lookup" (element INPUT + BUTTON per cercar les dades en una altra finestra).
+	 * Conté:
+	 *  - Camp amagat on hi haurà el identificador (camp lkh_).
+	 *  - Camp amagat on hi haurà els camps a mostrar dels retornats (camp lkh_X_camps).
+	 *  - Camp text on hi haurà la descripció (camp lkp_).
+	 *  - Botó per fer la recerca.	 
+	 *
+	 * @param string $Nom Nom del lookup.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param string $URL Pàgina web de recerca.
+	 * @param string $Taula Taula associada.
+	 * @param string $Id Identificador del registre que es mostra.
+	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 * @param array $off Opcions del formulari.
+	 * @return string Codi HTML del lookup.
+	 */
+	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = []) {
+		$NomesLectura = '';
+		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= '<div class="input-group mb-3">';
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom.">";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
+//		$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value=""'.$NomesLectura.'>';
+		$sRetorn .= '  <div class="input-group-append">';
+		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+//		$onClick = ($NomesLectura) ? '': $onClick;
+		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+		$sRetorn .= '  </div>';
+		$sRetorn .= '</div>';
+		$sRetorn .= '</TD>';
+		return $sRetorn;
+	}
 } 
 
 /**
