@@ -54,6 +54,9 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'familia_fp_id';
 		$frm->Camps = 'nom';
 		$frm->Descripcions = 'Nom';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=Families';
+		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;

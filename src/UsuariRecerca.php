@@ -134,6 +134,7 @@ switch ($Accio) {
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Alumne, Professor, Pare';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 		$frm->EscriuHTML();

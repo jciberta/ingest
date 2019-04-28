@@ -44,6 +44,7 @@ switch ($accio) {
 		$frm->Titol = 'Curs';
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
+		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);

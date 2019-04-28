@@ -160,9 +160,18 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			
 		}
 		$SQL = utf8_decode($SQL);
-		$conn->query($SQL);
 		if (Config::Debug)		
 			print '<BR><b>SQL</b>: '.$SQL;
+		
+		try {
+			if ($conn->query($SQL)) {
+				//throw new Exception($conn->error.'. SQL: '.$SQL);
+				print $conn->error.'. SQL: '.$SQL;
+			}
+		} catch (Exception $e) {
+			print "ERROR DesaFitxa. Causa: ".$e->getMessage();
+//			exit;
+		}		
 	}
 	else {
 		if ($CFG->Debug)
