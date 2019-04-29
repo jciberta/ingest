@@ -2,6 +2,13 @@
 
 ## Implantació
 
+### Crea versió
+
+```
+git tag <nom>
+git push origin <nom>
+```
+
 ### Nova versió
 
 ```
