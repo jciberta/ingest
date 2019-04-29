@@ -10,7 +10,7 @@
  */
 
 class Config {
-	const Versio     = '0.3';
+	const Versio     = '0.4';
 	const Host       = 'localhost';
 	const BaseDades  = 'InGest';
 	const Usuari     = 'root';
@@ -40,7 +40,7 @@ if (defined('STDIN')) {
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('ROOT', '/var/www/html/ingest/src');
-		define('INGEST_DATA', '/var/www/html/ingest-data');
+		define('INGEST_DATA', '/var/www/ingest-data');
 	}
 }
 else {
@@ -51,7 +51,7 @@ else {
 		define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
-		define('INGEST_DATA', '/var/www/html/ingest-data');
+		define('INGEST_DATA', '/var/www/ingest-data');
 	}	
 }
 
