@@ -26,6 +26,11 @@ require_once(ROOT.'/lib/LibHTML.php');
 class Form {
 	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
 
+	// Opcions del FormFitxa.
+	const offNOMES_LECTURA = 1; // Indica si el camp és pot escriure o no.
+	const offREQUERIT = 2; 		// Indica si el camp és obligatori.
+	const offAL_COSTAT = 3;     // Indica si el camp es posiciona al costat de l'anterior (per defecte a sota).
+
 	/**
 	* Connexió a la base de dades.
 	* @access public 
@@ -109,27 +114,27 @@ class Form {
 	}	
 	
 	/**
-	 * CreaDesplegable
+	 * CreaLlista
 	 *
-	 * Crea un desplegable (combobox) HTML com a 2 cel·les d'una taula.
-	 * Ús: CreaDesplegable(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
+	 * Crea una llista desplegable (combobox) HTML com a 2 cel·les d'una taula.
+	 * Ús: CreaLlista(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
 	 *
 	 * @param string $Nom Nom del desplegable.
 	 * @param string $Titol Títol del desplegable.
 	 * @param integer $Longitud Longitud del desplegable.
 	 * @param array $Codi Codis de la llista.
 	 * @param array $Valor Valors de la llista.
+	 * @param string $CodiSeleccionat Codi de la llista seleccionat per defecte.
 	 * @return void
 	 */
-	public function CreaDesplegable(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor): string
+	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, string $CodiSeleccionat = ''): string
 	{
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '  <select class="custom-select" style="width:'.$Longitud.'px" name="cmb_'.$Nom.'">';
 		$LongitudCodi = count($Codi); 
-		for ($i = 0; $i < $LongitudCodi; $i++)
-		{
-			$Selected = ''; // Falta implementar!
+		for ($i = 0; $i < $LongitudCodi; $i++) {
+			$Selected = (($CodiSeleccionat != '') && ($Codi[$i] == $CodiSeleccionat)) ? ' selected ': '';
 			$sRetorn .= '<option value="'.$Codi[$i].'"'.$Selected.'>'.$Valor[$i].'</option>';
 		} 	
 		$sRetorn .= '  </select>';
@@ -153,20 +158,24 @@ class Form {
 	 * @param string $Id Identificador del registre que es mostra.
 	 * @param string $Camps Camps a mostrar al lookup separats per comes.
 	 * @param array $off Opcions del formulari.
+	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
 	 * @return string Codi HTML del lookup.
 	 */
-	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = []) {
-		$NomesLectura = '';
+	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], string $CodiSeleccionat = '') {
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');		
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom.">";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat.">";
 		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
-//		$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value=""'.$NomesLectura.'>';
+		if ($CodiSeleccionat == '')
+			$Text = '';
+		else
+			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.'>';
 		$sRetorn .= '  <div class="input-group-append">';
 		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
-//		$onClick = ($NomesLectura) ? '': $onClick;
+		$onClick = ($NomesLectura) ? '': $onClick;
 		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
 		$sRetorn .= '  </div>';
 		$sRetorn .= '</div>';
@@ -518,11 +527,7 @@ class FormFitxa extends Form {
 	const tcCOLUMNA_INICI = 11;
 	const tcCOLUMNA_SALT = 12;
 	const tcCOLUMNA_FINAL = 13;
-	
-	// Opcions del FormFitxa.
-	const offNOMES_LECTURA = 1;  // Indica si el camp és pot escriure o no.
-	const offREQUERIT = 2; // Indica si el camp és obligatori.
-	const offAL_COSTAT = 3;      // Indica si el camp es posiciona al costat de l'anterior (per defecte a sota).
+	const tcESPAI = 14;
 	
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
@@ -719,6 +724,23 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix un espai (horitzontal) formulari.
+	 *
+	 * @param integer $altura Altura.
+	 * @return void
+	 */
+	public function AfegeixEspai(int $altura = 2) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcESPAI;
+//		$this->Camps[$i]->Camp = $camp;
+//		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Longitud = $altura;
+		$this->Camps[$i]->Opcions = [];
+	}
+
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -848,6 +870,9 @@ class FormFitxa extends Form {
 			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) ? ' readonly' : '');
 			$bAlCostat = in_array(self::offAL_COSTAT, $Valor->Opcions);
 			switch ($Valor->Tipus) {
+				case self::tcESPAI:
+					$sRetorn .= '</TR><TR style="padding:'.$Valor->Longitud.'px"><TD>&nbsp</TD>';
+					break;
 				case self::tcTEXT:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
@@ -887,6 +912,8 @@ class FormFitxa extends Form {
 					break;
 				case self::tcSELECCIO:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
+					/*
 					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
 					$sRetorn .= '  <select class="custom-select" style="width:'.$Valor->Longitud.'px" name="cmb_'.$Valor->Camp.'">';
@@ -897,11 +924,14 @@ class FormFitxa extends Form {
 							$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'"'.$Selected.'>'.$Valor->Llista->Valors[$i].'</option>';
 						} 	
 					$sRetorn .= '  </select>';
-					$sRetorn .= '</TD>';
+					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcLOOKUP:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					
+$sRetorn .= $this->CreaLookup($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Lookup->URL, $Valor->Lookup->Taula, $Valor->Lookup->Id, $Valor->Lookup->Camps, $Valor->Opcions, $this->Registre[$Valor->Camp]);
+					
+/*					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
 					$sRetorn .= '<div class="input-group mb-3">';
 					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=".$this->Registre[$Valor->Camp].">";
@@ -914,7 +944,7 @@ class FormFitxa extends Form {
 					$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
 					$sRetorn .= '  </div>';
 					$sRetorn .= '</div>';
-					$sRetorn .= '</TD>';
+					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;

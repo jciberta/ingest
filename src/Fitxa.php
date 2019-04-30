@@ -12,6 +12,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 
 session_start();
@@ -46,10 +47,19 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
+		
+		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT any_academic_id, nom FROM ANY_ACADEMIC", "any_academic_id", "nom");
+		echo $frm->AfegeixLlista('any_academic_id', 'Any acadèmic', 200, $aCurs[0], $aCurs[1]);
+
+		$aCF = ObteCodiValorDesDeSQL($conn, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU", "cicle_formatiu_id", "nom");
+		echo $frm->AfegeixLlista('cicle_formatiu_id', 'Cicle formatiu', 200, $aCF[0], $aCF[1]);
+		
+		$frm->AfegeixEspai();
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', 10, [FormFitxa::offREQUERIT]);
 
+		$frm->AfegeixEspai();
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixCheckBox('butlleti_visible', 'Butlletí visible', [FormFitxa::offREQUERIT]);
