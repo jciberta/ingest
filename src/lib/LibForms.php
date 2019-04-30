@@ -24,7 +24,7 @@ require_once(ROOT.'/lib/LibHTML.php');
  * Classe base de la quals descendeixen els formularis.
  */
 class Form {
-	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
+//	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
 
 	// Opcions del FormFitxa.
 	const offNOMES_LECTURA = 1; // Indica si el camp és pot escriure o no.
@@ -112,6 +112,52 @@ class Form {
 		$ResultSet->close();
 		return $Retorn;
 	}	
+
+	/**
+	 * Crea un element "data" (element INPUT + BUTTON per cercar les dates).
+	 *
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $DataSeleccionada Valor de la data per defecte de l'element.
+	 * @return string Codi HTML del lookup.
+	 */
+	public function CreaData(string $Nom, string $Titol, array $off = [], $DataSeleccionada = NULL) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');
+
+		$sNom = 'edd_' . $Nom;
+		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
+		$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$DataSeleccionada.$Requerit.$NomesLectura.'>';
+		$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
+		$sRetorn .= '</div>';
+		$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
+		$sRetorn .= '</TD>';
+
+
+
+		/*$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');		
+		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= '<div class="input-group mb-3">';
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat.">";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
+		if ($CodiSeleccionat == '')
+			$Text = '';
+		else
+			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.'>';
+		$sRetorn .= '  <div class="input-group-append">';
+		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+		$onClick = ($NomesLectura) ? '': $onClick;
+		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+		$sRetorn .= '  </div>';
+		$sRetorn .= '</div>';
+		$sRetorn .= '</TD>';*/
+		return $sRetorn;
+	}
 	
 	/**
 	 * CreaLlista
@@ -124,10 +170,10 @@ class Form {
 	 * @param integer $Longitud Longitud del desplegable.
 	 * @param array $Codi Codis de la llista.
 	 * @param array $Valor Valors de la llista.
-	 * @param string $CodiSeleccionat Codi de la llista seleccionat per defecte.
+	 * @param mixed $CodiSeleccionat Codi de la llista seleccionat per defecte.
 	 * @return void
 	 */
-	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, string $CodiSeleccionat = ''): string
+	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL): string
 	{
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
@@ -900,7 +946,9 @@ class FormFitxa extends Form {
 					break;
 				case self::tcDATA:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sNom = 'edd_' . $Valor->Camp;
+					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
+					
+/*					$sNom = 'edd_' . $Valor->Camp;
 					$sRetorn .= '<TD><label for='.$sNom.'>'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
 					$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
@@ -908,10 +956,11 @@ class FormFitxa extends Form {
 					$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
 					$sRetorn .= '</div>';
 					$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
-					$sRetorn .= '</TD>';
+					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcSELECCIO:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$CodiSeleccionat = $this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					/*
 					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
@@ -928,8 +977,7 @@ class FormFitxa extends Form {
 					break;
 				case self::tcLOOKUP:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					
-$sRetorn .= $this->CreaLookup($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Lookup->URL, $Valor->Lookup->Taula, $Valor->Lookup->Id, $Valor->Lookup->Camps, $Valor->Opcions, $this->Registre[$Valor->Camp]);
+					$sRetorn .= $this->CreaLookup($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Lookup->URL, $Valor->Lookup->Taula, $Valor->Lookup->Id, $Valor->Lookup->Camps, $Valor->Opcions, $this->Registre[$Valor->Camp]);
 					
 /*					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';
