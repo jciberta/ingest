@@ -973,7 +973,14 @@ class FormFitxa extends Form {
 	 */
 	private function CarregaDades() {
 		if ($this->Id > 0) {
-			$SQL = 'SELECT * FROM '.$this->Taula.' WHERE '.$this->ClauPrimaria.'='.$this->Id;
+			$aClauPrimaria = explode(',', $this->ClauPrimaria);
+			$aId = explode(',', $this->Id);
+			for ($i=0; $i<count($aClauPrimaria); $i++) 
+				$aClauPrimaria[$i] .= '='.$aId[$i];
+			$Where = implode(' AND ', $aClauPrimaria);
+//echo '<br>'.$Where.'<br>';			
+			$SQL = 'SELECT * FROM '.$this->Taula.' WHERE '.$Where;
+//echo '<br>'.$SQL.'<br>';			
 			$ResultSet = $this->Connexio->query($SQL);
 			if ($ResultSet->num_rows > 0) {
 				$this->Registre = $ResultSet->fetch_assoc();
