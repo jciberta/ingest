@@ -63,8 +63,8 @@ else {
 		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
 		' WHERE C.curs_id='.$curs.
-		' AND C.nivell=UF.nivell';
-//		' AND UF.nivell='.$nivell;
+		' AND C.nivell=UF.nivell '.
+		' ORDER BY MP.codi, UF.codi';
 //	print_r($SQL);
 
 	$ResultSet = $conn->query($SQL);

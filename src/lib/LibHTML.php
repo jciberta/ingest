@@ -382,7 +382,7 @@ echo '  </a>';
  * @param array $Valor Valors de la llista.
  * @return void
  */
-function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
+/*function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 {
 	echo $Titol.':';
 	echo '<select name="'.$Nom.'">';
@@ -396,7 +396,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
 	} 	
 	echo "</select>";
 	echo '<BR>';
-}
+}*/
 
 /**
  * CreaLookup
@@ -414,7 +414,7 @@ function CreaDesplegable($Titol, $Nom, $Codi, $Valor)
  * @param string $Camps Camps a mostrar al lookup separats per comes.
  * @return string Codi HTML del lookup.
  */
-function CreaLookup($Nom, $URL, $Id, $Camps)
+/*function CreaLookup($Nom, $URL, $Id, $Camps)
 {
 	$sRetorn = '<div class="input-group mb-3">';
 	$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=''>";
@@ -426,7 +426,7 @@ function CreaLookup($Nom, $URL, $Id, $Camps)
 	$sRetorn .= '  </div>';
 	$sRetorn .= '</div>';
 	return $sRetorn;
-}
+}*/
 
 /**
  * PaginaHTMLMissatge
