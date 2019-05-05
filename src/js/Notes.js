@@ -1,4 +1,5 @@
 ﻿/** 
+/** 
  * Notes.js
  *
  * Accions AJAX per a les notes.
@@ -206,6 +207,53 @@ function ObteNota(element) {
 }
 
 /**
+ * CalculaTotalFila
+ * Calcula els totalitzadors d'aquella fila.
+ * @param grd Nom de la graella.
+ * @param y Fila.
+ */
+function CalculaTotalFila(grd, y) { 
+//console.dir(document.getElementById(grd + '_ArrayHores'));
+	var ArrayHores = JSON.parse(document.getElementById(grd + '_ArrayHores').value);	
+	var ToralHores = document.getElementById(grd + '_TotalHores').value;	
+//console.dir(ArrayHores);
+
+	var Total = 0;
+	var i = 0;
+	var CellaId = grd + '_' + y + '_' + i;
+	while (document.getElementById(CellaId) !== null) {
+		Valor = document.getElementById(CellaId).value;
+		if (Valor >= 5)
+			Total += ArrayHores[i];
+	
+		i++;
+		CellaId = grd + '_' + y + '_' + i;
+	}
+	CellaId = grd + '_TotalHores_' + y;
+	var objTotalHores = document.getElementById(CellaId);
+//console.dir(objTotalHores);
+	objTotalHores.textContent = Total;
+
+	CellaId = grd + '_TotalPercentatge_' + y;
+	var objTotalPercentatge = document.getElementById(CellaId);
+	TotalPercentatge = 100*Total/ToralHores;
+	objTotalPercentatge.textContent = TotalPercentatge.toLocaleString("en-US", {maximumFractionDigits:2, minimumFractionDigits:2}) + '%';
+	if (TotalPercentatge >= 60)
+		objTotalPercentatge.style.backgroundColor = 'lightgreen'
+	else
+		objTotalPercentatge.style.backgroundColor = '';
+}
+
+/**
+ * CalculaTotalColumna
+ * Calcula els totalitzadors d'aquella columna.
+ * @param grd Nom de la graella.
+ * @param x Columna.
+ */
+function CalculaTotalColumna(grd, x) { 
+}
+
+/**
  * ActualitzaNota
  *
  * Actualitza la nota d'un input.
@@ -215,6 +263,7 @@ function ObteNota(element) {
 function ActualitzaNota(element) { 
 	sText = 'Executant ActualitzaNota... ';
 	$('#debug').html(sText);
+console.log(sText);
 	
 	var sNota = $('input[name="TempNota"]').val();	
 //console.log(sNota);
@@ -222,11 +271,24 @@ function ActualitzaNota(element) {
 	if (sNota == element.value) {
 		sText = sText + 'No ha calgut actualitzar';
 		$('#debug').html(sText);
+console.log(sText);
 	}
 	else {
+		// <INPUT>
+		// name: conté id i convocatòria
+		// id: conté les coordenades x, y. Inici a (0, 0).
+			
+console.log(element.name);
+console.dir(element.id);
+
+		var data = (element.id).split('_');
+		var x = data[1];
+		var y = data[2];
+		CalculaTotalFila(data[0], x);
+//		CalculaTotalColumna(data[0], y);
+		
+		
 		$('input[name="TempNota"]').val(sNota);	
-//console.log(element.value);
-//console.dir(element);
 		$.ajax( {
 			type: 'POST',
 			url: 'AccionsAJAX.php',
@@ -340,7 +402,7 @@ function UltimaConvocatoriaNota(element) {
  */
 function ActualitzaTaulaNotes(element) { 
 	$('#debug').html('Executant ActualitzaTaulaNotes...');
-//console.log($('input#CicleId').val());
+//console.log('ActualitzaTaulaNotes');
 //console.log($('input#Nivell').val());
     $.ajax( {
         type: 'POST',
