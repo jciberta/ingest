@@ -215,7 +215,8 @@ function ObteNota(element) {
 function CalculaTotalFila(grd, y) { 
 //console.dir(document.getElementById(grd + '_ArrayHores'));
 	var ArrayHores = JSON.parse(document.getElementById(grd + '_ArrayHores').value);	
-	var ToralHores = document.getElementById(grd + '_TotalHores').value;	
+	var TotalHores = document.getElementById(grd + '_TotalHores').value;	
+	var Nivell = document.getElementById(grd + '_Nivell').value;	
 //console.dir(ArrayHores);
 
 	var Total = 0;
@@ -236,9 +237,9 @@ function CalculaTotalFila(grd, y) {
 
 	CellaId = grd + '_TotalPercentatge_' + y;
 	var objTotalPercentatge = document.getElementById(CellaId);
-	TotalPercentatge = 100*Total/ToralHores;
+	TotalPercentatge = 100*Total/TotalHores;
 	objTotalPercentatge.textContent = TotalPercentatge.toLocaleString("en-US", {maximumFractionDigits:2, minimumFractionDigits:2}) + '%';
-	if (TotalPercentatge >= 60)
+	if ((TotalPercentatge>=60 && Nivell==1) || (TotalPercentatge>=100 && Nivell==2))
 		objTotalPercentatge.style.backgroundColor = 'lightgreen'
 	else
 		objTotalPercentatge.style.backgroundColor = '';

@@ -237,63 +237,12 @@ class Notes
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
 					echo self::CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores);
-					
-/*					
-					$style = "text-align:center;text-transform:uppercase";
-					$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
-					$Convalidat = ($row["Convalidat"] == True);
-
-					$Deshabilitat = '';
-					if ($Baixa)
-						$Deshabilitat = ' disabled ';
-					else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
-						$Deshabilitat = ' disabled ';
-
-					$Nota = '';
-					$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
-					if (!$Baixa) {
-						if ($Convalidat) {
-							$Nota = UltimaNota($row);
-							$Deshabilitat = " disabled ";
-							$style .= ";background-color:blue;color:white";
-						}
-						else if ($row["Convocatoria"] == 0) {
-							$Nota = UltimaNota($row);
-							$Deshabilitat = " disabled ";
-							$style .= ";background-color:black;color:white";
-						}
-						else if ($row["Convocatoria"] != self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
-							// Nota recuperada
-							$Nota = UltimaNota($row);
-							$Deshabilitat = " disabled ";
-							$style .= ";background-color:lime";
-							$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
-						}
-						else {
-							$Nota = $row["nota".$row["Convocatoria"]];
-							if ($row["Orientativa"] && !$Baixa) {
-								$style .= ";background-color:yellow";
-							}
-						}
-					}
-					else
-						// Sense nota
-						$style .= ";background-color:grey";
-					if ($Nota >= 5)
-						$Hores += $row["Hores"];
-					
-					// <INPUT>
-					// name: conté id i convocatòria
-					// id: conté les coordenades x, y. Inici a (0, 0).
-					$ValorNota = NumeroANota($Nota);
-					$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
-					echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";*/
 				}
 				$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
 				echo '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
 				$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
 				$TotalPercentatge = $Hores/$TotalHores*100;
-				$Color = ($TotalPercentatge >= 60) ? ';background-color:lightgreen' : '';
+				$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 				echo '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
 				echo "<TD></TD></TR>";
 			}
@@ -302,6 +251,7 @@ class Notes
 		echo "<input type=hidden name=TempNota value=''>";
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
 		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
+		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
 		echo "</FORM>";
 		echo "</DIV>";
 	}
