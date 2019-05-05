@@ -243,6 +243,10 @@ class FormRecerca extends Form {
 	// Tipus d'opcions
 	const toURL = 1;
 	const toAJAX = 2;
+	
+	// Opcions del FormRecerca.
+	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
+	const ofrNOMES_CHECK = 2; 	// Indica que només es podrà seleccionar el checkbox (i no desseleccionar). 
 
 	/**
 	* Modalitat del formulari.
@@ -389,9 +393,12 @@ class FormRecerca extends Form {
 			}
 			$sRetorn .= '<TH></TH>';
 			if ($this->Modalitat == self::mfLLISTA) 
-				foreach($this->Opcions as $obj) 
-					$sRetorn .= '<TH></TH>';
-						
+				foreach($this->Opcions as $obj) { 
+					if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions))
+						$sRetorn .= '<TH>'.$obj->Titol.'</TH>';
+					else
+						$sRetorn .= '<TH></TH>';
+				}
 			$sRetorn .= '</THEAD>';
 
 			// Dades
@@ -508,23 +515,28 @@ class FormRecerca extends Form {
 		$this->Opcions[$i]->Tipus = self::toURL;
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->URL = $URL;
+		$this->Opcions[$i]->Opcions = [];
 	}
 
 	/**
 	 * Afegeix una opció AJAX per a cada registre. Un cop executada es tornarà a cridar ...
 	 * @param string $Titol Títol de l'opció.
 	 * @param string $Funcio Funció JavaScript. 
-	 * @param string $Camp Camp del registre que serveix com a identificador. 
-	 * 		Si no s'especifica, Com a paràmetre es passarà l'identificador del registre. 
+	 * @param string $CampClau Camp del registre que serveix com a identificador. 
+	 * 		Si no s'especifica, com a paràmetre es passarà l'identificador del registre. 
+	 * @param array $ofr Opcions. 
+	 * @param string $CampValor Camp del registre que analitzem el seu valor (opció ofrBOOLEA ). 
 	 */
-	public function AfegeixOpcioAJAX($Titol, $Funcio, $Camp = '') {
+	public function AfegeixOpcioAJAX(string $Titol, string $Funcio, string $CampClau = '', array $ofr = [], string $CampValor = '') {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
 		$this->Opcions[$i]->Tipus = self::toAJAX;
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->Funcio = $Funcio;
-		$this->Opcions[$i]->Camp = $Camp;
+		$this->Opcions[$i]->Camp = $CampClau;
+		$this->Opcions[$i]->Opcions = $ofr;
+		$this->Opcions[$i]->CampValor = $CampValor;
 	}
 	
 	/**
@@ -535,17 +547,41 @@ class FormRecerca extends Form {
 	private function GeneraOpcions($Id, $row) {
 		$Retorn = '';
 		foreach($this->Opcions as $obj) {
-			$Retorn .= '<TD>';
+			//$Retorn .= '<TD>';
 			if ($obj->Tipus == self::toURL)
-				$Retorn .= '<A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+				$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
 			else if ($obj->Tipus == self::toAJAX) {
-				if ($obj->Tipus == '')
-					$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
-				else 
-					$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$row[$obj->Camp].')";>'.$obj->Titol.'<A>';
+				if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
+//print_r($row['usuari_bloquejat']);
+//print_r($row);
+					$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
+					if ($obj->Camp == '')
+						$Funcio = $obj->Funcio.'(this, '.$Id.')';
+					else 
+						$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
+					$Nom = $obj->Funcio.'_'.$Id;
+
+					$Retorn .= '<TD style="text-align:center">';
+					
+					if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1))
+						$Retorn .= '<input type="checkbox" '.$Checked.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
+//					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
+					
+				}
+				else {
+					if ($obj->Camp == '')
+						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+					else 
+						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$row[$obj->Camp].')";>'.$obj->Titol.'<A>';
 //				$Retorn .= 'AJAX';
 //				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 //				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+
+
+				}
+
+
+
 			}
 			$Retorn .= '</TD>';
 		}

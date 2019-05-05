@@ -54,19 +54,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}
-	else if ($_REQUEST['accio'] == 'BaixaMatricula') {
-		$Id = $_REQUEST['id'];
-		$cerca = $_REQUEST['cerca'];
-		$FormSerialitzatEncriptat = $_REQUEST['frm'];
-		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
-		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
-		$frm->Filtre = $cerca; 
-		// Esborrem el registre
-		$SQL = 'UPDATE MATRICULA SET baixa=1 WHERE matricula_id='.$Id;
-		$frm->Connexio->query($SQL);
-		print $frm->GeneraTaula();
-	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
 		if (Config::Debug)		

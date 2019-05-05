@@ -83,22 +83,69 @@ function ConvalidaUF(element, alumne) {
 
 /**
  * BaixaMatricula
- *
  * Baixa de la matrícula d'un alumne.
- *
+ * @param element Checkbox que ha fet la crida.
  * @param matricula_id Identificador de la matrícula.
  */
-function BaixaMatricula(matricula_id) { 
-console.log('BaixaMatricula');
+function BaixaMatricula(element, matricula_id) { 
+	var sCerca = $('input[name="edtRecerca"]').val();	
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+	bootbox.confirm({
+	//	title: "Suprimeix",
+		message: "Esteu segur que voleu donar de baixa l'alumne?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Dona de baixa',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibUsuari.ajax.php',
+					data:{
+						'accio': 'BaixaMatricula',
+						'id': matricula_id,
+						'cerca': sCerca,
+						'frm': sFrm
+						},
+					success: function(data) {
+						$('#taula').html(data);
+					}, 
+					error: function (data) {
+						$('#debug').html('Hi ha hagut un error.');
+					}
+				} );
+			}
+			else 
+				element.checked = false;
+		}
+	});	
+}
+
+/**
+ * BloquejaUsuari
+ * Bloqueja un usuari (no pot fer login).
+ * @param element Checkbox que ha fet la crida.
+ * @param usuari_id Identificador de l'usuari.
+ */
+function BloquejaUsuari(element, usuari_id) { 
+console.log('BloquejaUsuari');
 	var sCerca = $('input[name="edtRecerca"]').val();	
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
     $.ajax( {
         type: 'POST',
-        url: 'lib/LibForms.ajax.php',
+        url: 'lib/LibUsuari.ajax.php',
         data:{
-			'accio': 'BaixaMatricula',
-            'id': matricula_id,
+			'accio': 'BloquejaUsuari',
+            'id': usuari_id,
+			'check': element.checked,
 			'cerca': sCerca,
 			'frm': sFrm
             },
@@ -106,8 +153,7 @@ console.log('BaixaMatricula');
             $('#taula').html(data);
         }, 
 		error: function (data) {
-			$('#debug').html('Hi ha hagut un error.');
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 		}
     } );
 }
-
