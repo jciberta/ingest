@@ -247,6 +247,7 @@ class FormRecerca extends Form {
 	// Opcions del FormRecerca.
 	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
 	const ofrNOMES_CHECK = 2; 	// Indica que només es podrà seleccionar el checkbox (i no desseleccionar). 
+	const ofrNOMES_LECTURA = 3; // Indica que l'opció és de només lectura.
 
 	/**
 	* Modalitat del formulari.
@@ -548,6 +549,7 @@ class FormRecerca extends Form {
 		$Retorn = '';
 		foreach($this->Opcions as $obj) {
 			//$Retorn .= '<TD>';
+			$NomesLectura = (in_array(self::ofrNOMES_LECTURA, $obj->Opcions)) ? ' disabled ' : '';
 			if ($obj->Tipus == self::toURL)
 				$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
 			else if ($obj->Tipus == self::toAJAX) {
@@ -564,7 +566,7 @@ class FormRecerca extends Form {
 					$Retorn .= '<TD style="text-align:center">';
 					
 					if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1))
-						$Retorn .= '<input type="checkbox" '.$Checked.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
+						$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
 //					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
 					
 				}
