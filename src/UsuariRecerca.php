@@ -128,16 +128,21 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Usuaris";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, es_alumne, es_professor, es_pare FROM USUARI ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, es_alumne, es_professor, es_pare, usuari_bloquejat FROM USUARI ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, bool:es_alumne, bool:es_professor, bool:es_pare';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Alumne, Professor, Pare';
+		//$frm->Camps = 'nom, cognom1, cognom2, username, bool:es_alumne, bool:es_professor, bool:es_pare';
+		$frm->Camps = 'nom, cognom1, cognom2, username';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->PermetSuprimir = True;
+		$frm->AfegeixOpcioAJAX('Alumne', '', 'usuari_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'es_alumne');
+		$frm->AfegeixOpcioAJAX('Professor', '', 'usuari_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'es_professor');
+		$frm->AfegeixOpcioAJAX('Pare', '', 'usuari_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'es_pare');
 		$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
+		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 		$frm->EscriuHTML();
         break;
 }
