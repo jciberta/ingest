@@ -13,6 +13,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibNotes.php');
+require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibFP.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibProfessor.php');
@@ -49,6 +50,9 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
+
+$Avaluacio = new Avaluacio($conn, $Usuari);
+echo $Avaluacio->CreaDescripcio($CursId);
 
 echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
@@ -118,7 +122,8 @@ if ($ResultSet->num_rows > 0) {
 
 }
 
-Notes::CreaMenuContextual();
+if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
+	Notes::CreaMenuContextual();
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";

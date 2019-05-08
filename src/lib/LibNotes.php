@@ -286,7 +286,7 @@ class Notes
 				$Deshabilitat = " disabled ";
 				$style .= ";background-color:black;color:white";
 			}
-			else if ($row["Convocatoria"] != self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
+			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
 				// Nota recuperada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
