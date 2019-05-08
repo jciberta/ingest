@@ -9,7 +9,6 @@
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
- * @version 1.0
  */
 
 require_once(ROOT.'/lib/LibStr.php');
@@ -286,6 +285,18 @@ class FormRecerca extends Form {
 	*/    
     public $Filtre = ''; 
 	/**
+	* Camp per realitzar l'ordenació.
+	* @access public
+	* @var string
+	*/    
+    public $Ordre = ''; 
+	/**
+	* Permet ordenar la recerca.
+	* @access public
+	* @var boolean
+	*/    
+    public $PermetOrdenar = True; 
+	/**
 	* Permet editar un registre.
 	* @access public
 	* @var boolean
@@ -346,7 +357,6 @@ class FormRecerca extends Form {
 				else
 					$obj->Where = $sWhere;
 			}
-
 			$sRetorn = $obj->GeneraSQL();
 			
 /*			// L'avaluació de ser estricta
@@ -356,7 +366,38 @@ class FormRecerca extends Form {
 			else
 				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);*/
 		}
+		
+//print '<br>'.$this->Ordre.'<br>';		
+		if ($this->Ordre != '') {
+			$iOrder = strrpos($sRetorn, ' ORDER ');
+//print '<br>'.$iOrder.'<br>';		
+			if ($iOrder != 0) {
+				$sRetorn = trim(substr($sRetorn, 0, $iOrder));
+			}
+			$sRetorn .= ' ORDER BY '.$this->Ordre;
+		}
+//print $sRetorn;		
 		return $sRetorn;
+	}
+
+	/**
+	 * Crea les fletxes per a l'ordenació dels diferents camps de la recerca.
+	 * @param string $camp Camp per a l'ordenació.
+     * @return string HTML amb les imatges de les fletxes.
+	 */
+	private function CreaFletxaOrdenacio(string $camp): string {
+		$Retorn = '';
+		if ($this->PermetOrdenar) {
+			$FuncioAvall = 'OrdenaColumna("'.$camp.'", "")';
+			$FuncioAmunt = 'OrdenaColumna("'.$camp.'", "DESC")';
+			$Retorn .= "<span id='FletxaAvall_".$camp."'><img src=img/down.svg style='cursor:pointer' onclick='$FuncioAvall'></span>";
+			$Retorn .= "<span id='FletxaAmunt_".$camp."' style='display:none'><img src=img/up.svg style='cursor:pointer' onclick='$FuncioAmunt'></span>";
+		}
+		
+
+
+
+		return $Retorn;
 	}
 
 	/**
@@ -385,11 +426,20 @@ class FormRecerca extends Form {
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$sRetorn .= '<TABLE class="table table-striped">';
+
+			$aDescripcions = explode(",", TrimX($this->Descripcions));
+			$aCamps = explode(",", TrimXX($this->Camps));
+
 			// Capçalera
 			$sRetorn .= '<THEAD class="thead-dark">';
-			$aDescripcions = explode(",", TrimX($this->Descripcions));
-			foreach ($aDescripcions as $sValor) {
-				$sRetorn .= "<TH>" . $sValor . "</TH>";
+//			foreach ($aDescripcions as $sValor) {
+			for ($i=0; $i<count($aDescripcions); $i++) {
+				$sValor = $aDescripcions[$i];
+//				$Funcio = 'OrdenaColumna("'.$aCamps[$i].'")';
+//				$Ordenacio = "&nbsp;<img src=img/down.svg style='cursor: pointer;' onclick='$Funcio'>";
+				
+				$Ordenacio = $this->CreaFletxaOrdenacio($aCamps[$i]);
+				$sRetorn .= "<TH>".$sValor."&nbsp;".$Ordenacio."</TH>";
 			}
 			$sRetorn .= '<TH></TH>';
 			if ($this->Modalitat == self::mfLLISTA) 
@@ -402,7 +452,6 @@ class FormRecerca extends Form {
 			$sRetorn .= '</THEAD>';
 
 			// Dades
-			$aCamps = explode(",", TrimXX($this->Camps));
 			while($row = $ResultSet->fetch_assoc()) {
 //print_r($row);
 				$ParametreJS = JSONEncodeUTF8($row); 
@@ -494,7 +543,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.4" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}

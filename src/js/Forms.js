@@ -5,12 +5,10 @@
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
- * @version 1.0
  */
 
 /**
  * ActualitzaTaula
- *
  * @param element Botó que ha fet la crida.
  */
 function ActualitzaTaula(element) { 
@@ -116,9 +114,7 @@ console.dir('elements: ' + oForm.elements);
 
 /**
  * SuprimeixRegistre
- *
  * Suprimeix el registre d'una taula.
- *
  * @param Taula Taula de la que es vol eliminar el registre.
  * @param ClauPrimaria Clau primària de la taula.
  * @param Valor valor de la clau primària del registre que es vol esborrar.
@@ -165,7 +161,6 @@ function SuprimeixRegistre(Taula, ClauPrimaria, Valor) {
 
 /**
  * DesaFitxa
- *
  * @param element Botó que desa la fitxa.
  */
 function DesaFitxa(element) { 
@@ -191,6 +186,44 @@ console.dir('jsonForm: ' + jsonForm);
         }, 
 		error: function(data) {
 			$('#MissatgeError').show();
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}
+
+/**
+ * OrdenaColumna
+ * @param camp Camp a ordenar.
+ * @param sentit Ascendent ('') o descendent ('DESC').
+ */
+function OrdenaColumna(camp, sentit) { 
+console.log('-> OrdenaColumna');
+	var sCerca = $('input[name="edtRecerca"]').val();	
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibForms.ajax.php',
+		data:{
+			'accio': 'OrdenaColumna',
+			'cerca': sCerca,
+			'camp': camp,
+			'sentit': sentit,
+			'frm': sFrm
+		},
+        success: function(data) {
+            $('#taula').html(data);
+			
+			if (sentit == '') {
+				$('#FletxaAvall_'+camp).hide();
+				$('#FletxaAmunt_'+camp).show();
+			}
+			else {
+				$('#FletxaAvall_'+camp).show();
+				$('#FletxaAmunt_'+camp).hide();
+			}
+        }, 
+		error: function(data) {
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 		}
     } );

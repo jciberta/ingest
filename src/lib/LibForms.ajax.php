@@ -7,7 +7,6 @@
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
- * @version 1.0
  */
 
 require_once('../Config.php');
@@ -33,10 +32,21 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$cerca = $_REQUEST['cerca'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
-//		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 		$frm->Filtre = $cerca; 
+		print $frm->GeneraTaula();
+	}
+	else if ($_REQUEST['accio'] == 'OrdenaColumna') {
+		$camp = $_REQUEST['camp'];
+		$sentit = $_REQUEST['sentit'];
+		$cerca = $_REQUEST['cerca'];
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Filtre = $cerca; 
+		$frm->Ordre = $camp.' '.$sentit; 
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'SuprimeixRegistre') {
@@ -45,7 +55,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Valor = $_REQUEST['valor'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
-//		$FormSerialitzat = SaferCrypto::decrypt(hex2bin($FormSerialitzatEncriptat), hex2bin(Form::Secret));
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 
