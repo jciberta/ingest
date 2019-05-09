@@ -16,8 +16,10 @@ require_once(ROOT.'/lib/LibForms.php');
  */
 class Avaluacio 
 {
+	// Estat de l'avaluació
 	const Ordinaria = 'ORD';
 	const ExtraOrdinaria = 'EXT';
+	const Tancada = 'TAN';
 	
 	/**
 	* Connexió a la base de dades.
@@ -71,11 +73,31 @@ class Avaluacio
 	}	
 
 	/**
+	 * Retorna l'estat de l'avaluació del curs.
+	 * @param integer $id Identificador del curs.
+     * @return string estat de l'avaluació.
+	 */
+	public function Estat(int $id): string {
+		$SQL = $this->CreaSQL($id);
+		$sRetorn = '';
+
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_object();
+			if ($row->finalitzat)
+				$sRetorn = self::Tancada;
+			else
+				$sRetorn = ($row->avaluacio == 'ORD') ? self::Ordinaria : self::ExtraOrdinaria;
+		}
+		return $sRetorn;
+	}
+
+	/**
 	 * Crea la taula HTML amb les dades de l'avaluació.
 	 * @param integer $id Identificador del curs.
      * @return string Taula amb les dades de l'avaluació.
 	 */
-	public function CreaTaula(int $id):string {
+	public function CreaTaula(int $id): string {
 		$SQL = $this->CreaSQL($id);
 		$sRetorn = '';
 		$ResultSet = $this->Connexio->query($SQL);
@@ -108,18 +130,24 @@ class Avaluacio
 	 * @param integer $id Identificador del curs.
      * @return string Descripció amb les dades de l'avaluació.
 	 */
-	public function CreaDescripcio(int $id):string {
+	public function CreaDescripcio(int $id): string {
 		$SQL = $this->CreaSQL($id);
 		$sRetorn = '<DIV id=desc>';
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_object();
 			echo "Curs: <B>".utf8_encode($row->nom)."</B>";
-			$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
-			echo " Avaluació: <B>".$Avaluacio."</B>";
-			if ($row->avaluacio == 'ORD')
-				echo " Trimestre: <B>".utf8_encode($row->trimestre)."</B>";
-			$this->Avaluacio = $row->avaluacio;
+			
+			if ($row->finalitzat) {
+				echo " Avaluació: <B>Tancada</B><br>";
+			}
+			else {
+				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
+				echo " Avaluació: <B>".$Avaluacio."</B>";
+				if ($row->avaluacio == 'ORD')
+					echo " Trimestre: <B>".utf8_encode($row->trimestre)."</B>";
+				$this->Avaluacio = $row->avaluacio;
+			}
 		}
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
@@ -129,7 +157,7 @@ class Avaluacio
 	 * Crea els botons disponibles depenent de les característiques del curs.
      * @return string HTML amb els botons.
 	 */
-	private function CreaBotons():string {
+	private function CreaBotons(): string {
 		$sRetorn = '<DIV id=botons>';
 
 		if ($this->Curs->finalitzat) {

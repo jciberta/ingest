@@ -14,12 +14,6 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
-/*require_once(ROOT.'/lib/LibStr.php');
-require_once(ROOT.'/lib/LibHTML.php');
-require_once(ROOT.'/lib/LibNotes.php');
-require_once(ROOT.'/lib/LibFP.php');
-require_once(ROOT.'/lib/LibCurs.php');
-require_once(ROOT.'/lib/LibProfessor.php');*/
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -41,7 +35,7 @@ if ($CursId == -1)
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, "Avaluació");
-echo '<script language="javascript" src="js/Avaluacio.js?v1.4" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Avaluacio.js?v1.5" type="text/javascript"></script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
 echo $Avaluacio->CreaMissatges();
@@ -54,8 +48,6 @@ $Avaluacio->EscriuBotons();
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
-
-//$ResultSet->close();
 
 $conn->close(); 
  

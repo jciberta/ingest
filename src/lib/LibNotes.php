@@ -18,6 +18,7 @@
 require_once(ROOT.'/lib/LibArray.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibAvaluacio.php');
 
 /**
  * CreaSQLNotes
@@ -173,9 +174,10 @@ class Notes
 	 * @param array $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
 	 * @param object $Professor Objecte professor.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
 	 * @return void.
 	 */
-	public static function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor) {
+	public static function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
@@ -236,7 +238,7 @@ class Notes
 				$Hores = 0;
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
-					echo self::CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores);
+					echo self::CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
 				}
 				$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
 				echo '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
@@ -259,10 +261,15 @@ class Notes
 	/**
 	 * Crea una cel·la de la taula de notes amb tota la seva casuística.
 	 * @param string $IdGraella Nom de la graella.
-	 * ...
+	 * @param integer $i Columna.
+	 * @param integer $j Fila.
+	 * @param object $row Registre que correspon a la nota.
+	 * @param object $Professor Objecte de la classe Professor.
+	 * @param integer $Hores Hores que es sumen per saber el total.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public static function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores): string {
+	public static function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
 		$style = "text-align:center;text-transform:uppercase";
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
@@ -305,6 +312,9 @@ class Notes
 			$style .= ";background-color:grey";
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
+		
+		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
+		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
 		
 		// <INPUT>
 		// name: conté id i convocatòria

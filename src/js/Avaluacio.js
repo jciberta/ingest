@@ -52,26 +52,42 @@ console.log('MostraButlletins');
  */
 function TancaAvaluacio(obj, curs_id) {
 console.log('TancaAvaluacio');
-    $.ajax( {
-        type: 'POST',
-        url: 'lib/LibAvaluacio.ajax.php',
-        data:{
-			'accio': 'TancaAvaluacio',
-            'curs_id': curs_id
-            },
-        success: function(data) {
-            $('#MissatgeCorrecte').html("L'avaluació s'ha tancat correctament.");
-            $('#MissatgeCorrecte').show();
-            $('#div_TancaAvaluacio').hide();
-            $('#div_TancaCurs').show();
-            $('#taula').html(data);
-        }, 
-		error: function (data) {
-            $('#MissatgeError').html("L'avaluació no s'ha tancat correctament.");
-            $('#MissatgeError').show();
-			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+	bootbox.confirm({
+		message: "Esteu segur que voleu tancar l'avaluació?<br>Aquesta acció <B>no</B> es pot desfer.",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Tanca',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibAvaluacio.ajax.php',
+					data:{
+						'accio': 'TancaAvaluacio',
+						'curs_id': curs_id
+						},
+					success: function(data) {
+						$('#MissatgeCorrecte').html("L'avaluació s'ha tancat correctament.");
+						$('#MissatgeCorrecte').show();
+						$('#div_TancaAvaluacio').hide();
+						$('#div_TancaCurs').show();
+						$('#taula').html(data);
+					}, 
+					error: function (data) {
+						$('#MissatgeError').html("L'avaluació no s'ha tancat correctament.");
+						$('#MissatgeError').show();
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				} );
+			}
 		}
-    } );
+	});	
 }
 
 /**
@@ -82,26 +98,42 @@ console.log('TancaAvaluacio');
  */
 function TancaCurs(obj, curs_id) {
 console.log('TancaCurs');
-    $.ajax( {
-        type: 'POST',
-        url: 'lib/LibAvaluacio.ajax.php',
-        data:{
-			'accio': 'TancaCurs',
-            'curs_id': curs_id
-            },
-        success: function(data) {
-            $('#MissatgeCorrecte').html("El curs s'ha tancat correctament.");
-            $('#MissatgeCorrecte').show();
-            $('#div_MostraButlletins').hide();
-            $('#div_TancaAvaluacio').hide();
-            $('#div_TancaCurs').hide();
-            $('#taula').html(data);
-            $('#botons').html('No es permeten accions.');
-        }, 
-		error: function (data) {
-            $('#MissatgeError').html("El curs no s'ha tancat correctament.");
-            $('#MissatgeError').show();
-			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+	bootbox.confirm({
+		message: "Esteu segur que voleu tanca el curs?<br>Aquesta acció <B>no</B> es pot desfer.",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Tanca',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibAvaluacio.ajax.php',
+					data:{
+						'accio': 'TancaCurs',
+						'curs_id': curs_id
+						},
+					success: function(data) {
+						$('#MissatgeCorrecte').html("El curs s'ha tancat correctament.");
+						$('#MissatgeCorrecte').show();
+						$('#div_MostraButlletins').hide();
+						$('#div_TancaAvaluacio').hide();
+						$('#div_TancaCurs').hide();
+						$('#taula').html(data);
+						$('#botons').html('No es permeten accions.');
+					}, 
+					error: function (data) {
+						$('#MissatgeError').html("El curs no s'ha tancat correctament.");
+						$('#MissatgeError').show();
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				} );
+			}
 		}
-    } );
+	});	
 }

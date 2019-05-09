@@ -54,7 +54,9 @@ echo '<script language="javascript" type="text/javascript">let timerId = setInte
 $Avaluacio = new Avaluacio($conn, $Usuari);
 echo $Avaluacio->CreaDescripcio($CursId);
 
-echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
+$EstatAvaluacio = $Avaluacio->Estat($CursId);
+if ($EstatAvaluacio != Avaluacio::Tancada)
+	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
 $SQL = CreaSQLNotes($CicleId, $Nivell);
 //print_r($SQL);
@@ -108,16 +110,16 @@ if ($ResultSet->num_rows > 0) {
 		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n';
 		// Notes de 2n 
-		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor);
+		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor);
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor, $EstatAvaluacio);
 	}
 	else {
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n';
 		// Notes de 1r d'alumnes de 1r
-		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor);
+		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor, $EstatAvaluacio);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor);
+		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor, $EstatAvaluacio);
 	}
 
 }
