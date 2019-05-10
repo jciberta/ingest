@@ -47,20 +47,67 @@ function MostraBaixes(obj) {
 function IntrodueixRecuperacio(obj) {
 console.dir(obj[0]);
 //alert(obj[0].value);
-
-
-bootbox.prompt({
-    title: "Introdueix la nota de recuperació",
-    inputType: 'number',
-    callback: function (result) {
-        console.log(result);
-		if (result>0 && result <=10) {
-			ActualitzaNotaRecuperacio(obj[0], result);
+	bootbox.prompt({
+		title: "Introdueix la nota de recuperació",
+		inputType: 'number',
+		callback: function (result) {
+			console.log(result);
+			if (result>0 && result <=10) {
+				ActualitzaNotaRecuperacio(obj[0], result);
+			}
+			
 		}
-		
-    }
-});
+	});
+}
 
+/**
+ * Marca una nota com a anterior, és a dir, posa la convocatòria a 0 (ha de ser >=5).
+ * @param obj Objecte que ha provocat la crida (INPUT).
+ */
+function MarcaComNotaAnterior(obj) {
+console.log('->MarcaComNotaAnterior');
+	element = obj[0];
+console.log(element.name);
+console.dir(element.id);
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'MarcaComNotaAnterior',
+			'nom': element.name
+			},
+		success: function(data) {
+//			element.value = nota;
+//			alert(data);
+			$('#debug').html(data);
+		}, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	} );
+}
+
+/**
+ * Convalida aquella UF. Posa la nota a 5.
+ * @param obj Objecte que ha provocat la crida (INPUT).
+ */
+function Convalida(obj) {
+console.log('->Convalida');
+	element = obj[0];
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'Convalida',
+			'nom': element.name
+			},
+		success: function(data) {
+			$('#debug').html(data);
+		}, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	} );
 }
 
 /**
@@ -302,7 +349,7 @@ console.dir(element.id);
 				$('#debug').html(data);
 			}, 
 			error: function (data) {
-				$('#debug').html('Hi ha hagut un error.');
+				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 			}
 		} );
 	}
@@ -345,7 +392,7 @@ console.dir(element);
 				$('#debug').html(data);
 			}, 
 			error: function (data) {
-				$('#debug').html('Hi ha hagut un error.');
+				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 			}
 		} );
 //	}

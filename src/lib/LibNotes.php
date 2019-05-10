@@ -397,10 +397,14 @@ class Notes
 	}
 	
 	
-	public static function CreaMenuContextual() {
+	public static function CreaMenuContextual($Usuari) {
 		// Adaptat de http://jsfiddle.net/KyleMit/X9tgY/
 		echo '<ul id="contextMenu" class="dropdown-menu dropdown-menu-sm" role="menu" style="display:none" >';
-		echo '    <li><a class="dropdown-item" href="#">Introdueix recuperació</a></li>';
+		echo '    <li><a class="dropdown-item" id="ddi_IntrodueixRecuperacio" href="#">Introdueix recuperació</a></li>';
+		if ($Usuari->es_admin) {
+			echo '    <li><a class="dropdown-item" id="ddi_NotaAnterior" href="#">Marca com a nota anterior (convocatòria a 0)</a></li>';
+			echo '    <li><a class="dropdown-item" id="ddi_Convalida" href="#">Convalida</a></li>';
+		}
 		echo '</ul>';
 
 
@@ -408,10 +412,13 @@ class Notes
 		echo '$("#TaulaNotes input").contextMenu({';
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
-		echo '        var msg = "You selected the menu item " + selectedMenu.text() +';
-		echo '            " on the value " + invokedOn.text() + "";';
-		echo '        IntrodueixRecuperacio(invokedOn);';
-//		echo '        alert(msg);';
+//echo 'console.dir(selectedMenu);';
+		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
+		echo '            IntrodueixRecuperacio(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
+		echo '            MarcaComNotaAnterior(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_Convalida")';
+		echo '            Convalida(invokedOn);';
 		echo '    }';
 		echo '});';
 		echo '</script>';
