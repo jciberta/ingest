@@ -366,36 +366,25 @@ console.dir(element.id);
 function ActualitzaNotaRecuperacio(element, nota) { 
 	sText = 'Executant ActualitzaNotaRecuperacio... ';
 	$('#debug').html(sText);
-/*	
-	var sNota = $('input[name="TempNota"]').val();	
-//console.log(sNota);
-//console.log(element.value);
-	if (sNota == element.value) {
-		sText = sText + 'No ha calgut actualitzar';
-		$('#debug').html(sText);
-	}
-	else { */
-	//	$('input[name="TempNota"]').val(sNota);	
-//console.log(element.value);
 console.dir(element);
-		$.ajax( {
-			type: 'POST',
-			url: 'AccionsAJAX.php',
-			data:{
-				'accio': 'ActualitzaNotaRecuperacio',
-				'nom': element.name,
-				'valor': nota
-				},
-			success: function(data) {
-				element.value = nota;
-				alert(data);
-				$('#debug').html(data);
-			}, 
-			error: function (data) {
-				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
-			}
-		} );
-//	}
+	$.ajax( {
+		type: 'POST',
+		url: 'AccionsAJAX.php',
+		data:{
+			'accio': 'ActualitzaNotaRecuperacio',
+			'nom': element.name,
+			'valor': nota
+			},
+		success: function(data) {
+			element.value = nota;
+			element.style.backgroundColor = 'lime';
+			element.disabled = true;
+			$('#debug').html(data);
+		}, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	} );
 }
 
 /**
