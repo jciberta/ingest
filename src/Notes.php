@@ -48,7 +48,7 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.9" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
 echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);

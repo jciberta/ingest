@@ -67,8 +67,6 @@ console.dir(obj[0]);
 function MarcaComNotaAnterior(obj) {
 console.log('->MarcaComNotaAnterior');
 	element = obj[0];
-console.log(element.name);
-console.dir(element.id);
 	$.ajax( {
 		type: 'POST',
 		url: 'lib/LibNotes.ajax.php',
@@ -77,8 +75,9 @@ console.dir(element.id);
 			'nom': element.name
 			},
 		success: function(data) {
-//			element.value = nota;
-//			alert(data);
+			element.style.backgroundColor = 'black';
+			element.style.color = 'white';
+			element.disabled = true;
 			$('#debug').html(data);
 		}, 
 		error: function (data) {
@@ -102,6 +101,9 @@ console.log('->Convalida');
 			'nom': element.name
 			},
 		success: function(data) {
+			element.value = 5;
+			element.style.backgroundColor = 'blue';
+			element.style.color = 'white';
 			$('#debug').html(data);
 		}, 
 		error: function (data) {
