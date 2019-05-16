@@ -16,12 +16,18 @@ function ActualitzaTaula(element) {
 //	var sSQL = $('input[name="edtSQL"]').val();	
 //	var sCamps = $('input[name="edtCamps"]').val();	
 //	var sDescripcions = $('input[name="edtDescripcions"]').val();	
+
+	var filtre = document.getElementById('filtre');
+//console.log('Filtre');
+//console.dir(filtre);
+	var sFiltre = CreaFiltreJSON(filtre);
+console.log(sFiltre);
 	
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
 	
-console.dir(frm);
-console.dir(sFrm);
+//console.dir(frm);
+//console.dir(sFrm);
 
 	$.ajax( {
 		type: 'POST',
@@ -29,6 +35,7 @@ console.dir(sFrm);
 		data:{
 			'accio': 'ActualitzaTaula',
 			'cerca': sCerca,
+			'filtre': sFiltre,
 //			'sql': sSQL,
 //			'camps': sCamps,
 //			'descripcions': sDescripcions,
@@ -42,6 +49,31 @@ console.dir(sFrm);
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 		}
     } );
+}
+
+/**
+ * CreaFiltreJSON
+ * A partir d'un element DIV que conté el filtre obté les dades del filtre en format JSON.
+ * @param filtre Element DIV que conté el filtre.
+ * @return Filtre en format JSON.
+ */
+function CreaFiltreJSON(filtre) {
+	var Retorn = '{';
+//console.dir(filtre.childNodes);	
+	for (i=0; i<filtre.childNodes.length; i++) {
+console.dir(filtre.childNodes[i]);	
+		var obj = filtre.childNodes[i];
+		if (obj.tagName == 'SELECT') {
+console.log('SELECT');
+			nom = obj.name;
+			nom = nom.replace('cmb_', '');
+			Retorn += '"' + nom + '": "' + obj.value + '", ';
+		}
+		
+	}
+	Retorn = Retorn.slice(0, -2); // Treiem la darrera coma
+	Retorn += '}';
+	return Retorn;
 }
 
 /**
@@ -199,6 +231,7 @@ console.dir('jsonForm: ' + jsonForm);
 function OrdenaColumna(camp, sentit) { 
 console.log('-> OrdenaColumna');
 	var sCerca = $('input[name="edtRecerca"]').val();	
+	var sFiltre = CreaFiltreJSON(filtre);
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
 	$.ajax( {
@@ -207,6 +240,7 @@ console.log('-> OrdenaColumna');
 		data:{
 			'accio': 'OrdenaColumna',
 			'cerca': sCerca,
+			'filtre': sFiltre,
 			'camp': camp,
 			'sentit': sentit,
 			'frm': sFrm

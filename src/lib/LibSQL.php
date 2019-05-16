@@ -24,30 +24,35 @@ class SQL {
 	* @var string
 	*/    
 	protected $SQL = '';
+	
 	/**
 	* Part SELECT de la sentència SQL.
 	* @access public 
 	* @var string
 	*/    
 	public $Select = '';
+	
 	/**
 	* Part FROM de la sentència SQL.
 	* @access public 
 	* @var string
 	*/    
 	public $From = '';
+	
 	/**
 	* Part WHERE de la sentència SQL.
 	* @access public 
 	* @var string
 	*/    
 	public $Where = '';
+	
 	/**
 	* Part ORDER de la sentència SQL.
 	* @access public 
 	* @var string
 	*/    
 	public $Order = '';
+	
 	/**
 	* Array associatiu dels àlies dels camps. La clau és l'àlies i el valor és el nom del camp.
 	* @access public 
@@ -57,7 +62,6 @@ class SQL {
 
 	/**
 	 * Constructor de l'objecte.
-	 *
 	 * @param string $sSQL Sentència SQL.
 	 */
 	function __construct($sSQL) {
@@ -126,7 +130,6 @@ class SQL {
 	
 	/**
 	 * Crea l'array associatiu dels àlies dels camps.
-     *
      * @return void.
 	 */
 	private function CreaCampAlies() {
@@ -139,6 +142,20 @@ class SQL {
 		}
 	}
 
+	/**
+	 * Obté el nom del camp en el cas que es tracti d'un àlies, sinó retorna el mateix valor.
+	 * MySQL (i altres DB) no deixen posar àlies a la clàusula WHERE.
+	 * @param string $alies Possible àlies.
+     * @return string Nom del camp.
+	 */
+	public function ObteCampDesDeAlies($alies): string {
+		$Retorn = $alies;
+		foreach ($this->CampAlies as $key => $value) {
+			if ($key == $alies)
+				$Retorn = $value;
+		}
+		return $Retorn;
+	}
 }
 
 ?>

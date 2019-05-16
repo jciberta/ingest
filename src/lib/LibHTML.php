@@ -114,8 +114,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
 			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
 			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
-			echo '              <div class="dropdown-divider"></div>';
-			echo '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
+			//echo '              <div class="dropdown-divider"></div>';
+			//echo '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
 			echo '            </div>';
 			echo '          </li>';
 

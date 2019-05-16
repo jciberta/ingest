@@ -23,8 +23,22 @@ require_once(ROOT.'/lib/LibHTML.php');
  * Classe base de la quals descendeixen els formularis.
  */
 class Form {
-//	const Secret = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal). -> Cal passar-la a Config.php
-
+	// Tipus de camps per al formulari.
+	const tcTEXT = 1;
+	const tcENTER = 2;
+	const tcREAL = 3;
+	const tcPASSWORD = 4;
+	const tcMEMO = 5;
+	const tcDATA = 6;
+	const tcSELECCIO = 7;
+	const tcCHECKBOX = 8;
+	const tcLOOKUP = 9;
+	const tcPESTANYA = 10;
+	const tcCOLUMNA_INICI = 11;
+	const tcCOLUMNA_SALT = 12;
+	const tcCOLUMNA_FINAL = 13;
+	const tcESPAI = 14;
+	
 	// Opcions del FormFitxa.
 	const offNOMES_LECTURA = 1; // Indica si el camp és pot escriure o no.
 	const offREQUERIT = 2; 		// Indica si el camp és obligatori.
@@ -68,8 +82,9 @@ class Form {
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
 	 */
-	function __construct($con, $user) {
+	function __construct($con = NULL, $user = NULL) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
 	}	
@@ -170,13 +185,15 @@ class Form {
 	 * @param array $Codi Codis de la llista.
 	 * @param array $Valor Valors de la llista.
 	 * @param mixed $CodiSeleccionat Codi de la llista seleccionat per defecte.
+	 * @param string $onChange Funció que crida l'event onChange (opcional).
 	 * @return void
 	 */
-	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL): string
+	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string
 	{
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
-		$sRetorn .= '  <select class="custom-select" style="width:'.$Longitud.'px" name="cmb_'.$Nom.'">';
+		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+		$sRetorn .= '  <select class="custom-select" style="width:'.$Longitud.'px" name="cmb_'.$Nom.'" '.$onChange.'>';
 		$LongitudCodi = count($Codi); 
 		for ($i = 0; $i < $LongitudCodi; $i++) {
 			$Selected = (($CodiSeleccionat != '') && ($Codi[$i] == $CodiSeleccionat)) ? ' selected ': '';
@@ -234,6 +251,135 @@ class Form {
  *
  * Classe per als formularis de recerca.
  */
+class Filtre {
+	/**
+	* Camps del filtre amb les seves característiques. S'usa per generar els components visuals.
+	* @access private
+	* @var array
+	*/    
+    private $Camps = [];	
+
+	/**
+	* Objecte formulari per tal d'usar els mètodes de generar els components visuals.
+	* @access private
+	* @var object
+	*/    
+    private $Form;	
+
+	/**
+	* Cadena JSON amb la llista dels elements a filtrar.
+	* @access public
+	* @var string
+	*/    
+	public $JSON = '';
+
+	/**
+	 * Constructor de l'objecte.
+	 */
+	function __construct() {
+		$this->Form = new Form();
+	}	
+
+	/**
+	 * Afegeix un camp del tipus especificat al filtre.
+	 *
+	 * @param string $tipus Tipus de camp.
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
+	 * @return void
+	 */
+	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = $tipus;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
+	}
+	
+	/**
+	 * Afegeix un camp de tipus data al filtre.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param array $off Opcions del formulari.
+	 * @return void
+	 */
+	public function AfegeixData(string $camp, string $titol, array $off = []) {
+		$this->Afegeix(Form::tcDATA, $camp, $titol, 0, $off);
+	}
+
+	/**
+	 * Afegeix un ComboBox (desplegable) per triar un valor d'una llista.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param integer $longitud Longitud màxima.
+	 * @param array $aCodis Codis de la llista. Per exemple: array(1, 2, 3, 4)
+	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
+	 * @param array $off Opcions del formulari.
+	 * @return void
+	 */
+	public function AfegeixLlista(string $camp, string $titol, int $longitud, array $aCodis, array $aValors, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = Form::tcSELECCIO;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
+		$this->Camps[$i]->Llista = new stdClass();
+		$this->Camps[$i]->Llista->Codis = $aCodis;
+		$this->Camps[$i]->Llista->Valors = $aValors;
+	}
+	
+	/**
+	 * Crea el filtre del formulari.
+	 * @return string HTML del filtre.
+	 */
+	public function CreaFiltre(): string {
+		$Retorn = '<DIV id=filtre>';
+		foreach($this->Camps as $Valor) {
+			switch ($Valor->Tipus) {
+				case Form::tcESPAI:
+					break;
+				case Form::tcTEXT:
+					break;
+				case Form::tcENTER:
+					break;
+				case Form::tcREAL:
+					break;
+				case Form::tcPASSWORD:
+					break;
+				case Form::tcCHECKBOX:
+					break;
+				case Form::tcDATA:
+//					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
+					break;
+				case Form::tcSELECCIO:
+//					$Retorn .= '<BR>EI<BR>';
+//					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+//					$CodiSeleccionat = $this->Registre[$Valor->Camp];
+//					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
+					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors);
+					break;
+			}			
+		}
+		$Retorn .= '</DIV><P/>';
+		return $Retorn;
+	}
+}
+
+/**
+ * Classe FormRecerca.
+ *
+ * Classe per als formularis de recerca.
+ */
 class FormRecerca extends Form {
 	// Modalitats del formulari.
 	const mfLLISTA = 1;
@@ -255,66 +401,84 @@ class FormRecerca extends Form {
 	* @access public
 	*/    
     public $Modalitat = self::mfLLISTA;
+	
 	/**
 	* Sentència SQL per obtenir els registres a mostrar.
 	* @access public
 	* @var string
 	*/    
     public $SQL = '';
+	
 	/**
 	* Títol del formulari de recerca.
 	* @access public
 	* @var string
 	*/    
     public $Titol = '';
+	
 	/**
 	* Camps a visualitzar separats per comes.
 	* @access public
 	* @var string
 	*/    
     public $Camps = '';
+	
 	/**
 	* Títols de columnes separats per comes.
 	* @access public
 	* @var string
 	*/    
     public $Descripcions = ''; 
+	
 	/**
 	* Paraules a filtrar separades per espai (formaran part del WHERE).
 	* @access public
 	* @var string
 	*/    
-    public $Filtre = ''; 
+    public $FiltreText = ''; 
+
+	/**
+	* Llista de components (dates, combos) que permeten filtrar de forma específica.
+	* @access public
+	* @var array
+	*/    
+    public $Filtre = []; 
+	
 	/**
 	* Camp per realitzar l'ordenació.
 	* @access public
 	* @var string
 	*/    
     public $Ordre = ''; 
+	
 	/**
 	* Permet ordenar la recerca.
 	* @access public
 	* @var boolean
 	*/    
     public $PermetOrdenar = True; 
+	
 	/**
 	* Permet editar un registre.
 	* @access public
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
+	
 	/**
 	* URL per a l'edició d'un registre.
 	* @access public
-	* @var boolean
+	* @var string
 	*/    
     public $URLEdicio = ''; 
+	
 	/**
 	* Permet afegir un registre. Usa la URLEdicio per indicar la fitxa.
 	* @access public
 	* @var boolean
 	*/    
     public $PermetAfegir = False; 
+	
 	/**
 	* Permet suprimir un registre.
 	* @access public
@@ -330,18 +494,42 @@ class FormRecerca extends Form {
     private $Opcions = [];	
 
 	/**
-	 * Crea la nova SQL a partir de les propietats SQL i Filtre.
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 */
+	function __construct($con, $user) {
+		parent::__construct($con, $user);
+		$this->Filtre = new Filtre();
+	}	
+
+	/**
+	 * Crea la nova SQL a partir de les propietats SQL i FiltreText.
      * @return string Sentència SQL.
 	 */
 	public function CreaSQL() {
 		$sRetorn = $this->SQL;
-		if ($this->Filtre != '') {
-			$obj = new SQL($this->SQL);
+		
+		// Filtre de components visuals
+		if ($this->Filtre->JSON != '') {
+			$Filtre = $this->CreaSQLFiltre();
+			if ($Filtre != '') {
+				$obj = new SQL($this->SQL);
+				if (strlen($obj->Where) > 0)
+					$obj->Where .= ' AND '.$Filtre;
+				else
+					$obj->Where = $Filtre;
+				$sRetorn = $obj->GeneraSQL();
+			}
+		}
+		
+		// Filtre de paraules clau
+		if ($this->FiltreText != '') {
+			$obj = new SQL($sRetorn);
 //print_r($obj->CampAlies);
 			$sWhere = '';
-			$aFiltre = explode(" ", TrimX($this->Filtre));
+			$aFiltreText = explode(" ", TrimX($this->FiltreText));
 			$aCamps = explode(",", TrimXX($this->Camps));
-			foreach ($aFiltre as $sValor) {
+			foreach ($aFiltreText as $sValor) {
 				$sWhere .= '(';
 				foreach ($aCamps as $sCamp) {
 					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
@@ -368,10 +556,9 @@ class FormRecerca extends Form {
 				$sRetorn .= ' WHERE ' . substr($sWhere, 0, -5);*/
 		}
 		
-//print '<br>'.$this->Ordre.'<br>';		
+		// Ordenació de les columnes
 		if ($this->Ordre != '') {
 			$iOrder = strrpos($sRetorn, ' ORDER ');
-//print '<br>'.$iOrder.'<br>';		
 			if ($iOrder != 0) {
 				$sRetorn = trim(substr($sRetorn, 0, $iOrder));
 			}
@@ -379,6 +566,31 @@ class FormRecerca extends Form {
 		}
 //print $sRetorn;		
 		return $sRetorn;
+	}
+
+	/**
+	 * Crea la part SQL del filtre del formulari.
+	 * @return string SQL del filtre.
+	 */
+	private function CreaSQLFiltre(): string {
+		$Retorn = '';
+		if ($this->Filtre->JSON != '') {
+			// Convertim el JSON en un array associatiu
+			// https://www.php.net/manual/en/function.json-decode.php
+//print_r($this->JSON);
+			$aFiltre = json_decode($this->Filtre->JSON, true);
+//var_dump($aFiltre);
+			$aRetorn = [];
+			$obj = new SQL($this->SQL);
+			foreach ($aFiltre as $key => $value) {
+				if ($value != '')
+					array_push($aRetorn, $obj->ObteCampDesDeAlies($key)."='".$value."'");
+			}
+			if (count($aRetorn)>0)
+				$Retorn = implode(' AND ', $aRetorn); 
+		}
+//print_r($Retorn);
+		return trim($Retorn);
 	}
 
 	/**
@@ -528,6 +740,13 @@ class FormRecerca extends Form {
 	}
 
 	/**
+	 * Genera el filtre del formulari si n'hi ha.
+	 */
+	private function GeneraFiltre() {
+		return $this->Filtre->CreaFiltre();
+	}
+	
+	/**
 	 * Genera la part oculta per emmagatzemar valors.
 	 */
 	private function GeneraPartOculta() {
@@ -544,11 +763,12 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
 		echo $this->GeneraCerca();
+		echo $this->GeneraFiltre();
 		echo $this->GeneraTaula();
 		CreaFinalHTML();
 	}
@@ -605,16 +825,22 @@ class FormRecerca extends Form {
 				if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
 //print_r($row['usuari_bloquejat']);
 //print_r($row);
+					$NoMostrisCheckBox = False;
 					$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
 					if ($obj->Camp == '')
 						$Funcio = $obj->Funcio.'(this, '.$Id.')';
-					else 
+					else {
+//echo '$row[$obj->Camp]:'.$row[$obj->Camp].'<BR>';
+						// Si el camp és extern (no la clau primària) pot ser que valgui NULL o res
+						if ($row[$obj->Camp] == '')
+							$NoMostrisCheckBox = True;
 						$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
+					}
 					$Nom = $obj->Funcio.'_'.$Id;
 
 					$Retorn .= '<TD style="text-align:center">';
 					
-					if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1))
+					if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1) && !$NoMostrisCheckBox)
 						$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
 //					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
 					
@@ -646,22 +872,6 @@ class FormRecerca extends Form {
  * Classe per als formularis de fitxa.
  */
 class FormFitxa extends Form {
-	// Tipus de camps per al formulari.
-	const tcTEXT = 1;
-	const tcENTER = 2;
-	const tcREAL = 3;
-	const tcPASSWORD = 4;
-	const tcMEMO = 5;
-	const tcDATA = 6;
-	const tcSELECCIO = 7;
-	const tcCHECKBOX = 8;
-	const tcLOOKUP = 9;
-	const tcPESTANYA = 10;
-	const tcCOLUMNA_INICI = 11;
-	const tcCOLUMNA_SALT = 12;
-	const tcCOLUMNA_FINAL = 13;
-	const tcESPAI = 14;
-	
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
 	* @access public

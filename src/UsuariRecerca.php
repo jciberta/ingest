@@ -11,6 +11,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibDB.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -61,9 +62,8 @@ switch ($Accio) {
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
 			' Edat(U.data_naixement) AS edat, U.usuari_bloquejat, '.
-			' M.matricula_id, '.
-			' C.nom AS NomCurs, C.nivell, M.baixa '. // AS BaixaTest, '.
-//			' CASE WHEN M.baixa=1 THEN "'.utf8_decode('Sí').'" ELSE "" END AS baixa '.
+			' M.matricula_id, M.grup, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
@@ -74,8 +74,8 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, edat, NomCurs, nivell';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Edat, Curs, Nivell';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, edat, NomCurs, nivell, grup';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Edat, Curs, Nivell, Grup';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -83,8 +83,15 @@ switch ($Accio) {
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?AlumneId=');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&AlumneId=');
 		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?AlumneId=');
-		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+
+		// Filtre
+		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+		array_unshift($aCurs[0], '');
+		array_unshift($aCurs[1], '');
+		$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C'), array('', 'A', 'B', 'C'));
+
 		$frm->EscriuHTML();
         break;
     case "AlumnesPares":

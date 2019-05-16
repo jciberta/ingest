@@ -52,7 +52,7 @@ class Registre {
 	public function Escriu($Seccio, $Missatge) {
 		$SQL = "INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge) VALUES (".
 			$this->Usuari->usuari_id.", ".
-			"'".trim(utf8_decode($this->Usuari->nom." ".$this->Usuari->cognom1." ".$this->Usuari->cognom2))."', ".
+			"'".trim($this->Usuari->nom." ".$this->Usuari->cognom1." ".$this->Usuari->cognom2)."', ".
 			"'".date('Y-m-d H:i:s')."', ".
 			"'".getUserIP()."', ".
 			"'".utf8_decode($Seccio)."', ".
