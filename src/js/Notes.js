@@ -9,10 +9,28 @@
  */
 
 /**
+ * EnEntrarCellaNota
+ * @param element Cel·la que ha fet la crida.
+ */
+function EnEntrarCellaNota(element) { 
+	ObteNota(element);
+}
+
+/**
+ * EnSortirCellaNota
+ * @param element Cel·la que ha fet la crida.
+ */
+function EnSortirCellaNota(element) { 
+	if (element.value!='' && element.value>=0 && element.value<5)
+		element.style.color = 'red';
+	else
+		element.style.color = 'black';
+	ActualitzaNota(element);
+}
+
+/**
  * MostraGraellaNotes
- *
  * Mostra/Oculta la graella de notes.
- *
  * @param obj Objecte que ha provocat la crida.
  * @param int nivell Nivell del curs.
  */

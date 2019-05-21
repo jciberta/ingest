@@ -312,6 +312,8 @@ class Notes
 			$style .= ";background-color:grey";
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
+		else if ($Nota!='' && $Nota>=0 && $Nota<5)
+			$style .= ";color:red";
 		
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
@@ -321,7 +323,10 @@ class Notes
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
-		return "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+		return "<TD width=2><input type=text ".$Deshabilitat." style='".$style."'".
+			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
+			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip.
+			" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 	}
 
 	/**
