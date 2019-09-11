@@ -58,8 +58,11 @@ $EstatAvaluacio = $Avaluacio->Estat($CursId);
 if ($EstatAvaluacio != Avaluacio::Tancada)
 	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
-$SQL = CreaSQLNotes($CicleId, $Nivell);
-//print_r($SQL);
+$Notes = new Notes($conn, $Usuari);
+$SQL = $Notes->CreaSQL($CursId, $Nivell);
+//$SQL = CreaSQLNotes($CursId, $Nivell);
+//$SQL = CreaSQLNotes($CicleId, $Nivell);
+//print_r($SQL.'<P>');
 
 $ResultSet = $conn->query($SQL);
 
