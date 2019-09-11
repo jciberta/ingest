@@ -126,6 +126,29 @@ class Form {
 		$ResultSet->close();
 		return $Retorn;
 	}	
+	
+	/**
+	 * Crea un camp de tipus checkbox.
+	 *
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param boolean $Valor Valor per defecte de l'element.
+	 * @param array $off Opcions del formulari.
+	 * @param string $onChange Funció que crida l'event onChange (opcional).
+	 * @return void
+	 */
+	public function CreaCheckBox(string $Nom, string $Titol, bool $Valor, array $off = [], $onChange = '') {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');
+		$TextValor = $Valor ? ' value=1 checked ' : ' value=0 ';
+		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+
+		$sNom = 'chb_' . $Nom;
+		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+//		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$sNom.'" '.$TextValor.$Requerit.'></TD>';
+		$sRetorn .= '<TD><input type="checkbox" name="'.$sNom.'" '.$TextValor.$Requerit.$onChange.'></TD>';
+		return $sRetorn;
+	}	
 
 	/**
 	 * Crea un element "data" (element INPUT + BUTTON per cercar les dates).
@@ -302,6 +325,26 @@ class Filtre {
 	}
 	
 	/**
+	 * Afegeix un camp de tipus checkbox al formulari.
+	 *
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param boolean $Valor Valor per defecte de l'element.
+	 * @param array $off Opcions del formulari.
+	 * @return void
+	 */
+	public function AfegeixCheckBox(string $camp, string $titol, bool $Valor, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = Form::tcCHECKBOX;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Valor = $Valor; // Passa a ser enter (0, 1)!
+		$this->Camps[$i]->Opcions = $off;
+	}
+	
+	/**
 	 * Afegeix un camp de tipus data al filtre.
 	 *
 	 * @param string $camp Camp de la taula.
@@ -357,6 +400,13 @@ class Filtre {
 				case Form::tcPASSWORD:
 					break;
 				case Form::tcCHECKBOX:
+//					$ValorDefecte = ($Valor->Valor == 1);
+/*print_r($Valor);	
+echo "<p>".$Valor->Valor."<p>";
+echo "<p>".(bool)$ValorDefecte."<p>";
+
+exit;*/
+					$Retorn .= $this->Form->CreaCheckBox($Valor->Camp, $Valor->Titol, $Valor->Valor);
 					break;
 				case Form::tcDATA:
 //					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
@@ -371,7 +421,45 @@ class Filtre {
 			}			
 		}
 		$Retorn .= '</DIV><P/>';
+		$this->CreaFiltreJSON();
 		return $Retorn;
+	}
+	
+	/**
+	 * Crea el filtre JSON per a la primera vegada que s'executa el formaulari de recerca.
+	 * @return void.
+	 */
+	private function CreaFiltreJSON(): void {
+		$sFiltre = '{';
+		foreach($this->Camps as $Valor) {
+			switch ($Valor->Tipus) {
+				case Form::tcESPAI:
+					break;
+				case Form::tcTEXT:
+					break;
+				case Form::tcENTER:
+					break;
+				case Form::tcREAL:
+					break;
+				case Form::tcPASSWORD:
+					break;
+				case Form::tcCHECKBOX:
+					break;
+				case Form::tcDATA:
+					break;
+				case Form::tcSELECCIO:
+//					$Retorn .= '<BR>EI<BR>';
+//					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+//					$CodiSeleccionat = $this->Registre[$Valor->Camp];
+//					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
+					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->Codis[0].'", ';
+					break;
+			}					
+		}
+		$sFiltre = substr($sFiltre, 0, -2); // Treiem la darrera coma
+		$sFiltre .= '}';
+//echo '<p>'.$sFiltre.'<p>';		
+		$this->JSON = $sFiltre;		
 	}
 }
 
@@ -579,7 +667,6 @@ class FormRecerca extends Form {
 			// https://www.php.net/manual/en/function.json-decode.php
 //print_r($this->JSON);
 			$aFiltre = json_decode($this->Filtre->JSON, true);
-//var_dump($aFiltre);
 			$aRetorn = [];
 			$obj = new SQL($this->SQL);
 			foreach ($aFiltre as $key => $value) {
@@ -592,7 +679,7 @@ class FormRecerca extends Form {
 //print_r($Retorn);
 		return trim($Retorn);
 	}
-
+	
 	/**
 	 * Crea les fletxes per a l'ordenació dels diferents camps de la recerca.
 	 * @param string $camp Camp per a l'ordenació.
@@ -763,7 +850,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}

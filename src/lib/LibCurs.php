@@ -85,7 +85,7 @@ class Curs
 	 * Genera el llistat de cursos.
 	 */
 	function EscriuFormulariRecera() {
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, AA.any_inici, AA.any_final, '.
+		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, AA.any_inici, AA.any_final, '.
 			' CASE '.
 			'     WHEN C.finalitzat = 1 THEN "Tancada" '.
 			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
@@ -110,6 +110,11 @@ class Curs
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
 		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+
+		// Filtre
+//		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
+		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('0', '1', ''), array('Oberta', 'Tancada', 'Totes'));
+
 		$frm->EscriuHTML();
 	}
 }
