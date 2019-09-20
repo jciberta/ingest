@@ -13,13 +13,32 @@
  * ComprovaData
  *
  * Comprova una data si és correcta.
+ * https://stackoverflow.com/questions/2086598/validate-date-format-in-php
+ *
+ * @param string $date data a comprovar.
+ * @return boolean Si la data és correcta o no.
+ */
+function ComprovaData($date) {
+    if (substr_count($date, '/') == 2) {
+        list($d, $m, $y) = explode('/', $date);
+		if ($y < 100)
+			$y = ($y < 50) ? (2000+$y) : (1900+$y);
+        return checkdate($m, $d, sprintf('%04u', $y));
+    }
+    return False;
+}
+ /**
+ * ComprovaData2 (Obsolet)
+ *
+ * Comprova una data si és correcta.
  * https://stackoverflow.com/questions/12322824/php-preg-match-with-working-regex
  *
+ * @deprecated.
  * @param string $date data a comprovar.
  * @param string $format Format de la data.
  * @return boolean Si la data és correcta o no.
  */
-function ComprovaData($date, $format = 'd/m/Y')
+function ComprovaData2($date, $format = 'd/m/Y')
 {
     $d = DateTime::createFromFormat($format, $date);
     return $d && $d->format($format) == $date;
