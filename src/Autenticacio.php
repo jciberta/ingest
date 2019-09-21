@@ -89,7 +89,7 @@ if (!empty($_POST))
 			}
 			catch (Exception $e) 
 			{
-				$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+				$Text = "[File: ".$e->getFile().", line ".$e->getLine()."]: ".$e->getMessage();
 				PaginaHTMLMissatge("Error", $Text);
 			}
 		}

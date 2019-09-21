@@ -145,6 +145,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
 			echo '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
 			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
+			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
 			echo '				</div>';
 			echo '			</li>';
 		}	

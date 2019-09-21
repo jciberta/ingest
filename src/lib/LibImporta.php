@@ -10,6 +10,7 @@
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibArray.php');
+require_once(ROOT.'/lib/LibMatricula.php');
 
 /**
  * Classe Importa.
@@ -32,6 +33,20 @@ class Importa {
 	public $Usuari;
 
 	/**
+	* Camps de la capçalera indexats per número.
+	* @access protected
+	* @var array
+	*/    
+    protected $Camps = [];	
+
+	/**
+	* Camps de la capçalera indexats per nom.
+	* @access protected
+	* @var array
+	*/    
+    protected $CampsNom = [];	
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param object $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
@@ -48,12 +63,13 @@ class Importa {
  * Classe per a la importació d'usuaris.
  * Formats suportats:
  * 	- SAGA: per encaixar amb la base de dades, el pare és el responsable 1 i la mare el responsable 2
+ * 	- SAGA2: format SAGA de la secretària (d'on va sortir?)f
  */
 class ImportaUsuaris extends Importa {
 
 	// Tipus importació.
 	const tiSAGA = 1;
-	const tiSAGA2 = 1; // Format SAGA de la secretària (d'on va sortir?)
+	const tiSAGA2 = 2; 
 
 	/**
 	* Tipus importació.
@@ -68,14 +84,14 @@ class ImportaUsuaris extends Importa {
 	* @access protected
 	* @var array
 	*/    
-    protected $Camps = [];	
+//    protected $Camps = [];	
 
 	/**
 	* Camps de la capçalera indexats per nom.
 	* @access protected
 	* @var array
 	*/    
-    protected $CampsNom = [];	
+//    protected $CampsNom = [];	
 
 	/**
 	 * Tracta la primera línia on hi ha la capçalera de les dades.
@@ -710,5 +726,105 @@ class ImportaUsuaris extends Importa {
 	}
 
 } 
+
+/**
+ * Classe ImportaMatricula.
+ *
+ * Classe per a la importació de les matrícules.
+ * Usa el mateix document de la importació d'alumnes.
+ * Formats suportats:
+ * 	- SAGA
+ */
+class ImportaMatricula extends Importa {
+	/**
+	* Array amb els cursos. S'hauria de poder configurar!
+	* @var array
+	*/    
+	private static $CURSOS = array(
+		'CFPM 1601 A' => 13, // CAI1
+		'CFPM 1601 B' => 14, // CAI2
+		'CFPM IC10 A' => 5,  // SMX1 AB
+		'CFPM IC10 B' => 5,  // SMX1 BC
+		'CFPM IC10 C' => 6,  // SMX2
+		'CFPM SA20 A' => 9,  // FIP1
+		'CFPM SA20 B' => 10, // FIP1
+		'CFPM SC10 A' => 11, // APD1
+		'CFPM SC10 B' => 12, // APD2
+		'CFPS ICB0 A' => 7,  // DAM1
+		'CFPS ICB0 B' => 8   // DAM2
+	);
+
+	/**
+	* Objete per a fer les matriculacions.
+	* @var object
+	*/    
+	private $Mat;
+
+	/**
+	 * Tracta la primera línia on hi ha la capçalera de les dades.
+     * @param array Primera línia.
+	 */
+	private function TractaPrimeraLinia(array $Linia) {
+		for ($i=0; $i < count($Linia); $i++) {
+			$nom = CodificaUTF8($Linia[$i]);
+			$this->Camps[$i] = $nom;
+			$this->CampsNom[$nom] = $i;
+		}
+	}
+
+	/**
+	 * Importa una línia la matrícula.
+     * @param array $Linia Línia CSV a importar.
+	 */
+	private function ImportaLinia(array $Linia) {
+		echo '<pre>';
+
+		$DNI = trim($Linia[$this->CampsNom['DNI']]);
+		$Curs = trim($Linia[$this->CampsNom['CODI']]);
+		
+		$CursId = self::$CURSOS[$Curs];
+//print_r($this->CampsNom);				
+//print_r($Linia);				
+//print '<p>'.$Curs.' '.$CursId.'<p>';				
+//print 'DNI: '.$DNI.'<p>';				
+
+		$Resultat = $this->Mat->CreaMatriculaDNI($CursId, $DNI, '', '');
+		switch ($Resultat) {
+			case 0:
+				print 'Alumne '.$DNI.': matrícula creada.<br>';	
+				break;
+			case -1:
+				print 'Alumne '.$DNI.': matrícula no creada. Alumne ja matriculat.<br>';	
+				break;
+			case -2:
+				print 'Alumne '.$DNI.': matrícula no creada. DNI inexistent.<br>';	
+				break;
+			case -99:
+				print 'Alumne '.$DNI.': matrícula no creada. Error base de dades.<br>';	
+				break;
+		}
+		echo '</pre>';
+	}
+	
+	/**
+	 * Importa la matrícula.
+     * @param string $Fitxer Fitxer CSV a importar.
+	 */
+	public function Importa(string $Fitxer) {
+		$this->Mat = new Matricula($this->Connexio, $this->Usuari);
+		$row = 1;
+		if (($handle = fopen($Fitxer, "r")) !== FALSE) {
+			while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+				if ($row == 1)
+					$this->TractaPrimeraLinia($data);
+				else 
+					$this->ImportaLinia($data);
+				$row++;
+			}
+			fclose($handle);
+		}
+		echo "Importació realitzada amb èxit.";		
+	}
+}
 
 ?>
