@@ -214,6 +214,10 @@ class Notes
 
 		// Capçalera de la taula
 		$aModuls = [];
+
+		// CAI2 no existeix com a tal. Tots els crèdits estan posats a 1r
+		if (!property_exists($Notes, 'UF')) return;
+	
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModuls[$j] = utf8_encode($row["CodiMP"]);

@@ -50,6 +50,22 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}
+	else if ($_REQUEST['accio'] == 'AssignaGrup') {
+		$CursId = $_REQUEST['curs'];
+		$AlumneId = $_REQUEST['alumne'];
+		$Grup = $_REQUEST['grup'];
+		$SQL = 'UPDATE MATRICULA SET grup="'.$Grup.'" WHERE curs_id='.$CursId.' AND alumne_id='.$AlumneId;
+		$conn->query($SQL);
+		print $SQL;
+	}
+	else if ($_REQUEST['accio'] == 'AssignaGrupTutoria') {
+		$CursId = $_REQUEST['curs'];
+		$AlumneId = $_REQUEST['alumne'];
+		$GrupTutoria = $_REQUEST['grup_tutoria'];
+		$SQL = 'UPDATE MATRICULA SET grup_tutoria="'.$GrupTutoria.'" WHERE curs_id='.$CursId.' AND alumne_id='.$AlumneId;
+		$conn->query($SQL);
+		print $SQL;
+	}
 	else {
 		if ($CFG->Debug)
 			print "Acció no suportada. Valor de $_POST: ".json_encode($_POST);
