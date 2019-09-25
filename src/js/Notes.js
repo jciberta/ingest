@@ -28,8 +28,8 @@ function EnSortirCellaNota(element) {
 	else
 		element.style.color = 'black';
 	ActualitzaNota(element);
-	ResaltaFila(element, 'grey');
-	ResaltaColumna(element, 'grey');
+	ResaltaFila(element, '#A9A9A9');
+	ResaltaColumna(element, '#A9A9A9');
 }
 
 /**
