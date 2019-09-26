@@ -160,3 +160,47 @@ console.log('BloquejaUsuari');
 		}
     } );
 }
+
+function AssignaGrup(element, grup) { 
+	var data = (element.name).split('_');
+	var CursId = data[1];
+	var AlumneId = data[2];
+    $.ajax( {
+        type: 'POST',
+        url: 'lib/LibUsuari.ajax.php',
+        data:{
+			'accio': 'AssignaGrup',
+            'curs': CursId,
+			'alumne': AlumneId,
+			'grup': element.value
+            },
+        success: function(data) {
+            $('#debug').html(data);
+        }, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}
+
+function AssignaGrupTutoria(element, grup_tutoria) { 
+	var data = (element.name).split('_');
+	var CursId = data[1];
+	var AlumneId = data[2];
+    $.ajax( {
+        type: 'POST',
+        url: 'lib/LibUsuari.ajax.php',
+        data:{
+			'accio': 'AssignaGrupTutoria',
+            'curs': CursId,
+			'alumne': AlumneId,
+			'grup_tutoria': element.value
+            },
+        success: function(data) {
+            $('#debug').html(data);
+        }, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}

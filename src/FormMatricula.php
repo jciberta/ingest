@@ -36,7 +36,11 @@ echo '<TABLE>';
 echo '<TR>';
 echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'NomAlumne, Cognom1Alumne, Cognom2Alumne');
 echo '</TR><TR>';
-$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+$SQL = 'SELECT C.curs_id, C.nom '.
+	' FROM CURS C'.
+	' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+	' WHERE actual=1';
+$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 echo $frmMatricula->CreaLlista('curs', 'Curs', 1000, $aCurs[0], $aCurs[1]);
 echo '</TR><TR>';
 echo $frmMatricula->CreaLlista('grup', 'Grup', 200, array("", "A", "B", "C"), array("sense grup", "A", "B", "C"));

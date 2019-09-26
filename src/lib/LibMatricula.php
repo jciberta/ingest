@@ -42,13 +42,13 @@ class Matricula
 	 * CreaMatricula
 	 * Crea la matrícula per a un alumne. Quan es crea la matrícula:
 	 *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
-	 *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les (PENDENT!)
+	 *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les.
 	 *
 	 * @param integer $CursId Id del curs.
 	 * @param integer $AlumneId Id de l'alumne.
-	 * @param integer $Grup Grup (cap, A, B, C).
-	 * @param integer $GrupTutoria Grup de tutoria.
-	 * @return integer Valor de retorn: 0 Ok, -1 Alumne ja matriculat, -2 Error.
+	 * @param string $Grup Grup (cap, A, B, C).
+	 * @param string $GrupTutoria Grup de tutoria.
+	 * @return integer Valor de retorn: 0 Ok, -1 Alumne ja matriculat, -99 Error.
 	 */
 	public function CreaMatricula($Curs, $Alumne, $Grup, $GrupTutoria) {
 		$SQL = " CALL CreaMatricula(".$Curs.", ".$Alumne.", '".$Grup."', '".$GrupTutoria."', @retorn)";
@@ -58,7 +58,41 @@ class Matricula
 		
 		// Obtenció de la variable d'un procediment emmagatzemat.
 		// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
-		if (!$this->Connexio->query("SET @retorn = -2") || !$this->Connexio->query($SQL)) {
+		if (!$this->Connexio->query("SET @retorn = -99") || !$this->Connexio->query($SQL)) {
+			echo "CALL failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
+		}
+
+		if (!($res = $this->Connexio->query("SELECT @retorn as _retorn"))) {
+			echo "Fetch failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
+		}
+
+		$row = $res->fetch_assoc();
+		return $row['_retorn'];	
+	}
+
+	/**
+	 * CreaMatriculaDNI
+	 * Crea la matrícula per a un alumne a partir del DNI.
+	 *
+	 * @param integer $CursId Id del curs.
+	 * @param string $DNI DNI de l'alumne.
+	 * @param string $Grup Grup (cap, A, B, C).
+	 * @param string $GrupTutoria Grup de tutoria.
+	 * @return integer Valor de retorn:
+	 *    0 Ok.
+	 *   -1 Alumne ja matriculat.
+	 *   -2 DNI inexistent.
+	 *  -99 Error.
+	 */
+	public function CreaMatriculaDNI(int $Curs, string $DNI, string $Grup, string $GrupTutoria) {
+		$SQL = " CALL CreaMatriculaDNI(".$Curs.", '".$DNI."', '".$Grup."', '".$GrupTutoria."', @retorn)";
+
+		if (Config::Debug)
+			print $SQL.'<br>';		
+		
+		// Obtenció de la variable d'un procediment emmagatzemat.
+		// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
+		if (!$this->Connexio->query("SET @retorn = -99") || !$this->Connexio->query($SQL)) {
 			echo "CALL failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
 		}
 

@@ -14,6 +14,8 @@
  */
 function EnEntrarCellaNota(element) { 
 	ObteNota(element);
+	ResaltaFila(element, 'black');
+	ResaltaColumna(element, 'black');
 }
 
 /**
@@ -26,6 +28,8 @@ function EnSortirCellaNota(element) {
 	else
 		element.style.color = 'black';
 	ActualitzaNota(element);
+	ResaltaFila(element, '#A9A9A9');
+	ResaltaColumna(element, '#A9A9A9');
 }
 
 /**
@@ -271,6 +275,50 @@ function ObteNota(element) {
 	sText = sText + 'Valor desat: ' + sNota;
 //	$('#debug').html(sText);
 	EnviaCursorAlFinalDelText(element);
+}
+
+/**
+ * ResaltaFila
+ * @param element Cel·la que ha fet la crida.
+ * @param color Color amb que es vol resaltar la fila.
+ */
+function ResaltaFila(element, color) { 
+	var data = (element.id).split('_');
+	var grd = data[0];
+	var x = data[1];
+	var y = data[2];
+
+	var i = 0;
+	var CellaId = grd + '_' + x + '_' + i;
+	while (document.getElementById(CellaId) !== null) {
+		Cella = document.getElementById(CellaId);
+		Cella.style.border = '1px solid ' + color;
+		Cella.style.margin = '1px';
+		i++;
+		CellaId = grd + '_' + x + '_' + i;
+	}
+}
+
+/**
+ * ResaltaColumna
+ * @param element Cel·la que ha fet la crida.
+ * @param color Color amb que es vol resaltar la columna.
+ */
+function ResaltaColumna(element, color) { 
+	var data = (element.id).split('_');
+	var grd = data[0];
+	var x = data[1];
+	var y = data[2];
+
+	var i = 0;
+	var CellaId = grd + '_' + i + '_' + y;
+	while (document.getElementById(CellaId) !== null) {
+		Cella = document.getElementById(CellaId);
+		Cella.style.border = '1px solid ' + color;
+		Cella.style.margin = '1px';
+		i++;
+		CellaId = grd + '_' + i + '_' + y;
+	}
 }
 
 /**

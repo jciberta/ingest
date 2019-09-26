@@ -9,18 +9,26 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
- /**
+  /**
  * ComprovaData
  *
  * Comprova una data si és correcta.
  * https://stackoverflow.com/questions/12322824/php-preg-match-with-working-regex
+ * https://stackoverflow.com/questions/2086598/validate-date-format-in-php
  *
  * @param string $date data a comprovar.
  * @param string $format Format de la data.
  * @return boolean Si la data és correcta o no.
  */
-function ComprovaData($date, $format = 'd/m/Y')
-{
+function ComprovaData($date, $format = 'd/m/Y') {
+	// El cas dd/mm/yy cal passar-lo a dd/mm/yyyy
+	if (substr_count($date, '/') == 2) {
+        list($d, $m, $y) = explode('/', $date);
+		if ($y < 100)
+			$y = ($y < 50) ? (2000+$y) : (1900+$y);
+        $date = $d.'/'.$m.'/'.$y;
+    }	
+	
     $d = DateTime::createFromFormat($format, $date);
     return $d && $d->format($format) == $date;
 }

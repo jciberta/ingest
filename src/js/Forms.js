@@ -69,7 +69,17 @@ console.log('SELECT');
 			nom = nom.replace('cmb_', '');
 			Retorn += '"' + nom + '": "' + obj.value + '", ';
 		}
-		
+		else if (obj.tagName == 'INPUT') {
+console.log('INPUT');
+
+			if (obj.type == 'checkbox') {
+console.log('checkbox');
+				nom = obj.name;
+				nom = nom.replace('chb_', '');
+				valor = (obj.checked) ? 1 : 0;
+				Retorn += '"' + nom + '": ' + valor + ', ';
+			}
+		}
 	}
 	Retorn = Retorn.slice(0, -2); // Treiem la darrera coma
 	Retorn += '}';

@@ -24,13 +24,13 @@ require_once(ROOT.'/lib/LibAvaluacio.php');
  * CreaSQLNotes
  *
  * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
- * Es fa així (i no per curs) per obtenir també els alumnes d'un altre curs que també fan les UFs.
  *
  * @param string $CicleId Identificador del cicle formatiu.
  * @param string $Nivell Nivell: 1r o 2n.
  * @return string Sentència SQL.
  */
-function CreaSQLNotes($CicleId, $Nivell)
+/*function CreaSQLNotes($CursId, $Nivell)
+//function CreaSQLNotes($CicleId, $Nivell)
 {
 	return ' SELECT M.alumne_id AS AlumneId, '.
 		' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
@@ -45,9 +45,10 @@ function CreaSQLNotes($CicleId, $Nivell)
 		' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-		' WHERE C.cicle_formatiu_id='.$CicleId.' AND C.nivell>='.$Nivell.
+		' WHERE C.curs_id='.$CursId.' OR C.curs_id=2 '.
+//		' WHERE C.cicle_formatiu_id='.$CicleId.' AND C.nivell>='.$Nivell.
 		' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
-}
+}*/
  
 /**
  * ObteTaulaNotesJSON
@@ -60,7 +61,10 @@ function CreaSQLNotes($CicleId, $Nivell)
  */
 function ObteTaulaNotesJSON($Connexio, $CicleId, $Nivell)
 {
-	$SQL = CreaSQLNotes($CicleId, $Nivell);
+	$Notes = new Notes($conn, NULL);
+	$SQL = $Notes->CreaSQL($CursId, $Nivell);
+//	$SQL = CreaSQLNotes($CicleId, $Nivell);
+
 	//return $SQL;
 	//print_r($SQL);
 	$ResultSet = $Connexio->query($SQL);
@@ -168,6 +172,29 @@ function UltimaNota($Registre)
 class Notes 
 {
 	/**
+	* Connexió a la base de dades.
+	* @access public 
+	* @var object
+	*/    
+	public $Connexio;
+
+	/**
+	* Usuari autenticat.
+	* @access public 
+	* @var object
+	*/    
+	public $Usuari;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 */
+	function __construct($con, $user) {
+		$this->Connexio = $con;
+		$this->Usuari = $user;
+	}	
+	
+	/**
 	 * Escriu el formulari corresponent a les notes d'un cicle i nivell.
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
@@ -187,6 +214,10 @@ class Notes
 
 		// Capçalera de la taula
 		$aModuls = [];
+
+		// CAI2 no existeix com a tal. Tots els crèdits estan posats a 1r
+		if (!property_exists($Notes, 'UF')) return;
+	
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModuls[$j] = utf8_encode($row["CodiMP"]);
@@ -430,6 +461,71 @@ class Notes
 
 
 
+	}
+	
+	/**
+	 * Donat un 1r curs, retorna l'identificador del 2n curs per a aquell any i cicle.
+	 * Si no el troba, retorna -1.
+	 * @return int Identificador del 2n curs.
+	 */
+	private function ObteSegonCurs(int $CursId): int {
+		$iRetorn = -1;
+		
+		$SQL = 'SELECT curs_id FROM CURS C '.
+		' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' WHERE cicle_formatiu_id in ( '.
+		' 	SELECT cicle_formatiu_id FROM CURS C '.
+		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' 	WHERE curs_id='.$CursId.
+		' ) '.
+		' AND any_inici in ( '.
+		' 	SELECT any_inici FROM CURS C '.
+		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' 	WHERE curs_id='.$CursId.
+		' ) '.
+		' AND nivell=2 ';
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$obj = $ResultSet->fetch_object();
+			$iRetorn = $obj->curs_id; 
+			if ($iRetorn == $CursId)
+				$iRetorn = -1;
+		}
+		
+		return $iRetorn;
+	}	
+	
+	/**
+	 * CreaSQL
+	 *
+	 * Crea la sentència SQL per recuperar les notes d'un curs i un nivell concret.
+	 *
+	 * @param string $CicleId Identificador del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @return string Sentència SQL.
+	 */
+	public function CreaSQL($CursId, $Nivell)
+	{
+		$iSegonCurs = $this->ObteSegonCurs($CursId);
+		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
+			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+			' MP.codi AS CodiMP, '.
+			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
+			' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
+			' N.*, U.* '.
+			' FROM NOTES N '.
+			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' WHERE C.curs_id='.$CursId;
+		if ($iSegonCurs>0)
+			$sRetorn .= ' OR C.curs_id='.$iSegonCurs;
+		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+			
+		return $sRetorn;
 	}
 }
 
