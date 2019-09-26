@@ -511,6 +511,7 @@ class FormRecerca extends Form {
 		
 		// Filtre de components visuals
 		if ($this->Filtre->JSON != '') {
+//print 'Filtre: '.$this->Filtre->JSON;
 			$Filtre = $this->CreaSQLFiltre();
 			if ($Filtre != '') {
 				$obj = new SQL($this->SQL);
