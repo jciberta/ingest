@@ -257,8 +257,8 @@ class Avaluacio
 	/**
 	 * Tanca un curs.
 	 * 	1. Amaga els butlletins i marca el curs com finalitzat.
-	 * 	2. Es posa la convocatòria a 0 per a les notes aprovades.
-	 *  3. Es passa una convocatòria per a les notes no superades.
+	 * 	2. Es posa la convocatòria a 0 per a les notes aprovades. -> NO! Es fa al crear la següent matrícula
+	 *  3. Es passa una convocatòria per a les notes no superades. -> NO!
 	 * @param integer $id Identificador del curs.
 	 */
 	public function TancaCurs(int $id) {
@@ -268,7 +268,11 @@ class Avaluacio
 			$SQL = ' UPDATE CURS SET butlleti_visible=0, finalitzat=1 WHERE curs_id='.$id;
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
-			
+
+			// 2 i 3: Es fan al crear la següent matrícula (quan es copien les notes anteriors)
+
+			/*
+			// 2. Es posa la convocatòria a 0 per a les notes aprovades
 			$SQL = ' UPDATE NOTES SET convocatoria=0 WHERE notes_id IN ('.
 				'  SELECT notes_id FROM ('.
 				'     SELECT N.notes_id FROM NOTES N '.
@@ -279,6 +283,7 @@ class Avaluacio
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
 			
+			// 3. Es passa una convocatòria per a les notes no superades. 
 			// Falta tractar les convocatòries de gràcia !!! (màxim 5)
 			$SQL = ' UPDATE NOTES SET convocatoria=convocatoria+1 WHERE notes_id IN ('.
 				'  SELECT notes_id FROM ('.
@@ -289,6 +294,7 @@ class Avaluacio
 				')';
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
+			*/
 			
 			$this->Connexio->query('COMMIT');
 		} 
