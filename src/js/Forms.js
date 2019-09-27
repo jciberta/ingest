@@ -82,7 +82,10 @@ console.log('checkbox');
 		}
 	}
 	Retorn = Retorn.slice(0, -2); // Treiem la darrera coma
-	Retorn += '}';
+	Retorn = Retorn.trim();
+	if (Retorn.length>0)
+		Retorn += '}';
+console.log('Retorn: '+Retorn);
 	return Retorn;
 }
 

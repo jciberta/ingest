@@ -95,7 +95,7 @@ if ($Accio == 'AssignaUF') {
 			echo '    <div id="collapse'.$row['CodiCF'].'" class="collapse" aria-labelledby="'.$row['CodiCF'].'" data-parent="#accordionExample">';
 			echo '      <div class="card-body">';
 
-			echo '<TABLE class="table table-striped">';
+			echo '<TABLE class="table table-striped table-sm">';
 			echo '<thead class="thead-dark">';
 			echo "<TH>Mòdul</TH>";
 			echo "<TH>Unitat formativa</TH>"; 
@@ -193,7 +193,7 @@ else if ($Accio == 'ProfessorsUF') {
 			echo '    <div id="collapse'.$row['CodiCF'].'" class="collapse" aria-labelledby="'.$row['CodiCF'].'" data-parent="#accordionExample">';
 			echo '      <div class="card-body">';
 
-			echo '<TABLE class="table table-striped">';
+			echo '<TABLE class="table table-striped table-sm">';
 			echo '<thead class="thead-dark">';
 			echo "<TH>Modul</TH>";
 			echo "<TH>Unitat formativa</TH>"; 

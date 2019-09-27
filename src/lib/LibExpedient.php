@@ -36,14 +36,14 @@ class Expedient
 
 	/**
 	 * Genera la SQL per obtenir l'expedient d'un alumne.
-	 * @param integer $AlumneId Id de l'alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
 	 * @return string Sentència SQL.
 	 */
-	public static function SQL($AlumneId) {
+	public static function SQL($MatriculaId): string {
 		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, '.
 			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
-			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
+			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
 			' N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, '.
 			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
 			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
@@ -55,10 +55,9 @@ class Expedient
 			' LEFT JOIN MATRICULA M ON (M.curs_id=C.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.alumne_id='.$AlumneId;
+			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.matricula_id='.$MatriculaId;
 		return $SQL;
     }
-
 
 	/**
 	 * Indica si el butlletí de notes és visible o no.
@@ -81,9 +80,9 @@ class Expedient
 
 	/**
 	 * Genera l'expedient en PDF per a un alumne.
-	 * @param integer $AlumneId Id de l'alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
 	 */
-	public function GeneraPDF($AlumneId) {
+	public function GeneraPDF($MatriculaId) {
 		// create new PDF document
 		$pdf = new QualificacionsPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -91,7 +90,7 @@ class Expedient
 		$pdf->SetTitle('Expedient');
 		$pdf->SetSubject('Expedient');
 
-		$SQL = self::SQL($AlumneId);
+		$SQL = self::SQL($MatriculaId);
 		//print_r($SQL);
 
 		$ResultSet = $this->Connexio->query($SQL);
