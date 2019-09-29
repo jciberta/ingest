@@ -263,7 +263,7 @@ class Notes
 				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 //				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-				echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&AlumneId=".$row["AlumneId"]."'><IMG src=img/grades-sm.svg></A></TD>";
+				echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
 				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 				$Hores = 0;
@@ -512,7 +512,7 @@ class Notes
 			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
 			' MP.codi AS CodiMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
-			' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
+			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
 			' N.*, U.* '.
 			' FROM NOTES N '.
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.

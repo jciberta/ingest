@@ -457,7 +457,9 @@ exit;*/
 			}					
 		}
 		$sFiltre = substr($sFiltre, 0, -2); // Treiem la darrera coma
-		$sFiltre .= '}';
+		$sFiltre = trim($sFiltre);
+		if (strlen($sFiltre)>0)
+			$sFiltre .= '}';
 //echo '<p>'.$sFiltre.'<p>';		
 		$this->JSON = $sFiltre;		
 	}
@@ -599,6 +601,7 @@ class FormRecerca extends Form {
 		
 		// Filtre de components visuals
 		if ($this->Filtre->JSON != '') {
+//print 'Filtre: '.$this->Filtre->JSON;
 			$Filtre = $this->CreaSQLFiltre();
 			if ($Filtre != '') {
 				$obj = new SQL($this->SQL);
@@ -665,10 +668,13 @@ class FormRecerca extends Form {
 		if ($this->Filtre->JSON != '') {
 			// Convertim el JSON en un array associatiu
 			// https://www.php.net/manual/en/function.json-decode.php
-//print_r($this->JSON);
+//print_r("this->Filtre->JSON:<BR>");
+//print_r($this->Filtre->JSON);
 			$aFiltre = json_decode($this->Filtre->JSON, true);
 			$aRetorn = [];
 			$obj = new SQL($this->SQL);
+//print_r('aFiltre: '.$aFiltre);
+//var_dump($aFiltre);
 			foreach ($aFiltre as $key => $value) {
 				if ($value != '')
 					array_push($aRetorn, $obj->ObteCampDesDeAlies($key)."='".$value."'");
@@ -850,7 +856,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.4" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -864,14 +870,17 @@ class FormRecerca extends Form {
 	 * Afegeix una opció per a cada registre.
 	 * @param string $Titol Títol de l'opció.
 	 * @param string $URL URL de l'opció. Se li afegirà l'identificador del registre.
+	 * @param string $CampClau Camp del registre que serveix com a identificador. 
+	 * 		Si no s'especifica, com a paràmetre es passarà l'identificador del registre. 
 	 */
-	public function AfegeixOpcio($Titol, $URL) {
+	public function AfegeixOpcio(string $Titol, string $URL, string $CampClau = '') {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
 		$this->Opcions[$i]->Tipus = self::toURL;
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->URL = $URL;
+		$this->Opcions[$i]->Camp = $CampClau;
 		$this->Opcions[$i]->Opcions = [];
 	}
 
@@ -906,9 +915,16 @@ class FormRecerca extends Form {
 		foreach($this->Opcions as $obj) {
 			//$Retorn .= '<TD>';
 			$NomesLectura = (in_array(self::ofrNOMES_LECTURA, $obj->Opcions)) ? ' disabled ' : '';
-			if ($obj->Tipus == self::toURL)
-				$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+			
+			if ($obj->Tipus == self::toURL) {
+				// AfegeixOpcio
+				if ($obj->Camp == '')
+					$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+				else 
+					$Retorn .= '<TD><A HREF="'.$obj->URL.$row[$obj->Camp].'">'.$obj->Titol.'<A>';
+			}
 			else if ($obj->Tipus == self::toAJAX) {
+				// AfegeixOpcioAJAX
 				if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
 //print_r($row['usuari_bloquejat']);
 //print_r($row);
@@ -940,12 +956,7 @@ class FormRecerca extends Form {
 //				$Retorn .= 'AJAX';
 //				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 //				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
-
-
 				}
-
-
-
 			}
 			$Retorn .= '</TD>';
 		}

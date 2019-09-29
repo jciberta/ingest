@@ -84,7 +84,7 @@ class Matricula
 	 *   -2 DNI inexistent.
 	 *  -99 Error.
 	 */
-	public function CreaMatriculaDNI(int $Curs, string $DNI, string $Grup, string $GrupTutoria) {
+	public function CreaMatriculaDNI(int $Curs, string $DNI, string $Grup, string $GrupTutoria): int {
 		$SQL = " CALL CreaMatriculaDNI(".$Curs.", '".$DNI."', '".$Grup."', '".$GrupTutoria."', @retorn)";
 
 		if (Config::Debug)
@@ -109,7 +109,7 @@ class Matricula
 	 * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
      * @param array Primera línia.
 	 */
-	public function ConvalidaUF(int $NotaId) {
+	public function ConvalidaUF(int $NotaId): string {
 		$SQL = 'SELECT * FROM NOTES WHERE notes_id='.$NotaId;	
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
@@ -124,6 +124,22 @@ class Matricula
 			$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$NotaId;	
 			$this->Connexio->query($SQL);
 		}
+	}
+
+	/**
+	 * Obté l'identificador de l'alumne donada una matrícula.
+     * @param int $MatriculaId Identificador de la matrícula.
+	 * @return integer Identificador de l'alumne.
+	 */
+	public function ObteAlumne(int $MatriculaId): int {
+		$iRetorn = -1;
+		$SQL = 'SELECT alumne_id FROM MATRICULA WHERE matricula_id='.$MatriculaId;	
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$rsMatricula = $ResultSet->fetch_object();
+			$iRetorn = $rsMatricula->alumne_id;
+		}
+		return $iRetorn;
 	}
 }
 

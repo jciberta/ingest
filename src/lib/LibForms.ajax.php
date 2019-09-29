@@ -31,6 +31,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {
 		$cerca = $_REQUEST['cerca'];
 		$filtre = $_REQUEST['filtre'];
+//print 'Filtre [AJAX]: '.$filtre;
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);

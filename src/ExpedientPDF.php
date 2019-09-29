@@ -13,6 +13,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibExpedient.php');
+require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
@@ -28,7 +29,7 @@ if (defined('STDIN')) {
 		die("Ús: ExpedientPDF.php Alumne\n");
 	}
 	$Expedient = new Expedient($conn);
-	$Expedient->GeneraPDF($alumne);
+	$Expedient->GeneraPDF($MatriculaId);
 }
 else {
 	// Via web
@@ -38,9 +39,14 @@ else {
 	$Usuari = unserialize($_SESSION['USUARI']);
 
 	if (!empty($_GET))
-		$alumne = $_GET['AlumneId'];
+		$MatriculaId = $_GET['MatriculaId'];
+//		$alumne = $_GET['AlumneId'];
 	else
-		$alumne = -1;
+		$MatriculaId = -1;
+//		$alumne = -1;
+
+	$Matricula = new Matricula($conn, $Usuari);
+	$alumne = $Matricula->ObteAlumne($MatriculaId);
 
 	// Si intenta manipular l'usuari des de la URL -> al carrer!
 	if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
@@ -60,7 +66,7 @@ else {
 	
 	if ($ButlletiVisible) {
 		$Expedient = new Expedient($conn);
-		$Expedient->GeneraPDF($alumne);
+		$Expedient->GeneraPDF($MatriculaId);
 	}
 	else {
 		CreaIniciHTML($Usuari, 'Visualitza expedient');

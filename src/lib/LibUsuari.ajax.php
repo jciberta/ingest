@@ -27,11 +27,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Id = $_REQUEST['id'];
 		$check = $_REQUEST['check'];
 		$cerca = $_REQUEST['cerca'];
+		$filtre = $_REQUEST['filtre'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 		$frm->Filtre = $cerca; 
+		$frm->Filtre->JSON = $filtre; 
 		// Bloquegem/desbloquegem l'usuari
 		$SQL = 'UPDATE USUARI SET usuari_bloquejat='.$check.' WHERE usuari_id='.$Id;
 		$frm->Connexio->query($SQL);
@@ -40,11 +42,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'BaixaMatricula') {
 		$Id = $_REQUEST['id'];
 		$cerca = $_REQUEST['cerca'];
+		$filtre = $_REQUEST['filtre'];
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 		$frm->Filtre = $cerca; 
+		$frm->Filtre->JSON = $filtre; 
 		// Esborrem el registre
 		$SQL = 'UPDATE MATRICULA SET baixa=1 WHERE matricula_id='.$Id;
 		$frm->Connexio->query($SQL);

@@ -137,6 +137,8 @@ function BaixaMatricula(element, matricula_id) {
 function BloquejaUsuari(element, usuari_id) { 
 console.log('BloquejaUsuari');
 	var sCerca = $('input[name="edtRecerca"]').val();	
+	var filtre = document.getElementById('filtre');
+	var sFiltre = CreaFiltreJSON(filtre);
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
     $.ajax( {
@@ -147,6 +149,7 @@ console.log('BloquejaUsuari');
             'id': usuari_id,
 			'check': element.checked,
 			'cerca': sCerca,
+			'filtre': sFiltre,
 			'frm': sFrm
             },
         success: function(data) {

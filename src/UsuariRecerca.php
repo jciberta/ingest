@@ -41,7 +41,8 @@ switch ($Accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, usuari_bloquejat '.
+			' FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, codi';
@@ -50,6 +51,7 @@ switch ($Accio) {
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcio('Assigna UFs', 'AssignaUFs.php?accio=AssignaUF&ProfessorId=');
+		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
@@ -80,9 +82,9 @@ switch ($Accio) {
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
-		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?AlumneId=');
-		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&AlumneId=');
-		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?AlumneId=');
+		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
+		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
+		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 
 		// Filtre
