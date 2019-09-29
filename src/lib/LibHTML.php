@@ -69,6 +69,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
 //	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+	echo '	<link rel="stylesheet" href="css/InGest.css?v1.0">';
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';

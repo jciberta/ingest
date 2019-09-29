@@ -1,0 +1,26 @@
+/*
+ * InGest.css
+ */
+
+/* 
+ * Taula amb scroll 
+https://jsfiddle.net/bootstrapious/dmp7tr4g
+*/
+
+.table-fixed {
+  height: 600px; 
+}
+
+.table-fixed tbody {
+  overflow-y: scroll;
+  height: 550px;
+  width: 98%;
+  position: absolute;
+}
+
+.table-fixed thead,
+.table-fixed tr {
+  width: 100%;
+  display: inline-table;
+  table-layout: fixed; 
+}
