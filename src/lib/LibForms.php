@@ -731,7 +731,7 @@ class FormRecerca extends Form {
 //print $SQL;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
-			$sRetorn .= '<TABLE class="table table-striped">';
+			$sRetorn .= '<TABLE class="table table-striped table-sm table-hover">';
 
 			$aDescripcions = explode(",", TrimX($this->Descripcions));
 			$aCamps = explode(",", TrimXX($this->Camps));
