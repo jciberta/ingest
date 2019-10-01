@@ -59,9 +59,26 @@ switch ($Accio) {
         break;
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
-		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, DATE_FORMAT(data_naixement, "%d/%m/%Y") AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
+			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, codi';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, IDALU';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetSuprimir = True;
+		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
+		$frm->EscriuHTML();
+        break;
+    case "Matricules":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.4');
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Matrícules";
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
 		
 		$SQL = ' SELECT '.
