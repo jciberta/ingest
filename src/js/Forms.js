@@ -59,7 +59,7 @@ console.log(sFiltre);
  */
 function CreaFiltreJSON(filtre) {
 	var Retorn = '{';
-//console.dir(filtre.childNodes);	
+//console.dir(filtre.childNodes);
 	for (i=0; i<filtre.childNodes.length; i++) {
 console.dir(filtre.childNodes[i]);	
 		var obj = filtre.childNodes[i];
@@ -244,6 +244,7 @@ console.dir('jsonForm: ' + jsonForm);
 function OrdenaColumna(camp, sentit) { 
 console.log('-> OrdenaColumna');
 	var sCerca = $('input[name="edtRecerca"]').val();	
+	var filtre = document.getElementById('filtre');
 	var sFiltre = CreaFiltreJSON(filtre);
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
