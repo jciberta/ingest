@@ -429,7 +429,7 @@ exit;*/
 	 * Crea el filtre JSON per a la primera vegada que s'executa el formaulari de recerca.
 	 * @return void.
 	 */
-	private function CreaFiltreJSON(): void {
+	private function CreaFiltreJSON() {
 		$sFiltre = '{';
 		foreach($this->Camps as $Valor) {
 			switch ($Valor->Tipus) {
