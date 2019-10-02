@@ -304,6 +304,7 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 
 /* Any acadèmic */
 INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2018, 2019, 'Curs 2018-2019');
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2019, 2020, 'Curs 2019-2020');
 
 /* Sistema */
 INSERT INTO SISTEMA (nom, any_academic_id) VALUES ('Institut de Palamós', 1);
@@ -314,16 +315,16 @@ INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES 
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2018-2019 1r', 'DAM1', 3, 1);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2018-2019 2n', 'DAM2', 3, 2);
 
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2019-2020 1r', 'SMX1', 1, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2019-2020 2n', 'SMX2', 1, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2019-2020 1r', 'DAM1', 3, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2019-2020 2n', 'DAM2', 3, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Farmàcia i parafarmàcia (LOE) 2019-2020 1r', 'FIP1', 5, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Farmàcia i parafarmàcia (LOE) 2019-2020 2n', 'FIP2', 5, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 1r', 'APD1', 6, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 2n', 'APD2', 6, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 1r', 'CAI1', 7, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (1, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 2n', 'CAI2', 7, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2019-2020 1r', 'SMX1', 1, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2019-2020 2n', 'SMX2', 1, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2019-2020 1r', 'DAM1', 3, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2019-2020 2n', 'DAM2', 3, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Farmàcia i parafarmàcia (LOE) 2019-2020 1r', 'FIP1', 5, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Farmàcia i parafarmàcia (LOE) 2019-2020 2n', 'FIP2', 5, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 1r', 'APD1', 6, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 2n', 'APD2', 6, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 1r', 'CAI1', 7, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 2n', 'CAI2', 7, 2);
 
 /* Festius */
 INSERT INTO FESTIU (data, motiu) VALUES ('2018-09-11', '11 de setembre');
