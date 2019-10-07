@@ -39,6 +39,7 @@ if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 switch ($Accio) {
     case "Professors":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, usuari_bloquejat '.
@@ -59,6 +60,7 @@ switch ($Accio) {
         break;
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, DATE_FORMAT(data_naixement, "%d/%m/%Y") AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
@@ -154,6 +156,7 @@ switch ($Accio) {
     case "":
 		// Tots
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Usuaris";
