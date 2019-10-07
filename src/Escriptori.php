@@ -46,7 +46,7 @@ else if ($Usuari->es_professor) {
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND C.nivell=UF.nivell) '.
-		' WHERE professor_id='.$Usuari->usuari_id .
+		' WHERE C.finalitzat=0 AND professor_id='.$Usuari->usuari_id .
 		' ORDER BY CF.codi, UF.nivell ';
 //print $SQL;
 	echo '<div class="card-columns" style="column-count:6">';
