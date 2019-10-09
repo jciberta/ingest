@@ -484,6 +484,7 @@ class Notes
 		' 	WHERE curs_id='.$CursId.
 		' ) '.
 		' AND nivell=2 ';
+//print_r($SQL.'<HR>');
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$obj = $ResultSet->fetch_object();
@@ -500,7 +501,7 @@ class Notes
 	 *
 	 * Crea la sentència SQL per recuperar les notes d'un curs i un nivell concret.
 	 *
-	 * @param string $CicleId Identificador del cicle formatiu.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @return string Sentència SQL.
 	 */
