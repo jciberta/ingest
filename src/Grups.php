@@ -48,7 +48,6 @@ $ResultSet = $conn->query($SQL);
 
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE class="table table-fixed table-striped table-hover table-sm">';
-//	echo '<TABLE class="table table-hover table-sm">'; // Taula petita
 	echo '<THEAD class="thead-dark">';
 	echo '<TH class="col-xs-6">Alumne</TH>';
 	echo '<TH class="col-xs-1">Grup</TH>';
