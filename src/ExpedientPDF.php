@@ -35,7 +35,7 @@ else {
 	// Via web
 	session_start();
 	if (!isset($_SESSION['usuari_id'])) 
-		header("Location: index.html");
+		header("Location: Surt.php");
 	$Usuari = unserialize($_SESSION['USUARI']);
 
 	if (!empty($_GET))

@@ -10,13 +10,14 @@
  */
 
 class Config {
-	const Versio     = '0.9';
-	const Host       = 'localhost';
-	const BaseDades  = 'InGest';
-	const Usuari     = 'root';
-	const Password   = 'root';
-	const Debug      = True; // Si està activat mostrara més informació.
-	const Secret     = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
+	const Versio      = '0.11';
+	const Host        = 'localhost';
+	const BaseDades   = 'InGest';
+	const Usuari      = 'root';
+	const Password    = 'root';
+	const Debug       = True; // Si està activat mostrara més informació.
+	const Manteniment = False; 
+	const Secret      = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
 }
 
 unset($CFG);
@@ -24,12 +25,13 @@ global $CFG;
 
 $CFG = new stdClass();
 
-$CFG->Host       = Config::Host;
-$CFG->BaseDades  = Config::BaseDades;
-$CFG->Usuari     = Config::Usuari;
-$CFG->Password   = Config::Password;
-$CFG->Debug      = Config::Debug;
-$CFG->Secret     = hex2bin(Config::Secret); // Clau per a les funcions d'encriptació.
+$CFG->Host        = Config::Host;
+$CFG->BaseDades   = Config::BaseDades;
+$CFG->Usuari      = Config::Usuari;
+$CFG->Password    = Config::Password;
+$CFG->Debug       = Config::Debug;
+$CFG->Manteniment = Config::Manteniment;
+$CFG->Secret      = hex2bin(Config::Secret); // Clau per a les funcions d'encriptació.
 
 // Definició de l'arrel de l'aplicació.
 if (defined('STDIN')) {
@@ -47,8 +49,8 @@ else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		//define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
-		define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
+		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('INGEST_DATA', '/var/www/ingest-data');
