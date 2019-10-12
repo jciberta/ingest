@@ -218,6 +218,7 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (93, 'C10. Relacions en l´equip de treball', 'C10', 66, 1, 39);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (94, 'C11. Formació i orientació laboral', 'C11', 66, 1, 40);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (95, 'C12. Formació en centres de treball', 'C12', 410, 1, 41);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (175, 'C13. Crèdit de síntesi', 'C13', 66, 1, 42);
 
 /* Unitats formatives APD */
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (96, 'UF1. Context de la intervenció sociosanitària', 'UF1', 44, 1, 43);
@@ -226,6 +227,7 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (99, 'UF2. Activitats d’assistència sanitària', 'UF2', 66, 1, 44);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (100, 'UF3. Suport en la ingesta', 'UF3', 30, 1, 44);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (101, 'UF4. Aplicació de tractaments per a persones en situació de dependència', 'UF4', 24, 1, 44);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (176, 'UF5. Gent gran', 'UF5', 33, 1, 44);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (102, 'UF1. Higiene personal', 'UF1', 33, 1, 45);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (103, 'UF2. Higiene de l’entorn', 'UF2', 33, 1, 45);
 INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (104, 'UF1. Suport en el desenvolupament dels hàbits d’autonomia personal i social', 'UF1', 66, 1, 46);
