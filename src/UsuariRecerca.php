@@ -63,7 +63,7 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, DATE_FORMAT(data_naixement, "%d/%m/%Y") AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
 			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';

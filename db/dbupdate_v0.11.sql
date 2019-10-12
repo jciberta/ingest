@@ -49,3 +49,19 @@ BEGIN
         WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)<5 AND UltimaNota(notes_id)!=-1;
 END //
 DELIMITER ;
+
+/*
+ * FormataData
+ *
+ * Donat un camp de tipus data, el retorna en el format dd/mm/yyyy.
+ *
+ * @param date DataMySQL Data.
+ * @return string Data en el format dd/mm/yyyy.
+ */
+DELIMITER //
+CREATE FUNCTION FormataData(DataMySQL DATE)
+RETURNS VARCHAR(10)
+BEGIN 
+    RETURN DATE_FORMAT(DataMySQL, "%d/%m/%Y");
+END //
+DELIMITER ;

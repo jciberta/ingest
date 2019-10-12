@@ -616,7 +616,9 @@ class FormRecerca extends Form {
 		// Filtre de paraules clau
 		if ($this->FiltreText != '') {
 			$obj = new SQL($sRetorn);
+//print_r('CampAlies: ');
 //print_r($obj->CampAlies);
+//print_r('<hr>');
 			$sWhere = '';
 			$aFiltreText = explode(" ", TrimX($this->FiltreText));
 			$aCamps = explode(",", TrimXX($this->Camps));
