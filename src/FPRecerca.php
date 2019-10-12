@@ -107,7 +107,7 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
-		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, DATE_FORMAT(data_inici, '%d/%m/%Y') AS data_inici, DATE_FORMAT(data_final, '%d/%m/%Y') AS data_final ". 
+		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, FormataData(data_inici) AS data_inici, FormataData(data_final) AS data_final ". 
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
