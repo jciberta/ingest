@@ -110,10 +110,12 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 
 		// Filtre
-		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
-		array_unshift($aCurs[0], '');
-		array_unshift($aCurs[1], '');
-		$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		if ($CursId < 0) {
+			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+			array_unshift($aCurs[0], '');
+			array_unshift($aCurs[1], '');
+			$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		}
 		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C'), array('', 'A', 'B', 'C'));
 
 		$frm->EscriuHTML();
