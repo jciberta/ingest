@@ -456,7 +456,7 @@ function PaginaHTMLMissatge($Titol, $Missatge)
 	echo '<h4 class="alert-heading">'.$Titol.'</h4>';
 	echo '<p>'.$Missatge.'</p>';
 	echo '<hr>';
-	echo '<p>Retorna a la <a href="index.html" class="alert-link">pàgina principal</a>.</p>';
+	echo '<p>Retorna a la <a href="index.php" class="alert-link">pàgina principal</a>.</p>';
 	echo '</div>';	
 	echo '</div>';	
 	echo '</BODY>';	
