@@ -48,9 +48,9 @@ else {
 $Matricula = new Matricula($conn, $Usuari);
 $alumne = $Matricula->ObteAlumne($MatriculaId);
 
-echo "<BR><BR><BR>";
-echo "alumne:".$alumne."<BR>";
-echo "MatriculaId:".$MatriculaId."<BR>";
+//echo "<BR><BR><BR>";
+//echo "alumne:".$alumne."<BR>";
+//echo "MatriculaId:".$MatriculaId."<BR>";
 
 $accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
@@ -78,7 +78,7 @@ if ($Usuari->es_alumne || $Usuari->es_pare) {
 
 if ($ButlletiVisible) {
 	$SQL = Expedient::SQL($MatriculaId);
-print_r($SQL);
+//print_r($SQL);
 
 	$ResultSet = $conn->query($SQL);
 

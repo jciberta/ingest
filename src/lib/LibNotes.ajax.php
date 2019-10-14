@@ -29,7 +29,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 
 		try {
 			if (!$conn->query($SQL))
-				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
+				throw new Exception($conn->error.'. SQL: '.$SQL);
 			print $SQL;
 		} 
 		catch (Exception $e) {
@@ -43,12 +43,44 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = 'UPDATE NOTES SET convalidat=1, convocatoria=0, nota'.$data[2].'=5 WHERE notes_id='.$data[1];	
 		try {
 			if (!$conn->query($SQL))
-				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
+				throw new Exception($conn->error.'. SQL: '.$SQL);
 			print $SQL;
 		} 
 		catch (Exception $e) {
 			print "ERROR Convalida. Causa: ".$e->getMessage();
 		}	
+	}
+	else if ($_REQUEST['accio'] == 'AugmentaConvocatoriaFila') {
+		$NotesFila = $_REQUEST['dades'];
+print_r($NotesFila);
+		$aNotesFila = json_decode($NotesFila, true);
+		foreach ($aNotesFila as $key => $value) {
+			if ($value != '') {
+				$data = explode("_", $key); // Nom_Id_Convocatòria
+				switch ($value) {
+					case 5:
+					case 6:
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 'A':
+						$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$data[1];	
+						break;
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 'NA';
+						$SQL = 'UPDATE NOTES SET convocatoria=convocatoria+1 WHERE notes_id='.$data[1];	
+						break;
+				}				
+				if (!$conn->query($SQL))
+					throw new Exception($conn->error.'. SQL: '.$SQL);
+				print $SQL;
+			}
+		}
 	}
 	else {
 		if ($CFG->Debug)
