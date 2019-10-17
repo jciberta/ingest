@@ -263,7 +263,12 @@ class Notes
 				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 //				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-				echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+
+				if ($row["BaixaMatricula"] == 1)
+					echo "<TD></TD>";
+				else
+					echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+
 				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 				$Hores = 0;
