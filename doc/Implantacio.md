@@ -26,3 +26,10 @@ cd ..
 rm ingest
 ln -s InGest-v0.3/ingest/src ingest
 ```
+
+### Altres
+
+How do I make Git ignore file mode (chmod) changes?
+```
+git config core.fileMode false
+```
