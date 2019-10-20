@@ -13,6 +13,9 @@ require_once('../Config.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+//require_once(ROOT.'/lib/LibNotes.php');
+require_once(ROOT.'/lib/LibMatricula.php');
+//require_once(ROOT.'/lib/LibExpedient.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -23,7 +26,30 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
-	if ($_REQUEST['accio'] == 'EliminaMatriculaCurs') {
+	if ($_REQUEST['accio'] == 'MatriculaUF') {
+		$nom = $_REQUEST['nom'];
+		$check = $_REQUEST['check'];
+		$Baixa = ($check == 'true') ? 0 : 1; // Si estava actiu, ara el donem de baixa
+		$NotaId = str_replace('chbNotaId_', '', $nom);	
+		$SQL = 'UPDATE NOTES SET baixa='.$Baixa.' WHERE notes_id='.$NotaId;	
+		$conn->query($SQL);
+		print $SQL;
+	}
+	else if ($_REQUEST['accio'] == 'ConvalidaUF') {
+		$nom = $_REQUEST['nom'];
+		$AlumneId = $_REQUEST['alumne'];
+		//$check = $_REQUEST['check'];
+		//$Baixa = ($check == 'true') ? 0 : 1; // Si estava actiu, ara el donem de baixa
+		$NotaId = str_replace('chbConvalidaUFNotaId_', '', $nom);	
+
+		$Matricula = new Matricula($conn, $Usuari);
+		$Matricula->ConvalidaUF($NotaId);
+		
+		//header("Location: MatriculaAlumne.php?AlumneId=".$AlumneId); -> No funciona!
+
+		print 'Id nota convalidada: '.$NotaId;
+	}
+	else if ($_REQUEST['accio'] == 'EliminaMatriculaCurs') {
 		print "EliminaMatriculaCurs<hr>";
 		$CursId = $_REQUEST['id'];
 		

@@ -36,6 +36,38 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			print "ERROR MarcaComNotaAnterior. Causa: ".$e->getMessage();
 		}	
 	}
+	else if ($_REQUEST['accio'] == 'ActualitzaNota') {
+		$nom = $_REQUEST['nom'];
+		$data = explode("_", $nom);
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			$SQL = 'UPDATE NOTES SET nota'.$data[2].'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		} 
+		else
+			print "Valor no vàlid: ".$valor;
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaNotes') {
+		$CicleId = $_REQUEST['CicleId'];
+		$Nivell = $_REQUEST['Nivell'];
+		print ObteTaulaNotesJSON($conn, $CicleId, $Nivell);
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaNotaRecuperacio') {
+		$nom = $_REQUEST['nom'];
+//print $nom;
+		$data = explode("_", $nom);
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			$SQL = 'UPDATE NOTES SET nota'.($data[2]+1).'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		} 
+		else
+			print "Valor no vàlid: ".$valor;
+	}
 	else if ($_REQUEST['accio'] == 'Convalida') {
 		// Convalida una UF: Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
 		$nom = $_REQUEST['nom'];

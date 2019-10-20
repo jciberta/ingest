@@ -282,7 +282,7 @@ class Notes
 				$TotalPercentatge = $Hores/$TotalHores*100;
 				$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 				echo '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
-				if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+				if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
 					$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
 					echo "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
 				}

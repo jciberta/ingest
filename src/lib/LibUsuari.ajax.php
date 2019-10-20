@@ -72,6 +72,30 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$conn->query($SQL);
 		print $SQL;
 	}
+	else if ($_REQUEST['accio'] == 'CanviPassword') {
+		$UsuariId = $_REQUEST['usuari_id'];
+		$Password = $_REQUEST['password'];
+		$SQL = "UPDATE USUARI SET password='".password_hash($Password, PASSWORD_DEFAULT)."', imposa_canvi_password=1 WHERE usuari_id=". $UsuariId;
+		$conn->query($SQL);
+		print 'Contrasenya canviada correctament.';
+	}
+	else if ($_REQUEST['accio'] == 'AssignaUF') {
+		$nom = $_REQUEST['nom'];
+		$check = ($_REQUEST['check']=='true');
+		$data = explode("_", $nom);
+		if ($check) {
+			// Assignem UF
+			$SQL = 'INSERT INTO PROFESSOR_UF (professor_id, uf_id) VALUES ('.$data[2].', '.$data[1].')';	
+			$conn->query($SQL);
+			print $SQL;
+		}
+		else {
+			// Desassignem UF
+			$SQL = 'DELETE FROM PROFESSOR_UF WHERE professor_id='.$data[2].' AND uf_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		}
+	}
 	else {
 		if ($CFG->Debug)
 			print "Acció no suportada. Valor de $_POST: ".json_encode($_POST);

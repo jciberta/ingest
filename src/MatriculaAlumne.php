@@ -67,7 +67,7 @@ if ($accio == 'MostraExpedient')
 else
 	CreaIniciHTML($Usuari, 'Visualitza matrícula');
 	
-echo '<script language="javascript" src="js/Matricula.js?v1.2" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Matricula.js?v1.3" type="text/javascript"></script>';
 
 // L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 $ButlletiVisible = True;

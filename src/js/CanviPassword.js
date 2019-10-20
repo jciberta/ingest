@@ -59,7 +59,7 @@ function CanviPassword(usuari_id) {
 					// Aquesta crida AJAX s'ha d'enviar amb HTTPS!
 					$.ajax( {
 						type: 'POST',
-						url: 'AccionsAJAX.php',
+						url: 'lib/LibUsuari.ajax.php',
 						data:{
 							'accio': 'CanviPassword',
 							'usuari_id': usuari_id,

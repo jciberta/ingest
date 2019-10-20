@@ -63,11 +63,11 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
-			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = 'SELECT usuari_id, username, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
+			' FROM USUARI U WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, codi';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, IDALU';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';

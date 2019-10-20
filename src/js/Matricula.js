@@ -19,7 +19,7 @@
 function MatriculaUF(element) { 
     $.ajax( {
         type: 'POST',
-        url: 'AccionsAJAX.php',
+        url: 'lib/LibMatricula.ajax.php',
         data:{
 			'accio': 'MatriculaUF',
             'nom': element.name,
@@ -60,7 +60,7 @@ function ConvalidaUF(element, alumne) {
 			if (result) {
 				$.ajax( {
 					type: 'POST',
-					url: 'AccionsAJAX.php',
+					url: 'lib/LibMatricula.ajax.php',
 					data:{
 						'accio': 'ConvalidaUF',
 						'alumne': alumne,

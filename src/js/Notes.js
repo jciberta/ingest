@@ -399,7 +399,7 @@ console.dir(element.id);
 		$('input[name="TempNota"]').val(sNota);	
 		$.ajax( {
 			type: 'POST',
-			url: 'AccionsAJAX.php',
+			url: 'lib/LibNotes.ajax.php',
 			data:{
 				'accio': 'ActualitzaNota',
 				'nom': element.name,
@@ -487,7 +487,7 @@ function ActualitzaNotaRecuperacio(element, nota) {
 console.dir(element);
 	$.ajax( {
 		type: 'POST',
-		url: 'AccionsAJAX.php',
+		url: 'lib/LibNotes.ajax.php',
 		data:{
 			'accio': 'ActualitzaNotaRecuperacio',
 			'nom': element.name,
@@ -557,7 +557,7 @@ function ActualitzaTaulaNotes(element) {
 //console.log($('input#Nivell').val());
     $.ajax( {
         type: 'POST',
-        url: 'AccionsAJAX.php',
+        url: 'lib/LibNotes.ajax.php',
         data:{
 			'accio': 'ActualitzaTaulaNotes',
             'CicleId': $('input#CicleId').val(),

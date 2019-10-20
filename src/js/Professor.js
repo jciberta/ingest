@@ -19,7 +19,7 @@
 function AssignaUF(element) { 
     $.ajax( {
         type: 'POST',
-        url: 'AccionsAJAX.php',
+        url: 'lib/LibUsuari.ajax.php',
         data:{
 			'accio': 'AssignaUF',
             'nom': element.name,
