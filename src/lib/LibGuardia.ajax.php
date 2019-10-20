@@ -14,7 +14,7 @@ require_once(ROOT.'/lib/LibGuardia.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: ../index.html");
+	header("Location: ../Surt.php");
 $Festiu = unserialize($_SESSION['FESTIU']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);

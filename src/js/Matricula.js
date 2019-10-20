@@ -29,7 +29,7 @@ function MatriculaUF(element) {
             $('#debug').html(data);
         }, 
 		error: function (data) {
-			$('#debug').html('Hi ha hagut un error.');
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 		}
     } );
 }
@@ -71,7 +71,7 @@ function ConvalidaUF(element, alumne) {
 						$('#debug').html(data);
 					}, 
 					error: function (data) {
-						$('#debug').html('Hi ha hagut un error.');
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 					}
 				} );
 			}
@@ -118,12 +118,51 @@ function BaixaMatricula(element, matricula_id) {
 						$('#taula').html(data);
 					}, 
 					error: function (data) {
-						$('#debug').html('Hi ha hagut un error.');
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 					}
 				} );
 			}
 			else 
 				element.checked = false;
+		}
+	});	
+}
+
+/**
+ * EliminaMatriculaCurs
+ * Elimina totes les matrícules d'un curs.
+ * @param curs_id Identificador del curs.
+ */
+function EliminaMatriculaCurs(curs_id) { 
+console.log('EliminaMatriculaCurs '+curs_id);
+	bootbox.confirm({
+		message: "Esteu segur que voleu eliminar totes les matrícules d'aquest curs?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Elimina totes les matrícules',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibMatricula.ajax.php',
+					data:{
+						'accio': 'EliminaMatriculaCurs',
+						'id': curs_id
+						},
+					success: function(data) {
+						$('#debug').html(data);
+					}, 
+					error: function (data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				} );
+			}
 		}
 	});	
 }

@@ -98,6 +98,7 @@ class Curs
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) ';
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('Matricula.js?v1.0');
 		$frm->Titol = 'Cursos';
 		$frm->SQL = utf8_decode($SQL);
 		$frm->Taula = 'CURS';
@@ -108,6 +109,8 @@ class Curs
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
 		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
+		if ($this->Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
 		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);

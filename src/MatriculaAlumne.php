@@ -34,7 +34,7 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
-print_r($_GET);
+//print_r($_GET);
 
 if (!empty($_POST)) {
 //	$alumne = $_POST['alumne'];
