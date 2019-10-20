@@ -49,37 +49,39 @@ $ResultSet = $conn->query($SQL);
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE class="table table-fixed table-striped table-hover table-sm">';
 	echo '<THEAD class="thead-dark">';
-	echo '<TH class="col-xs-6">Alumne</TH>';
-	echo '<TH class="col-xs-1">Grup</TH>';
-	echo '<TH class="col-xs-1">A</TH>';
-	echo '<TH class="col-xs-1">B</TH>';
-	echo '<TH class="col-xs-1">C</TH>';
-	echo '<TH class="col-xs-1">Tutoria</TH>';
-	echo '<TH class="col-xs-1">AB</TH>';
-	echo '<TH class="col-xs-1">BC</TH>';
+	echo '<TH width=200 style="text-align:left">Alumne</TH>';
+	echo '<TH width=75 style="text-align:center">Grup</TH>';
+	echo '<TH width=20>A</TH>';
+	echo '<TH width=20>B</TH>';
+	echo '<TH width=20>C</TH>';
+	echo '<TH width=75 style="text-align:center">Tutoria</TH>';
+	echo '<TH width=20>A</TH>';
+	echo '<TH width=20>B</TH>';
+	echo '<TH> </TH>';
 	echo '</THEAD>';
 
 	$row = $ResultSet->fetch_assoc();
 	while($row) {
 //print_r($row);
 		echo '<TR>';
-		echo "<TD class='col-xs-6' style='text-align:left'>".utf8_encode($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
-		echo "<TD class='col-xs-1'>".$row["grup"]."</TD>";
+		echo "<TD width=200 style='text-align:left'>".utf8_encode($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
+		echo "<TD width=75 style='text-align:center'>".$row["grup"]."</TD>";
 		$aGrups = array('A', 'B', 'C');
 		foreach($aGrups as $item) {
 			$Valor = '"'.$item.'"';
 			$Funcio = "'AssignaGrup(this, ".$Valor.");'";
 			$Checked = ($row["grup"] == $item) ? ' checked ' : '';
-			echo '<TD class="col-xs-1"><input type="radio" id="'.$item.'" name="Grup_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
+			echo '<TD width=20 style="text-align:center"><input type="radio" id="'.$item.'" name="Grup_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
-		echo "<TD class='col-xs-1'>".$row["grup_tutoria"]."</TD>";
+		echo "<TD width=75 style='text-align:center'>".$row["grup_tutoria"]."</TD>";
 		$aTutoria = array('AB', 'BC');
 		foreach($aTutoria as $item) {
 			$Valor = '"'.$item.'"';
 			$Funcio = "'AssignaGrupTutoria(this, ".$Valor.");'";
 			$Checked = ($row["grup_tutoria"] == $item) ? ' checked ' : '';
-			echo '<TD class="col-xs-1"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
+			echo '<TD width=20 style="text-align:center"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
+		echo '<TD> </TD>';
 		echo '</TR>';
 		$row = $ResultSet->fetch_assoc();
 	}
