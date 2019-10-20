@@ -24,9 +24,7 @@ if ($conn->connect_error)
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'EliminaMatriculaCurs') {
-
-		print "EliminaMatriculaCurs";
-		
+		print "EliminaMatriculaCurs<hr>";
 		$CursId = $_REQUEST['id'];
 		
 		// S'ha d'executar de forma atòmica
@@ -43,20 +41,35 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 				' ) ';
 			if (!$conn->query($SQL1))
 				throw new Exception($conn->error.'. SQL: '.$SQL1);
-
 			$SQL2 = 'DELETE FROM MATRICULA WHERE curs_id='.$CursId;	
 			if (!$conn->query($SQL2))
 				throw new Exception($conn->error.'. SQL: '.$SQL2);
-
 			$conn->query('COMMIT');
-
 		} catch (Exception $e) {
 			$conn->query('ROLLBACK');
 			die("ERROR EliminaMatriculaCurs. Causa: ".$e->getMessage());
 		}
-		
 		print '<P>'.$SQL1.'<P>'.$SQL2;
+	}
+	else if ($_REQUEST['accio'] == 'EliminaMatriculaAlumne') {
+		print "EliminaMatriculaAlumne<hr>";
+		$MatriculaId = $_REQUEST['id'];
 		
+		// S'ha d'executar de forma atòmica
+		$conn->query('START TRANSACTION');
+		try {
+			$SQL1 = 'DELETE FROM NOTES WHERE matricula_id='.$MatriculaId;
+			if (!$conn->query($SQL1))
+				throw new Exception($conn->error.'. SQL: '.$SQL1);
+			$SQL2 = 'DELETE FROM MATRICULA WHERE matricula_id='.$MatriculaId;	
+			if (!$conn->query($SQL2))
+				throw new Exception($conn->error.'. SQL: '.$SQL2);
+			$conn->query('COMMIT');
+		} catch (Exception $e) {
+			$conn->query('ROLLBACK');
+			die("ERROR EliminaMatriculaAlumne. Causa: ".$e->getMessage());
+		}
+		print '<P>'.$SQL1.'<P>'.$SQL2;
 	}
 	else {
 		if ($CFG->Debug)

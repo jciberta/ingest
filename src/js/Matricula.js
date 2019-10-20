@@ -168,6 +168,45 @@ console.log('EliminaMatriculaCurs '+curs_id);
 }
 
 /**
+ * EliminaMatriculaAlumne
+ * Elimina la matrícula d'un alumne.
+ * @param matricula_id Identificador de la matrícula.
+ */
+function EliminaMatriculaAlumne(matricula_id) { 
+console.log('EliminaMatriculaAlumne '+matricula_id);
+	bootbox.confirm({
+		message: "Esteu segur que voleu eliminar la matrícula d'aquest alumne?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Elimina la matrícula',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibMatricula.ajax.php',
+					data:{
+						'accio': 'EliminaMatriculaAlumne',
+						'id': matricula_id
+						},
+					success: function(data) {
+						$('#debug').html(data);
+					}, 
+					error: function (data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				} );
+			}
+		}
+	});	
+}
+
+/**
  * BloquejaUsuari
  * Bloqueja un usuari (no pot fer login).
  * @param element Checkbox que ha fet la crida.

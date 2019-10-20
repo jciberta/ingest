@@ -106,8 +106,10 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
-		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
+		$frm->AfegeixOpcio('PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaAlumne', 'matricula_id');
 
 		// Filtre
 		if ($CursId < 0) {
