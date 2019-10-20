@@ -15,7 +15,7 @@ require_once(ROOT.'/lib/LibDB.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
@@ -63,7 +63,7 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, DATE_FORMAT(data_naixement, "%d/%m/%Y") AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
 			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
@@ -110,10 +110,12 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 
 		// Filtre
-		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
-		array_unshift($aCurs[0], '');
-		array_unshift($aCurs[1], '');
-		$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		if ($CursId < 0) {
+			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+			array_unshift($aCurs[0], '');
+			array_unshift($aCurs[1], '');
+			$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		}
 		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C'), array('', 'A', 'B', 'C'));
 
 		$frm->EscriuHTML();

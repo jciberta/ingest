@@ -15,7 +15,7 @@ require_once(ROOT.'/lib/LibGuardia.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 $Festiu = unserialize($_SESSION['FESTIU']);
 

@@ -204,7 +204,7 @@ class Notes
 	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
 	 * @return void.
 	 */
-	public static function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
+	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
@@ -263,7 +263,12 @@ class Notes
 				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 //				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
 				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-				echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+
+				if ($row["BaixaMatricula"] == 1)
+					echo "<TD></TD>";
+				else
+					echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+
 				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 				$Hores = 0;
@@ -277,7 +282,12 @@ class Notes
 				$TotalPercentatge = $Hores/$TotalHores*100;
 				$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 				echo '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
-				echo "<TD></TD></TR>";
+				if ($this->Usuari->es_admin) {
+					$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+					echo "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
+				}
+				else
+					echo "<TD></TD></TR>";
 			}
 		}
 		echo "</TABLE>";
@@ -432,12 +442,11 @@ class Notes
 			return -999;
 	}
 	
-	
 	public static function CreaMenuContextual($Usuari) {
 		// Adaptat de http://jsfiddle.net/KyleMit/X9tgY/
 		echo '<ul id="contextMenu" class="dropdown-menu dropdown-menu-sm" role="menu" style="display:none" >';
 		echo '    <li><a class="dropdown-item" id="ddi_IntrodueixRecuperacio" href="#">Introdueix recuperació</a></li>';
-		if ($Usuari->es_admin) {
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
 			echo '    <li><a class="dropdown-item" id="ddi_NotaAnterior" href="#">Marca com a nota anterior (convocatòria a 0)</a></li>';
 			echo '    <li><a class="dropdown-item" id="ddi_Convalida" href="#">Convalida</a></li>';
 		}
@@ -458,9 +467,6 @@ class Notes
 		echo '    }';
 		echo '});';
 		echo '</script>';
-
-
-
 	}
 	
 	/**

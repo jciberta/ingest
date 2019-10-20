@@ -105,7 +105,7 @@ class Curs
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'codi, NomCurs, nivell, any_inici, any_final, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any inici, Any final, Avaluació, Trimestre';
-		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes&CursId=');
+		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
 		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');

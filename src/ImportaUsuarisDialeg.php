@@ -15,7 +15,7 @@ require_once(ROOT.'/lib/LibImporta.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)

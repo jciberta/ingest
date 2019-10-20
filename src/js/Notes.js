@@ -47,9 +47,7 @@ function MostraGraellaNotes(obj, nivell) {
 
 /**
  * MostraBaixes
- *
  * Mostra/Oculta els alumnes que s'han donat de baixa.
- *
  * @param obj Objecte que ha provocat la crida.
  */
 function MostraBaixes(obj) {
@@ -136,9 +134,7 @@ console.log('->Convalida');
 
 /**
  * NotaKeyDown
- *
  * Funció per moure's per la graella.
- *
  * @param obj Objecte que ha provocat la crida.
  * @param event Event que ha provocat la crida.
  */
@@ -262,9 +258,7 @@ function EnviaCursorAlFinalDelText(element) {
 
 /**
  * ObteNota
- *
  * Obté la nota d'un input i la manté per comprovar si ha canviat en sortir de l'element.
- *
  * @param element Input que ha fet la crida.
  */
 function ObteNota(element) { 
@@ -371,9 +365,7 @@ function CalculaTotalColumna(grd, x) {
 
 /**
  * ActualitzaNota
- *
  * Actualitza la nota d'un input.
- *
  * @param element Input que ha fet la crida.
  */
 function ActualitzaNota(element) { 
@@ -424,10 +416,68 @@ console.dir(element.id);
 }
 
 /**
+ * AugmentaConvocatoriaFila
+ * Augmenta la convocatòria d'una fila de notes.
+ * @param fila Fila de notes.
+ * @param IdGraella Identificador de la graella de notes.
+ */
+function AugmentaConvocatoriaFila(Fila, IdGraella) { 
+	bootbox.confirm({
+		message: "Esteu segur que voleu augmentar la convocatòria?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Augmenta',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				var grd = 'grd' + IdGraella;
+				var i = 0;
+				var CellaId = grd + '_' + Fila + '_' + i;
+				var NotesFila = '';
+				while (document.getElementById(CellaId) !== null) {
+					obj = document.getElementById(CellaId);
+					Valor = obj.value;
+					Nom = obj.name;
+					NotesFila += '"' + Nom + '": "' + Valor + '", '; 
+					i++;
+					CellaId = grd + '_' + Fila + '_' + i;
+				}
+				if (NotesFila != '') {
+					NotesFila = NotesFila.slice(0, -2); // Treiem la darrera coma
+					NotesFila = NotesFila.trim();
+					NotesFila = '{' + NotesFila + '}';
+				}
+console.log("NotesFila: " + NotesFila);				
+
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibNotes.ajax.php',
+					data:{
+						'accio': 'AugmentaConvocatoriaFila',
+						'dades': NotesFila,
+					},
+					success: function(data) {
+						//$('#taula').html(data);
+						//$('#debug').html('<textarea disabled>'+data+'</textarea>');
+						$('#debug').html(data);
+					}, 
+					error: function(data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				});		
+			}
+		}
+	});	
+}
+
+/**
  * ActualitzaNotaRecuperacio
- *
  * Actualitza la nota de recuperació d'un input.
- *
  * @param element Input que ha fet la crida.
  * @param nota Nota de recuperació.
  */
@@ -457,12 +507,10 @@ console.dir(element);
 
 /**
  * NumeroANota
- *
  * Transforma una nota numèrica al seu valor de text. Valors numèrics:
  *   - 1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
  *   - NP: -1, A: 100, NA: -100.
  *   - NULL passa a ser la cadena nul·la.
- *
  * @param int Valor Valor numèric o NULL.
  * @return string Retorna la nota tal com s'entra a l'aplicació (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, NP, A, NA).
  */
@@ -500,9 +548,7 @@ function UltimaConvocatoriaNota(element) {
 
 /**
  * ActualitzaTaulaNotes
- *
  * Actualitza la nota d'un input.
- *
  * @param element Input que ha fet la crida.
  */
 function ActualitzaTaulaNotes(element) { 

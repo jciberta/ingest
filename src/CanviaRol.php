@@ -13,12 +13,13 @@ require_once('Config.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
-if (!$Usuari->es_cap_estudis)
+if (!$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
 
+!$Usuari->es_direccio = False;
 !$Usuari->es_cap_estudis = False;
 
 $_SESSION['USUARI'] = serialize($Usuari);

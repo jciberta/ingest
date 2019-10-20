@@ -20,7 +20,7 @@ require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: index.html");
+	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
@@ -48,8 +48,8 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.3" type="text/javascript"></script>';
-echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
+echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
+//echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
 echo $Avaluacio->CreaDescripcio($CursId);
@@ -113,16 +113,16 @@ if ($ResultSet->num_rows > 0) {
 		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n';
 		// Notes de 2n 
-		Notes::EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
+		$Notes->EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor, $EstatAvaluacio);
+		$Notes->EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor, $EstatAvaluacio);
 	}
 	else {
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n';
 		// Notes de 1r d'alumnes de 1r
-		Notes::EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor, $EstatAvaluacio);
+		$Notes->EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor, $EstatAvaluacio);
 		// Notes de 1r d'alumnes de 2n
-		Notes::EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor, $EstatAvaluacio);
+		$Notes->EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor, $EstatAvaluacio);
 	}
 
 }
