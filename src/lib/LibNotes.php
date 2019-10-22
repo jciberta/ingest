@@ -214,6 +214,7 @@ class Notes
 
 		// Capçalera de la taula
 		$aModuls = [];
+		$aModulsNom = [];
 
 		// CAI2 no existeix com a tal. Tots els crèdits estan posats a 1r
 		if (!property_exists($Notes, 'UF')) return;
@@ -221,15 +222,19 @@ class Notes
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModuls[$j] = utf8_encode($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
 		}
 		$aOcurrenciesModuls = Ocurrencies($aModuls);
-	//print_r($aOcurrenciesModuls);
+//print_r($aOcurrenciesModuls);
+//print_r($aModulsNom);
 
 		// Mòdul
 		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			echo "<TD width=".($iOcurrencies*25)." colspan=".$iOcurrencies.">".utf8_encode($aOcurrenciesModuls[$i][0])."</TD>";
+			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.utf8_encode($aOcurrenciesModuls[$i][0]).'</TD>';
+			$index += $iOcurrencies;
 		}
 		echo "<TD></TD></TR>";
 	
@@ -237,7 +242,7 @@ class Notes
 		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			echo "<TD width=20 style='text-align:center'>".utf8_encode($row["CodiUF"])."</TD>";
+			echo '<TD width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
 		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
@@ -516,8 +521,8 @@ class Notes
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
-			' MP.codi AS CodiMP, '.
+			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+			' MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
 			' N.*, U.* '.
