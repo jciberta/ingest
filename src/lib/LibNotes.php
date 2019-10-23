@@ -264,35 +264,7 @@ class Notes
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
 			if ($row["NivellMAT"] == $Nivell) {
-				echo "<TR name='Baixa".$row["BaixaMatricula"]."'>";
-				$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
-//				echo "<TD>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-				echo "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-
-				if ($row["BaixaMatricula"] == 1)
-					echo "<TD></TD>";
-				else
-					echo "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
-
-				echo "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
-				echo "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
-				$Hores = 0;
-				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
-					$row = $Notes->UF[$i][$j];
-					echo self::CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
-				}
-				$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
-				echo '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
-				$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
-				$TotalPercentatge = $Hores/$TotalHores*100;
-				$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
-				echo '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
-				if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
-					$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
-					echo "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
-				}
-				else
-					echo "<TD></TD></TR>";
+				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $EstatAvaluacio);
 			}
 		}
 		echo "</TABLE>";
@@ -303,19 +275,69 @@ class Notes
 		echo "</FORM>";
 		echo "</DIV>";
 	}
+
+	/**
+	 * Crea la fila de notes per a un alumne.
+	 * @param string $IdGraella Nom de la graella.
+	 * @param integer $Nivell Nivell.
+	 * @param integer $i Fila.
+	 * @param object $Notes Registre de les notes.
+	 * @param object $row Registre que correspon a la nota.
+	 * @param object $Professor Objecte de la classe Professor.
+	 * @param integer $TotalHores Total d'hores del curs.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @return string Codi HTML de la cel·la.
+	 */
+	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
+		$Retorn = "";
+		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
+		$Retorn .= "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+
+		if ($row["BaixaMatricula"] == 1)
+			$Retorn .= "<TD></TD>";
+		else
+			$Retorn .= "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+
+		$Retorn .= "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
+		$Retorn .= "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
+		$Hores = 0;
+		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
+			$row = $Notes->UF[$i][$j];
+			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
+		}
+		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
+		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
+		$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
+		$TotalPercentatge = $Hores/$TotalHores*100;
+		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
+		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
+			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
+		}
+		else
+			$Retorn .= "<TD></TD></TR>";
+
+		$Class = ($Hores == $TotalHores) ? " class='Aprovat100' " : "";
+
+
+		$Retorn = "<TR $Class name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
+		
+		return $Retorn;
+	}
 	
 	/**
 	 * Crea una cel·la de la taula de notes amb tota la seva casuística.
 	 * @param string $IdGraella Nom de la graella.
-	 * @param integer $i Columna.
-	 * @param integer $j Fila.
+	 * @param integer $i Fila.
+	 * @param integer $j Columna.
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $Hores Hores que es sumen per saber el total.
 	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public static function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
+	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
 		$style = "text-align:center;text-transform:uppercase";
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);

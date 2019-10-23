@@ -61,6 +61,21 @@ function MostraBaixes(obj) {
 }
 
 /**
+ * MostraTotAprovat
+ * Mostra/Oculta els alumnes que ho tenen tot aprovat.
+ * @param obj Objecte que ha provocat la crida.
+ */
+function MostraTotAprovat(obj) {
+	// Seleccionem els que ho tenen tot aprovat
+	var tr = $('tr.Aprovat100');
+
+	if (obj.checked)
+		tr.show()
+	else
+		tr.hide();
+}
+
+/**
  * Introdueix una nota de recuperació
  * @param obj Objecte que ha provocat la crida (INPUT).
  */
