@@ -1,5 +1,5 @@
 /*
-Actualització de la DB a partir de la versió 0.12
+Actualització de la DB a partir de la versió 0.13
 */
 
 CREATE TABLE TUTOR
