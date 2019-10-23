@@ -58,16 +58,40 @@ switch ($Accio) {
 
 		$frm->EscriuHTML();
         break;
+    case "Tutors":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = "Tutors";
+		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, '.
+			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, '.
+			' TUT.tutor_id, TUT.grup_tutoria '.
+			' FROM CURS C '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+			' RIGHT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
+			' LEFT JOIN USUARI U ON (TUT.professor_id=U.usuari_id) '.
+			' WHERE AA.actual=1 ';
+//print '<BR><BR><BR>'.$SQL;
+		$frm->SQL = $SQL;
+		$frm->Taula = 'TUTOR';
+		$frm->ClauPrimaria = 'tutor_id';
+		$frm->Camps = 'codi, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, grup_tutoria';
+		$frm->Descripcions = 'Codi, Nom, Nivell, Nom, 1r cognom, 2n cognom, Grup tutoria';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'Fitxa.php?accio=Tutor';
+		$frm->PermetSuprimir = True;
+		$frm->PermetAfegir = True;
+		$frm->EscriuHTML();
+        break;
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
-		$frm->SQL = 'SELECT usuari_id, username, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
-			' FROM USUARI U WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
+			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, codi';
+		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, IDALU';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
@@ -106,10 +130,8 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
-		$frm->AfegeixOpcio('PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
+		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
-		if ($Usuari->es_admin)
-			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaAlumne', 'matricula_id');
 
 		// Filtre
 		if ($CursId < 0) {

@@ -1373,8 +1373,27 @@ class FormFitxa extends Form {
 					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcLOOKUP:
+
+					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
+
+//print_r($this->Registre);	
+//exit;			
+				
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= $this->CreaLookup($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Lookup->URL, $Valor->Lookup->Taula, $Valor->Lookup->Id, $Valor->Lookup->Camps, $Valor->Opcions, $this->Registre[$Valor->Camp]);
+					$sRetorn .= $this->CreaLookup(
+						$Valor->Camp, 
+						$Valor->Titol, 
+						$Valor->Longitud, 
+						$Valor->Lookup->URL, 
+						$Valor->Lookup->Taula, 
+						$Valor->Lookup->Id, 
+						$Valor->Lookup->Camps, 
+						$Valor->Opcions, 
+						$CodiSeleccionat);
+					
+					
+					
+
 					
 /*					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD>';

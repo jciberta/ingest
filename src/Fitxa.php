@@ -69,6 +69,31 @@ switch ($accio) {
 //		$frm->AfegeixText('any_final', 'Any final', True, 20);
 		$frm->EscriuHTML();
         break;
+    case "Tutor":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+	
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Tutor';
+		$frm->Taula = 'TUTOR';
+		$frm->ClauPrimaria = 'tutor_id';
+		$frm->AutoIncrement = True;
+		$frm->Id = $Id;
+
+		$SQL = 'SELECT C.curs_id, C.nom '.
+			' FROM CURS C'.
+			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+			' WHERE actual=1';
+		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
+		$frm->AfegeixLlista('curs_id', 'Curs', 200, $aCurs[0], $aCurs[1]);
+		$frm->AfegeixLookUp('professor_id', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, array("", "AB", "BC"), array("sense grup", "AB", "BC"));
+		
+		$frm->EscriuHTML();
+        break;
     case "Altre":
         break;
 }
