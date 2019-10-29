@@ -82,6 +82,27 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			print "ERROR Convalida. Causa: ".$e->getMessage();
 		}	
 	}
+	else if ($_REQUEST['accio'] == 'AugmentaConvocatoria') {
+		$NotaId = $_REQUEST['id'];
+		$SQL = 'UPDATE NOTES SET convocatoria=convocatoria+1 WHERE notes_id='.$NotaId;
+		if (!$conn->query($SQL))
+			throw new Exception($conn->error.'. SQL: '.$SQL);
+		print $SQL;
+	}
+	else if ($_REQUEST['accio'] == 'RedueixConvocatoria') {
+		$NotaId = $_REQUEST['id'];
+		$SQL = 'UPDATE NOTES SET convocatoria=convocatoria-1 WHERE notes_id='.$NotaId;
+		if (!$conn->query($SQL))
+			throw new Exception($conn->error.'. SQL: '.$SQL);
+		print $SQL;
+	}
+	else if ($_REQUEST['accio'] == 'ConvocatoriaA0') {
+		$NotaId = $_REQUEST['id'];
+		$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$NotaId;
+		if (!$conn->query($SQL))
+			throw new Exception($conn->error.'. SQL: '.$SQL);
+		print $SQL;
+	}
 	else if ($_REQUEST['accio'] == 'AugmentaConvocatoriaFila') {
 		$NotesFila = $_REQUEST['dades'];
 print_r($NotesFila);

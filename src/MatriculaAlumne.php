@@ -53,6 +53,7 @@ $alumne = $Matricula->ObteAlumne($MatriculaId);
 //echo "MatriculaId:".$MatriculaId."<BR>";
 
 $accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
+$ActivaEdicio = (isset($_GET) && array_key_exists('ActivaEdicio', $_GET)) ? $_GET['ActivaEdicio'] : '';
 
 // Si intenta manipular l'usuari des de la URL -> al carrer!
 if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
@@ -62,12 +63,18 @@ $objUsuari = new Usuari($conn, $Usuari);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 	header("Location: Surt.php");
 
+// L'edició de l'expedient només la pot fer l'administrador
+if (!$Usuari->es_admin && $ActivaEdicio==1)
+	header("Location: Surt.php");
+
 if ($accio == 'MostraExpedient')
 	CreaIniciHTML($Usuari, 'Visualitza expedient');
 else
 	CreaIniciHTML($Usuari, 'Visualitza matrícula');
 	
+echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Matricula.js?v1.3" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
 
 // L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 $ButlletiVisible = True;
@@ -87,16 +94,21 @@ if ($ButlletiVisible) {
 		$NomComplet = trim(utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
 		if ($CFG->Debug)
 			$NomComplet .= " (".$row["usuari_id"].")";
-		echo '<div class="alert alert-primary" role="alert">Alumne: <B>'.$NomComplet.'</B></div>';
-		echo '<div class="alert alert-primary" role="alert">Cicle: <B>'.utf8_encode($row["NomCF"]).'</B></div>';
-		
-		echo '<TABLE class="table table-striped">';
+		echo '<div class="alert alert-primary" role="alert">';
+		echo 'Alumne: <B>'.$NomComplet.'</B><BR>';
+		echo 'Cicle: <B>'.utf8_encode($row["NomCF"]).'</B>';
+		echo '</div>';
+
+		echo '<TABLE class="table table-sm table-striped table-hover">';
 		echo '<thead class="thead-dark">';
 		echo "<TH>Mòdul</TH>";
 		echo "<TH>UF</TH>";
 		echo "<TH>Hores</TH>";
-		if ($accio == 'MostraExpedient')
+		if ($accio == 'MostraExpedient') {
 			echo "<TH colspan=5>Notes</TH>";
+			if ($ActivaEdicio==1)
+				echo "<TH>Convocatòria</TH>";
+		}
 		else {
 			echo "<TH>Matrícula</TH>";
 			echo "<TH>Convalidació</TH>";
@@ -104,6 +116,7 @@ if ($ButlletiVisible) {
 		echo '</thead>';
 
 		$ModulAnterior = '';
+		$j = 1;
 		while($row) {
 			echo "<TR>";
 	//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
@@ -131,7 +144,23 @@ if ($ButlletiVisible) {
 							$style .= ";background-color:yellow";
 					}
 					$Nota = NumeroANota($row["Nota".$i]);
-					echo "<TD><input style='".$style."' type=text disabled name=edtNota1 value='".$Nota."'></TD>";
+					$Deshabilitat = ($ActivaEdicio==1) ? '' : 'disabled';
+					
+					// <INPUT>
+					// name: conté id i convocatòria
+					// id: conté les coordenades x, y. Inici a (0, 0).
+					$Id = 'grd_'.$j.'_'.$i;
+					echo "<TD><input type=text $Deshabilitat style='$style' name=txtNotaId_".$row["NotaId"]."_".$i.
+						" id='$Id' value='$Nota' ".
+						" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'>".
+						"</TD>";
+				}
+				if ($ActivaEdicio==1) {
+					echo "<TD>";
+					echo "<A HREF=# onclick='RedueixConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/left.svg data-toggle='tooltip' data-placement='top' title='Redueix convocatòria'></A>&nbsp;";
+					echo "<A HREF=# onclick='AugmentaConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/right.svg data-toggle='tooltip' data-placement='top' title='Augmenta convocatòria'></A>&nbsp;";
+					echo "<A HREF=# onclick='ConvocatoriaA0(".$row["NotaId"].");'><IMG SRC=img/check.svg data-toggle='tooltip' data-placement='top' title='Convocatòria a 0 (aprovat)'></A>";
+					echo "</TD>";
 				}
 			}
 			else {
@@ -147,14 +176,24 @@ if ($ButlletiVisible) {
 					echo "<TD><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
 			}
 			echo "</TR>";
+			$j++;
 			$row = $ResultSet->fetch_assoc();
 		}
 		echo "</TABLE>";
+		echo "<input type=hidden name=TempNota value=''>";
 	};	
 
 	if ($accio == 'MostraExpedient') {
 		echo "<DIV id=DescarregaExpedientPDF>";
 		echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+		if ($Usuari->es_admin) {
+			// Edició de l'expedient
+			echo '&nbsp';
+			if ($ActivaEdicio==1) 
+				echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
+			else
+				echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
+		}
 		echo "</DIV>";
 	}
 	

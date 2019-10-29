@@ -65,6 +65,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 	echo '<HTML>';
 	echo '<HEAD>';
 	echo '	<META charset=UTF8>';
+	echo '	<TITLE>InGest</TITLE>';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
 //	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';

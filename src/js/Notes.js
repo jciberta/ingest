@@ -338,35 +338,39 @@ function ResaltaColumna(element, color) {
  */
 function CalculaTotalFila(grd, y) { 
 //console.dir(document.getElementById(grd + '_ArrayHores'));
-	var ArrayHores = JSON.parse(document.getElementById(grd + '_ArrayHores').value);	
-	var TotalHores = document.getElementById(grd + '_TotalHores').value;	
-	var Nivell = document.getElementById(grd + '_Nivell').value;	
-//console.dir(ArrayHores);
+	var objArrayHores = document.getElementById(grd + '_ArrayHores');
 
-	var Total = 0;
-	var i = 0;
-	var CellaId = grd + '_' + y + '_' + i;
-	while (document.getElementById(CellaId) !== null) {
-		Valor = document.getElementById(CellaId).value;
-		if (Valor >= 5)
-			Total += ArrayHores[i];
-	
-		i++;
-		CellaId = grd + '_' + y + '_' + i;
+	if (objArrayHores !== null) {	
+		var ArrayHores = JSON.parse(objArrayHores.value);	
+		var TotalHores = document.getElementById(grd + '_TotalHores').value;	
+		var Nivell = document.getElementById(grd + '_Nivell').value;	
+	//console.dir(ArrayHores);
+
+		var Total = 0;
+		var i = 0;
+		var CellaId = grd + '_' + y + '_' + i;
+		while (document.getElementById(CellaId) !== null) {
+			Valor = document.getElementById(CellaId).value;
+			if (Valor >= 5)
+				Total += ArrayHores[i];
+		
+			i++;
+			CellaId = grd + '_' + y + '_' + i;
+		}
+		CellaId = grd + '_TotalHores_' + y;
+		var objTotalHores = document.getElementById(CellaId);
+	//console.dir(objTotalHores);
+		objTotalHores.textContent = Total;
+
+		CellaId = grd + '_TotalPercentatge_' + y;
+		var objTotalPercentatge = document.getElementById(CellaId);
+		TotalPercentatge = 100*Total/TotalHores;
+		objTotalPercentatge.textContent = TotalPercentatge.toLocaleString("en-US", {maximumFractionDigits:2, minimumFractionDigits:2}) + '%';
+		if ((TotalPercentatge>=60 && Nivell==1) || (TotalPercentatge>=100 && Nivell==2))
+			objTotalPercentatge.style.backgroundColor = 'lightgreen'
+		else
+			objTotalPercentatge.style.backgroundColor = '';
 	}
-	CellaId = grd + '_TotalHores_' + y;
-	var objTotalHores = document.getElementById(CellaId);
-//console.dir(objTotalHores);
-	objTotalHores.textContent = Total;
-
-	CellaId = grd + '_TotalPercentatge_' + y;
-	var objTotalPercentatge = document.getElementById(CellaId);
-	TotalPercentatge = 100*Total/TotalHores;
-	objTotalPercentatge.textContent = TotalPercentatge.toLocaleString("en-US", {maximumFractionDigits:2, minimumFractionDigits:2}) + '%';
-	if ((TotalPercentatge>=60 && Nivell==1) || (TotalPercentatge>=100 && Nivell==2))
-		objTotalPercentatge.style.backgroundColor = 'lightgreen'
-	else
-		objTotalPercentatge.style.backgroundColor = '';
 }
 
 /**
@@ -407,9 +411,6 @@ console.dir(element.id);
 		var data = (element.id).split('_');
 		var x = data[1];
 		var y = data[2];
-		CalculaTotalFila(data[0], x);
-//		CalculaTotalColumna(data[0], y);
-		
 		
 		$('input[name="TempNota"]').val(sNota);	
 		$.ajax( {
@@ -422,12 +423,84 @@ console.dir(element.id);
 				},
 			success: function(data) {
 				$('#debug').html(data);
+				CalculaTotalFila(data[0], x);
+//		CalculaTotalColumna(data[0], y);
 			}, 
 			error: function (data) {
 				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 			}
 		} );
 	}
+}
+
+/**
+ * AugmentaConvocatoria
+ * Augmenta la convocatòria d'una nota.
+ * @param NotaId Identificador de la nota.
+ * @param Convocatoria Número de convocatòria.
+ */
+function AugmentaConvocatoria(NotaId, Convocatoria) { 
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'AugmentaConvocatoria',
+			'id': NotaId,
+			'convocatoria': Convocatoria
+		},
+		success: function(data) {
+			$('#debug').html(data);
+		}, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	});		
+}
+
+/**
+ * RedueixConvocatoria
+ * Redueix la convocatòria d'una nota.
+ * @param NotaId Identificador de la nota.
+ * @param Convocatoria Número de convocatòria.
+ */
+function RedueixConvocatoria(NotaId, Convocatoria) { 
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'RedueixConvocatoria',
+			'id': NotaId,
+			'convocatoria': Convocatoria
+		},
+		success: function(data) {
+			$('#debug').html(data);
+		}, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	});		
+}
+
+/**
+ * ConvocatoriaA0
+ * Posa la convocatòria d'una nota a 0 (aprovat).
+ * @param NotaId Identificador de la nota.
+ */
+function ConvocatoriaA0(NotaId) { 
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'ConvocatoriaA0',
+			'id': NotaId
+		},
+		success: function(data) {
+			$('#debug').html(data);
+		}, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	});		
 }
 
 /**
