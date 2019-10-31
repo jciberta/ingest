@@ -103,6 +103,7 @@ if ($ButlletiVisible) {
 		echo '<thead class="thead-dark">';
 		echo "<TH>Mòdul</TH>";
 		echo "<TH>UF</TH>";
+		echo "<TH>Nivell</TH>";
 		echo "<TH>Hores</TH>";
 		if ($accio == 'MostraExpedient') {
 			echo "<TH colspan=5>Notes</TH>";
@@ -126,6 +127,7 @@ if ($ButlletiVisible) {
 				echo "<TD></TD>";
 			$ModulAnterior = $row["CodiMP"];
 			echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
+			echo "<TD>".$row["NivellUF"]."</TD>";
 			echo "<TD>".$row["HoresUF"]."</TD>";
 			$Baixa = ($row["Baixa"] == True);
 			if ($Baixa) 

@@ -40,7 +40,7 @@ class Expedient
 	 * @return string Sentència SQL.
 	 */
 	public static function SQL($MatriculaId): string {
-		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, '.
+		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, UF.nivell AS NivellUF, '.
 			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
