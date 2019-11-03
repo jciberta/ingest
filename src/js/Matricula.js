@@ -282,3 +282,19 @@ function AssignaGrupTutoria(element, grup_tutoria) {
 		}
     } );
 }
+
+/**
+ * MostraNotes
+ * Mostra/Oculta les notes d'un determinat nivell.
+ * @param obj Objecte que ha provocat la crida.
+ * @param int nivell Nivell del curs.
+ */
+function MostraNotes(obj, nivell) {
+	// Seleccionem els d'un determinat nivell
+	var tr = $('tr.Nivell'+nivell);
+	if (obj.checked)
+		tr.show()
+	else
+		tr.hide();
+}
+
