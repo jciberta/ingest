@@ -318,7 +318,7 @@ class Notes
 		else
 			$Retorn .= "<TD></TD></TR>";
 
-		$Class = ($Hores == $TotalHores) ? " class='Aprovat100' " : "";
+		$Class = ($Hores == $TotalHores) ? " class='Aprovat100' style='display:none' " : "";
 
 
 		$Retorn = "<TR $Class name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
