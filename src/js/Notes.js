@@ -14,8 +14,8 @@
  */
 function EnEntrarCellaNota(element) { 
 	ObteNota(element);
-	ResaltaFila(element, 'black');
-	ResaltaColumna(element, 'black');
+	ResaltaFila(element, 'dodgerblue');
+	ResaltaColumna(element, 'dodgerblue');
 }
 
 /**
