@@ -31,7 +31,7 @@ $Curs->CarregaRegistre($CursId);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
 
-CreaIniciHTML($Usuari, 'Grups');
+CreaIniciHTML($Usuari, 'Grups', True);
 //CreaIniciHTML($Usuari, 'Grups '.$cf->ObteCodi($CicleId).' '.$Nivell);
 
 //echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
@@ -46,17 +46,19 @@ $SQL = ' SELECT * FROM MATRICULA M '.
 
 $ResultSet = $conn->query($SQL);
 
+$aGrups = array('A', 'B', 'C');
+$aTutoria = array('AB', 'BC');
+
 if ($ResultSet->num_rows > 0) {
-	echo '<TABLE class="table table-fixed table-striped table-hover table-sm">';
+	echo '<TABLE id="taula" class="table table-fixed table-striped table-hover table-sm">';
 	echo '<THEAD class="thead-dark">';
-	echo '<TH width=200 style="text-align:left">Alumne</TH>';
+	echo '<TH width=300 style="text-align:left">Alumne</TH>';
 	echo '<TH width=75 style="text-align:center">Grup</TH>';
-	echo '<TH width=20>A</TH>';
-	echo '<TH width=20>B</TH>';
-	echo '<TH width=20>C</TH>';
+	foreach($aGrups as $item) 
+		echo "<TH width=20>$item</TH>";
 	echo '<TH width=75 style="text-align:center">Tutoria</TH>';
-	echo '<TH width=20>A</TH>';
-	echo '<TH width=20>B</TH>';
+	foreach($aTutoria as $item) 
+		echo "<TH width=30>$item</TH>";
 	echo '<TH> </TH>';
 	echo '</THEAD>';
 
@@ -64,9 +66,9 @@ if ($ResultSet->num_rows > 0) {
 	while($row) {
 //print_r($row);
 		echo '<TR>';
-		echo "<TD width=200 style='text-align:left'>".utf8_encode($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
+		echo "<TD width=300 style='text-align:left'>".utf8_encode($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
 		echo "<TD width=75 style='text-align:center'>".$row["grup"]."</TD>";
-		$aGrups = array('A', 'B', 'C');
+		
 		foreach($aGrups as $item) {
 			$Valor = '"'.$item.'"';
 			$Funcio = "'AssignaGrup(this, ".$Valor.");'";
@@ -74,12 +76,11 @@ if ($ResultSet->num_rows > 0) {
 			echo '<TD width=20 style="text-align:center"><input type="radio" id="'.$item.'" name="Grup_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
 		echo "<TD width=75 style='text-align:center'>".$row["grup_tutoria"]."</TD>";
-		$aTutoria = array('AB', 'BC');
 		foreach($aTutoria as $item) {
 			$Valor = '"'.$item.'"';
 			$Funcio = "'AssignaGrupTutoria(this, ".$Valor.");'";
 			$Checked = ($row["grup_tutoria"] == $item) ? ' checked ' : '';
-			echo '<TD width=20 style="text-align:center"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
+			echo '<TD width=30 style="text-align:center"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
 		echo '<TD> </TD>';
 		echo '</TR>';
