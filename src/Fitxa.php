@@ -94,6 +94,48 @@ switch ($accio) {
 		
 		$frm->EscriuHTML();
         break;
+    case "AnyAcademic":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+	
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Any acadèmic';
+		$frm->Taula = 'ANY_ACADEMIC';
+		$frm->ClauPrimaria = 'any_academic_id';
+		$frm->AutoIncrement = True;
+		$frm->Id = $Id;
+		
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('any_inici', 'Any inici', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('any_final', 'Any final', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixData('data_inici', 'Data inici');
+		$frm->AfegeixData('data_final', 'Data final');
+		$frm->AfegeixCheckBox('actual', 'Curs actual');
+	
+		$frm->EscriuHTML();
+        break;
+    case "Departament":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+	
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Departament';
+		$frm->Taula = 'DEPARTAMENT';
+		$frm->ClauPrimaria = 'departament_id';
+		$frm->AutoIncrement = True;
+		$frm->Id = $Id;
+		
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+	
+		$frm->EscriuHTML();
+        break;
     case "Altre":
         break;
 }
