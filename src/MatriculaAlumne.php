@@ -46,11 +46,14 @@ else {
 }
 
 $Matricula = new Matricula($conn, $Usuari);
-$alumne = $Matricula->ObteAlumne($MatriculaId);
+$Matricula->Carrega($MatriculaId);
+$alumne = $Matricula->ObteAlumne();
+$nivell = $Matricula->ObteNivell();
 
 //echo "<BR><BR><BR>";
 //echo "alumne:".$alumne."<BR>";
 //echo "MatriculaId:".$MatriculaId."<BR>";
+//echo "Nivell:".$nivell."<BR>";
 
 $accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 $ActivaEdicio = (isset($_GET) && array_key_exists('ActivaEdicio', $_GET)) ? $_GET['ActivaEdicio'] : '';
@@ -73,7 +76,7 @@ else
 	CreaIniciHTML($Usuari, 'Visualitza matrícula');
 	
 echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
-echo '<script language="javascript" src="js/Matricula.js?v1.3" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Matricula.js?v1.5" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
 
 // L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
@@ -139,7 +142,7 @@ if ($ButlletiVisible) {
 		$ModulAnterior = '';
 		$j = 1;
 		while($row) {
-			echo "<TR>";
+			echo "<TR class='Nivell".$row["NivellUF"]."'>";
 	//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
 			if ($row["CodiMP"] != $ModulAnterior)
 				echo "<TD width=200>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";

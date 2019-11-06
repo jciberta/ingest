@@ -55,6 +55,25 @@ switch ($accio) {
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;
+    case "Departament":
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Departaments';
+		$SQL = ' SELECT D.departament_id, D.nom AS NomDepartament, '.
+			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username '.
+			' FROM DEPARTAMENT D '.
+			' LEFT JOIN USUARI U ON (D.cap=U.usuari_id) ';
+		$frm->SQL = $SQL;
+		$frm->Taula = 'DEPARTAMENT';
+		$frm->ClauPrimaria = 'departament_id';
+		$frm->Camps = 'NomDepartament, NomProfessor, Cognom1Professor, Cognom2Professor';
+		$frm->Descripcions = 'Departament, Nom, 1r cognom, 2n cognom';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'Fitxa.php?accio=Departament';
+		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		$frm->EscriuHTML();
+        break;
 }
 
 ?>

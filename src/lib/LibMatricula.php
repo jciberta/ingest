@@ -27,6 +27,12 @@ class Matricula
 	* @var object
 	*/    
 	public $Usuari;
+	
+	/**
+	* Registre de la base de dades que conté les dades d'una matrícula.
+	* @var object
+	*/    
+    private $Registre = null;
 
 	/**
 	 * Constructor de l'objecte.
@@ -127,20 +133,44 @@ class Matricula
 	}
 
 	/**
-	 * Obté l'identificador de l'alumne donada una matrícula.
+	 * Carrega les dades d'una matrícula i les emmagatzema en l'atribut Registre.
      * @param int $MatriculaId Identificador de la matrícula.
-	 * @return integer Identificador de l'alumne.
 	 */
-	public function ObteAlumne(int $MatriculaId): int {
-		$iRetorn = -1;
-		$SQL = 'SELECT alumne_id FROM MATRICULA WHERE matricula_id='.$MatriculaId;	
+	public function Carrega(int $MatriculaId) {
+		$SQL = " SELECT M.*, C.nivell ".
+			" FROM MATRICULA M ".
+			" LEFT JOIN CURS C ON (C.curs_id=M.curs_id) ".
+			" WHERE matricula_id=$MatriculaId ";	
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
 			$rsMatricula = $ResultSet->fetch_object();
-			$iRetorn = $rsMatricula->alumne_id;
+			$this->Registre = $rsMatricula;
 		}
+	}
+
+	/**
+	 * Obté l'identificador de l'alumne a partir de les dades en l'atribut Registre.
+	 * @return integer Identificador de l'alumne.
+	 */
+	public function ObteAlumne(): int {
+		if ($this->Registre === null)
+			$iRetorn = -1;
+		else 
+			$iRetorn = $this->Registre->alumne_id;
+		return $iRetorn;
+	}
+
+	/**
+	 * Obté el nivell (1r o 2n) de la matrícula a partir de les dades en l'atribut Registre.
+	 * @return integer Nivell.
+	 */
+	public function ObteNivell(): int {
+		if ($this->Registre === null)
+			$iRetorn = -1;
+		else 
+			$iRetorn = $this->Registre->nivell;
 		return $iRetorn;
 	}
 }
 
- ?>
+?>

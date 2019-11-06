@@ -202,7 +202,7 @@ CREATE TABLE DEPARTAMENT
 (
     /* DEP */
     departament_id INT NOT NULL AUTO_INCREMENT,
-    nom VARCHAR(50),
+    nom VARCHAR(50) NOT NULL,
     cap INT NOT NULL,
 
     CONSTRAINT DepartamentPK PRIMARY KEY (departament_id),

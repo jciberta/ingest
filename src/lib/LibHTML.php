@@ -148,6 +148,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddCentre" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Centre</a>';
 			echo '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
 			echo '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
+			echo '					<div class="dropdown-divider"></div>';
+			echo '              	<a class="dropdown-item" href="Recerca.php?accio=AnyAcademic">Any acadèmic</a>';
+			echo '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
+			echo '					<div class="dropdown-divider"></div>';
 			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
 			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
 			echo '				</div>';

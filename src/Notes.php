@@ -112,7 +112,7 @@ if ($ResultSet->num_rows > 0) {
 	if ($Nivell == 2) {
 		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" checked onclick="MostraTotAprovat(this);">Tot aprovat';
+		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat';
 
 		// Notes de 2n 
 		$Notes->EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
@@ -122,7 +122,7 @@ if ($ResultSet->num_rows > 0) {
 	}
 	else {
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" checked onclick="MostraTotAprovat(this);">Tot aprovat';
+		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat';
 
 		// Notes de 1r d'alumnes de 1r
 		$Notes->EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor, $EstatAvaluacio);
