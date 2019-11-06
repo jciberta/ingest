@@ -99,10 +99,14 @@ if ($ButlletiVisible) {
 			$NomComplet .= " (".$row["usuari_id"].")";
 		echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
 		echo 'Cicle: <B>'.utf8_encode($row["NomCF"]).'</B>';
-		
+			
+		echo '<span style="float:right;">';
+		if ($nivell == 2) {
+			echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraNotes(this, 1);">Notes 1r &nbsp';
+			echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraNotes(this, 2);">Notes 2n &nbsp';
+		}		
 		if ($accio == 'MostraExpedient') {
-			echo '<span style="float:right;">';
-			echo "<DIV id=DescarregaExpedientPDF>";
+			//echo "<DIV id=DescarregaExpedientPDF>";
 			echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
 			if ($Usuari->es_admin) {
 				// Edició de l'expedient
@@ -112,15 +116,10 @@ if ($ButlletiVisible) {
 				else
 					echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
 			}
-			echo "</DIV>";
-			echo '</span>';
-			echo '<BR>';
-			
 		}
-		else 
-			echo '<BR>';
+		echo '</span>';
 
-		echo '<BR>';
+		echo '<BR><BR>';
 
 		echo '<TABLE class="table table-fixed table-sm table-striped table-hover">';
 		echo '<thead class="thead-dark">';
