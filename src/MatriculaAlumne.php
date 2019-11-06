@@ -94,25 +94,45 @@ if ($ButlletiVisible) {
 		$NomComplet = trim(utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
 		if ($CFG->Debug)
 			$NomComplet .= " (".$row["usuari_id"].")";
-		echo '<div class="alert alert-primary" role="alert">';
-		echo 'Alumne: <B>'.$NomComplet.'</B><BR>';
+		echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
 		echo 'Cicle: <B>'.utf8_encode($row["NomCF"]).'</B>';
-		echo '</div>';
-
-		echo '<TABLE class="table table-sm table-striped table-hover">';
-		echo '<thead class="thead-dark">';
-		echo "<TH>Mòdul</TH>";
-		echo "<TH>UF</TH>";
-		echo "<TH>Nivell</TH>";
-		echo "<TH>Hores</TH>";
+		
 		if ($accio == 'MostraExpedient') {
-			echo "<TH colspan=5>Notes</TH>";
+			echo '<span style="float:right;">';
+			echo "<DIV id=DescarregaExpedientPDF>";
+			echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+			if ($Usuari->es_admin) {
+				// Edició de l'expedient
+				echo '&nbsp';
+				if ($ActivaEdicio==1) 
+					echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
+				else
+					echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
+			}
+			echo "</DIV>";
+			echo '</span>';
+			echo '<BR>';
+			
+		}
+		else 
+			echo '<BR>';
+
+		echo '<BR>';
+
+		echo '<TABLE class="table table-fixed table-sm table-striped table-hover">';
+		echo '<thead class="thead-dark">';
+		echo "<TH width=200>Mòdul</TH>";
+		echo "<TH width=200>UF</TH>";
+		echo "<TH width=50>Nivell</TH>";
+		echo "<TH width=50>Hores</TH>";
+		if ($accio == 'MostraExpedient') {
+			echo "<TH width=250 colspan=5>Notes</TH>";
 			if ($ActivaEdicio==1)
-				echo "<TH>Convocatòria</TH>";
+				echo "<TH width=75>Convocatòria</TH>";
 		}
 		else {
-			echo "<TH>Matrícula</TH>";
-			echo "<TH>Convalidació</TH>";
+			echo "<TH width=50 style='text-align:center'>Matrícula</TH>";
+			echo "<TH width=50 style='text-align:center'>Convalidació</TH>";
 		}
 		echo '</thead>';
 
@@ -122,13 +142,13 @@ if ($ButlletiVisible) {
 			echo "<TR>";
 	//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
 			if ($row["CodiMP"] != $ModulAnterior)
-				echo "<TD>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+				echo "<TD width=200>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
 			else 
-				echo "<TD></TD>";
+				echo "<TD width=200></TD>";
 			$ModulAnterior = $row["CodiMP"];
-			echo "<TD>".utf8_encode($row["NomUF"])."</TD>";
-			echo "<TD>".$row["NivellUF"]."</TD>";
-			echo "<TD>".$row["HoresUF"]."</TD>";
+			echo "<TD width=200>".utf8_encode($row["NomUF"])."</TD>";
+			echo "<TD width=50>".$row["NivellUF"]."</TD>";
+			echo "<TD width=50>".$row["HoresUF"]."</TD>";
 			$Baixa = ($row["Baixa"] == True);
 			if ($Baixa) 
 				$sChecked = '';
@@ -152,13 +172,13 @@ if ($ButlletiVisible) {
 					// name: conté id i convocatòria
 					// id: conté les coordenades x, y. Inici a (0, 0).
 					$Id = 'grd_'.$j.'_'.$i;
-					echo "<TD><input type=text $Deshabilitat style='$style' name=txtNotaId_".$row["NotaId"]."_".$i.
+					echo "<TD width=50><input type=text $Deshabilitat style='$style' name=txtNotaId_".$row["NotaId"]."_".$i.
 						" id='$Id' value='$Nota' ".
 						" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'>".
 						"</TD>";
 				}
 				if ($ActivaEdicio==1) {
-					echo "<TD>";
+					echo "<TD width=75>";
 					echo "<A HREF=# onclick='RedueixConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/left.svg data-toggle='tooltip' data-placement='top' title='Redueix convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='AugmentaConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/right.svg data-toggle='tooltip' data-placement='top' title='Augmenta convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='ConvocatoriaA0(".$row["NotaId"].");'><IMG SRC=img/check.svg data-toggle='tooltip' data-placement='top' title='Convocatòria a 0 (aprovat)'></A>";
@@ -168,14 +188,14 @@ if ($ButlletiVisible) {
 			else {
 				// Columna matriculació
 				if ($Convalidat || ($row['convocatoria'] == 0))
-					echo "<TD></TD>";
+					echo "<TD width=50></TD>";
 				else
-					echo "<TD><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+					echo "<TD width=50 style='text-align:center'><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
 				// Columna convalidació
 				if ($row['convocatoria'] == 0)
-					echo "<TD></TD>";
+					echo "<TD width=50></TD>";
 				else
-					echo "<TD><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
+					echo "<TD width=50 style='text-align:center'><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";
 			}
 			echo "</TR>";
 			$j++;
@@ -185,7 +205,7 @@ if ($ButlletiVisible) {
 		echo "<input type=hidden name=TempNota value=''>";
 	};	
 
-	if ($accio == 'MostraExpedient') {
+/*	if ($accio == 'MostraExpedient') {
 		echo "<DIV id=DescarregaExpedientPDF>";
 		echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
 		if ($Usuari->es_admin) {
@@ -197,7 +217,7 @@ if ($ButlletiVisible) {
 				echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
 		}
 		echo "</DIV>";
-	}
+	}*/
 	
 	$ResultSet->close();
 }

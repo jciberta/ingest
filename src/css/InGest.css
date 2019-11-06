@@ -13,7 +13,7 @@ https://jsfiddle.net/bootstrapious/dmp7tr4g
 
 .table-fixed tbody {
   overflow-y: scroll;
-  height: 550px;
+  height: 75%;
   width: 98%;
   position: absolute;
 }
