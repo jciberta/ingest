@@ -318,10 +318,12 @@ class Notes
 		else
 			$Retorn .= "<TD></TD></TR>";
 
-		$Class = ($Hores == $TotalHores) ? " class='Aprovat100' style='display:none' " : "";
+		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
+		if ($Hores == $TotalHores)
+			$class .= ' Aprovat100';
+		$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
 
-
-		$Retorn = "<TR $Class name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
+		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
 		return $Retorn;
 	}

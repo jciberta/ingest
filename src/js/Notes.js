@@ -76,6 +76,45 @@ function MostraTotAprovat(obj) {
 }
 
 /**
+ * MostraGrup
+ * Mostra/Oculta els alumnes d'un grup
+ * @param obj Objecte que ha provocat la crida.
+ * @param grup Grup en format numèric (1=A, 2=B, etc).
+ */
+function MostraGrup(obj, grup) {
+	switch (grup) {
+		case 1: sGrup = 'A'; break;
+		case 2: sGrup = 'B'; break;
+		case 3: sGrup = 'C'; break;
+		default: sGrup = '';
+	}
+	var tr = $('tr.Grup'+sGrup);
+	if (obj.checked)
+		tr.show()
+	else
+		tr.hide();
+}
+
+/**
+ * MostraTutoria
+ * Mostra/Oculta els alumnes d'una tutoria
+ * @param obj Objecte que ha provocat la crida.
+ * @param tutoria Tutoria en format numèric (1=AB, 2=BC, etc).
+ */
+function MostraTutoria(obj, tutoria) {
+	switch (tutoria) {
+		case 1: sTutoria = 'AB'; break;
+		case 2: sTutoria = 'BC'; break;
+		default: sTutoria = '';
+	}
+	var tr = $('tr.Tutoria'+sTutoria);
+	if (obj.checked)
+		tr.show()
+	else
+		tr.hide();
+}
+
+/**
  * Introdueix una nota de recuperació
  * @param obj Objecte que ha provocat la crida (INPUT).
  */
