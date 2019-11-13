@@ -246,7 +246,7 @@ class Notes
 		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			echo '<TD width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+			echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
 		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
@@ -295,7 +295,8 @@ class Notes
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
 		$Retorn = "";
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
-		$Retorn .= "<TD style='text-align:left$Color'>".utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
+		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+		$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
@@ -322,10 +323,12 @@ class Notes
 		else
 			$Retorn .= "<TD></TD></TR>";
 
-		$Class = ($Hores == $TotalHores) ? " class='Aprovat100' style='display:none' " : "";
+		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
+		if ($Hores == $TotalHores)
+			$class .= ' Aprovat100';
+		$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
 
-
-		$Retorn = "<TR $Class name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
+		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
 		return $Retorn;
 	}
