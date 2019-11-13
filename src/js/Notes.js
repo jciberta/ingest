@@ -14,8 +14,8 @@
  */
 function EnEntrarCellaNota(element) { 
 	ObteNota(element);
-	ResaltaFila(element, 'dodgerblue');
-	ResaltaColumna(element, 'dodgerblue');
+	ResaltaFila(element, 'dodgerblue', 'dodgerblue');
+	ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
 }
 
 /**
@@ -28,8 +28,8 @@ function EnSortirCellaNota(element) {
 	else
 		element.style.color = 'black';
 	ActualitzaNota(element);
-	ResaltaFila(element, '#A9A9A9');
-	ResaltaColumna(element, '#A9A9A9');
+	ResaltaFila(element, '#A9A9A9', 'black');
+	ResaltaColumna(element, '#A9A9A9', 'black');
 }
 
 /**
@@ -329,12 +329,16 @@ function ObteNota(element) {
  * ResaltaFila
  * @param element Cel·la que ha fet la crida.
  * @param color Color amb que es vol resaltar la fila.
+ * @param colorAlumne Color amb que es vol resaltar el nom de l'alumne.
  */
-function ResaltaFila(element, color) { 
+function ResaltaFila(element, color, colorAlumne) { 
 	var data = (element.id).split('_');
 	var grd = data[0];
 	var x = data[1];
 	var y = data[2];
+
+	var alumne = document.getElementById('alumne_' + x);
+	alumne.style.color = colorAlumne;
 
 	var i = 0;
 	var CellaId = grd + '_' + x + '_' + i;
@@ -351,12 +355,16 @@ function ResaltaFila(element, color) {
  * ResaltaColumna
  * @param element Cel·la que ha fet la crida.
  * @param color Color amb que es vol resaltar la columna.
+ * @param colorUF Color amb que es vol resaltar la unitat formativa.
  */
-function ResaltaColumna(element, color) { 
+function ResaltaColumna(element, color, colorUF) { 
 	var data = (element.id).split('_');
 	var grd = data[0];
 	var x = data[1];
 	var y = data[2];
+
+	var uf = document.getElementById('uf_' + y);
+	uf.style.color = colorUF;
 
 	var i = 0;
 	var CellaId = grd + '_' + i + '_' + y;
