@@ -182,11 +182,11 @@ CREATE TABLE NOTES
     notes_id INT NOT NULL AUTO_INCREMENT,
     matricula_id INT NOT NULL,
     uf_id INT NOT NULL,
-    nota1 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota1 INT CHECK (nota1 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
     nota2 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
-    nota3 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
-    nota4 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
-    nota5 INT CHECK (nota2 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gràcia */
+    nota3 INT CHECK (nota3 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota4 INT CHECK (nota4 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+    nota5 INT CHECK (nota5 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gràcia */
     exempt BIT,
     convalidat BIT,
     junta BIT,
@@ -293,6 +293,20 @@ CREATE TABLE TUTOR
     CONSTRAINT TUT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
     CONSTRAINT TUT_ProfessorFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE NOTES_MP
+(
+    /* NMP */
+    notes_mp_id INT NOT NULL AUTO_INCREMENT,
+    matricula_id INT NOT NULL, 
+    modul_professional_id INT NOT NULL,
+    nota INT CHECK (nota IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
+
+    CONSTRAINT NotesMPPK PRIMARY KEY (notes_mp_id),
+    CONSTRAINT NMP_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
+    CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 /*
  * Edat

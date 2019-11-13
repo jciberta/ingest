@@ -173,14 +173,12 @@ class Notes
 {
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
 
 	/**
 	* Usuari autenticat.
-	* @access public 
 	* @var object
 	*/    
 	public $Usuari;
@@ -221,6 +219,7 @@ class Notes
 	
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
+			$aModulsId[$j] = $row["IdMP"];
 			$aModuls[$j] = utf8_encode($row["CodiMP"]);
 			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
 		}
@@ -233,7 +232,12 @@ class Notes
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.utf8_encode($aOcurrenciesModuls[$i][0]).'</TD>';
+			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
+			if ($this->Usuari->es_admin)
+				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+			else
+				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
 			$index += $iOcurrencies;
 		}
 		echo "<TD></TD></TR>";
@@ -544,9 +548,10 @@ class Notes
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
-			' MP.codi AS CodiMP, MP.nom AS NomMP, '.
+			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
-			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
+			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
+			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, '.
 			' N.*, U.* '.
 			' FROM NOTES N '.
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
@@ -560,6 +565,173 @@ class Notes
 		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
 			
 		return $sRetorn;
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de les notes del mòdul.
+ */
+class NotesModul extends Notes 
+{
+	/**
+	* Registre carregat amb CarregaRegistre.
+	* @var object
+	*/    
+	private $Registre = NULL;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 */
+	function __construct($con, $user) {
+		parent::__construct($con, $user);
+		$this->Registre = new stdClass();
+	}
+
+	/**
+	 * Crea la sentència SQL per recuperar les notes d'un curs i un mòdul concret.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $ModulId Identificador del mòdul.
+	 * @return string Sentència SQL.
+	 */
+	public function CreaSQL($CursId, $ModulId)
+	{
+		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
+			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
+			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
+			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
+			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, '.
+			' N.*, U.* '.
+			' FROM NOTES N '.
+			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' WHERE C.curs_id='.$CursId.' AND MP.modul_professional_id='.$ModulId;
+		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+		return $sRetorn;
+	}
+
+	/**
+	 * Carrega el registre.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $ModulId Identificador del mòdul.
+	 */				
+	public function CarregaRegistre($CursId, $ModulId) {
+		$SQL = $this->CreaSQL($CursId, $ModulId);
+		$ResultSet = $this->Connexio->query($SQL);
+
+		if ($ResultSet->num_rows > 0) {
+			$i = -1; 
+			$j = 0;
+			$AlumneId = -1;
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				if ($row["AlumneId"] != $AlumneId) {
+					$AlumneId = $row["AlumneId"];
+					$i++;
+					$this->Registre->Alumne[$i] = $row;
+					$j = 0; 
+				}	
+				$this->Registre->UF[$i][$j] = $row;
+				$j++;
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		//print_r($this->Registre);
+	}
+	
+	/**
+	 * Escriu el formulari corresponent a les notes d'un cicle i nivell.
+	 * @param string $CicleId Identificador del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param array $Notes Dades amb les notes.
+	 * @param int $IdGraella Identificador de la graella de notes.
+	 * @param object $Professor Objecte professor.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @return void.
+	 */
+	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
+		$Notes = $this->Registre;
+
+		// Formulari amb les notes
+		echo '<DIV id=notes'.$IdGraella.'>';
+		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
+		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
+		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
+		echo '<TABLE id="TaulaNotes" border=0>';
+
+		// Capçalera de la taula
+		$aModuls = [];
+		$aModulsNom = [];
+
+		// CAI2 no existeix com a tal. Tots els crèdits estan posats a 1r
+		if (!property_exists($Notes, 'UF')) return;
+	
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$aModulsId[$j] = $row["IdMP"];
+			$aModuls[$j] = utf8_encode($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
+		}
+		$aOcurrenciesModuls = Ocurrencies($aModuls);
+//print_r($aOcurrenciesModuls);
+//print_r($aModulsNom);
+
+		// Mòdul
+		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		$index = 0;
+		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
+			$iOcurrencies = $aOcurrenciesModuls[$i][1];
+			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
+			if ($this->Usuari->es_admin)
+				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+			else
+				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
+			$index += $iOcurrencies;
+		}
+		echo "<TD></TD></TR>";
+	
+		// Unitat formativa
+		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			echo '<TD width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+		}
+		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
+
+		// Hores
+		echo "<TR><TD></TD><TD></TD>";
+		echo "<TD style='text-align:center'>Grup</TD>";
+		echo "<TD style='text-align:center'>Tutoria</TD>";
+		$TotalHores = 0;
+		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$TotalHores += $row["Hores"];
+			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
+			array_push($aHores, $row["Hores"]);
+		}
+		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
+		echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+
+		for($i = 0; $i < count($Notes->Alumne); $i++) {
+			$row = $Notes->Alumne[$i];
+			//if ($row["NivellMAT"] == $Nivell) {
+				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $EstatAvaluacio);
+			//}
+		}
+		echo "</TABLE>";
+		echo "<input type=hidden name=TempNota value=''>";
+		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
+		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
+		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
+		echo "</FORM>";
+		echo "</DIV>";
 	}
 }
 
