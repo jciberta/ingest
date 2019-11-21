@@ -33,6 +33,30 @@ function EnSortirCellaNota(element) {
 }
 
 /**
+ * EnEntrarCellaNotaModul
+ * @param element Cel·la que ha fet la crida.
+ */
+function EnEntrarCellaNotaModul(element) { 
+	ObteNotaModul(element);
+	ResaltaFila(element, 'dodgerblue', 'dodgerblue');
+	ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
+}
+
+/**
+ * EnSortirCellaNotaModul
+ * @param element Cel·la que ha fet la crida.
+ */
+function EnSortirCellaNotaModul(element) { 
+	if (element.value!='' && element.value>=0 && element.value<5)
+		element.style.color = 'red';
+	else
+		element.style.color = 'black';
+	ActualitzaNotaModul(element);
+	ResaltaFila(element, '#A9A9A9', 'black');
+	ResaltaColumna(element, '#A9A9A9', 'black');
+}
+
+/**
  * MostraGraellaNotes
  * Mostra/Oculta la graella de notes.
  * @param obj Objecte que ha provocat la crida.
@@ -326,6 +350,21 @@ function ObteNota(element) {
 }
 
 /**
+ * ObteNotaModul
+ * Obté la nota mitjana d'un input i la manté per comprovar si ha canviat en sortir de l'element.
+ * @param element Input que ha fet la crida.
+ */
+function ObteNotaModul(element) { 
+	sText = 'Executant ObteNota... ';
+//	$('#debug').html(sText);
+	var sNota = element.value;
+	$('input[name="TempNotaModul"]').val(sNota);
+	sText = sText + 'Valor desat: ' + sNota;
+//	$('#debug').html(sText);
+	EnviaCursorAlFinalDelText(element);
+}
+
+/**
  * ResaltaFila
  * @param element Cel·la que ha fet la crida.
  * @param color Color amb que es vol resaltar la fila.
@@ -471,6 +510,58 @@ console.dir(element.id);
 			success: function(data) {
 				$('#debug').html(data);
 				CalculaTotalFila(data[0], x);
+//		CalculaTotalColumna(data[0], y);
+			}, 
+			error: function (data) {
+				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+			}
+		} );
+	}
+}
+
+/**
+ * ActualitzaNotaModul
+ * Actualitza la nota d'un input.
+ * @param element Input que ha fet la crida.
+ */
+function ActualitzaNotaModul(element) { 
+	sText = 'Executant ActualitzaNotaModul... ';
+	$('#debug').html(sText);
+console.log(sText);
+	
+	var sNota = $('input[name="TempNotaModul"]').val();	
+//console.log(sNota);
+console.log(element.value);
+	if (sNota == element.value) {
+		sText = sText + 'No ha calgut actualitzar';
+		$('#debug').html(sText);
+console.log(sText);
+	}
+	else {
+		// <INPUT>
+		// name: conté id i matrícula
+		// id: conté les coordenades x, y. Inici a (0, 0).
+			
+console.log(element.name);
+console.dir(element.id);
+
+		var data = (element.id).split('_');
+		var x = data[1];
+		var y = data[2];
+		
+		$('input[name="TempNotaModul"]').val(sNota);	
+		$.ajax( {
+			type: 'POST',
+			url: 'lib/LibNotes.ajax.php',
+			data:{
+				'accio': 'ActualitzaNotaModul',
+				'mp': $('input#ModulId').val(),
+				'nom': element.name,
+				'valor': element.value
+				},
+			success: function(data) {
+				$('#debug').html(data);
+//				CalculaTotalFila(data[0], x);
 //		CalculaTotalColumna(data[0], y);
 			}, 
 			error: function (data) {

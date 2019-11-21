@@ -49,6 +49,30 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		else
 			print "Valor no vàlid: ".$valor;
 	}
+	else if ($_REQUEST['accio'] == 'ActualitzaNotaModul') {
+		$nom = $_REQUEST['nom'];
+		$data = explode("_", $nom);
+		$mp = $_REQUEST['mp'];
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			if ($data[1]==0) {
+				$SQL = 'INSERT INTO NOTES_MP (matricula_id, modul_professional_id, nota) VALUES ('.
+					$data[2].', '.
+					$mp.', '.
+					$NotaNumerica.
+				')';
+			
+			//SET nota'.$data[2].'='.$NotaNumerica.' WHERE notes_mp_id='.$data[1];	
+			}
+			else
+				$SQL = 'UPDATE NOTES_MP SET nota='.$NotaNumerica.' WHERE notes_mp_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		} 
+		else
+			print "Valor no vàlid: ".$valor;
+	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaNotes') {
 		$CicleId = $_REQUEST['CicleId'];
 		$Nivell = $_REQUEST['Nivell'];

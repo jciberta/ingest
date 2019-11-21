@@ -295,7 +295,8 @@ class Notes
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
 		$Retorn = "";
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
-		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
+//		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
 		$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
 		if ($row["BaixaMatricula"] == 1)
@@ -583,12 +584,23 @@ class NotesModul extends Notes
 	private $Registre = NULL;
 
 	/**
+	* Registre carregat amb CarregaRegistreMitjana.
+	* Conté les mitjanes del mòdul per a cada alumne.
+	* És un array associatiu amb els següents valors:
+	*  - Clau: Id de la matrícula
+	*  - Valor: Registre de la taula NOTES_MP
+	* @var array
+	*/    
+	private $RegistreMitjanes = NULL;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);
 		$this->Registre = new stdClass();
+		$this->RegistreMitjanes = [];
 	}
 
 	/**
@@ -615,6 +627,21 @@ class NotesModul extends Notes
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' WHERE C.curs_id='.$CursId.' AND MP.modul_professional_id='.$ModulId;
 		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+		return $sRetorn;
+	}
+	
+	/**
+	 * Crea la sentència SQL per recuperar les notes mitjanes d'un curs i un mòdul concret.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $ModulId Identificador del mòdul.
+	 * @return string Sentència SQL.
+	 */
+	public function CreaSQLMitjanes($CursId, $ModulId)
+	{
+		$sRetorn = ' SELECT NMP.notes_mp_id, NMP.matricula_id, NMP.modul_professional_id, NMP.nota '.
+			' FROM NOTES_MP NMP '.
+			' LEFT JOIN MATRICULA M ON (M.matricula_id=NMP.matricula_id) '.
+			' WHERE M.curs_id='.$CursId.' AND NMP.modul_professional_id='.$ModulId;
 		return $sRetorn;
 	}
 
@@ -648,6 +675,25 @@ class NotesModul extends Notes
 	}
 	
 	/**
+	 * Carrega el registre de mitjanes.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $ModulId Identificador del mòdul.
+	 */				
+	public function CarregaRegistreMitjanes($CursId, $ModulId) {
+		$SQL = $this->CreaSQLMitjanes($CursId, $ModulId);
+		$ResultSet = $this->Connexio->query($SQL);
+
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				$this->RegistreMitjanes[$row["matricula_id"]] = $row;
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+//print_r($this->RegistreMitjanes); print('<HR>');
+	}
+	
+	/**
 	 * Escriu el formulari corresponent a les notes d'un cicle i nivell.
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
@@ -659,6 +705,7 @@ class NotesModul extends Notes
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
 		$Notes = $this->Registre;
+		$Nivell = 0;
 
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
@@ -682,45 +729,53 @@ class NotesModul extends Notes
 		}
 		$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
+//print_r($aOcurrenciesModuls[0][1]);
 //print_r($aModulsNom);
 
+		echo '<input type=hidden id=ModulId value='.$aModulsId[0].'>';
+
+//		$iNumeroUF = $aOcurrenciesModuls[0][1];
+
 		// Mòdul
-		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		echo "<TR><TD></TD><TD></TD>";
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
-			if ($this->Usuari->es_admin)
-				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
-			else
-				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
-			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
+			//$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+			$TextModul = 'Qualificació de les unitats formatives del mòdul professional';
+			$TextModul .= '<br>'.utf8_encode($aOcurrenciesModuls[$i][0]);
+			echo '<TD width='.($iOcurrencies*25).' colspan='.($iOcurrencies*2).' style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
 			$index += $iOcurrencies;
 		}
-		echo "<TD></TD></TR>";
+		echo '<TD colspan=2 rowspan=2 style="text-align:center">Qualificació final del mòdul</TD></TR>';
 	
 		// Unitat formativa
-		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		echo "<TR><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			echo '<TD width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+			echo '<TD width=20 colspan=2 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
-		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
+		//echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
 		// Hores
 		echo "<TR><TD></TD><TD></TD>";
-		echo "<TD style='text-align:center'>Grup</TD>";
-		echo "<TD style='text-align:center'>Tutoria</TD>";
+//		echo "<TD style='text-align:center'>Grup</TD>";
+//		echo "<TD style='text-align:center'>Tutoria</TD>";
 		$TotalHores = 0;
 		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			echo "<TD width=20 align=center>Hores</TD>";
+			echo "<TD width=20 align=center>Qualif.</TD>";
+
 			$row = $Notes->UF[0][$j];
 			$TotalHores += $row["Hores"];
-			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
+//			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
 			array_push($aHores, $row["Hores"]);
 		}
-		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+		//echo "<TD style='text-align:center'>".$TotalHores."</TD>";
+		//echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+		echo "<TD width=20 align=center>Hores</TD>";
+		echo "<TD width=20 align=center>Qualif.</TD>";
 
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
@@ -730,11 +785,145 @@ class NotesModul extends Notes
 		}
 		echo "</TABLE>";
 		echo "<input type=hidden name=TempNota value=''>";
+		echo "<input type=hidden name=TempNotaModul value=''>";
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
 		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
 		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
 		echo "</FORM>";
 		echo "</DIV>";
+	}
+	
+	/**
+	 * Crea la fila de notes per a un alumne.
+	 * @param string $IdGraella Nom de la graella.
+	 * @param integer $Nivell Nivell.
+	 * @param integer $i Fila.
+	 * @param object $Notes Registre de les notes.
+	 * @param object $row Registre que correspon a la nota.
+	 * @param object $Professor Objecte de la classe Professor.
+	 * @param integer $TotalHores Total d'hores del curs.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @return string Codi HTML de la cel·la.
+	 */
+	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
+		$Retorn = "";
+		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
+		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
+		$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
+
+		$Retorn .= "<TD></TD>";
+
+		//$Retorn .= "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
+		//$Retorn .= "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
+		$Hores = 0;
+		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
+			$row = $Notes->UF[$i][$j];
+			$Retorn .= '<td style="text-align:center">'.$row["Hores"].'</td>';			
+			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
+		}
+		// Nota mòdul
+		$Retorn .= '<td style="text-align:center">'.$TotalHores.'</td>';			
+		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
+		
+//		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
+//		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
+//		$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
+//		$TotalPercentatge = $Hores/$TotalHores*100;
+//		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
+//		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
+		$Retorn .= "<TD></TD></TR>";
+
+		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
+		if ($Hores == $TotalHores)
+			$class .= ' Aprovat100';
+		$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
+
+		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
+		
+		return $Retorn;
+	}	
+	
+	/**
+	 * Crea una cel·la per a la nota del mòdul.
+	 * @param string $IdGraella Nom de la graella.
+	 * @param integer $i Fila.
+	 * @param integer $j Columna.
+	 * @param object $row Registre que correspon a la nota.
+	 * @param object $Professor Objecte de la classe Professor.
+	 * @param integer $Hores Hores que es sumen per saber el total.
+	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @return string Codi HTML de la cel·la.
+	 */
+	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
+		$MatriculaId = $row["matricula_id"];
+
+		$NotaId = 0;
+		$Nota = '';
+		if (array_key_exists($MatriculaId, $this->RegistreMitjanes)) {
+			$NotaId = $this->RegistreMitjanes[$MatriculaId]['notes_mp_id'];
+			$Nota = $this->RegistreMitjanes[$MatriculaId]['nota'];
+//echo $Nota.'<BR>';			
+		}
+		
+		
+		$style = "text-align:center;text-transform:uppercase";
+		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
+		$Convalidat = ($row["Convalidat"] == True);
+
+		$Deshabilitat = '';
+/*		if ($Baixa)
+			$Deshabilitat = ' disabled ';
+		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
+			$Deshabilitat = ' disabled ';
+
+		$Nota = '';
+		$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
+		if (!$Baixa) {
+			if ($Convalidat) {
+				//$Nota = UltimaNota($row);
+				$Deshabilitat = " disabled ";
+				$style .= ";background-color:blue;color:white";
+			}
+			else if ($row["Convocatoria"] == 0) {
+				//$Nota = UltimaNota($row);
+				$Deshabilitat = " disabled ";
+				$style .= ";background-color:black;color:white";
+			}
+			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
+				// Nota recuperada
+				//$Nota = UltimaNota($row);
+				$Deshabilitat = " disabled ";
+				$style .= ";background-color:lime";
+			}
+			else {
+				//$Nota = $row["nota".$row["Convocatoria"]];
+				if ($row["Orientativa"] && !$Baixa) {
+					$style .= ";background-color:yellow";
+				}
+			}
+		}
+		else
+			// Sense nota
+			$style .= ";background-color:grey";
+*/		
+		if ($Nota >= 5)
+			$Hores += $row["Hores"];
+		else if ($Nota!='' && $Nota>=0 && $Nota<5)
+			$style .= ";color:red";
+		
+		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
+		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
+		
+		
+		// <INPUT>
+		// name: conté id i matrícula
+		// id: conté les coordenades x, y. Inici a (0, 0).
+		$ValorNota = NumeroANota($Nota);
+		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
+		return "<TD width=2><input type=text ".$Deshabilitat." style='".$style."'".
+			" name=txtNotaModulId_".$NotaId."_".$MatriculaId.
+			" id='".$Id."' value='".$ValorNota."' size=1 ".
+			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 	}
 }
 

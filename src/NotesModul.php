@@ -49,7 +49,7 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.3" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.0" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
@@ -61,83 +61,12 @@ if ($EstatAvaluacio != Avaluacio::Tancada)
 
 $NotesModul = new NotesModul($conn, $Usuari);
 $NotesModul->CarregaRegistre($CursId, $ModulId);
+$NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 
-//exit;
-
-/*$SQL = $Notes->CreaSQL($CursId, $Nivell);
-//$SQL = CreaSQLNotes($CursId, $Nivell);
-//$SQL = CreaSQLNotes($CicleId, $Nivell);
-//print_r($SQL.'<P>');
-$ResultSet = $conn->query($SQL);*/
-
-//if ($ResultSet->num_rows > 0) {
 if (True) {
-//print_r($ResultSet);	
-
-	// Creem 2 objectes per administrar les notes de 1r i de 2n respectivament
-/*	$Notes1 = new stdClass();
-	$Notes2 = new stdClass();
-	$i = -1; 
-	$j1 = 0;
-	$j2 = 0;
-	$AlumneId = -1;
-	$row = $ResultSet->fetch_assoc();
-	while($row) {
-//print_r($row);
-		if ($row["NivellUF"] == 1) {
-			if ($row["AlumneId"] != $AlumneId) {
-				$AlumneId = $row["AlumneId"];
-				$i++;
-				$Notes1->Alumne[$i] = $row;
-				$Notes2->Alumne[$i] = $row;
-				$j1 = 0; 
-				$j2 = 0; 
-			}	
-			$Notes1->UF[$i][$j1] = $row;
-			$j1++;
-		}
-		else if ($row["NivellUF"] == 2) {
-			if ($row["AlumneId"] != $AlumneId) {
-				$AlumneId = $row["AlumneId"];
-				$i++;
-				$Notes1->Alumne[$i] = $row;
-				$Notes2->Alumne[$i] = $row;
-				$j1 = 0; 
-				$j2 = 0; 
-			}	
-			$Notes2->UF[$i][$j2] = $row;
-			$j2++;
-		}
-		$row = $ResultSet->fetch_assoc();
-	}*/
-//print_r($Notes1);
-//print_r($Notes2);
-
-	$NotesModul->EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
-
-/*	echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
-	if ($Nivell == 2) {
-		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
-		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat';
-
-		// Notes de 2n 
-		$Notes->EscriuFormulari($CicleId, 2, $Notes2, 2, $Professor, $EstatAvaluacio);
-
-		// Notes de 1r d'alumnes de 2n
-		$Notes->EscriuFormulari($CicleId, 2, $Notes1, 1, $Professor, $EstatAvaluacio);
-	}
-	else {
-		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat';
-
-		// Notes de 1r d'alumnes de 1r
-		$Notes->EscriuFormulari($CicleId, 1, $Notes1, 1, $Professor, $EstatAvaluacio);
-
-		// Notes de 1r d'alumnes de 2n
-		$Notes->EscriuFormulari($CicleId, 2, $Notes1, 2, $Professor, $EstatAvaluacio);
-	}*/
-
+	echo '<input type="checkbox" name="chbGrupAB" checked onclick="MostraTutoria(this, 1);">Tutoria AB &nbsp';
+	echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
+	$NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $EstatAvaluacio);
 }
 
 if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
@@ -146,8 +75,6 @@ if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
 
-$ResultSet->close();
-
 $conn->close(); 
  
- ?>
+?>
