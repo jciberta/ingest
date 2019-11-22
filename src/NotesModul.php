@@ -43,7 +43,7 @@ if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !
 	header("Location: Surt.php");
 
 $cf = new CicleFormatiu($conn);
-CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
+CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell, True, True);
 
 echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.

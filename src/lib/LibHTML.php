@@ -17,27 +17,11 @@
  * @param object $Usuari Usuari autenticat.
  * @param string $Titol Títol de la pàgina.
  * @param boolean $bMenu Indica si el menú ha d'haver menú a la capçalera o no.
+ * @param boolean $bSaga Indica si usem els estil de SAGA.
  */
-function CreaIniciHTML($Usuari, $Titol, $bMenu = True)
+function CreaIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False)
 {
-	CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu);
-/*	echo "<HTML>";
-	echo "<HEAD>";
-	echo "	<META charset=UTF8>";
-	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
-	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
-	echo '	<script src="vendor/jquery-3.3.1.min.js"></script>';
-	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
-	echo "</HEAD>";
-	echo '<BODY>';
-	echo '	<div class="header clearfix">';
-	echo '		<nav>';
-	echo '		<ul class="nav nav-pills float-right">';
-	echo '			<li class="nav-item"><a class="nav-link" href="Surt.php">Surt</a></li>';
-	echo '		</ul>';
-	echo '		</nav>';
-	echo '	</div>';
-	echo '<H1>'.utf8_encode($Titol).'</H1>';*/
+	CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga);
 }
 
 /**
@@ -59,8 +43,9 @@ function CreaFinalHTML()
  * @param object $Usuari Usuari autenticat.
  * @param string $Titol Títol de la pàgina.
  * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
+ * @param boolean $bSaga Indica si usem els estil de SAGA.
  */
-function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
+function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, $bSaga = False)
 {
 	echo '<HTML>';
 	echo '<HEAD>';
@@ -71,6 +56,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True)
 //	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
 	echo '	<link rel="stylesheet" href="css/InGest.css?v1.0">';
+	if ($bSaga)
+		echo '	<link rel="stylesheet" href="css/saga.css">';
 	echo '	<script src="vendor/jquery.min.js"></script>';
 	echo '	<script src="vendor/popper.min.js"></script>';
 	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
