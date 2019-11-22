@@ -669,6 +669,12 @@ class NotesModul extends Notes
 	private $RegistreMitjanes = NULL;
 
 	/**
+	* Indica si la fila és l'alterna o no de cara a pintar-les de diferents colors.
+	* @var boolean
+	*/    
+	private $FilaAlterna = False;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
@@ -833,12 +839,9 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 			$row = $Notes->UF[0][$j];
 			echo '<TH class="contingut" width=20 colspan=2 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TH>';
 		}
-		//echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 
 		// Hores
 		echo '<TR><TH class="contingut" style="text-align:center">Alumnat</TD>';
-//		echo "<TD style='text-align:center'>Grup</TD>";
-//		echo "<TD style='text-align:center'>Tutoria</TD>";
 		$TotalHores = 0;
 		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
@@ -847,11 +850,8 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 
 			$row = $Notes->UF[0][$j];
 			$TotalHores += $row["Hores"];
-//			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
 			array_push($aHores, $row["Hores"]);
 		}
-		//echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		//echo "<TD style='text-align:center'>&percnt;</TD></TR>";
 		echo '<TH class="contingut" width=20 align=center>Hores</TH>';
 		echo '<TH class="contingut" width=20 align=center>Qualif.</TH>';
 
@@ -886,7 +886,8 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 * @return string Codi HTML de la cel·la.
 	 */
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
-		$Class = 'class="llistat'.(($i % 2) + 1).'"';
+		$Llista = $this->FilaAlterna ? 2 : 1;
+		$Class = 'class="llistat'.$Llista.'"';
 		
 		$Retorn = "";
 		if ($row["BaixaMatricula"] == 1)
@@ -916,6 +917,8 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
+		$this->FilaAlterna = !$this->FilaAlterna;
+		
 		return $Retorn;
 	}	
 	
@@ -932,14 +935,14 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 */
 	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
 		$MatriculaId = $row["matricula_id"];
-		$Class = 'class="llistat'.(($i % 2) + 1).'"';
+		$Llista = $this->FilaAlterna ? 2 : 1;
+		$Class = 'class="llistat'.$Llista.'"';
 		
 		$NotaId = 0;
 		$Nota = '';
 		if (array_key_exists($MatriculaId, $this->RegistreMitjanes)) {
 			$NotaId = $this->RegistreMitjanes[$MatriculaId]['notes_mp_id'];
 			$Nota = $this->RegistreMitjanes[$MatriculaId]['nota'];
-//echo $Nota.'<BR>';			
 		}
 		
 		
