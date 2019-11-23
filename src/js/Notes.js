@@ -77,11 +77,7 @@ function MostraGraellaNotes(obj, nivell) {
 function MostraBaixes(obj) {
 	// Seleccionem totes les baixes
 	var tr = $('tr[name=Baixa1]')
-	
-	if (obj.checked)
-		tr.show()
-	else
-		tr.hide();
+	(obj.checked) ? tr.show() : tr.hide();
 }
 
 /**
@@ -92,50 +88,29 @@ function MostraBaixes(obj) {
 function MostraTotAprovat(obj) {
 	// Seleccionem els que ho tenen tot aprovat
 	var tr = $('tr.Aprovat100');
-
-	if (obj.checked)
-		tr.show()
-	else
-		tr.hide();
+	(obj.checked) ? tr.show() : tr.hide();
 }
 
 /**
  * MostraGrup
  * Mostra/Oculta els alumnes d'un grup
  * @param obj Objecte que ha provocat la crida.
- * @param grup Grup en format numèric (1=A, 2=B, etc).
+ * @param grup Grup classe.
  */
 function MostraGrup(obj, grup) {
-	switch (grup) {
-		case 1: sGrup = 'A'; break;
-		case 2: sGrup = 'B'; break;
-		case 3: sGrup = 'C'; break;
-		default: sGrup = '';
-	}
-	var tr = $('tr.Grup'+sGrup);
-	if (obj.checked)
-		tr.show()
-	else
-		tr.hide();
+	var tr = $('tr.Grup'+grup);
+	(obj.checked) ? tr.show() : tr.hide();
 }
 
 /**
  * MostraTutoria
  * Mostra/Oculta els alumnes d'una tutoria
  * @param obj Objecte que ha provocat la crida.
- * @param tutoria Tutoria en format numèric (1=AB, 2=BC, etc).
+ * @param tutoria Grup tutoria.
  */
 function MostraTutoria(obj, tutoria) {
-	switch (tutoria) {
-		case 1: sTutoria = 'AB'; break;
-		case 2: sTutoria = 'BC'; break;
-		default: sTutoria = '';
-	}
-	var tr = $('tr.Tutoria'+sTutoria);
-	if (obj.checked)
-		tr.show()
-	else
-		tr.hide();
+	var tr = $('tr.Tutoria'+tutoria);
+	(obj.checked) ? tr.show() : tr.hide();
 }
 
 /**

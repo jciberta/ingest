@@ -61,6 +61,9 @@ if ($EstatAvaluacio != Avaluacio::Tancada)
 $Notes = new Notes($conn, $Usuari);
 $Notes->CarregaRegistre($CursId, $Nivell);
 
+$Grup = new GrupClasse($conn, $Usuari);
+$Tutoria = new GrupTutoria($conn, $Usuari);
+
 if (True) {
 	echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 	if ($Nivell == 2) {
@@ -77,11 +80,8 @@ if (True) {
 	else {
 		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
 		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-		echo '<input type="checkbox" name="chbGrupA" checked onclick="MostraGrup(this, 1);">Grup A &nbsp';
-		echo '<input type="checkbox" name="chbGrupB" checked onclick="MostraGrup(this, 2);">Grup B &nbsp';
-		echo '<input type="checkbox" name="chbGrupC" checked onclick="MostraGrup(this, 3);">Grup C &nbsp';
-		echo '<input type="checkbox" name="chbGrupAB" checked onclick="MostraTutoria(this, 1);">Tutoria AB &nbsp';
-		echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
+		echo $Grup->GeneraMostraGrup($CursId);
+		echo $Tutoria->GeneraMostraGrup($CursId);
 
 		// Notes de 1r d'alumnes de 1r
 		$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $EstatAvaluacio);

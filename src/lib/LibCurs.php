@@ -123,4 +123,142 @@ class Curs
 	}
 }
 
+/**
+ * Classe que encapsula les utilitats per al maneig dels grups-classe.
+ */
+class GrupClasse 
+{
+	/**
+	* Connexió a la base de dades.
+	* @var object
+	*/    
+	public $Connexio;
+
+	/**
+	* Usuari autenticat.
+	* @var object
+	*/    
+	public $Usuari;
+	
+	/**
+	* Registre de la base de dades que conté les dades d'una matrícula.
+	* @var array
+	*/    
+    private $Registre = [];
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 */
+	function __construct($con, $user) {
+		$this->Connexio = $con;
+		$this->Usuari = $user;
+	}
+	
+	/**
+	 * Carrega els diferents grups-classe d'un curs i els emmagatzema en l'atribut Registre.
+     * @param int $CursId Identificador del curs.
+	 */
+	public function Carrega(int $CursId) {
+		$SQL = " SELECT DISTINCT grup ".
+			" FROM MATRICULA M ".
+			" WHERE curs_id=$CursId ".
+			" ORDER BY grup ";	
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$row = $ResultSet->fetch_object();
+			while($row) {
+				if ($row->grup != '')
+					array_push($this->Registre, $row->grup);
+				$row = $ResultSet->fetch_object();
+			}
+		}
+	}
+	
+	/**
+	 * Genera els checkboxs per filtrar per grup.
+     * @param int $CursId Identificador del curs.
+	 * @return string Codi HTML del filtre.
+	 */
+	public function GeneraMostraGrup(int $CursId): string {
+		$Retorn = '';
+		$this->Carrega($CursId);
+		foreach ($this->Registre as $Grup) {
+			$Valor = '"'.$Grup.'"';	
+			$Retorn .= "<input type='checkbox' name='chbGrup$Grup' checked onclick='MostraGrup(this, $Valor);'>Grup $Grup &nbsp";
+		}
+		return $Retorn;
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig dels grups de tutoria.
+ */
+class GrupTutoria 
+{
+	/**
+	* Connexió a la base de dades.
+	* @var object
+	*/    
+	public $Connexio;
+
+	/**
+	* Usuari autenticat.
+	* @var object
+	*/    
+	public $Usuari;
+	
+	/**
+	* Registre de la base de dades que conté les dades d'una matrícula.
+	* @var array
+	*/    
+    private $Registre = [];
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 */
+	function __construct($con, $user) {
+		$this->Connexio = $con;
+		$this->Usuari = $user;
+	}
+
+	/**
+	 * Carrega els diferents grups de tutoria d'un curs i els emmagatzema en l'atribut Registre.
+     * @param int $CursId Identificador del curs.
+	 */
+	public function Carrega(int $CursId) {
+		$SQL = " SELECT DISTINCT grup_tutoria ".
+			" FROM MATRICULA M ".
+			" WHERE curs_id=$CursId ".
+			" ORDER BY grup_tutoria ";	
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$row = $ResultSet->fetch_object();
+			while($row) {
+				if ($row->grup_tutoria != '')
+					array_push($this->Registre, $row->grup_tutoria);
+				$row = $ResultSet->fetch_object();
+			}
+		}
+	}
+	
+	/**
+	 * Genera els checkboxs per filtrar per grup.
+     * @param int $CursId Identificador del curs.
+	 * @return string Codi HTML del filtre.
+	 */
+	public function GeneraMostraGrup(int $CursId): string {
+		$Retorn = '';
+		$this->Carrega($CursId);
+		foreach ($this->Registre as $GrupTutoria) {
+			$Valor = '"'.$GrupTutoria.'"';	
+			$Retorn .= "<input type='checkbox' name='chbGrup$GrupTutoria' checked onclick='MostraTutoria(this, $Valor);'>Tutoria $GrupTutoria &nbsp";
+		}
+		return $Retorn;
+	}
+}
+
 ?>
