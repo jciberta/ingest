@@ -728,6 +728,62 @@ class ImportaUsuaris extends Importa {
 } 
 
 /**
+ * Classe ImportaPasswords.
+ *
+ * Classe per a la importació de les contrasenyes d'iEduca.
+ * Només s'importen les contrasenyes dels alumnes i dels pares.
+ */
+class ImportaPasswords extends Importa {
+
+	/**
+	 * Importa una línia la matrícula.
+     * @param array $Linia Línia CSV a importar.
+	 */
+	private function ImportaLinia(array $Linia) {
+		$aLinia = explode(",", $Linia[0]);
+		$n = count($aLinia);
+		if ($n < 4) return;
+
+		$sDNI = CodificaUTF8($aLinia[0]);
+		$sNom = CodificaUTF8($aLinia[1]);
+		$sPwd = CodificaUTF8($aLinia[4]);
+		
+		$SQL = ' UPDATE USUARI SET '.
+			'   password='.TextAMySQL(password_hash($sPwd, PASSWORD_DEFAULT)).', '.
+			'   usuari_bloquejat=0, '.
+			'   imposa_canvi_password=1 '.
+			' WHERE document='.TextAMySQL($sDNI).' AND (es_alumne=1 OR es_pare=1)';
+
+		if (!$this->Connexio->query($SQL))
+			throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
+	
+		$mar = mysqli_affected_rows($this->Connexio);
+		if ($mar > 0) {
+			print $sDNI.' '.$sNom.": contrasenya actualitzada ($sPwd).<br>";	
+			if (Config::Debug)
+				print '      '.$SQL.'<BR>';
+		}
+	}
+	
+	/**
+	 * Importa la matrícula.
+     * @param string $Fitxer Fitxer CSV a importar.
+	 */
+	public function Importa(string $Fitxer) {
+		if (($handle = fopen($Fitxer, "r")) !== FALSE) {
+			echo '<pre>';
+			while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+				$this->ImportaLinia($data);
+			}
+			fclose($handle);
+			echo '</pre>';
+		}
+		echo "Importació realitzada amb èxit.";		
+	}
+}
+
+
+/**
  * Classe ImportaMatricula.
  *
  * Classe per a la importació de les matrícules.

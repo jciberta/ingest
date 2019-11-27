@@ -73,4 +73,29 @@ class Usuari
 	}	
 }
 
+/**
+ * Classe que encapsula les utilitats per al maneig dels alumnes.
+ */
+class Alumne extends Usuari
+{
+	/**
+	 * Obté l'identificador de la matrícula activa d'un alumne.
+	 * @param $AlumneId Identificador de l'alumne
+	 * @return integer Identificador de la matrícula.
+	 */
+	public function ObteMatriculaActiva(int $AlumneId): int {
+		$Retorn = -1;
+		$SQL = ' SELECT matricula_id FROM MATRICULA M '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' WHERE alumne_id='.$AlumneId.' AND actual=1 ';
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_object();
+			$Retorn = $row->matricula_id;
+		}
+		return $Retorn;
+	}
+}
+
 ?>

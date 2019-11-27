@@ -49,8 +49,8 @@ else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
-		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		//define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
+		define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('INGEST_DATA', '/var/www/ingest-data');

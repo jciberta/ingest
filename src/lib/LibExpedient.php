@@ -61,14 +61,15 @@ class Expedient
 
 	/**
 	 * Indica si el butlletí de notes és visible o no.
-	 * @param integer $AlumneId Id de l'alumne.
+	 * @param integer $MatriculaId Id de la matrícula.
 	 * @return boolena Cert si el butlletí de notes és visible.
 	 */
-	public function EsVisibleButlleti(int $alumne): bool {
+	public function EsVisibleButlleti(int $MatriculaId): bool {
 		$SQL = ' SELECT * FROM MATRICULA M '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' WHERE C.finalitzat=0 '.
-			' AND M.alumne_id='.$alumne;
+			' AND M.matricula_id='.$MatriculaId;
+print "<hr>".$SQL."<hr>";
 		$bRetorn = False;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {

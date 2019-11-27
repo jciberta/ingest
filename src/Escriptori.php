@@ -13,6 +13,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -78,21 +79,32 @@ else if ($Usuari->es_professor) {
 }
 else if ($Usuari->es_alumne) {
 	CreaIniciHTML($Usuari, '');
-	echo '<div class="card-columns" style="column-count:6">';
-	echo '  <div class="card">';
-	echo '    <div class="card-body">';
-	echo '      <h5 class="card-title">Expedient</h5>';
-	echo '      <p class="card-text">Visualitza el teu expedient.</p>';
-	echo '      <a href="MatriculaAlumne.php?accio=MostraExpedient&AlumneId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-	echo '    </div>';
-	echo '  </div>';
+	$Alumne	= new Alumne($conn, $Usuari);
+	$MatriculaId = $Alumne->ObteMatriculaActiva($Usuari->usuari_id);
+	if ($MatriculaId > 0) {
+		echo '<div class="card-columns" style="column-count:6">';
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Expedient</h5>';
+		echo '      <p class="card-text">Visualitza el teu expedient.</p>';
+		echo '      <a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+	}
 }
 else if ($Usuari->es_pare) {
 	// Els pares només poden veure el PDF de les notes dels seus fills
 	CreaIniciHTML($Usuari, '');
-	$SQL = ' SELECT * FROM USUARI '.
-		' WHERE (pare_id='.$Usuari->usuari_id.' OR mare_id='.$Usuari->usuari_id.') '.
-		' AND (Edat(data_naixement)<18 OR permet_tutor=1) ';
+	$SQL = ' SELECT '.
+		' 	U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+		'   M.matricula_id AS MatriculaId'.
+		' FROM USUARI U '.
+		' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+		' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+		' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+		' WHERE (U.pare_id='.$Usuari->usuari_id.' OR U.mare_id='.$Usuari->usuari_id.') '.
+		' AND (Edat(U.data_naixement)<18 OR U.permet_tutor=1) AND AA.actual=1 ';
+//print $SQL;
 	echo '<div class="card-columns" style="column-count:6">';
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
@@ -101,9 +113,9 @@ else if ($Usuari->es_pare) {
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Expedient</h5>';
-			$NomComplet = trim(trim($row['nom']).' '.trim($row['cognom1']).' '.trim($row['cognom2']));
+			$NomComplet = trim(trim($row['NomAlumne']).' '.trim($row['Cognom1Alumne']).' '.trim($row['Cognom2Alumne']));
 			echo '      <p class="card-text">'.utf8_encode($NomComplet).'</p>';
-			echo '      <a href="ExpedientPDF.php?AlumneId='.$row['usuari_id'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '      <a href="ExpedientPDF.php?MatriculaId='.$row['MatriculaId'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
 			echo '    </div>';
 			echo '  </div>';
 			$row = $ResultSet->fetch_assoc();

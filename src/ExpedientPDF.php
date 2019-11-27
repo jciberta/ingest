@@ -46,7 +46,13 @@ else {
 //		$alumne = -1;
 
 	$Matricula = new Matricula($conn, $Usuari);
-	$alumne = $Matricula->ObteAlumne($MatriculaId);
+	$Matricula->Carrega($MatriculaId);
+	$alumne = $Matricula->ObteAlumne();
+print "<br>";	
+print "<br>";	
+print "<br>";	
+print "alumne: $alumne<br>";	
+print "MatriculaId: $MatriculaId<br>";	
 
 	// Si intenta manipular l'usuari des de la URL -> al carrer!
 	if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
@@ -56,12 +62,13 @@ else {
 	if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor 
 		&& !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 		header("Location: Surt.php");
+//print "Usuari->es_pare: $Usuari->es_pare, objUsuari->EsProgenitor($alumne): $objUsuari->EsProgenitor($alumne)<br>";
 	
 	// L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 	$ButlletiVisible = True;
 	if ($Usuari->es_alumne || $Usuari->es_pare) {
 		$Expedient = new Expedient($conn);
-		$ButlletiVisible = $Expedient->EsVisibleButlleti($alumne);
+		$ButlletiVisible = $Expedient->EsVisibleButlleti($MatriculaId);
 	}
 	
 	if ($ButlletiVisible) {

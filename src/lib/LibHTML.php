@@ -140,6 +140,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			echo '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
 			echo '					<div class="dropdown-divider"></div>';
 			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
+			echo '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
 			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
 			echo '				</div>';
 			echo '			</li>';
