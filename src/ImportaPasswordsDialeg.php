@@ -23,7 +23,8 @@ if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 
 CreaIniciHTML($Usuari, "Importació de contrasenyes iEduca");
 
-echo "<P><font color=blue>El fitxer a importar ha d'estar en UTF-8.</font></P>";
+echo "<P><font color=blue>El fitxer a importar ha d'estar en UTF-8.</font><BR>";
+echo "Només s'importaran els alumnes i pares, se'ls desbloquejarà i s'imposarà una nova contrasenya.</P>";
 
 echo '<form action="ImportaPasswords.php" method="post" enctype="multipart/form-data">';
 echo '	<div class="form-group">';

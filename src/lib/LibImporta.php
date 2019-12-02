@@ -734,6 +734,11 @@ class ImportaUsuaris extends Importa {
  * Només s'importen les contrasenyes dels alumnes i dels pares.
  */
 class ImportaPasswords extends Importa {
+	/**
+	* Número de línia.
+	* @var int
+	*/    
+	private $NumeroLinia = 1;
 
 	/**
 	 * Importa una línia la matrícula.
@@ -754,15 +759,16 @@ class ImportaPasswords extends Importa {
 			'   imposa_canvi_password=1 '.
 			' WHERE document='.TextAMySQL($sDNI).' AND (es_alumne=1 OR es_pare=1)';
 
-		if (!$this->Connexio->query($SQL))
-			throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
-	
-		$mar = mysqli_affected_rows($this->Connexio);
-		if ($mar > 0) {
-			print $sDNI.' '.$sNom.": contrasenya actualitzada ($sPwd).<br>";	
-			if (Config::Debug)
-				print '      '.$SQL.'<BR>';
-		}
+
+		// El document és molt llarg, s'ha de copiar les SQL directament al MySQL.
+		//if (!$this->Connexio->query($SQL))
+		//	throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
+		//$mar = mysqli_affected_rows($this->Connexio);
+		//if ($mar > 0) {
+		//	print $sDNI.' '.$sNom.": contrasenya actualitzada ($sPwd).<br>";	
+		//}
+		//print $this->NumeroLinia++.':  '.$SQL.'<BR>';
+		print ' '.$SQL.'<BR>';
 	}
 	
 	/**

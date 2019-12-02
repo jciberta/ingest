@@ -69,7 +69,7 @@ class Expedient
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' WHERE C.finalitzat=0 '.
 			' AND M.matricula_id='.$MatriculaId;
-print "<hr>".$SQL."<hr>";
+//print "<hr>".$SQL."<hr>";
 		$bRetorn = False;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
