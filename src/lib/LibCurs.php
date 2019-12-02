@@ -85,7 +85,8 @@ class Curs
 	 * Genera el llistat de cursos.
 	 */
 	function EscriuFormulariRecera() {
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, AA.any_inici, AA.any_final, '.
+		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
+			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
 			'     WHEN C.finalitzat = 1 THEN "Tancada" '.
 			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
@@ -94,7 +95,8 @@ class Curs
 			' CASE '.
 			'     WHEN C.avaluacio = "ORD" THEN C.trimestre '.
 			'     WHEN C.avaluacio = "EXT" THEN NULL '.
-			' END AS trimestre '.
+			' END AS trimestre, '.
+			' butlleti_visible '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) ';
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
@@ -103,8 +105,9 @@ class Curs
 		$frm->SQL = utf8_decode($SQL);
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
-		$frm->Camps = 'codi, NomCurs, nivell, any_inici, any_final, avaluacio, trimestre';
-		$frm->Descripcions = 'Codi, Nom, Nivell, Any inici, Any final, Avaluació, Trimestre';
+		$frm->Camps = 'codi, NomCurs, nivell, Any, avaluacio, trimestre';
+		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
+		$frm->AfegeixOpcioAJAX('Butlletí', '', 'curs_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'butlleti_visible');
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
