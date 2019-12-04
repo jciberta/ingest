@@ -222,8 +222,18 @@ function NotaKeyDown(obj, event) {
 		KeyCode.KEY_END,
 		KeyCode.KEY_F5
 	];
+	const TECLES_NOTA = [
+		KeyCode.KEY_0, KeyCode.KEY_1, KeyCode.KEY_2, KeyCode.KEY_3, KeyCode.KEY_4, KeyCode.KEY_5, KeyCode.KEY_6, KeyCode.KEY_7, KeyCode.KEY_8, KeyCode.KEY_9, 
+		KeyCode.KEY_NUMPAD0, KeyCode.KEY_NUMPAD1, KeyCode.KEY_NUMPAD2, KeyCode.KEY_NUMPAD3, KeyCode.KEY_NUMPAD4, KeyCode.KEY_NUMPAD5, KeyCode.KEY_NUMPAD6, KeyCode.KEY_NUMPAD7, KeyCode.KEY_NUMPAD8, KeyCode.KEY_NUMPAD9,
+		KeyCode.KEY_A, KeyCode.KEY_N, KeyCode.KEY_P
+	];
+	const TECLES_NOTA_NUMERICA = [
+		KeyCode.KEY_0, KeyCode.KEY_1, KeyCode.KEY_2, KeyCode.KEY_3, KeyCode.KEY_4, KeyCode.KEY_5, KeyCode.KEY_6, KeyCode.KEY_7, KeyCode.KEY_8, KeyCode.KEY_9, 
+		KeyCode.KEY_NUMPAD0, KeyCode.KEY_NUMPAD1, KeyCode.KEY_NUMPAD2, KeyCode.KEY_NUMPAD3, KeyCode.KEY_NUMPAD4, KeyCode.KEY_NUMPAD5, KeyCode.KEY_NUMPAD6, KeyCode.KEY_NUMPAD7, KeyCode.KEY_NUMPAD8, KeyCode.KEY_NUMPAD9
+	];
 	
 	var data = (obj.id).split('_');
+console.log('Valor anterior: '+obj.value);
 console.log(event.keyCode);
 	if ((event.keyCode === KeyCode.KEY_RETURN) || (event.keyCode === KeyCode.KEY_DOWN)) {
 		// Avall
@@ -282,6 +292,17 @@ console.log(event.keyCode);
 	}
 	else if (TECLES_PERMESES.indexOf(event.keyCode) === -1) {
 		event.preventDefault();
+	}
+	else if (TECLES_NOTA.indexOf(event.keyCode) !== -1) {
+		// A dins la casella només es permetes les combinacions: 1, .. 9, 10, A, NA, NP
+		sValorAnterior = (obj.value).toUpperCase();
+		var bPermetreTecla = (sValorAnterior == '') ||
+			((sValorAnterior == '1') && (event.keyCode === KeyCode.KEY_0)) ||
+			((sValorAnterior == 'N') && ((event.keyCode === KeyCode.KEY_A) || (event.keyCode === KeyCode.KEY_P)));
+		if ((!bPermetreTecla) || 
+			((event.keyCode === KeyCode.KEY_P) && (sValorAnterior == '')) || 
+			((event.keyCode === KeyCode.KEY_0) && (sValorAnterior == '')))
+			event.preventDefault();
 	}
 }
 
