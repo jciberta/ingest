@@ -367,7 +367,8 @@ class Notes
 	 * @return string Codi HTML de la cel·la.
 	 */
 	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio, $Class = ''): string {
-		$style = "text-align:center;text-transform:uppercase";
+//		$style = "text-align:center;text-transform:uppercase";
+		$style = '';
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
 
@@ -421,7 +422,7 @@ class Notes
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 		return "<TD $Class width=2>"
-			."<input type=text ".$Deshabilitat." style='".$style."'".
+			."<input class='nota' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip.
 			" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";

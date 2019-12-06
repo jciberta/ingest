@@ -2,25 +2,37 @@
  * InGest.css
  */
 
+
+/* 
+ * Estètica de la cel·la de la nota
+*/
+
+.nota {
+	border: 1px solid #A9A9A9;
+	margin: 1px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
 /* 
  * Taula amb scroll 
 https://jsfiddle.net/bootstrapious/dmp7tr4g
 */
 
 .table-fixed {
-  height: 600px; 
+	height: 600px; 
 }
 
 .table-fixed tbody {
-  overflow-y: scroll;
-  height: 75%;
-  width: 98%;
-  position: absolute;
+	overflow-y: scroll;
+	height: 75%;
+	width: 98%;
+	position: absolute;
 }
 
 .table-fixed thead,
 .table-fixed tr {
-  width: 100%;
-  display: inline-table;
-  table-layout: fixed; 
+	width: 100%;
+	display: inline-table;
+	table-layout: fixed; 
 }
