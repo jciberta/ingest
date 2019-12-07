@@ -140,7 +140,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			echo '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
 			echo '					<div class="dropdown-divider"></div>';
 			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
-			echo '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
+//			echo '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
 			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
 			echo '				</div>';
 			echo '			</li>';
@@ -456,4 +456,56 @@ function PaginaHTMLMissatge($Titol, $Missatge)
 	echo '</BODY>';	
 }
  
- ?>
+/**
+ * Classe que encapsula les utilitats per a la pàgina d'entrada.
+ */
+class Portal
+{
+	/**
+	* Codi per incloure fitxers JavaScript.
+	* @var string
+	*/    
+    public $JavaScript = ''; 
+
+	/**
+	 * Escriu la capçalera de la pàgina web.
+	 */				
+	public function EscriuCapcalera() {
+		echo '<html>';
+		echo '<head>';
+		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+		echo '	<script src="vendor/jquery.min.js"></script>';
+		echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+		echo $this->JavaScript;
+		echo '</head>';
+		echo '<body>';
+		echo '<div class="container">';
+		echo '	<div class="header clearfix">';
+		echo '		<nav>';
+		echo '		<ul class="nav nav-pills float-right">';
+		echo '			<li class="nav-item"><a class="nav-link" href="http://inspalamos.cat" target="_blank">Web</a></li>';
+		echo '			<li class="nav-item"><a class="nav-link" href="https://inspalamos.ieduca.com" target="_blank">iEduca</a></li>';
+		echo '		</ul>';
+		echo '		</nav>';
+		echo '	</div>';
+	}
+
+	/**
+	 * Escriu el peu de la pàgina web.
+	 */				
+	public function EscriuPeu(bool $bRecuperaContrasenya = True) {
+		echo '	<footer class="footer">';
+		echo '	<p style="text-align:left;">Institut de Palamós';
+		if ($bRecuperaContrasenya)
+			echo '		<span style="float:right;"><a href="RecuperaPassword.html">Recupera contrasenya</a></span>';
+		echo '	</p>';
+		echo '	</footer>';
+		echo '</div>';
+		echo "<div id=debug></div>";
+		echo '</body> ';
+		echo '</html>';
+	}
+}
+
+?>

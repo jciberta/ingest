@@ -8,6 +8,28 @@
  */
 
 /**
+ * Comprova que els camps INPUT required tinguin dades
+ * @param string FormId Id del formulari.
+ * @return object Null si tots els camps required tenen dades, sinó el primer INPUT que no en té.
+ */
+function ComprovaCamps(FormId) { 
+	Retorn = null;
+	var frm = document.getElementById(FormId);
+console.dir(frm);	
+	for (i=0; i<frm.length && Retorn==null; i++) {
+//console.dir(frm.childNodes[i]);	
+		var obj = frm[i];
+		if (obj.tagName == 'INPUT') {
+console.dir(obj);	
+console.log('INPUT');
+			if (obj.required &&(obj.value == ""))
+				Retorn = obj;
+		}
+	}
+	return Retorn;
+}
+
+/**
  * ActualitzaTaula
  * @param element Botó que ha fet la crida.
  */
