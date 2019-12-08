@@ -11,6 +11,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -24,10 +25,17 @@ if ($conn->connect_error)
 // Obtenció de l'identificador, sinó registre nou.
 $Id = empty($_GET) ? -1 : $_GET['Id'];
 
+// Usuaris que poden veure la fitxa.
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
 
+// El tutor no pot crear nous usuaris.
 if ($Usuari->es_professor && $Id == -1)
+	header("Location: Surt.php");
+
+// Només poden veure la fitxa els tutors d'aquell alumne
+$Professor = new Professor($conn, $Usuari);
+if ($Usuari->es_professor && !$Professor->EsTutorAlumne($Id))
 	header("Location: Surt.php");
 
 $frm = new FormFitxa($conn, $Usuari);

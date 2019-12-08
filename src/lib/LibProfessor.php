@@ -88,12 +88,32 @@ class Professor extends Usuari
 	 */
 	function CarregaTutor(int $CursId) {
 		$SQL = ' SELECT * FROM TUTOR '.
-			' WHERE professor_id='.$this->Usuari->usuari_id .
+			' WHERE professor_id='.$this->Usuari->usuari_id.
 			' AND curs_id='.$CursId;
 		$ResultSet = $this->Connexio->query($SQL);
 		$bRetorn = ($ResultSet->num_rows > 0);
 		$ResultSet->close();
 		$this->Tutor = $bRetorn;
+	}
+	
+	/**
+	 * Comprova si és tutor d'un alumne.
+	 * @param integer $AlumneId Identificador de l'alumne.
+	 * @returns boolean Cert si és tutor de l'alumne.
+	 */
+	function EsTutorAlumne(int $AlumneId): bool {
+		$bRetorn = False;
+		$SQL = ' SELECT * FROM MATRICULA M '.
+			' LEFT JOIN  CURS C ON (M.curs_id=C.curs_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+			' LEFT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
+			' WHERE AA.actual=1 '.
+			' AND alumne_id='.$AlumneId.
+			' AND professor_id='.$this->Usuari->usuari_id;
+		$ResultSet = $this->Connexio->query($SQL);
+		$bRetorn = ($ResultSet->num_rows > 0);
+		$ResultSet->close();
+		return $bRetorn;
 	}
 }
 
