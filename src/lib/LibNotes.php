@@ -197,6 +197,11 @@ class Notes
 	*/    
 	public $Registre2 = NULL;
 
+	/**
+	* Identificador del curs.
+	* @var object
+	*/    
+	private $CursId = -1;
 
 	/**
 	 * Constructor de l'objecte.
@@ -220,7 +225,7 @@ class Notes
 	 * @return void.
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
-
+		
 //print_r($Notes);
 
 		// Formulari amb les notes
@@ -315,9 +320,14 @@ class Notes
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
 		$Retorn = "";
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
+		$AlumneId = $row["AlumneId"];
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 //		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
-		$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
+
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
+			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'><a href='UsuariFitxa.php?Id=$AlumneId'>$NomAlumne</a></TD>";
+		else
+			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
@@ -367,7 +377,7 @@ class Notes
 	 * @return string Codi HTML de la cel·la.
 	 */
 	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio, $Class = ''): string {
-//		$style = "text-align:center;text-transform:uppercase";
+		//$style = "text-align:center;text-transform:uppercase;border:1px solid #A9A9A9;margin:1px;";
 		$style = '';
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
@@ -595,14 +605,15 @@ class Notes
 	}
 	
 	/**
-	 * Carrega el registre.
+	 * Carrega el registre amb les notes dels curs i nivell.
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 */				
 	public function CarregaRegistre($CursId, $Nivell) {
+		$this->$CursId = $CursId;
+		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
 		$ResultSet = $this->Connexio->query($SQL);
-		
 		
 //print_r($ResultSet);	
 

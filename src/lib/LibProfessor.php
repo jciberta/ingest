@@ -18,10 +18,15 @@ class Professor extends Usuari
 {
 	/**
 	* UF Assignades.
-	* @access public 
 	* @var array
 	*/    
 	public $UFAssignades = [];
+
+	/**
+	* És tutor.
+	* @var boolean
+	*/    
+	public $Tutor = False;
 
 	/**
 	 * Carrega les UF assignades en un array.
@@ -54,7 +59,7 @@ class Professor extends Usuari
 	 * @param integer $Nivell Nivell del cicle.
 	 * @returns boolean Cert si té alguna UF en un determinat cicle i nivell.
 	 */
-	function TeUFEnCicleNivell($Cicle, $Nivell) {
+	function TeUFEnCicleNivell(int $Cicle, int $Nivell): bool {
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
 			if (($this->UFAssignades[$i]->cicle_formatiu_id == $Cicle) && ($this->UFAssignades[$i]->nivell == $Nivell))
@@ -68,13 +73,27 @@ class Professor extends Usuari
 	 * @param integer $UF Identificador de la UF.
 	 * @returns boolean Cert si té assignada la UF.
 	 */
-	function TeUF($UF) {
+	function TeUF(int $UF): bool {
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
 			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
 				$bRetorn = True;
 		}
 		return $bRetorn;
+	}
+	
+	/**
+	 * Carrega si és tutor en un curs.
+	 * @param integer $CursId Identificador del curs.
+	 */
+	function CarregaTutor(int $CursId) {
+		$SQL = ' SELECT * FROM TUTOR '.
+			' WHERE professor_id='.$this->Usuari->usuari_id .
+			' AND curs_id='.$CursId;
+		$ResultSet = $this->Connexio->query($SQL);
+		$bRetorn = ($ResultSet->num_rows > 0);
+		$ResultSet->close();
+		$this->Tutor = $bRetorn;
 	}
 }
 

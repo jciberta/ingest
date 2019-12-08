@@ -55,7 +55,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
 //	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
-	echo '	<link rel="stylesheet" href="css/InGest.css?v1.0">';
+	echo '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
 	if ($bSaga)
 		echo '	<link rel="stylesheet" href="css/saga.css">';
 	echo '	<script src="vendor/jquery.min.js"></script>';

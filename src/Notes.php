@@ -40,6 +40,7 @@ $Professor = new Professor($conn, $Usuari);
 $Professor->CarregaUFAssignades();
 if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
+$Professor->CarregaTutor($CursId);
 
 $cf = new CicleFormatiu($conn);
 CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
