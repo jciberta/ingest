@@ -37,7 +37,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		}
 		print $Retorn;
 	}
-	if ($_REQUEST['accio'] == 'RecuperaPasswordAlumne') {
+	else if ($_REQUEST['accio'] == 'RecuperaPasswordAlumne') {
 		$dni = $_REQUEST['dni'];
 		$data_naixement = $_REQUEST['data_naixement'];
 		$telefon = $_REQUEST['telefon'];

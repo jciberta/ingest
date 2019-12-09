@@ -17,8 +17,11 @@ console.log('RecuperaPasswordTutor');
 	var data_naixement = document.getElementById('data_naixement').value;
 
 	var camps = ComprovaCamps('RecuperaPassword');
-	if (camps != null)
+	if (camps != null) {
+		$('#MissatgeCorrecte').hide();
+		$('#MissatgeError').hide();
 		$('#MissatgeFaltenDades').show();
+	}
 	else
 		$.ajax( {
 			type: 'POST',
@@ -35,9 +38,14 @@ console.log('RecuperaPasswordTutor');
 					$('#MissatgeCorrecte').html("<p>La contrasenya per a l'usuari <b>"+dni_tutor+"</b> és <b>"+data+"</b></p>"+
 						"<hr><p>Retorna a la <a href='index.php' class='alert-link'>pàgina principal</a>.</p>");
 					$('#MissatgeCorrecte').show();
+					$('#MissatgeError').hide();
+					$('#MissatgeFaltenDades').hide();
 				}
-				else 
+				else {
+					$('#MissatgeCorrecte').hide();
 					$('#MissatgeError').show();
+					$('#MissatgeFaltenDades').hide();
+				}
 			}, 
 			error: function(data) {
 				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
@@ -56,9 +64,14 @@ console.log('RecuperaPasswordAlumne');
 	var municipi_naixement = document.getElementById('municipi_naixement').value;
 
 	var camps = ComprovaCamps('RecuperaPassword');
-	if (camps != null)
+	if (camps != null) {
+		$('#MissatgeCorrecte').hide();
+		$('#MissatgeError').hide();
 		$('#MissatgeFaltenDades').show();
+	}
 	else if (telefon.length != 9) {
+		$('#MissatgeCorrecte').hide();
+		$('#MissatgeError').hide();
 		$('#MissatgeFaltenDades').html('El telèfon ha de tenir 9 dígits.');
 		$('#MissatgeFaltenDades').show();
 	}
@@ -79,9 +92,13 @@ console.log('RecuperaPasswordAlumne');
 					$('#MissatgeCorrecte').html("<p>La contrasenya per a l'usuari <b>"+dni+"</b> és <b>"+data+"</b></p>"+
 						"<hr><p>Retorna a la <a href='index.php' class='alert-link'>pàgina principal</a>.</p>");
 					$('#MissatgeCorrecte').show();
+					$('#MissatgeError').hide();
+					$('#MissatgeFaltenDades').hide();
 				}
 				else 
+					$('#MissatgeCorrecte').hide();
 					$('#MissatgeError').show();
+					$('#MissatgeFaltenDades').hide();
 			}, 
 			error: function(data) {
 				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
