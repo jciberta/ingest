@@ -129,9 +129,9 @@ class Expedient
 				$Qualificacions[$i]->UF[$j]->Nom = utf8_encode($row["NomUF"]);
 				$Qualificacions[$i]->UF[$j]->Hores = utf8_encode($row["HoresUF"]);
 				if ($row["Convocatoria"] == 0)
-					$Nota = 'A) '.NumeroANota(UltimaNota($row));
+					$Nota = 'A) '.NumeroANotaText(UltimaNota($row));
 				else {
-					$Nota = NumeroANota($row["nota".$row["Convocatoria"]]);
+					$Nota = NumeroANotaText($row["nota".$row["Convocatoria"]]);
 					if ($row["orientativa"])
 						$Nota .= ' *';
 				}

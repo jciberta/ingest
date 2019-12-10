@@ -63,6 +63,10 @@ console.log('RecuperaPasswordAlumne');
 	var telefon = document.getElementById('telefon').value;
 	var municipi_naixement = document.getElementById('municipi_naixement').value;
 
+//	$('#MissatgeCorrecte').hide();
+//	$('#MissatgeError').hide();
+//	$('#MissatgeFaltenDades').hide();
+
 	var camps = ComprovaCamps('RecuperaPassword');
 	if (camps != null) {
 		$('#MissatgeCorrecte').hide();
@@ -95,10 +99,11 @@ console.log('RecuperaPasswordAlumne');
 					$('#MissatgeError').hide();
 					$('#MissatgeFaltenDades').hide();
 				}
-				else 
+				else {
 					$('#MissatgeCorrecte').hide();
 					$('#MissatgeError').show();
 					$('#MissatgeFaltenDades').hide();
+				}
 			}, 
 			error: function(data) {
 				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));

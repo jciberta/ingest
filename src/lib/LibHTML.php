@@ -144,6 +144,14 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
 			echo '				</div>';
 			echo '			</li>';
+
+			// Menú Informes
+			echo '			<li class="nav-item dropdown">';
+			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddInformes" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Informes</a>';
+			echo '				<div class="dropdown-menu" aria-labelledby="ddInformes">';
+			echo '              	<a class="dropdown-item" href="UsuariRecerca.php?accio=UltimLogin">UltimLogin</a>';
+			echo '				</div>';
+			echo '			</li>';
 		}	
 		echo '		</ul>';
 	

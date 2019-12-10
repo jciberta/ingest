@@ -114,6 +114,28 @@ function NumeroANota($Valor)
 }
 
 /**
+ * Transforma una nota numèrica al seu valor de text sencer. Valors numèrics:
+ *   - 1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
+ *   - NP: -1, A: 100, NA: -100.
+ *   - NULL passa a ser la cadena nul·la.
+ *
+ * @param int $Valor Valor numèric o NULL.
+ * @param boolean $bFemeni indica si el text ha de ser en femení.
+ * @return string Retorna la nota tal com s'entra a l'aplicació (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, No presentat, Apte, No apte).
+ */
+function NumeroANotaText($Valor, bool $bFemeni = False)
+{
+	if ($Valor == -1) 
+		return $bFemeni ? 'No presentada' : 'No presentat';
+	else if ($Valor == 100) 
+		return $bFemeni ? 'Apta' : 'Apte';
+	else if ($Valor == -100) 
+		return $bFemeni ? 'No apta' : 'No apte';
+	else
+		return $Valor;
+}
+
+/**
  * UltimaNota
  *
  * Donat un registre de notes, torna la nota de la última convocatòria.

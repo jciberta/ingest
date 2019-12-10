@@ -10,8 +10,6 @@
  */
 
 require_once('../Config.php');
-//require_once(ROOT.'/lib/LibForms.php');
-//require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibPassword.php');
 
@@ -47,7 +45,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$dni = preg_replace('/[^a-zA-Z0-9]/', '', $dni);
 		$data_naixement = preg_replace('/[^\/0-9]/', '', $data_naixement);
 		$telefon = preg_replace('/[^0-9]/', '', $telefon);
-		$municipi_naixement = preg_replace('/[^a-zA-Z0-9]/', '', $municipi_naixement);
+		$municipi_naixement = preg_replace('/[^a-zA-Z0-9àèìòùáéíóúÀÈÌÒÙÁÉÍÓÚïÏüÜçÇñÑ,\-\'\s]/', '', $municipi_naixement);
 		
 		$Retorn = '';
 		if (ComprovaData($data_naixement) && strlen($telefon)==9) {

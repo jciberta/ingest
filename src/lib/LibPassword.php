@@ -19,7 +19,6 @@ class RecuperaPassword
 {
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
@@ -38,8 +37,8 @@ class RecuperaPassword
 		$this->Connexio = $con;
 		$this->Portal = new Portal();
 		$this->Portal->JavaScript = 
-			'<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>'.
-			'<script language="javascript" src="js/Password.js?v1.0" type="text/javascript"></script>';
+			'<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>'.
+			'<script language="javascript" src="js/Password.js?v1.4" type="text/javascript"></script>';
 	}	
 
 	/**
@@ -140,7 +139,7 @@ class RecuperaPasswordTutor extends RecuperaPassword
 		echo '              <a class="btn btn-primary active" role="button" onclick="RecuperaPasswordTutor();">Recupera</a>';
 		echo '				<br>';
 		echo '				<br>';
-		echo "			<input type='hidden' id='dni_tutor' value='$DNITutor'>";
+		echo "				<input type='hidden' id='dni_tutor' value='$DNITutor'>";
 		echo '			</form>';
 		echo '		</div>';
 	}
@@ -189,7 +188,7 @@ class RecuperaPasswordAlumne extends RecuperaPassword
 		echo '				<h3 class="d-flex justify-content-center">Recupera contrasenya</h3>';
 		echo '				<br><br>';
 		echo '				<div>';
-		echo '				Ompliu les següents dades personal:';
+		echo '				Ompliu les següents dades personals:';
 		echo '				</div>';
 		echo '				<br><br>';
 		echo '				<table>';
@@ -240,7 +239,7 @@ class RecuperaPasswordAlumne extends RecuperaPassword
 			" AND UPPER(document)='$DNI' ".
 			" AND data_naixement=".DataAMySQL($DataNaixement).
 			" AND telefon LIKE '%$Telefon%' ".
-			" AND UPPER(municipi_naixement)='$MunicipiNaixement' ";
+			" AND UPPER(municipi_naixement)=".TextAMySQL($MunicipiNaixement);
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$Retorn = $this->GeneraPassword();

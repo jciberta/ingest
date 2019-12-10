@@ -15,13 +15,13 @@
 function ComprovaCamps(FormId) { 
 	Retorn = null;
 	var frm = document.getElementById(FormId);
-console.dir(frm);	
+//console.dir(frm);	
 	for (i=0; i<frm.length && Retorn==null; i++) {
 //console.dir(frm.childNodes[i]);	
 		var obj = frm[i];
 		if (obj.tagName == 'INPUT') {
-console.dir(obj);	
-console.log('INPUT');
+//console.dir(obj);	
+//console.log('INPUT');
 			if (obj.required &&(obj.value == ""))
 				Retorn = obj;
 		}
