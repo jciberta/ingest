@@ -21,7 +21,6 @@ class Expedient
 {
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
@@ -105,7 +104,7 @@ class Expedient
 			$NomAlumne = $row["NomAlumne"];
 			$Cognom1Alumne = $row["Cognom1Alumne"];
 			$Cognom2Alumne = $row["Cognom2Alumne"];
-			$pdf->NomComplet = trim($NomAlumne . ' ' . $Cognom1Alumne . ', ' . $Cognom2Alumne);
+			$pdf->NomComplet = trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne;
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
@@ -237,35 +236,30 @@ class QualificacionsPDF extends DocumentPDF
 {
 	/**
 	* Nom complet de l'alumne.
-	* @access public 
 	* @var string
 	*/    
 	public $NomComplet = '';
 
 	/**
 	* DNI l'alumne.
-	* @access public 
 	* @var string
 	*/    
 	public $DNI = '';
 
 	/**
 	* Nom del cicle formatiu.
-	* @access public 
 	* @var string
 	*/    
 	public $CicleFormatiu = '';
 
 	/**
 	* Grup del curs de l'alumne.
-	* @access public 
 	* @var string
 	*/    
 	public $Grup = '';
 
 	/**
 	* Avaluació.
-	* @access public 
 	* @var string
 	*/    
 	public $Avaluacio = '';
