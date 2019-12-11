@@ -297,7 +297,7 @@ console.log(event.keyCode);
 		// A dins la casella només es permetes les combinacions: 1, .. 9, 10, A, NA, NP
 		sValorAnterior = (obj.value).toUpperCase();
 		var bPermetreTecla = (sValorAnterior == '') ||
-			((sValorAnterior == '1') && (event.keyCode === KeyCode.KEY_0)) ||
+			((sValorAnterior == '1') && ((event.keyCode === KeyCode.KEY_0) || (event.keyCode === KeyCode.KEY_NUMPAD0))) ||
 			((sValorAnterior == 'N') && ((event.keyCode === KeyCode.KEY_A) || (event.keyCode === KeyCode.KEY_P)));
 		if ((!bPermetreTecla) || 
 			((event.keyCode === KeyCode.KEY_P) && (sValorAnterior == '')) || 
