@@ -116,7 +116,7 @@ switch ($Accio) {
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
-			' WHERE es_alumne=1 '.$Where.
+			' WHERE es_alumne=1 '.$Where.' AND M.matricula_id IS NOT NULL '.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
 
 		$frm->SQL = $SQL;
