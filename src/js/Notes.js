@@ -76,7 +76,7 @@ function MostraGraellaNotes(obj, nivell) {
  */
 function MostraBaixes(obj) {
 	// Seleccionem totes les baixes
-	var tr = $('tr[name=Baixa1]')
+	var tr = $('tr[name=Baixa1]');
 	(obj.checked) ? tr.show() : tr.hide();
 }
 
