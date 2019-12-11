@@ -35,7 +35,8 @@ if ($Usuari->es_professor && $Id == -1)
 
 // Només poden veure la fitxa els tutors d'aquell alumne
 $Professor = new Professor($conn, $Usuari);
-if ($Usuari->es_professor && !$Professor->EsTutorAlumne($Id))
+$ProfessorSenseCarrecDirectiu = ($Usuari->es_professor) && (!$Usuari->es_direccio) && (!$Usuari->es_cap_estudis);
+if ($ProfessorSenseCarrecDirectiu && !$Professor->EsTutorAlumne($Id))
 	header("Location: Surt.php");
 
 $frm = new FormFitxa($conn, $Usuari);
@@ -43,7 +44,7 @@ $frm->Titol = 'Fitxa usuari';
 $frm->Taula = 'USUARI';
 $frm->ClauPrimaria = 'usuari_id';
 $frm->Id = $Id;
-$frm->NomesLectura = ($Usuari->es_professor);
+$frm->NomesLectura = $ProfessorSenseCarrecDirectiu;
 
 $frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offREQUERIT]);
 $frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
