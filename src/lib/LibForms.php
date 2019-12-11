@@ -46,38 +46,39 @@ class Form {
 
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
 
 	/**
 	* Usuari autenticat.
-	* @access public 
 	* @var object
 	*/    
 	public $Usuari;
 
 	/**
 	* Taula principal.
-	* @access public
 	* @var string
 	*/    
     public $Taula = '';	
 
 	/**
 	* Clau primària de la taula.
-	* @access public
 	* @var string
 	*/    
     public $ClauPrimaria = '';	
 
 	/**
 	* Fitxers JavaScript.
-	* @access protected
 	* @var array
 	*/    
     protected $FitxerJS = [];	
+
+	/**
+	* Indica si un formulari s'hi permet realitzar canvis o no.
+	* @var boolean
+	*/    
+    public $NomesLectura = False; 
 
 	/**
 	 * Constructor de l'objecte.
@@ -139,14 +140,14 @@ class Form {
 	 */
 	public function CreaCheckBox(string $Nom, string $Titol, bool $Valor, array $off = [], $onChange = '') {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
-		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' disabled' : '';
 		$TextValor = $Valor ? ' value=1 checked ' : ' value=0 ';
 		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 
 		$sNom = 'chb_' . $Nom;
 		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 //		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$sNom.'" '.$TextValor.$Requerit.'></TD>';
-		$sRetorn .= '<TD><input type="checkbox" name="'.$sNom.'" '.$TextValor.$Requerit.$onChange.'></TD>';
+		$sRetorn .= '<TD><input type="checkbox" name="'.$sNom.'" '.$TextValor.$Requerit.$NomesLectura.$onChange.'></TD>';
 		return $sRetorn;
 	}	
 
@@ -161,38 +162,19 @@ class Form {
 	 */
 	public function CreaData(string $Nom, string $Titol, array $off = [], $DataSeleccionada = NULL) {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
-		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 
 		$sNom = 'edd_' . $Nom;
 		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
 		$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$DataSeleccionada.$Requerit.$NomesLectura.'>';
-		$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
+		if (!$NomesLectura)
+			$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
 		$sRetorn .= '</div>';
-		$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
+		if (!$NomesLectura)
+			$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
 		$sRetorn .= '</TD>';
-
-
-
-		/*$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');		
-		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
-		$sRetorn .= '<TD>';
-		$sRetorn .= '<div class="input-group mb-3">';
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat.">";
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
-		if ($CodiSeleccionat == '')
-			$Text = '';
-		else
-			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.'>';
-		$sRetorn .= '  <div class="input-group-append">';
-		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
-		$onClick = ($NomesLectura) ? '': $onClick;
-		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
-		$sRetorn .= '  </div>';
-		$sRetorn .= '</div>';
-		$sRetorn .= '</TD>';*/
 		return $sRetorn;
 	}
 	
@@ -211,12 +193,12 @@ class Form {
 	 * @param string $onChange Funció que crida l'event onChange (opcional).
 	 * @return void
 	 */
-	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string
-	{
+	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string {
+		$NomesLectura = ($this->NomesLectura) ? ' disabled' : '';
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
-		$sRetorn .= '  <select class="custom-select" style="width:'.$Longitud.'px" name="cmb_'.$Nom.'" '.$onChange.'>';
+		$sRetorn .= "  <select class='custom-select' $NomesLectura style='width:".$Longitud."px' name='cmb_$Nom' $onChange>";
 		$LongitudCodi = count($Codi); 
 		for ($i = 0; $i < $LongitudCodi; $i++) {
 			$Selected = (($CodiSeleccionat != '') && ($Codi[$i] == $CodiSeleccionat)) ? ' selected ': '';
@@ -247,7 +229,8 @@ class Form {
 	 * @return string Codi HTML del lookup.
 	 */
 	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], string $CodiSeleccionat = '') {
-		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) ? ' readonly' : '');		
+		// $NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off)) ? ' readonly' : '';
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
@@ -974,43 +957,36 @@ class FormRecerca extends Form {
 class FormFitxa extends Form {
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
-	* @access public
 	* @var boolean
 	*/    
     public $AutoIncrement = False;	
 	/**
 	* Camps del formulari amb les seves característiques. S'usa per generar els components visuals.
-	* @access private
 	* @var array
 	*/    
     private $Camps = [];	
 	/**
 	* Títol del formulari de recerca.
-	* @access public
 	* @var string
 	*/    
     public $Titol = '';
 	/**
 	* Permet editar un registre.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
 	/**
 	* Permet suprimir un registre.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
 	/**
 	* En el cas que s'estigui editant un registre, carrega les dades de la base de dades.
-	* @access public
 	* @var object
 	*/    
     public $Registre = null;
 	/**
 	* Indica si el formulari té pestanyes.
-	* @access private
 	* @var boolean
 	*/    
     private $HiHaPestanyes = False;	
@@ -1310,7 +1286,7 @@ class FormFitxa extends Form {
 		$sRetorn .= '<TR>';
 		foreach($this->Camps as $Valor) {
 			$Requerit = (in_array(self::offREQUERIT, $Valor->Opcions) ? ' required' : '');
-			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) ? ' readonly' : '');
+			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) || $this->NomesLectura) ? ' readonly' : '';
 			$bAlCostat = in_array(self::offAL_COSTAT, $Valor->Opcions);
 			switch ($Valor->Tipus) {
 				case self::tcESPAI:
@@ -1339,7 +1315,8 @@ class FormFitxa extends Form {
 				case self::tcCHECKBOX:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'></TD>';
+					$NomesLecturaCB = ($NomesLectura == '') ? '' : ' disabled';
+					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.$NomesLecturaCB.'></TD>';
 					break;
 				case self::tcDATA:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
@@ -1455,7 +1432,8 @@ class FormFitxa extends Form {
 		if ($this->HiHaPestanyes)
 			$sRetorn .= '</TD></TR></TABLE></DIV></DIV></DIV></DIV>';
 		$sRetorn .= '</TR>';
-		$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
+		if (!$this->NomesLectura)
+			$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
 		$sRetorn .= '</TABLE>';
 		$sRetorn .= '</FORM>';
 		$sRetorn .= '</DIV>';

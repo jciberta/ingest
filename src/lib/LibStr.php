@@ -152,6 +152,37 @@ function TextAMySQL(string $text)
 }
 
 /**
+ * Converteix un CSV (Valors Separats per Comes) en un array.
+ * Les funcions explode i str_getcsv no funcionen. La primera no separa bé, i la segona elimina els tancaments.
+ * @param string $text CSV a convertir.
+ * @param string $delimitador Separador de les diferents cadenes.
+ * @param string $tancament En que està en aquest bloc actua com una sola cadena (inclòs si hi ha un delimitador dins).
+ * @return string Text preparat.
+ */
+function CSVAArray(string $text, string $delimitador = ",", $tancament = "'")
+{
+	$aRetorn = [];
+	$s = '';
+	$bDinsTancament = False;
+	$l = strlen($text);
+	for ($i=0; $i<$l; $i++) {
+		if (($text[$i] == $delimitador) && !$bDinsTancament) {
+			array_push($aRetorn, $s);
+			$s = '';
+		}
+		else if ($text[$i] == $tancament) {
+			$bDinsTancament = !$bDinsTancament;
+			$s .= $text[$i];
+		}
+		else 
+			$s .= $text[$i];
+	}
+	if ($l > 0)
+		array_push($aRetorn, $s);
+	return $aRetorn;
+}
+
+/**
  * Elimina si comença per.
  * @param string $Text Text a comprovar.
  * @param string $Prefix Prefix a eliminar.

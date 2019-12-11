@@ -48,11 +48,11 @@ else {
 	$Matricula = new Matricula($conn, $Usuari);
 	$Matricula->Carrega($MatriculaId);
 	$alumne = $Matricula->ObteAlumne();
-print "<br>";	
-print "<br>";	
-print "<br>";	
-print "alumne: $alumne<br>";	
-print "MatriculaId: $MatriculaId<br>";	
+//print "<br>";	
+//print "<br>";	
+//print "<br>";	
+//print "alumne: $alumne<br>";	
+//print "MatriculaId: $MatriculaId<br>";	
 
 	// Si intenta manipular l'usuari des de la URL -> al carrer!
 	if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
@@ -77,7 +77,7 @@ print "MatriculaId: $MatriculaId<br>";
 	}
 	else {
 		CreaIniciHTML($Usuari, 'Visualitza expedient');
-		echo 'El butlletí de notes no esta disponible.';	
+		echo 'El butlletí de notes no està disponible.';	
 	}
 }
 

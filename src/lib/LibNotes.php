@@ -21,36 +21,6 @@ require_once(ROOT.'/lib/LibProfessor.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 
 /**
- * CreaSQLNotes
- *
- * Crea la sentència SQL per recuperar les notes d'un cicle i un nivell concret.
- *
- * @param string $CicleId Identificador del cicle formatiu.
- * @param string $Nivell Nivell: 1r o 2n.
- * @return string Sentència SQL.
- */
-/*function CreaSQLNotes($CursId, $Nivell)
-//function CreaSQLNotes($CicleId, $Nivell)
-{
-	return ' SELECT M.alumne_id AS AlumneId, '.
-		' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-		' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
-		' MP.codi AS CodiMP, '.
-		' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
-		' M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, C.nivell AS NivellMAT, '.
-		' N.*, U.* '.
-		' FROM NOTES N '.
-		' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
-		' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-		' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-		' WHERE C.curs_id='.$CursId.' OR C.curs_id=2 '.
-//		' WHERE C.cicle_formatiu_id='.$CicleId.' AND C.nivell>='.$Nivell.
-		' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
-}*/
- 
-/**
  * ObteTaulaNotesJSON
  *
  * Recupera les notes d'un cicle i un nivell concret en format JSON.
@@ -85,7 +55,8 @@ function ObteTaulaNotesJSON($Connexio, $CicleId, $Nivell)
  * @return boolean Cert si és una valor vàlid com a nota.
  */
 function EsNotaValida($Valor)
-{
+{	
+	$Valor = strtoupper($Valor);
 	return ((is_numeric($Valor) && ($Valor>0) && ($Valor<=10)) ||
 		($Valor == 'NP') ||
 		($Valor == 'A') ||
@@ -106,6 +77,7 @@ function EsNotaValida($Valor)
  */
 function NotaANumero($Valor)
 {
+	$Valor = strtoupper($Valor);
 	if ($Valor == 'NP') 
 		return -1;
 	else if ($Valor == 'A') 
@@ -137,6 +109,28 @@ function NumeroANota($Valor)
 		return 'A';
 	else if ($Valor == -100) 
 		return 'NA';
+	else
+		return $Valor;
+}
+
+/**
+ * Transforma una nota numèrica al seu valor de text sencer. Valors numèrics:
+ *   - 1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
+ *   - NP: -1, A: 100, NA: -100.
+ *   - NULL passa a ser la cadena nul·la.
+ *
+ * @param int $Valor Valor numèric o NULL.
+ * @param boolean $bFemeni indica si el text ha de ser en femení.
+ * @return string Retorna la nota tal com s'entra a l'aplicació (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, No presentat, Apte, No apte).
+ */
+function NumeroANotaText($Valor, bool $bFemeni = False)
+{
+	if ($Valor == -1) 
+		return $bFemeni ? 'No presentada' : 'No presentat';
+	else if ($Valor == 100) 
+		return $bFemeni ? 'Apta' : 'Apte';
+	else if ($Valor == -100) 
+		return $bFemeni ? 'No apta' : 'No apte';
 	else
 		return $Valor;
 }
@@ -197,6 +191,11 @@ class Notes
 	*/    
 	public $Registre2 = NULL;
 
+	/**
+	* Identificador del curs.
+	* @var object
+	*/    
+	private $CursId = -1;
 
 	/**
 	 * Constructor de l'objecte.
@@ -220,7 +219,7 @@ class Notes
 	 * @return void.
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
-
+		
 //print_r($Notes);
 
 		// Formulari amb les notes
@@ -315,9 +314,14 @@ class Notes
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
 		$Retorn = "";
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
+		$AlumneId = $row["AlumneId"];
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 //		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
-		$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
+
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
+			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'><a href='UsuariFitxa.php?Id=$AlumneId'>$NomAlumne</a></TD>";
+		else
+			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
@@ -367,7 +371,7 @@ class Notes
 	 * @return string Codi HTML de la cel·la.
 	 */
 	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio, $Class = ''): string {
-//		$style = "text-align:center;text-transform:uppercase";
+		//$style = "text-align:center;text-transform:uppercase;border:1px solid #A9A9A9;margin:1px;";
 		$style = '';
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
@@ -595,14 +599,15 @@ class Notes
 	}
 	
 	/**
-	 * Carrega el registre.
+	 * Carrega el registre amb les notes dels curs i nivell.
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 */				
 	public function CarregaRegistre($CursId, $Nivell) {
+		$this->$CursId = $CursId;
+		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
 		$ResultSet = $this->Connexio->query($SQL);
-		
 		
 //print_r($ResultSet);	
 

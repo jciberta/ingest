@@ -136,7 +136,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		}
 		$sCamps = substr($sCamps, 0, -2);
 		$sValues = substr($sValues, 0, -2);
-//print 'Camps: '.$sCamps . ' <BR> Values: '.$sValues;
+//print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
 		if ($Id == 0) {
 			// INSERT
 			if ($AutoIncrement) {
@@ -152,7 +152,9 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			// UPDATE
 			$SQL = "UPDATE ".$Taula." SET ";
 			$aCamps = explode(",", TrimXX($sCamps));
-			$aValues = explode(",", Trim($sValues));
+//			$aValues = explode(",", Trim($sValues));
+			$aValues = CSVAArray(Trim($sValues));
+//print_r($aValues);
 			for($i=0; $i < count($aCamps); $i++) {
 				$SQL .= $aCamps[$i].'='.trim($aValues[$i]).', ';
 			}
