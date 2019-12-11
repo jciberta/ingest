@@ -238,8 +238,8 @@ class RecuperaPasswordAlumne extends RecuperaPassword
 			" WHERE es_alumne=1 ".
 			" AND UPPER(document)='$DNI' ".
 			" AND data_naixement=".DataAMySQL($DataNaixement).
-			" AND telefon LIKE '%$Telefon%' ".
-			" AND UPPER(municipi_naixement)=".TextAMySQL($MunicipiNaixement);
+			" AND telefon LIKE '%$Telefon%' ";
+//			" AND UPPER(municipi_naixement)=".TextAMySQL($MunicipiNaixement); // Hi ha un problema amb la codificació (UTF-8)
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$Retorn = $this->GeneraPassword();
