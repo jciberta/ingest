@@ -23,31 +23,33 @@ class Avaluacio
 	
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
 
 	/**
 	* Usuari autenticat.
-	* @access public 
 	* @var object
 	*/    
 	public $Usuari;
 
 	/**
 	* Avaluació
-	* @access public 
 	* @var string
 	*/    
 	public $Avaluacio = self::Ordinaria;
 
 	/**
 	* Dades dels curs.
-	* @access private
 	* @var object
 	*/    
 	private $Curs;
+
+	/**
+	* Registre de la base de dades que conté les dades d'una avaluació.
+	* @var object
+	*/    
+    private $Registre = NULL;
 
 	/**
 	 * Constructor de l'objecte.
@@ -71,19 +73,29 @@ class Avaluacio
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE curs_id='.$id;
 	}	
+	
+	/**
+	 * Carrega les dades d'una avaluació i les  emmagatzema en l'atribut Registre.
+     * @param int $CursId Identificador del curs.
+	 */
+	public function Carrega(int $CursId) {
+		$SQL = $this->CreaSQL($CursId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$row = $ResultSet->fetch_object();
+			$this->Registre = $row;
+		}
+	}
 
 	/**
 	 * Retorna l'estat de l'avaluació del curs.
 	 * @param integer $id Identificador del curs.
      * @return string estat de l'avaluació.
 	 */
-	public function Estat(int $id): string {
-		$SQL = $this->CreaSQL($id);
+	public function Estat(): string {
 		$sRetorn = '';
-
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {
-			$row = $ResultSet->fetch_object();
+		if ($this->Registre != NULL) {
+			$row = $this->Registre;
 			if ($row->finalitzat)
 				$sRetorn = self::Tancada;
 			else
@@ -91,18 +103,24 @@ class Avaluacio
 		}
 		return $sRetorn;
 	}
+	
+	/**
+	 * Comprova si el butlletí és visible per als estudiants.
+	 * @returns boolean Cert si el butlletí és visible.
+	 */
+	function ButlletiVisible(): bool {
+		return $this->Registre->butlleti_visible == '1';
+	}	
 
 	/**
 	 * Crea la taula HTML amb les dades de l'avaluació.
 	 * @param integer $id Identificador del curs.
      * @return string Taula amb les dades de l'avaluació.
 	 */
-	public function CreaTaula(int $id): string {
-		$SQL = $this->CreaSQL($id);
+	public function CreaTaula(): string {
 		$sRetorn = '';
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {
-			$row = $ResultSet->fetch_object();
+		if ($this->Registre != NULL) {
+			$row = $this->Registre;
 			echo "Any acadèmic: <B>".utf8_encode($row->AnyAcademic)."</B><br>";
 			echo "Curs: <B>".utf8_encode($row->nom)."</B><br>";
 			echo "Codi: <B>".utf8_encode($row->codi)."</B><br>";
@@ -130,12 +148,10 @@ class Avaluacio
 	 * @param integer $id Identificador del curs.
      * @return string Descripció amb les dades de l'avaluació.
 	 */
-	public function CreaDescripcio(int $id): string {
-		$SQL = $this->CreaSQL($id);
+	public function CreaDescripcio(): string {
 		$sRetorn = '<DIV id=desc>';
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {
-			$row = $ResultSet->fetch_object();
+		if ($this->Registre != NULL) {
+			$row = $this->Registre;
 			echo "Curs: <B>".utf8_encode($row->nom)."</B>";
 			
 			if ($row->finalitzat) {
@@ -194,9 +210,9 @@ class Avaluacio
 	 * Escriu la taula HTML amb les dades de l'avaluació.
 	 * @param integer $id Identificador del curs.
 	 */
-	public function EscriuTaula(int $id) {
+	public function EscriuTaula() {
 		echo '<DIV id=taula>';
-		echo $this->CreaTaula($id);
+		echo $this->CreaTaula();
 		echo '</DIV>';
 	}
 	

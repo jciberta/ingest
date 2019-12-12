@@ -38,10 +38,11 @@ CreaIniciHTML($Usuari, "Avaluació");
 echo '<script language="javascript" src="js/Avaluacio.js?v1.5" type="text/javascript"></script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
+$Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaMissatges();
 
 echo "<h2>Avaluació actual</h2>";
-$Avaluacio->EscriuTaula($CursId);
+$Avaluacio->EscriuTaula();
 
 echo "<h2>Accions</h2>";
 $Avaluacio->EscriuBotons();

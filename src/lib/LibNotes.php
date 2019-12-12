@@ -33,7 +33,6 @@ function ObteTaulaNotesJSON($Connexio, $CicleId, $Nivell)
 {
 	$Notes = new Notes($conn, NULL);
 	$SQL = $Notes->CreaSQL($CursId, $Nivell);
-//	$SQL = CreaSQLNotes($CicleId, $Nivell);
 
 	//return $SQL;
 	//print_r($SQL);
@@ -178,15 +177,13 @@ class Notes
 	public $Usuari;
 
 	/**
-	* Registre que conté les notes de 1r.
-	* Es carrega amb CarregaRegistre.
+	* Registre que conté les notes de 1r. Es carrega amb CarregaRegistre.
 	* @var object
 	*/    
 	public $Registre1 = NULL;
 
 	/**
-	* Registre que conté les notes de 2n.
-	* Es carrega amb CarregaRegistre.
+	* Registre que conté les notes de 2n. Es carrega amb CarregaRegistre.
 	* @var object
 	*/    
 	public $Registre2 = NULL;
@@ -215,13 +212,11 @@ class Notes
 	 * @param array $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
 	 * @param object $Professor Objecte professor.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param object $Avaluacio Objecte avaluació.
 	 * @return void.
 	 */
-	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
-		
+	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
 //print_r($Notes);
-
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
@@ -287,7 +282,7 @@ class Notes
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
 			if ($row["NivellMAT"] == $Nivell) {
-				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $EstatAvaluacio);
+				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $Avaluacio);
 			}
 		}
 		echo "</TABLE>";
@@ -308,10 +303,10 @@ class Notes
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $TotalHores Total d'hores del curs.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param object $Avaluacio Objecte de la classe Avaluacio.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
+	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, $Avaluacio): string {
 		$Retorn = "";
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 		$AlumneId = $row["AlumneId"];
@@ -333,7 +328,7 @@ class Notes
 		$Hores = 0;
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
-			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
+			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio);
 		}
 		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
 		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
@@ -366,11 +361,12 @@ class Notes
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $Hores Hores que es sumen per saber el total.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param string $Avaluacio Objecte de la classe Avaluacio.
 	 * @param string $Class Classe CSS per a la cel·la.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio, $Class = ''): string {
+	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio, $Class = ''): string {
+		$EstatAvaluacio = $Avaluacio->Estat();
 		//$style = "text-align:center;text-transform:uppercase;border:1px solid #A9A9A9;margin:1px;";
 		$style = '';
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
@@ -419,6 +415,9 @@ class Notes
 		
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
+
+		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
+		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 		
 		// <INPUT>
 		// name: conté id i convocatòria
@@ -786,10 +785,10 @@ class NotesModul extends Notes
 	 * @param array $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
 	 * @param object $Professor Objecte professor.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param object $Avaluacio Objecte avaluació.
 	 * @return void.
 	 */
-	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, string $EstatAvaluacio) {
+	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
 		$Notes = $this->Registre;
 		$Nivell = 0;
 
@@ -863,7 +862,7 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
-			echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $EstatAvaluacio);
+			echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $Avaluacio);
 		}
 		echo '</TBODY>';
 		echo "</TABLE>";
@@ -888,10 +887,10 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $TotalHores Total d'hores del curs.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param object $Avaluacio Objecte avaluació.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, string $EstatAvaluacio): string {
+	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, $Avaluacio): string {
 		$Llista = $this->FilaAlterna ? 2 : 1;
 		$Class = 'class="llistat'.$Llista.'"';
 		
@@ -908,11 +907,11 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
 			$Retorn .= '<td '.$Class.' style="text-align:center">'.$row["Hores"].'</td>';			
-			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio, $Class);
+			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, $Class);
 		}
 		// Nota mòdul
 		$Retorn .= '<td '.$Class.' style="text-align:center">'.$TotalHores.'</td>';			
-		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $EstatAvaluacio);
+		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio);
 		
 		$Retorn .= "<TD></TD></TR>";
 
@@ -936,10 +935,11 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $Hores Hores que es sumen per saber el total.
-	 * @param string $EstatAvaluacio Estat de l'avaluació (ordinària, extraordinària, tancada).
+	 * @param object $Avaluacio Objecte avaluació.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, string $EstatAvaluacio): string {
+	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio): string {
+		$EstatAvaluacio = $Avaluacio->Estat();
 		$MatriculaId = $row["matricula_id"];
 		$Llista = $this->FilaAlterna ? 2 : 1;
 		$Class = 'class="llistat'.$Llista.'"';
