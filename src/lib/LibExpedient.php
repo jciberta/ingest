@@ -277,7 +277,7 @@ class QualificacionsPDF extends DocumentPDF
         $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
 
 		$this->SetXY(30, 30);
-		$this->Titol1('Informe de qualificacions del curs escolar 2018-2019');
+		$this->Titol1('Informe de qualificacions del curs escolar 2019-2020');
 
 		$this->Titol2("Dades del centre");
 		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
