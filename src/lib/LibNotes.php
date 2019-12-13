@@ -260,7 +260,12 @@ class Notes
 		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+			
+			$UFId = $row["unitat_formativa_id"];
+			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
+				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a href="FPFitxa.php?accio=UnitatsFormatives&Id='.$UFId.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
+			else
+				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
 		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
 

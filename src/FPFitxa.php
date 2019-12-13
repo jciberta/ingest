@@ -15,6 +15,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -59,6 +60,11 @@ switch ($accio) {
     case "UnitatsFormatives":
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
+		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		
 		$Opcions = [FormFitxa::offREQUERIT];
 		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
