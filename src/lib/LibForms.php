@@ -707,7 +707,6 @@ class FormRecerca extends Form {
 
 	/**
 	 * Genera una taula amb el resultat de la SQL.
-     *
      * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
@@ -723,12 +722,8 @@ class FormRecerca extends Form {
 
 			// Capçalera
 			$sRetorn .= '<THEAD class="thead-dark">';
-//			foreach ($aDescripcions as $sValor) {
 			for ($i=0; $i<count($aDescripcions); $i++) {
 				$sValor = $aDescripcions[$i];
-//				$Funcio = 'OrdenaColumna("'.$aCamps[$i].'")';
-//				$Ordenacio = "&nbsp;<img src=img/down.svg style='cursor: pointer;' onclick='$Funcio'>";
-				
 				$Ordenacio = $this->CreaFletxaOrdenacio($aCamps[$i]);
 				$sRetorn .= "<TH>".$sValor."&nbsp;".$Ordenacio."</TH>";
 			}
@@ -789,6 +784,7 @@ class FormRecerca extends Form {
 
 	/**
 	 * Genera el formulari per fer recerques.
+     * @return string Codi HTML amb el formulari per fer recerques.
 	 */
 	private function GeneraCerca() {
 		$sRetorn = '<DIV id=Recerca style="padding:10px">';

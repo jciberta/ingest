@@ -62,7 +62,7 @@ switch ($Accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, '.
+		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, '.
 			' TUT.tutor_id, TUT.grup_tutoria '.
 			' FROM CURS C '.
@@ -74,7 +74,7 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'TUTOR';
 		$frm->ClauPrimaria = 'tutor_id';
-		$frm->Camps = 'codi, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, grup_tutoria';
+		$frm->Camps = 'CodiCurs, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, grup_tutoria';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Nom, 1r cognom, 2n cognom, Grup tutoria';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Tutor';
