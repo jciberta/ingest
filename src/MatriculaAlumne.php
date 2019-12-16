@@ -83,7 +83,7 @@ echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript
 $ButlletiVisible = True;
 if ($Usuari->es_alumne || $Usuari->es_pare) {
 	$Expedient = new Expedient($conn);
-	$ButlletiVisible = $Expedient->EsVisibleButlleti($alumne);
+	$ButlletiVisible = $Expedient->EsVisibleButlleti($MatriculaId);
 }
 
 if ($ButlletiVisible) {
