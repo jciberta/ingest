@@ -124,14 +124,17 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, edat, NomCurs, nivell, grup';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Edat, Curs, Nivell, Grup';
-		$frm->PermetEditar = True;
-		$frm->URLEdicio = 'UsuariFitxa.php';
-		$frm->PermetSuprimir = True;
+		//$frm->PermetEditar = True;
+		//$frm->URLEdicio = 'UsuariFitxa.php';
+		//$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
+//		$frm->AfegeixOpcioAJAX('Suprimeix', 'SuprimeixMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK]);
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('[Elimina]', 'EliminaMatriculaAlumne', 'matricula_id');
 
 		// Filtre
 		if ($CursId < 0) {
