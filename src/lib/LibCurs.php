@@ -82,9 +82,10 @@ class Curs
 	}
 
 	/**
-	 * Genera el llistat de cursos.
+	 * Crea la SQL pel llistat de cursos.
+     * @return string Sentència SQL.
 	 */
-	function EscriuFormulariRecera() {
+	private function CreaSQL() {
 		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
@@ -99,6 +100,14 @@ class Curs
 			' butlleti_visible '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) ';
+		return $SQL;
+	}
+	
+	/**
+	 * Genera el llistat de cursos.
+	 */
+	public function EscriuFormulariRecera() {
+		$SQL = $this->CreaSQL();
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.0');
 		$frm->Titol = 'Cursos';
@@ -111,6 +120,7 @@ class Curs
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
+		$frm->AfegeixOpcio('PDF', 'GeneraExpedientsPDF.php?CursId=');
 		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
 		if ($this->Usuari->es_admin)
 			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');

@@ -38,7 +38,6 @@ if ($conn->connect_error) {
 } 
 
 $Expedient = new Expedient($conn);
-$Expedient->GeneraScript($Curs, $Sufix);
-
+$Expedient->EscriuScript($Curs, $Sufix);
 
 ?>

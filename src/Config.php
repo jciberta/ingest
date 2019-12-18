@@ -37,7 +37,8 @@ $CFG->Secret      = hex2bin(Config::Secret); // Clau per a les funcions d'encrip
 if (defined('STDIN')) {
 	// Execució de PHP via CLI.
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		define('ROOT', 'D:\CASA\Xiber\ingest\src');
+		//define('ROOT', 'D:\CASA\Xiber\ingest\src');
+		define('ROOT', 'D:/jciberta/ingest/src');
 		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {

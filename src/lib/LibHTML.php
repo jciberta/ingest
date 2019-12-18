@@ -149,7 +149,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			echo '			<li class="nav-item dropdown">';
 			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddInformes" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Informes</a>';
 			echo '				<div class="dropdown-menu" aria-labelledby="ddInformes">';
-			echo '              	<a class="dropdown-item" href="UsuariRecerca.php?accio=UltimLogin">UltimLogin</a>';
+			echo '              	<a class="dropdown-item" href="UsuariRecerca.php?accio=UltimLogin">Darrers accessos</a>';
 			echo '				</div>';
 			echo '			</li>';
 		}	

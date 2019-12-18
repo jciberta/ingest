@@ -26,11 +26,21 @@ class Expedient
 	public $Connexio;
 
 	/**
+	* Sistema operatiu (Windows, Linux).
+	* @var string
+	*/    
+	private $SistemaOperatiu = '';
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con) {
 		$this->Connexio = $con;
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
+			$this->SistemaOperatiu = 'Windows';
+		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') 
+			$this->SistemaOperatiu = 'Linux';
 	}	
 
 	/**
@@ -197,9 +207,26 @@ class Expedient
 	/**
 	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
 	 * @param integer $Curs Identificador del curs.
+	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
 	 */
-	public function GeneraScript($Curs, $Sufix) {
-		$SQL = ' SELECT U.nom AS NomAlumne, U.*, C.* '.
+	private function ComandaPHP(): string {
+		$Retorn = '';
+		if ($this->SistemaOperatiu === 'Windows') 
+			$Retorn = 'C:\xampp\php\php.exe';
+		else if ($this->SistemaOperatiu === 'Linux') 
+			$Retorn = 'php';
+		return $Retorn;
+	}
+	
+	/**
+	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
+	 * @param integer $Curs Identificador del curs.
+	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
+	 */
+	public function GeneraScript($Curs, $Sufix): string {
+		$Comanda = $this->ComandaPHP();
+		$Retorn = '';
+		$SQL = ' SELECT M.matricula_id AS MatriculaId, U.nom AS NomAlumne, U.*, C.* '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
@@ -207,16 +234,27 @@ class Expedient
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			while ($row = $ResultSet->fetch_array()) {
-				echo "php ../ExpedientPDF.php ".$row["usuari_id"]." >pdf/Expedient_".
-					utf8_encode($row["codi"])."_".
-					$Sufix."_".
-					utf8_encode($row["cognom1"])."_".
-					utf8_encode($row["cognom2"])."_".
-					utf8_encode($row["NomAlumne"]).
-					".pdf\n";
+				$Nom = utf8_encode($row["codi"])."_".
+				$Sufix."_".
+				utf8_encode($row["cognom1"])."_".
+				utf8_encode($row["cognom2"])."_".
+				utf8_encode($row["NomAlumne"]);
+				$Nom = Normalitza($Nom);
+				$Nom = str_replace(" ", "_", $Nom);
+				$Retorn .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".ROOT."/scripts/pdf/Expedient_".$Nom.".pdf\r\n";
 			}
 		}
 		$ResultSet->close();
+		return $Retorn;
+	}
+
+	/**
+	 * Escriu l'script per a poder generar tots els expedients en PDF d'un curs.
+	 * @param integer $Curs Identificador del curs.
+	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
+	 */
+	public function EscriuScript($Curs, $Sufix): string {
+		echo GeneraScript($Curs, $Sufix);
 	}
 	
 	private function TextAvaluacio($Avaluacio, $Trimestre) {

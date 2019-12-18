@@ -103,6 +103,24 @@ class Avaluacio
 		}
 		return $sRetorn;
 	}
+
+	/**
+	 * Retorna el text de l'estat de l'avaluació per a l'expedient.
+     * @return string Text de l'estat de l'avaluació.
+	 */
+	public function EstatText(): string {
+		$sRetorn = '';
+		if ($this->Registre != NULL) {
+			$row = $this->Registre;
+			if ($row->finalitzat)
+				$sRetorn = '';
+			else if ($row->avaluacio == 'EXT')
+				$sRetorn = 'Ext.';
+			else
+				$sRetorn = $row->trimestre.'T';
+		}
+		return $sRetorn;
+	}
 	
 	/**
 	 * Comprova si el butlletí és visible per als estudiants.

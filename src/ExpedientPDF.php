@@ -23,10 +23,10 @@ if ($conn->connect_error)
 if (defined('STDIN')) {
 	// Via CLI
 	if ($argc == 2) {
-		$alumne = $argv[1];
+		$MatriculaId = $argv[1];
 	}
 	else {
-		die("Ús: ExpedientPDF.php Alumne\n");
+		die("Ús: ExpedientPDF.php AlumneId\n");
 	}
 	$Expedient = new Expedient($conn);
 	$Expedient->GeneraPDF($MatriculaId);
