@@ -58,7 +58,9 @@ echo $Avaluacio->CreaDescripcio($CursId);
 
 //$EstatAvaluacio = $Avaluacio->Estat();
 if ($Avaluacio->Estat() != Avaluacio::Tancada)
-	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
+	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. ".
+		"Utilitza les fletxes per moure't lliurement per la graella. ".
+		"Ctrl+rodeta_ratolí per fer zoom.</font></P>";
 
 $Notes = new Notes($conn, $Usuari);
 $Notes->CarregaRegistre($CursId, $Nivell);

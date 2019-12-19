@@ -316,12 +316,11 @@ class Notes
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 		$AlumneId = $row["AlumneId"];
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
-//		$NomAlumne = utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
 
 		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
-			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'><a href='UsuariFitxa.php?Id=$AlumneId'>$NomAlumne</a></TD>";
+			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href='UsuariFitxa.php?Id=$AlumneId'>$NomAlumne</a></TD>";
 		else
-			$Retorn .= "<TD id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
+			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
