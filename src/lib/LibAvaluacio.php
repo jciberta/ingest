@@ -67,7 +67,7 @@ class Avaluacio
      * @return string Sentència SQL.
 	 */
 	private function CreaSQL($id): string {
-		return ' SELECT C.*, AA.nom AS AnyAcademic '.
+		return ' SELECT C.*, AA.nom AS AnyAcademic, AA.any_inici, AA.any_final '.
 			' FROM CURS C '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
@@ -80,6 +80,7 @@ class Avaluacio
 	 */
 	public function Carrega(int $CursId) {
 		$SQL = $this->CreaSQL($CursId);
+//print $SQL;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
 			$row = $ResultSet->fetch_object();
@@ -184,6 +185,23 @@ class Avaluacio
 			}
 		}
 		$sRetorn .= '</DIV>';
+		return $sRetorn;
+	}
+
+	/**
+	 * Crea un nom de fitxer per a les dades de l'avaluació del curs.
+     * @return string Descripció amb les dades de l'avaluació.
+	 */
+	public function NomFitxer(): string {
+		$sRetorn = '';
+		if ($this->Registre != NULL) {
+			$row = $this->Registre;
+			$sRetorn .= $row->any_inici.'-'.$row->any_final.'_'.$row->codi.'_';
+			if ($row->avaluacio == 'ORD')
+				$sRetorn .= $row->trimestre.'T';
+			else
+				$sRetorn .= 'Ext';
+		}
 		return $sRetorn;
 	}
 

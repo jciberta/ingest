@@ -241,7 +241,7 @@ class Expedient
 				utf8_encode($row["NomAlumne"]);
 				$Nom = Normalitza($Nom);
 				$Nom = str_replace(" ", "_", $Nom);
-				$Retorn .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".ROOT."/scripts/pdf/Expedient_".$Nom.".pdf\r\n";
+				$Retorn .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
 			}
 		}
 		$ResultSet->close();

@@ -52,46 +52,41 @@ $Sufix = $Avaluacio->EstatText();
 echo "<HR>";
 
 echo "Preparant directori per als expedients... ";
-EsborraDirectori(ROOT."/scripts/pdf");
-mkdir(ROOT."/scripts/pdf");
+//echo "<PRE>";
+//echo "  Esborrant directori per als expedients<BR>";
+EsborraDirectori(INGEST_DATA."/pdf");
+//echo "  Creant directori per als expedients<BR>";
+mkdir(INGEST_DATA."/pdf");
+//echo "</PRE>";
 echo "Ok.<BR>";
 
 echo "Generant l'script per als expedients... ";
-$Comanda = "";
-if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
-	$Comanda = "scripts/ScriptExpedients.bat";
-else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') 
-	$Comanda = "scripts/ScriptExpedients.sh";
-$myfile = fopen($Comanda, "w") or die("Unable to open file!");
 $Text = $Expedient->GeneraScript($CursId, $Sufix);
-fwrite($myfile, $Text);
-fclose($myfile);
 echo "Ok.<BR>";
 
-echo "Executant l'script per als expedients";
+echo "Executant l'script per als expedients...";
 $aText = explode("\r\n",$Text);
 //echo "<PRE>";
 for ($i=0; $i<count($aText)-1; $i++) {
 	//echo "  Executant $aText[$i]<BR>";
-	echo ".";
 	$Result = shell_exec($aText[$i]);
 }
 //echo "</PRE>";
 echo " Ok.<BR>";
 
 // https://stackoverflow.com/questions/17708562/zip-all-files-in-directory-and-download-generated-zip
-$zipname = ROOT."/scripts/Expedients.zip";
-echo "Comprimint els expedients";
+$Nom = $Avaluacio->NomFitxer();
+$zipname = ROOT."/scripts/".$Nom.".zip";
+echo "Comprimint els expedients... ";
 $zip = new ZipArchive;
 $zip->open($zipname, ZipArchive::CREATE);
-if ($handle = opendir(ROOT."/scripts/pdf")) {
+if ($handle = opendir(INGEST_DATA."/pdf")) {
 	//echo "<PRE>";
 	while (false !== ($entry = readdir($handle))) {
 		$ext = pathinfo($entry, PATHINFO_EXTENSION);
 		if (strtoupper($ext) == "PDF") {
 			//echo "  Comprimint $entry<br>";
-			echo ".";
-			$zip->addFile(ROOT."/scripts/pdf/".$entry, $entry);
+			$zip->addFile(INGEST_DATA."/pdf/".$entry, $entry);
 		}
 	}
 	//echo "</PRE>";
@@ -100,7 +95,7 @@ if ($handle = opendir(ROOT."/scripts/pdf")) {
 $zip->close();
 echo " Ok.<BR>";
 
-echo "Podeu descarregar els expedients comprimits <a href='scripts/Expedients.zip'>aquí</a>. Mida: ".FormataBytes(filesize($zipname));
+echo "Podeu descarregar els expedients comprimits <a href='scripts/$Nom.zip'>aquí</a>. Mida: ".FormataBytes(filesize($zipname));
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
