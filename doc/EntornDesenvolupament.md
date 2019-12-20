@@ -8,6 +8,7 @@
 apt update
 apt install tasksel
 tasksel install lamp-server
+apt php-zip
 apt install mysql-workbench
 ```
 
