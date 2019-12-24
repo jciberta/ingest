@@ -240,7 +240,7 @@ class Form {
 			$Text = '';
 		else
 			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.'>';
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 2);">';
 		$sRetorn .= '  <div class="input-group-append">';
 		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
 		$onClick = ($NomesLectura) ? '': $onClick;
@@ -837,7 +837,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.4" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.5" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -1317,41 +1317,16 @@ class FormFitxa extends Form {
 				case self::tcDATA:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
-					
-/*					$sNom = 'edd_' . $Valor->Camp;
-					$sRetorn .= '<TD><label for='.$sNom.'>'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD>';
-					$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
-					$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$this->ValorCampData($Valor->Camp).$Requerit.'>';
-					$sRetorn .= '  <div class="input-group-append"><button class="btn btn-outline-secondary" type="button"><img src="img/calendar.svg"></button></div>';
-					$sRetorn .= '</div>';
-					$sRetorn .= '<script>$("#'.$sNom.'").datepicker({format: "dd/mm/yyyy", language: "ca"});</script>';
-					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcSELECCIO:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$CodiSeleccionat = $this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
-					/*
-					$sRetorn .= '<TD><label for="cmb_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD>';
-					$sRetorn .= '  <select class="custom-select" style="width:'.$Valor->Longitud.'px" name="cmb_'.$Valor->Camp.'">';
-						$LongitudCodi = count($Valor->Llista->Codis); 
-						for ($i = 0; $i < $LongitudCodi; $i++)
-						{
-							$Selected = ($Valor->Llista->Codis[$i] == $this->Registre[$Valor->Camp])? ' selected ' : '';
-							$sRetorn .= '<option value="'.$Valor->Llista->Codis[$i].'"'.$Selected.'>'.$Valor->Llista->Valors[$i].'</option>';
-						} 	
-					$sRetorn .= '  </select>';
-					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcLOOKUP:
-
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
-
 //print_r($this->Registre);	
 //exit;			
-				
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaLookup(
 						$Valor->Camp, 
@@ -1363,25 +1338,6 @@ class FormFitxa extends Form {
 						$Valor->Lookup->Camps, 
 						$Valor->Opcions, 
 						$CodiSeleccionat);
-					
-					
-					
-
-					
-/*					$sRetorn .= '<TD><label for="lkp_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD>';
-					$sRetorn .= '<div class="input-group mb-3">';
-					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp." value=".$this->Registre[$Valor->Camp].">";
-					$sRetorn .= "  <input type=hidden name=lkh_".$Valor->Camp."_camps value='".$Valor->Lookup->Camps."'>";
-					$Text = $this->ObteCampsTaula($Valor->Lookup->Taula, $Valor->Lookup->Id, $this->Registre[$Valor->Camp], $Valor->Lookup->Camps);
-					$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Valor->Longitud.'px" name="lkp_'.$Valor->Camp.'" value="'.$Text.'"'.$NomesLectura.'>';
-					$sRetorn .= '  <div class="input-group-append">';
-					$onClick = "CercaLookup('lkh_".$Valor->Camp."', 'lkp_".$Valor->Camp."', '".$Valor->Lookup->URL."', '".$Valor->Lookup->Camps."');";
-					$onClick = ($NomesLectura) ? '': $onClick;
-					$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
-					$sRetorn .= '  </div>';
-					$sRetorn .= '</div>';
-					$sRetorn .= '</TD>';*/
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;
@@ -1468,17 +1424,28 @@ class FormFitxa extends Form {
 		$sRetorn .= '</div>';
 		return $sRetorn;
 	}
+
+	/**
+	 * Genera el botó i l'acció de tornar enrera (cap a la llista).
+	 */
+	private function GeneraTorna() {
+		$sRetorn = '<div class="collapse" id="MissatgeTorna">';
+		$sRetorn .= '<a class="btn btn-primary active" role="button" aria-pressed="true" id="btnTorna" name="btnTorna" onclick="window.history.go(-1); return false;">Torna</a>';
+		$sRetorn .= '</div>';
+		return $sRetorn;
+	}
 	
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>';
 		if ($this->Id > 0)
 			$this->CarregaDades();
-		echo $this->GeneraMissatges();
 		echo $this->GeneraFitxa();
+		echo $this->GeneraMissatges();
+		echo $this->GeneraTorna();
 		CreaFinalHTML();
 	}
 } 

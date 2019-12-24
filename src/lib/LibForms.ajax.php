@@ -167,13 +167,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			print '<BR><b>SQL</b>: '.$SQL;
 		
 		try {
-			if ($conn->query($SQL)) {
-				//throw new Exception($conn->error.'. SQL: '.$SQL);
-				print $conn->error.'. SQL: '.$SQL;
-			}
+			if (!$conn->query($SQL))
+				throw new Exception($conn->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
-			print "ERROR DesaFitxa. Causa: ".$e->getMessage();
-//			exit;
+			print "<BR><b>ERROR DesaFitxa</b>. Causa: ".$e->getMessage();
 		}		
 	}
 	else {

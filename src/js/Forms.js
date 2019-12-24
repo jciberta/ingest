@@ -133,7 +133,7 @@ function RecercaKeyPress(event) {
  *
  * @param obj Objecte que ha provocat la crida.
  * @param event Event que ha provocat la crida.
- * @param tipus 0 per enter, 1 per real.
+ * @param tipus 0 per enter, 1 per real, 2 per lookup.
  */
 function FormFitxaKeyDown(obj, event, tipus) {
 	switch(tipus) {
@@ -147,6 +147,21 @@ function FormFitxaKeyDown(obj, event, tipus) {
 		// Real. Tecles permeses: BS, DEL, 0..9, Esquerra, Dreta, ENTER, .
 		if ([8, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 37, 39, 13, 46].indexOf(event.keyCode) === -1) {
 			event.preventDefault();
+		}
+		break;
+	  case 2: 
+		// Lookup. Tecles permeses: BS, DEL
+		if ([8, 46].indexOf(event.keyCode) === -1) {
+			event.preventDefault();
+		}
+		else {
+			event.preventDefault();
+			obj.value = "";
+			nom = obj.name;
+			// Esborrem també el codi
+			nom = nom.replace('lkp_', 'lkh_');
+			obj = document.getElementsByName(nom)[0];
+			obj.value = "";
 		}
 		break;
 	}
@@ -248,8 +263,15 @@ console.dir('jsonForm: ' + jsonForm);
 		},
         success: function(data) {
 			$('#btnDesa').hide();
-			$('#MissatgeCorrecte').show();
-            $('#debug').html(data);
+			i = data.indexOf('ERROR DesaFitxa');
+			if (i > -1) {
+				$('#MissatgeError').html('Hi ha hagut un error en desar les dades.' + data);
+				$('#MissatgeError').show();
+			}
+			else {
+				$('#MissatgeCorrecte').show();
+				$('#MissatgeTorna').show();
+			}
         }, 
 		error: function(data) {
 			$('#MissatgeError').show();
