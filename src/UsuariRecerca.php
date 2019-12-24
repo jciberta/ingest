@@ -214,10 +214,10 @@ switch ($Accio) {
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
 		
 		$SQL = ' SELECT '.
-			' 	U.usuari_id AS UsuariId, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
+			' 	U.usuari_id AS UsuariId, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS NomAlumne, U.username, '.
 			' 	Edat(U.data_naixement) AS edat, FormataData(U.data_ultim_login) AS UltimLoginAlumne, '.
-			' 	UP.username AS NIFPare, UP.nom AS NomPare, UP.cognom1 AS Cognom1Pare, UP.cognom2 AS Cognom2Pare, FormataData(UP.data_ultim_login) AS UltimLoginPare,'.
-			' 	UM.username AS NIFMare, UM.nom AS NomMare, UM.cognom1 AS Cognom1Mare, UM.cognom2 AS Cognom2Mare, FormataData(UM.data_ultim_login) AS UltimLoginMare,'.
+			' 	UP.username AS NIFPare, FormataCognom1Cognom2Nom(UP.nom, UP.cognom1, UP.cognom2) AS NomResp1, FormataData(UP.data_ultim_login) AS UltimLoginPare,'.
+			' 	UM.username AS NIFMare, FormataCognom1Cognom2Nom(UM.nom, UM.cognom1, UM.cognom2) AS NomResp2, FormataData(UM.data_ultim_login) AS UltimLoginMare,'.
 			' 	M.matricula_id, M.grup, '.
 			' 	C.codi, C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa '.
 			' FROM USUARI U '.
@@ -233,8 +233,8 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'UsuariId';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, UltimLoginAlumne, edat, codi, nivell, grup, NomPare, Cognom1Pare, Cognom2Pare, UltimLoginPare, NomMare, Cognom1Mare, Cognom2Mare, UltimLoginMare';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Últim login, Edat, Curs, Nivell, Grup, Nom resp1, 1r cognom resp1, 2n cognom resp1, Últim login, Nom resp2, 1r cognom resp2, 2n cognom resp2, Últim login';
+		$frm->Camps = 'NomAlumne, UltimLoginAlumne, edat, codi, nivell, grup, NomResp1, UltimLoginPare, NomResp2, UltimLoginMare';
+		$frm->Descripcions = 'Alumne, Últim login, Edat, Curs, Nivell, Grup, Nom resp1, Últim login, Nom resp2, Últim login';
 
 		// Filtre
 		if ($CursId < 0) {
