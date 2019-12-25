@@ -307,6 +307,12 @@ CREATE TABLE NOTES_MP
     CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE VIEW CURS_ACTUAL AS
+	SELECT C.* 
+    FROM CURS C 
+    LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) 
+    WHERE AA.actual=1
+;
 
 /*
  * Edat

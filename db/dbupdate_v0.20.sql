@@ -2,6 +2,13 @@
 Actualització de la DB a partir de la versió 0.20
 */
 
+CREATE VIEW CURS_ACTUAL AS
+	SELECT C.* 
+    FROM CURS C 
+    LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) 
+    WHERE AA.actual=1
+;
+
 /*
  * FormataNomCognom1Cognom2
  *

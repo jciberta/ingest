@@ -138,7 +138,7 @@ switch ($Accio) {
 
 		// Filtre
 		if ($CursId < 0) {
-			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
 			array_unshift($aCurs[0], '');
 			array_unshift($aCurs[1], '');
 			$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
@@ -238,7 +238,7 @@ switch ($Accio) {
 
 		// Filtre
 		if ($CursId < 0) {
-			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS", "curs_id", "nom");
+			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
 			array_unshift($aCurs[0], '');
 			array_unshift($aCurs[1], '');
 			$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
