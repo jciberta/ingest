@@ -56,11 +56,13 @@ class Expedient
 			' N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, '.
 			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
 			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
+			' CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, '.
 			' UF.*, MP.*, CF.*, N.*, C.* '.
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 			' LEFT JOIN CURS C ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN MATRICULA M ON (M.curs_id=C.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
@@ -114,6 +116,7 @@ class Expedient
 			$NomAlumne = $row["NomAlumne"];
 			$Cognom1Alumne = $row["Cognom1Alumne"];
 			$Cognom2Alumne = $row["Cognom2Alumne"];
+			$pdf->AnyAcademic = $row["AnyAcademic"];
 			$pdf->NomComplet = trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne;
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
@@ -273,6 +276,12 @@ class Expedient
 class QualificacionsPDF extends DocumentPDF 
 {
 	/**
+	* Any acadèmic.
+	* @var string
+	*/    
+	public $AnyAcademic = '';
+
+	/**
 	* Nom complet de l'alumne.
 	* @var string
 	*/    
@@ -315,7 +324,7 @@ class QualificacionsPDF extends DocumentPDF
         $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
 
 		$this->SetXY(30, 30);
-		$this->Titol1('Informe de qualificacions del curs escolar 2019-2020');
+		$this->Titol1('Informe de qualificacions del curs escolar '.$this->AnyAcademic);
 
 		$this->Titol2("Dades del centre");
 		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
