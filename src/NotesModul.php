@@ -53,6 +53,7 @@ echo '<script language="javascript" src="js/Notes.js?v1.0" type="text/javascript
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
+$Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
 $EstatAvaluacio = $Avaluacio->Estat($CursId);
@@ -63,11 +64,12 @@ $NotesModul = new NotesModul($conn, $Usuari);
 $NotesModul->CarregaRegistre($CursId, $ModulId);
 $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 
-if (True) {
-	echo '<input type="checkbox" name="chbGrupAB" checked onclick="MostraTutoria(this, 1);">Tutoria AB &nbsp';
-	echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
-	$NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $EstatAvaluacio);
-}
+$Tutoria = new GrupTutoria($conn, $Usuari);
+echo $Tutoria->GeneraMostraGrup($CursId);
+
+//echo '<input type="checkbox" name="chbGrupAB" checked onclick="MostraTutoria(this, 1);">Tutoria AB &nbsp';
+//echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
+$NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $Avaluacio);
 
 if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
 	Notes::CreaMenuContextual($Usuari);
