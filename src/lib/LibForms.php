@@ -853,8 +853,9 @@ class FormRecerca extends Form {
 	 * @param string $URL URL de l'opció. Se li afegirà l'identificador del registre.
 	 * @param string $CampClau Camp del registre que serveix com a identificador. 
 	 * 		Si no s'especifica, com a paràmetre es passarà l'identificador del registre. 
+	 * @param string $Imatge Imatge a posar en comptes del títol. 
 	 */
-	public function AfegeixOpcio(string $Titol, string $URL, string $CampClau = '') {
+	public function AfegeixOpcio(string $Titol, string $URL, string $CampClau = '', string $Imatge = '') {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
@@ -862,6 +863,7 @@ class FormRecerca extends Form {
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->URL = $URL;
 		$this->Opcions[$i]->Camp = $CampClau;
+		$this->Opcions[$i]->Imatge = $Imatge;
 		$this->Opcions[$i]->Opcions = [];
 	}
 
@@ -899,10 +901,16 @@ class FormRecerca extends Form {
 			
 			if ($obj->Tipus == self::toURL) {
 				// AfegeixOpcio
-				if ($obj->Camp == '')
-					$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
-				else 
-					$Retorn .= '<TD><A HREF="'.$obj->URL.$row[$obj->Camp].'">'.$obj->Titol.'<A>';
+//				if ($obj->Camp == '')
+//					$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
+//				else 
+//					$Retorn .= '<TD><A HREF="'.$obj->URL.$row[$obj->Camp].'">'.$obj->Titol.'<A>';
+				$URL = ($obj->Camp == '') ? $obj->URL.$Id : $obj->URL.$row[$obj->Camp];
+//				$Retorn .= '<TD><A HREF="'.$URL.'">'.$obj->Titol.'<A>';
+				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
+				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
+				$Retorn .= '<TD><A HREF="'.$URL.'">'.$Text.'<A>';
+				
 			}
 			else if ($obj->Tipus == self::toAJAX) {
 				// AfegeixOpcioAJAX

@@ -120,7 +120,7 @@ class Curs
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		$frm->AfegeixOpcio('PDF', 'GeneraExpedientsPDF.php?CursId=');
+		$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
 		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
 		if ($this->Usuari->es_admin)
 			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');

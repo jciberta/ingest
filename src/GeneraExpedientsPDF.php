@@ -52,12 +52,16 @@ $Sufix = $Avaluacio->EstatText();
 echo "<HR>";
 
 echo "Preparant directori per als expedients... ";
-//echo "<PRE>";
-//echo "  Esborrant directori per als expedients<BR>";
+if (Config::Debug) {
+	echo "<PRE>";
+	echo "  Esborrant directori per als expedients<BR>";
+}
 EsborraDirectori(INGEST_DATA."/pdf");
-//echo "  Creant directori per als expedients<BR>";
+if (Config::Debug)
+	echo "  Creant directori per als expedients<BR>";
 mkdir(INGEST_DATA."/pdf");
-//echo "</PRE>";
+if (Config::Debug)
+	echo "</PRE>";
 echo "Ok.<BR>";
 
 echo "Generant l'script per als expedients... ";
@@ -66,12 +70,15 @@ echo "Ok.<BR>";
 
 echo "Executant l'script per als expedients...";
 $aText = explode("\r\n",$Text);
-//echo "<PRE>";
+if (Config::Debug)
+	echo "<PRE>";
 for ($i=0; $i<count($aText)-1; $i++) {
-	//echo "  Executant $aText[$i]<BR>";
+	if (Config::Debug)
+		echo "  Executant $aText[$i]<BR>";
 	$Result = shell_exec($aText[$i]);
 }
-//echo "</PRE>";
+if (Config::Debug)
+	echo "</PRE>";
 echo " Ok.<BR>";
 
 // https://stackoverflow.com/questions/17708562/zip-all-files-in-directory-and-download-generated-zip
@@ -81,15 +88,18 @@ echo "Comprimint els expedients... ";
 $zip = new ZipArchive;
 $zip->open($zipname, ZipArchive::CREATE);
 if ($handle = opendir(INGEST_DATA."/pdf")) {
-	//echo "<PRE>";
+	if (Config::Debug)
+		echo "<PRE>";
 	while (false !== ($entry = readdir($handle))) {
 		$ext = pathinfo($entry, PATHINFO_EXTENSION);
 		if (strtoupper($ext) == "PDF") {
-			//echo "  Comprimint $entry<br>";
+			if (Config::Debug)
+				echo "  Comprimint $entry<br>";
 			$zip->addFile(INGEST_DATA."/pdf/".$entry, $entry);
 		}
 	}
-	//echo "</PRE>";
+	if (Config::Debug)
+		echo "</PRE>";
 	closedir($handle);
 }
 $zip->close();

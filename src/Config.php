@@ -37,10 +37,11 @@ $CFG->Secret      = hex2bin(Config::Secret); // Clau per a les funcions d'encrip
 if (defined('STDIN')) {
 	// Execució de PHP via CLI.
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		//define('ROOT', 'D:\CASA\Xiber\ingest\src');
-		//define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
-		define('ROOT', 'D:/jciberta/ingest/src');
-		define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		define('ROOT', 'D:\CASA\Xiber\ingest\src');
+		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
+		define('UNITAT_XAMPP', 'D');
+		//define('ROOT', 'D:/jciberta/ingest/src');
+		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('ROOT', '/var/www/html/ingest/src');
@@ -51,8 +52,9 @@ else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		//define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
-		define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
+		define('UNITAT_XAMPP', 'D');
+		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		define('INGEST_DATA', '/var/www/ingest-data');

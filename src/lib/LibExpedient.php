@@ -215,7 +215,7 @@ class Expedient
 	private function ComandaPHP(): string {
 		$Retorn = '';
 		if ($this->SistemaOperatiu === 'Windows') 
-			$Retorn = 'C:\xampp\php\php.exe';
+			$Retorn = UNITAT_XAMPP.':\xampp\php\php.exe';
 		else if ($this->SistemaOperatiu === 'Linux') 
 			$Retorn = 'php';
 		return $Retorn;
