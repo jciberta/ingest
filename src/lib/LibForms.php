@@ -801,8 +801,10 @@ class FormRecerca extends Form {
 		$sRetorn .= '    </TD>';
 		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
 			$sRetorn .= '<TD style="align:right">';
+			$sRetorn .= '<span style="float:right;">';
 			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
 			$sRetorn .= '  <a href="'.$this->URLEdicio.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
+			$sRetorn .= '</span>';
 			$sRetorn .= '</TD>';
 		}
 		$sRetorn .= '    </TR>';
