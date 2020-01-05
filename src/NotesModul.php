@@ -49,15 +49,15 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.0" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
-$EstatAvaluacio = $Avaluacio->Estat($CursId);
-if ($EstatAvaluacio != Avaluacio::Tancada)
+//$EstatAvaluacio = $Avaluacio->Estat($CursId);
+if ($Avaluacio->Estat() != Avaluacio::Tancada)
 	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
 $NotesModul = new NotesModul($conn, $Usuari);
@@ -71,8 +71,16 @@ echo $Tutoria->GeneraMostraGrup($CursId);
 //echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
 $NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $Avaluacio);
 
-if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
-	Notes::CreaMenuContextual($Usuari);
+echo "<BR>";
+
+//if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
+//	Notes::CreaMenuContextual($Usuari);
+
+//echo '<span style="float:right;">';
+//echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF" onClick="CalculaQualificacionsFinalsModul(this);">Calcula qualificació final del mòdul</a>';
+echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" onClick="CalculaQualificacionsFinalsModul();">Calcula qualificacions finals del mòdul</a>&nbsp;';
+echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" onClick="EsborraQualificacionsFinalsModul();">Esborra qualificacions finals del mòdul</a>&nbsp;';
+//echo '</span>';
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";

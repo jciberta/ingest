@@ -399,7 +399,8 @@ function ResaltaColumna(element, color, colorUF) {
 	var y = data[2];
 
 	var uf = document.getElementById('uf_' + y);
-	uf.style.color = colorUF;
+	if (uf !== null)
+		uf.style.color = colorUF;
 
 	var i = 0;
 	var CellaId = grd + '_' + i + '_' + y;
@@ -519,16 +520,20 @@ console.dir(element.id);
  * ActualitzaNotaModul
  * Actualitza la nota d'un input.
  * @param element Input que ha fet la crida.
+ * @param bool bSempreActualitza Indica que s'ha de forçar l'actualització.
  */
-function ActualitzaNotaModul(element) { 
+function ActualitzaNotaModul(element, bSempreActualitza) {
+console.log('ActualitzaNotaModul');
+	// Valor per defecte
+	if (typeof bSempreActualitza === "undefined" || bSempreActualitza === null) 
+		bSempreActualitza = false; 
+
 	sText = 'Executant ActualitzaNotaModul... ';
 	$('#debug').html(sText);
-console.log(sText);
 	
 	var sNota = $('input[name="TempNotaModul"]').val();	
-//console.log(sNota);
 console.log(element.value);
-	if (sNota == element.value) {
+	if (sNota == element.value && !bSempreActualitza) {
 		sText = sText + 'No ha calgut actualitzar';
 		$('#debug').html(sText);
 console.log(sText);
@@ -820,3 +825,85 @@ function ActualitzaTaulaNotes(element) {
 		}
     } );
 }
+
+/**
+ * CalculaQualificacionsFinalsModul
+ * Calcula les qualificacions finals del mòdul (de tota la graella).
+ */
+function CalculaQualificacionsFinalsModul() { 
+console.log('CalculaQualificacionsFinalsModul');
+	var TotalX = document.getElementById('TotalX').value;
+	var TotalY = document.getElementById('TotalY').value;
+	var objArrayHores = document.getElementById('grd2_ArrayHores');
+	var ArrayHores = JSON.parse(objArrayHores.value);	
+	var TotalHores = document.getElementById('grd2_TotalHores').value;	
+
+	for (var y = 1; y <= TotalY; y++) {
+console.log('Fila '+y);
+		ArrayNotes = [];
+		for (var x = 0; x < TotalX; x++) {
+			CellaId = 'grd2_' + y + '_' + x;
+			Cella = document.getElementById(CellaId).value;
+			ArrayNotes.push(Cella);
+		}
+//console.dir(ArrayHores);
+//console.dir(ArrayNotes);
+		Qualificacio = CalculaQualificacioFinalModul(ArrayNotes, ArrayHores);
+console.log('  Qualificació: ' + Qualificacio);
+		CellaId = 'grd2_' + y + '_' + x;
+		objCella = document.getElementById(CellaId);
+		//document.getElementById(CellaId).value(Qualificacio);
+		objCella.value = Qualificacio;
+		ActualitzaNotaModul(objCella);
+	}
+}
+	
+/**
+ * CalculaQualificacioFinalModul
+ * Calcula la qualificaciós final del mòdul.
+ * @param array aNotes Array de notes de cada UF.
+ * @param array aHores Array d'hores de cada UF.
+ * @return Retorna la qualificaciós final del mòdul, en el cas que es pugui calcular.
+ */
+function CalculaQualificacioFinalModul(aNotes, aHores) { 
+console.log('CalculaQualificacioFinalModul');
+	var bSenseNota = false;
+	var bNotaSuspera = false;
+	var TotalNotes = 0;
+	var TotalHores = 0;
+	var Qualificacio = '';
+	
+	for (var i = 0; i < aNotes.length && !bSenseNota; i++) {
+		bSenseNota = (aNotes[i] == '');
+		if (!bSenseNota) {
+			if (aNotes[i] < 5)
+				bNotaSuspera = true;
+			TotalNotes += aNotes[i]*aHores[i];
+			TotalHores += 10*aHores[i];
+		}
+	}
+	if (!bSenseNota) {
+		Qualificacio = Math.round(10* TotalNotes / TotalHores);
+		if (bNotaSuspera)
+			Qualificacio = Math.min(4, Qualificacio);
+	}
+	
+	return Qualificacio;
+}
+
+/**
+ * EsborraQualificacionsFinalsModul
+ * Esboora les qualificacions finals del mòdul (de tota la graella).
+ */
+function EsborraQualificacionsFinalsModul() { 
+console.log('EsborraQualificacionsFinalsModul');
+	var TotalX = document.getElementById('TotalX').value;
+	var TotalY = document.getElementById('TotalY').value;
+	for (var y = 1; y <= TotalY; y++) {
+		CellaId = 'grd2_' + y + '_' + TotalX;
+		objCella = document.getElementById(CellaId);
+		objCella.value = '';
+		ActualitzaNotaModul(objCella, true);
+	}
+}
+

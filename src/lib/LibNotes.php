@@ -365,7 +365,7 @@ class Notes
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $Hores Hores que es sumen per saber el total.
-	 * @param string $Avaluacio Objecte de la classe Avaluacio.
+	 * @param object $Avaluacio Objecte de la classe Avaluacio.
 	 * @param string $Class Classe CSS per a la cel·la.
 	 * @return string Codi HTML de la cel·la.
 	 */
@@ -875,6 +875,8 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
 		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
 		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
+		echo "<input type=hidden id='TotalX' value=".count($Notes->UF[0]).">";
+		echo "<input type=hidden id='TotalY' value=".(count($Notes->Alumne)-1).">";
 
 	echo '</div>';
 	
@@ -899,8 +901,9 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		$Class = 'class="llistat'.$Llista.'"';
 		
 		$Retorn = "";
-		if ($row["BaixaMatricula"] == 1)
-			return $Retorn;
+//		if ($row["BaixaMatricula"] == 1)
+//			return $Retorn;
+		$style = ($row["BaixaMatricula"] == 1) ? " style='display:none' " : "";
 		
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 		$Retorn .= "<TD $Class id='alumne_".$i."' style='text-align:left'>$NomAlumne</TD>";
@@ -915,18 +918,20 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		}
 		// Nota mòdul
 		$Retorn .= '<td '.$Class.' style="text-align:center">'.$TotalHores.'</td>';			
-		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio);
+		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, $Class);
 		
 		$Retorn .= "<TD></TD></TR>";
 
-		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
+		$class = ($row["BaixaMatricula"] != 1) ? 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"] : '';
+		//$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
 		if ($Hores == $TotalHores)
 			$class .= ' Aprovat100';
-		$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
+		//$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
-		$this->FilaAlterna = !$this->FilaAlterna;
+		if ($row["BaixaMatricula"] != 1)
+			$this->FilaAlterna = !$this->FilaAlterna;
 		
 		return $Retorn;
 	}	
@@ -935,14 +940,15 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 * Crea una cel·la per a la nota del mòdul.
 	 * @param string $IdGraella Nom de la graella.
 	 * @param integer $i Fila.
-	 * @param integer $j Columna.
+	 * @param integer $j Columna. És necessària per al moviment de les fletxes, etc.
 	 * @param object $row Registre que correspon a la nota.
 	 * @param object $Professor Objecte de la classe Professor.
 	 * @param integer $Hores Hores que es sumen per saber el total.
 	 * @param object $Avaluacio Objecte avaluació.
+	 * @param string $Class Classe CSS per a la cel·la.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio): string {
+	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio, $Class = ''): string {
 		$EstatAvaluacio = $Avaluacio->Estat();
 		$MatriculaId = $row["matricula_id"];
 		$Llista = $this->FilaAlterna ? 2 : 1;
@@ -1004,14 +1010,13 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
 		
-		
 		// <INPUT>
 		// name: conté id i matrícula
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 		return "<TD $Class width=2>".
-			"<input type=text ".$Deshabilitat." style='".$style."'".
+			"<input class='nota' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaModulId_".$NotaId."_".$MatriculaId.
 			" id='".$Id."' value='".$ValorNota."' size=1 ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
