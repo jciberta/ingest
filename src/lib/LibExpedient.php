@@ -32,11 +32,18 @@ class Expedient
 	private $SistemaOperatiu = '';
 
 	/**
+	* Registre que conté les notes dels mòduls. Es carrega amb CarregaNotesMP.
+	* @var array
+	*/    
+	private $NotesMP = NULL;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con) {
 		$this->Connexio = $con;
+		$this->NotesMP = [];
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
 			$this->SistemaOperatiu = 'Windows';
 		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') 
@@ -50,7 +57,7 @@ class Expedient
 	 */
 	public static function SQL($MatriculaId): string {
 		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, UF.nivell AS NivellUF, '.
-			' MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
+			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
 			' N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, '.
@@ -68,6 +75,33 @@ class Expedient
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
 			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.matricula_id='.$MatriculaId;
 		return $SQL;
+    }
+
+	/**
+	 * Genera la SQL per obtenir les notes del mòduls professionals d'un alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
+	 * @return string Sentència SQL.
+	 */
+	private function SQLNotesMP(int $MatriculaId): string {
+		$SQL = ' SELECT * '.
+			' FROM NOTES_MP '.
+			' WHERE matricula_id='.$MatriculaId;
+		return $SQL;
+    }
+
+	/**
+	 * Carrega les notes del mòduls professionals d'un alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
+	 */
+	private function CarregaNotesMP(int $MatriculaId) {
+		$SQL = $this->SQLNotesMP($MatriculaId);
+		$ResultSet = $this->Connexio->query($SQL);
+		$row = $ResultSet->fetch_assoc();
+		while($row) {
+			$this->NotesMP[$row["modul_professional_id"]] = $row["nota"];
+			$row = $ResultSet->fetch_assoc();
+		}		
+		$ResultSet->close();
     }
 
 	/**
@@ -107,6 +141,10 @@ class Expedient
 
 		$ResultSet = $this->Connexio->query($SQL);
 
+		// Carreguem les notes dels MP
+		$this->CarregaNotesMP($MatriculaId);
+
+		// Carreguem les notes de les UF
 		// Posem les dades del ResultSet en una estructura de dades pròpia
 		$Qualificacions = [];
 		$i = -1;
@@ -121,7 +159,6 @@ class Expedient
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
-//			$pdf->Avaluacio = "?";
 			$pdf->Avaluacio = $this->TextAvaluacio($row["avaluacio"], $row["trimestre"]);
 			$pdf->AddPage(); // Crida al mètode Header
 			$ModulAnterior = '';
@@ -131,7 +168,10 @@ class Expedient
 					$Qualificacions[$i] = new stdClass();
 					$Qualificacions[$i]->Nom = utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
-					$Qualificacions[$i]->Qualf = '*';
+					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
+						$Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
+					else
+						$Qualificacions[$i]->Qualf = '';
 					$Qualificacions[$i]->Conv = 'Ord.';
 					$Qualificacions[$i]->UF = [];
 					$j = -1;
