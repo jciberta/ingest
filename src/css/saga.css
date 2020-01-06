@@ -1,6 +1,6 @@
 /* Estilos referentes a BODY */
 
-body {
+saga {
 	font-family: Arial, Verdana, Tahoma;
 	font-size: 8pt;
 	font-weight: normal;
@@ -8,14 +8,14 @@ body {
 	padding: 0px;
 }
 
-body.contingut {
+saga.contingut {
 	background: #cad4d4;
 	background-color: #8da4a0;
 	color: white;
 	padding: 0px 0px 0px 0px;
 }
 
-body.contingut-iframe {
+saga.contingut-iframe {
 	background: #718884;
 	background-color:#718884;
 	color: white;

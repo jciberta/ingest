@@ -52,11 +52,14 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
+// Inicialització de l'ajuda
+// https://getbootstrap.com/docs/4.0/components/popovers/
+echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
 $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
-//$EstatAvaluacio = $Avaluacio->Estat($CursId);
 if ($Avaluacio->Estat() != Avaluacio::Tancada)
 	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
@@ -67,20 +70,23 @@ $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 echo $Tutoria->GeneraMostraGrup($CursId);
 
-//echo '<input type="checkbox" name="chbGrupAB" checked onclick="MostraTutoria(this, 1);">Tutoria AB &nbsp';
-//echo '<input type="checkbox" name="chbGrupBC" checked onclick="MostraTutoria(this, 2);">Tutoria BC &nbsp';
+echo '<span style="float:right;">';
+echo $NotesModul->CreaBotoJS('btn', 'Calcula qualificacions finals del mòdul', 'CalculaQualificacionsFinalsModul();');
+echo $NotesModul->CreaAjuda('Càlcul de les qualificacions finals del mòdul', 
+	'Per al càlcul de les qualificació final del mòdul es té en compte els següents casos:<br>'.
+	'<ol>'.
+	'<li>Si hi ha alguna UF que no té nota, no es calcula.</li>'.
+	'<li>Si totes les UF estan aprovades, es fa la mitja ponderada amb les hores.</li>'.
+	'<li>Si totes les UF tenen notes i hi ha alguna suspesa, es fa la mitja ponderada amb les hores, i si aquesta és superior a 4, es queda un 4.</li>'.
+	'</ol>'.
+	'No obstant, la qualificació final es pot introduir també a mà.'
+	);
+echo $NotesModul->CreaBotoJS('btn', 'Esborra qualificacions finals del mòdul', 'EsborraQualificacionsFinalsModul();');
+echo '</span>';
+
+echo "<P>";
+
 $NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $Avaluacio);
-
-echo "<BR>";
-
-//if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
-//	Notes::CreaMenuContextual($Usuari);
-
-//echo '<span style="float:right;">';
-//echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF" onClick="CalculaQualificacionsFinalsModul(this);">Calcula qualificació final del mòdul</a>';
-echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" onClick="CalculaQualificacionsFinalsModul();">Calcula qualificacions finals del mòdul</a>&nbsp;';
-echo '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" onClick="EsborraQualificacionsFinalsModul();">Esborra qualificacions finals del mòdul</a>&nbsp;';
-//echo '</span>';
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";

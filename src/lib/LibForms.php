@@ -21,6 +21,7 @@ require_once(ROOT.'/lib/LibHTML.php');
  * Classe Form.
  *
  * Classe base de la quals descendeixen els formularis.
+ * Conté els mètodes per crear els components bàsics.
  */
 class Form {
 	// Tipus de camps per al formulari.
@@ -129,6 +130,40 @@ class Form {
 	}	
 	
 	/**
+	 * Crea un clicable per a l'ajuda.
+	 * @param string $Titol Títol de l'ajuda.
+	 * @param string $Contingut Contingut de l'ajuda.
+	 * @return string Codi HTML de l'ajuda.
+	 */
+	public function CreaAjuda(string $Titol, string $Contingut): string {
+		$sRetorn = '<span class="text-nowrap">';
+		$sRetorn .= '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover" '.
+			"title='$Titol'";
+		$sRetorn .= 'data-placement="right" data-content="&lt;div class=&quot;no-overflow&quot;&gt;&lt;p&gt;'.
+			"$Contingut".
+			'&lt;/p&gt;&lt;/div&gt; "';
+		$sRetorn .= 'data-html="true" tabindex="0" data-trigger="focus">';
+		$sRetorn .= '<img src="img/help.svg">';
+		$sRetorn .= '</a>';
+		$sRetorn .= '</span>&nbsp;&nbsp;';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un botó.
+	 * @param string $Nom Nom del botó.
+	 * @param string $Titol Títol de l'ajuda.
+	 * @param string $Funcio Funció JavaScript.
+	 * @return string Codi HTML del botó.
+	 */
+	public function CreaBotoJS(string $Nom, string $Titol, string $Funcio): string {
+		$sRetorn = '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" '.
+			" name='$Nom'".
+			" onClick='$Funcio'>$Titol</a>&nbsp;";
+		return $sRetorn;
+	}	
+	
+	/**
 	 * Crea un camp de tipus checkbox.
 	 *
 	 * @param string $Nom Nom del element.
@@ -136,7 +171,7 @@ class Form {
 	 * @param boolean $Valor Valor per defecte de l'element.
 	 * @param array $off Opcions del formulari.
 	 * @param string $onChange Funció que crida l'event onChange (opcional).
-	 * @return void
+	 * @return string Codi HTML del checkbox.
 	 */
 	public function CreaCheckBox(string $Nom, string $Titol, bool $Valor, array $off = [], $onChange = '') {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');

@@ -68,31 +68,29 @@ $Notes->CarregaRegistre($CursId, $Nivell);
 $Grup = new GrupClasse($conn, $Usuari);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 
-if (True) {
-	echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
-	if ($Nivell == 2) {
-		echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
-		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
+if ($Nivell == 2) {
+	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
+	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
+	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 
-		// Notes de 2n 
-		$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre2, 2, $Professor, $Avaluacio);
+	// Notes de 2n 
+	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre2, 2, $Professor, $Avaluacio);
 
-		// Notes de 1r d'alumnes de 2n
-		$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 1, $Professor, $Avaluacio);
-	}
-	else {
-		echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-		echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-		echo $Grup->GeneraMostraGrup($CursId);
-		echo $Tutoria->GeneraMostraGrup($CursId);
+	// Notes de 1r d'alumnes de 2n
+	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 1, $Professor, $Avaluacio);
+}
+else {
+	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
+	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	echo $Grup->GeneraMostraGrup($CursId);
+	echo $Tutoria->GeneraMostraGrup($CursId);
 
-		// Notes de 1r d'alumnes de 1r
-		$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $Avaluacio);
+	// Notes de 1r d'alumnes de 1r
+	$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $Avaluacio);
 
-		// Notes de 1r d'alumnes de 2n
-		$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 2, $Professor, $Avaluacio);
-	}
+	// Notes de 1r d'alumnes de 2n
+	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 2, $Professor, $Avaluacio);
 }
 
 if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)

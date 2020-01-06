@@ -17,6 +17,7 @@
 
 require_once(ROOT.'/lib/LibArray.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 
@@ -162,7 +163,7 @@ function UltimaNota($Registre)
 /**
  * Classe que encapsula les utilitats per al maneig de les notes.
  */
-class Notes 
+class Notes extends Form
 {
 	/**
 	* Connexió a la base de dades.
@@ -199,8 +200,9 @@ class Notes
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
+//		$this->Connexio = $con;
+//		$this->Usuari = $user;
+		parent::__construct($con, $user);
 		$this->Registre1 = new stdClass();
 		$this->Registre2 = new stdClass();
 	}	
@@ -797,7 +799,7 @@ class NotesModul extends Notes
 		$Nivell = 0;
 
 		// Formulari amb les notes
-		echo '<DIV id=notes'.$IdGraella.'>';
+		echo '<DIV class="saga" id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
 		
 echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 641px;" id="content">';
