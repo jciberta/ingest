@@ -34,6 +34,8 @@ $CicleId = $Curs->ObteCicleFormatiuId();
 $Nivell = $Curs->ObteNivell();
 //print '<br>CursId: '.$CursId.', CicleId: '.$CicleId.', Nivell: '.$Nivell.'<br>';
 
+$ActivaAdministracio = (isset($_GET) && array_key_exists('ActivaAdministracio', $_GET)) ? $_GET['ActivaAdministracio'] : '';
+
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
 $Professor = new Professor($conn, $Usuari);
@@ -85,6 +87,20 @@ else {
 	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 	echo $Grup->GeneraMostraGrup($CursId);
 	echo $Tutoria->GeneraMostraGrup($CursId);
+
+	if ($Usuari->es_admin) {
+		// Administració avançada
+		echo '<span style="float:right;">';
+		echo '&nbsp';
+		if ($ActivaAdministracio==1) {
+			echo '<a href="Notes.php?CursId='.$CursId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaAdministracio">Desactiva administració avançada</a>';
+			$Notes->Administracio = true;
+		}
+		else
+			echo '<a href="Notes.php?ActivaAdministracio=1&CursId='.$CursId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaAdministracio">Activa administració avançada</a>';
+		echo '</span>';
+	}
+
 
 	// Notes de 1r d'alumnes de 1r
 	$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $Avaluacio);

@@ -196,15 +196,21 @@ class Notes extends Form
 	private $CursId = -1;
 
 	/**
+	* Indica si està activa l'administració avançada, amb més característiques:
+	* 	- Augmenta 1 convocatòria per alumne (per entrar notes anteriors).
+	* @var bool
+	*/    
+	public $Administracio = false;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con, $user) {
-//		$this->Connexio = $con;
-//		$this->Usuari = $user;
 		parent::__construct($con, $user);
 		$this->Registre1 = new stdClass();
 		$this->Registre2 = new stdClass();
+		$this->Administracio = false;
 	}	
 	
 	/**
@@ -342,7 +348,8 @@ class Notes extends Form
 		$TotalPercentatge = $Hores/$TotalHores*100;
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
-		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
+		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
+		if ($this->Usuari->es_admin && $this->Administracio) {
 			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
 			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
 		}
