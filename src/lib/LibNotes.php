@@ -255,7 +255,8 @@ class Notes extends Form
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
 			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
-			if ($this->Usuari->es_admin)
+			$MPId = $aModulsId[$index];
+			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
 			else
 				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);

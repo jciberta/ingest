@@ -35,6 +35,7 @@ class Professor extends Usuari
 		$UFAssignades = [];
 		$SQL = ' SELECT '.
 			' CF.cicle_formatiu_id, CF.codi AS CodiCF, CF.nom AS NomCF, '.
+			' MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell '.
 			' FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
@@ -77,6 +78,20 @@ class Professor extends Usuari
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
 			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
+				$bRetorn = True;
+		}
+		return $bRetorn;
+	}
+
+	/**
+	 * Comprova si té assignat un mòdul professional.
+	 * @param integer $MP Identificador del MP.
+	 * @returns boolean Cert si té assignat el MP.
+	 */
+	function TeMP(int $MP): bool {
+		$bRetorn = False;
+		for($i = 0; $i < count($this->UFAssignades) && !$bRetorn; $i++) {
+			if ($this->UFAssignades[$i]->modul_professional_id == $MP) 
 				$bRetorn = True;
 		}
 		return $bRetorn;
