@@ -44,7 +44,7 @@ if (defined('STDIN')) {
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
-		define('ROOT', '/var/www/html/ingest/src');
+		define('ROOT', '/var/www/html/ingest');
 		define('INGEST_DATA', '/var/www/ingest-data');
 	}
 }
