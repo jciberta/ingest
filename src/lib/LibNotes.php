@@ -276,7 +276,8 @@ class Notes extends Form
 			else
 				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
-		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
+		echo "<TD style='text-align:center' colspan=2>Hores</TD>";
+		echo "</TR>";
 
 		// Hores
 		echo "<TR><TD></TD><TD></TD>";
@@ -291,7 +292,10 @@ class Notes extends Form
 			array_push($aHores, $row["Hores"]);
 		}
 		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+		echo "<TD style='text-align:center'>&percnt;</TD>";
+		if ($this->Usuari->es_admin)
+			echo "<TD style='text-align:center'>Mitjana</TD>";
+		echo "</TR>";
 
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
@@ -308,6 +312,28 @@ class Notes extends Form
 		echo "</DIV>";
 	}
 
+	/**
+	 * Calcula la nota mitjana d'un alumne (amb les notes que té entrades).
+	 * @param object $NotesAlumne Notes de l'alumne.
+	 * @return string Nota mitjana.
+	 */
+	private function NotaMitjana($NotesAlumne): string {
+		$Retorn = '';
+		$TotalHores = 0;
+		$TotalNota = 0;
+		for($j = 0; $j < count($NotesAlumne); $j++) {
+			$row = $NotesAlumne[$j];
+			$UltimaNota = UltimaNota($row);
+			if ($UltimaNota != '') {
+				$TotalHores += $row['Hores'];
+				$TotalNota += $row['Hores']*$UltimaNota;
+			}
+		}
+		if ($TotalNota > 0)
+			$Retorn = number_format($TotalNota / $TotalHores, 2);
+		return $Retorn;
+	}
+	
 	/**
 	 * Crea la fila de notes per a un alumne.
 	 * @param string $IdGraella Nom de la graella.
@@ -350,12 +376,19 @@ class Notes extends Form
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
 		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
-		if ($this->Usuari->es_admin && $this->Administracio) {
-			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
-			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
+		if ($this->Usuari->es_admin) {
+//			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+			$Retorn .= "<TD style='text-align:center'>".$this->NotaMitjana($Notes->UF[$i])."</TD>";
 		}
 		else
-			$Retorn .= "<TD></TD></TR>";
+			$Retorn .= "<TD></TD>";
+		if ($this->Usuari->es_admin && $this->Administracio) {
+			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD>";
+		}
+		else
+			$Retorn .= "<TD></TD>";
+		$Retorn .= "</TR>";
 
 		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
 		if ($Hores == $TotalHores)
