@@ -3,6 +3,8 @@
 /** 
  * LibImporta.php
  *
+ * Llibreria d'utilitats per a les importacions.
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */

@@ -831,7 +831,7 @@ function ActualitzaTaulaNotes(element) {
  * Calcula les qualificacions finals del mòdul (de tota la graella).
  */
 function CalculaQualificacionsFinalsModul() { 
-console.log('CalculaQualificacionsFinalsModul');
+console.log('->CalculaQualificacionsFinalsModul');
 	var TotalX = document.getElementById('TotalX').value;
 	var TotalY = document.getElementById('TotalY').value;
 	var objArrayHores = document.getElementById('grd2_ArrayHores');
@@ -866,7 +866,7 @@ console.log('  Qualificació: ' + Qualificacio);
  * @return Retorna la qualificaciós final del mòdul, en el cas que es pugui calcular.
  */
 function CalculaQualificacioFinalModul(aNotes, aHores) { 
-console.log('CalculaQualificacioFinalModul');
+console.log('->CalculaQualificacioFinalModul');
 	var bSenseNota = false;
 	var bNotaSuspera = false;
 	var TotalNotes = 0;
@@ -893,10 +893,10 @@ console.log('CalculaQualificacioFinalModul');
 
 /**
  * EsborraQualificacionsFinalsModul
- * Esboora les qualificacions finals del mòdul (de tota la graella).
+ * Esborra les qualificacions finals del mòdul (de tota la graella).
  */
 function EsborraQualificacionsFinalsModul() { 
-console.log('EsborraQualificacionsFinalsModul');
+console.log('->EsborraQualificacionsFinalsModul');
 	var TotalX = document.getElementById('TotalX').value;
 	var TotalY = document.getElementById('TotalY').value;
 	for (var y = 1; y <= TotalY; y++) {
@@ -906,4 +906,3 @@ console.log('EsborraQualificacionsFinalsModul');
 		ActualitzaNotaModul(objCella, true);
 	}
 }
-
