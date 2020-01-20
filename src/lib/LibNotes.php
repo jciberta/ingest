@@ -20,6 +20,7 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 /**
  * ObteTaulaNotesJSON
@@ -165,6 +166,10 @@ function UltimaNota($Registre)
  */
 class Notes extends Form
 {
+	// Tipus d'exportació.
+	const teULTIMA_NOTA = 1;
+	const teULTIMA_CONVOCATORIA = 2;
+
 	/**
 	* Connexió a la base de dades.
 	* @var object
@@ -276,7 +281,8 @@ class Notes extends Form
 			else
 				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
-		echo "<TD style='text-align:center' colspan=2>Hores</TD></TR>";
+		echo "<TD style='text-align:center' colspan=2>Hores</TD>";
+		echo "</TR>";
 
 		// Hores
 		echo "<TR><TD></TD><TD></TD>";
@@ -291,7 +297,10 @@ class Notes extends Form
 			array_push($aHores, $row["Hores"]);
 		}
 		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		echo "<TD style='text-align:center'>&percnt;</TD></TR>";
+		echo "<TD style='text-align:center'>&percnt;</TD>";
+		if ($this->Usuari->es_admin)
+			echo "<TD style='text-align:center'>Mitjana</TD>";
+		echo "</TR>";
 
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
@@ -308,6 +317,28 @@ class Notes extends Form
 		echo "</DIV>";
 	}
 
+	/**
+	 * Calcula la nota mitjana d'un alumne (amb les notes que té entrades).
+	 * @param object $NotesAlumne Notes de l'alumne.
+	 * @return string Nota mitjana.
+	 */
+	private function NotaMitjana($NotesAlumne): string {
+		$Retorn = '';
+		$TotalHores = 0;
+		$TotalNota = 0;
+		for($j = 0; $j < count($NotesAlumne); $j++) {
+			$row = $NotesAlumne[$j];
+			$UltimaNota = UltimaNota($row);
+			if ($UltimaNota != '') {
+				$TotalHores += $row['Hores'];
+				$TotalNota += $row['Hores']*$UltimaNota;
+			}
+		}
+		if ($TotalNota > 0)
+			$Retorn = number_format($TotalNota / $TotalHores, 2);
+		return $Retorn;
+	}
+	
 	/**
 	 * Crea la fila de notes per a un alumne.
 	 * @param string $IdGraella Nom de la graella.
@@ -350,12 +381,19 @@ class Notes extends Form
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
 		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
-		if ($this->Usuari->es_admin && $this->Administracio) {
-			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
-			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD></TR>";
+		if ($this->Usuari->es_admin) {
+//			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+			$Retorn .= "<TD style='text-align:center'>".$this->NotaMitjana($Notes->UF[$i])."</TD>";
 		}
 		else
-			$Retorn .= "<TD></TD></TR>";
+			$Retorn .= "<TD></TD>";
+		if ($this->Usuari->es_admin && $this->Administracio) {
+			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
+			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD>";
+		}
+		else
+			$Retorn .= "<TD></TD>";
+		$Retorn .= "</TR>";
 
 		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
 		if ($Hores == $TotalHores)
@@ -631,7 +669,8 @@ class Notes extends Form
 		$AlumneId = -1;
 		$row = $ResultSet->fetch_assoc();
 		while($row) {
-	//print_r($row);
+//print_r($row);
+//print '<hr>';
 			if ($row["NivellUF"] == 1) {
 				if ($row["AlumneId"] != $AlumneId) {
 					$AlumneId = $row["AlumneId"];
@@ -658,11 +697,92 @@ class Notes extends Form
 			}
 			$row = $ResultSet->fetch_assoc();
 		}		
-//		print_r($this->Registre1);
-//		print('<hr>');
-//		print_r($this->Registre2);
-//		print('<hr>');
+		//print_r($this->Registre1->Alumne[0]);
+		//print('<hr>');
+		//print_r($this->Registre2);
+		//print('<hr>');
 
+	}	
+	
+	/**
+	 * Exporta les notes d'un curs en format CSV.
+	 * https://stackoverflow.com/questions/16251625/how-to-create-and-download-a-csv-file-from-php-script
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
+	 * @param string $filename Nom del fitxer.
+	 * @param string $delimiter Separador.
+	 */				
+	public function ExportaCSV($CursId, int $Tipus=self::teULTIMA_NOTA, string $filename="export.csv", string $delimiter=";")
+	{
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="'. $filename .'";');
+
+		// Clean output buffer
+		ob_end_clean();
+
+		$Curs = new Curs($this->Connexio, $this->Usuari);
+		$Curs->CarregaRegistre($CursId);
+		$Nivell = $Curs->ObteNivell();
+		$Notes = $this->CarregaRegistre($CursId, $Nivell);
+		$RegistreNotes = ($Nivell == 1) ? $this->Registre1 : $this->Registre2;
+
+		$handle = fopen('php://output', 'w');
+
+		// Mòduls
+		$aNotes = [];
+		array_push($aNotes, '');
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			array_push($aNotes, utf8_encode($row["CodiMP"]));
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		//print_r($aNotes);
+		//print('<hr>');
+
+		// Unitats formatives
+		$aNotes = [];
+		array_push($aNotes, '');
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			array_push($aNotes, utf8_encode($row["CodiUF"]));
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		//print_r($aNotes);
+		//print('<hr>');
+		
+		// Notes
+		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
+			$RegistreAlumne = $RegistreNotes->UF[$i];
+			if ($RegistreNotes->Alumne[$i]['NivellMAT'] <= $Nivell) {
+				//print_r($RegistreAlumne);
+				$aNotes = [];
+				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
+				array_push($aNotes, $Nom);
+				for($j = 0; $j < count($RegistreAlumne); $j++) {
+					$row = $RegistreAlumne[$j];
+					switch ($Tipus) {
+						case Notes::teULTIMA_NOTA:
+							$UltimaNota = UltimaNota($row);
+							break;
+						case Notes::teULTIMA_CONVOCATORIA:
+							$UltimaNota = ($row["Convocatoria"] == 0) ? UltimaNota($row) : $row["nota".$row["Convocatoria"]];
+							break;
+					}
+					array_push($aNotes, $UltimaNota);
+				}
+				fputcsv($handle, $aNotes, $delimiter);
+				//print_r($aNotes);
+				//print('<hr>');
+			}
+		}
+
+		fclose($handle);
+
+		// Flush buffer
+		ob_flush();
+
+		// Use exit to get rid of unexpected output afterward
+		exit();
 	}	
 }
 
