@@ -309,6 +309,8 @@ class Notes extends Form
 			}
 		}
 		echo "</TABLE>";
+		if ($IdGraella == $Nivell)
+			echo $this->CreaBotoDescarregaCSV($this->CursId);
 		echo "<input type=hidden name=TempNota value=''>";
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
 		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
@@ -316,6 +318,16 @@ class Notes extends Form
 		echo "</FORM>";
 		echo "</DIV>";
 	}
+
+	/**
+	 * Crea el botó per a la descàrrega en CSV.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @return string Codi HTML del botó.
+	 */
+	private function CreaBotoDescarregaCSV(string $CursId): string {
+		$URL = "Descarrega.php?Accio=ExportaNotesCSV&CursId=$CursId";
+		return $this->CreaBoto('btnDescarregaCSV', 'Descarrega en CSV', $URL);
+ 	}	
 
 	/**
 	 * Calcula la nota mitjana d'un alumne (amb les notes que té entrades).
@@ -655,7 +667,7 @@ class Notes extends Form
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 */				
 	public function CarregaRegistre($CursId, $Nivell) {
-		$this->$CursId = $CursId;
+		$this->CursId = $CursId;
 		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
 		$ResultSet = $this->Connexio->query($SQL);
@@ -757,6 +769,7 @@ class Notes extends Form
 				//print_r($RegistreAlumne);
 				$aNotes = [];
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
+				//$Nom = utf8_encode($Nom);
 				array_push($aNotes, $Nom);
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];

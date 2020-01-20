@@ -153,6 +153,19 @@ class Form {
 	 * Crea un botó.
 	 * @param string $Nom Nom del botó.
 	 * @param string $Titol Títol de l'ajuda.
+	 * @param string $URL URL de l'opció. Se li afegirà l'identificador del registre.
+	 * @return string Codi HTML del botó.
+	 */
+	public function CreaBoto(string $Nom, string $Titol, string $URL): string {
+		$sRetorn = "<a href='$URL' class='btn btn-primary active' role='button' aria-pressed='true' ".
+			" name='$Nom'>$Titol</a>&nbsp;";
+		return $sRetorn;
+	}	
+	
+	/**
+	 * Crea un botó que executa una funció JavaScript.
+	 * @param string $Nom Nom del botó.
+	 * @param string $Titol Títol de l'ajuda.
 	 * @param string $Funcio Funció JavaScript.
 	 * @return string Codi HTML del botó.
 	 */
