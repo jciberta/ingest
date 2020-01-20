@@ -20,6 +20,7 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 /**
  * ObteTaulaNotesJSON
@@ -165,6 +166,10 @@ function UltimaNota($Registre)
  */
 class Notes extends Form
 {
+	// Tipus d'exportació.
+	const teULTIMA_NOTA = 1;
+	const teULTIMA_CONVOCATORIA = 2;
+
 	/**
 	* Connexió a la base de dades.
 	* @var object
@@ -664,7 +669,8 @@ class Notes extends Form
 		$AlumneId = -1;
 		$row = $ResultSet->fetch_assoc();
 		while($row) {
-	//print_r($row);
+//print_r($row);
+//print '<hr>';
 			if ($row["NivellUF"] == 1) {
 				if ($row["AlumneId"] != $AlumneId) {
 					$AlumneId = $row["AlumneId"];
@@ -691,11 +697,92 @@ class Notes extends Form
 			}
 			$row = $ResultSet->fetch_assoc();
 		}		
-//		print_r($this->Registre1);
-//		print('<hr>');
-//		print_r($this->Registre2);
-//		print('<hr>');
+		//print_r($this->Registre1->Alumne[0]);
+		//print('<hr>');
+		//print_r($this->Registre2);
+		//print('<hr>');
 
+	}	
+	
+	/**
+	 * Exporta les notes d'un curs en format CSV.
+	 * https://stackoverflow.com/questions/16251625/how-to-create-and-download-a-csv-file-from-php-script
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
+	 * @param string $filename Nom del fitxer.
+	 * @param string $delimiter Separador.
+	 */				
+	public function ExportaCSV($CursId, int $Tipus=self::teULTIMA_NOTA, string $filename="export.csv", string $delimiter=";")
+	{
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="'. $filename .'";');
+
+		// Clean output buffer
+		ob_end_clean();
+
+		$Curs = new Curs($this->Connexio, $this->Usuari);
+		$Curs->CarregaRegistre($CursId);
+		$Nivell = $Curs->ObteNivell();
+		$Notes = $this->CarregaRegistre($CursId, $Nivell);
+		$RegistreNotes = ($Nivell == 1) ? $this->Registre1 : $this->Registre2;
+
+		$handle = fopen('php://output', 'w');
+
+		// Mòduls
+		$aNotes = [];
+		array_push($aNotes, '');
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			array_push($aNotes, utf8_encode($row["CodiMP"]));
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		//print_r($aNotes);
+		//print('<hr>');
+
+		// Unitats formatives
+		$aNotes = [];
+		array_push($aNotes, '');
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			array_push($aNotes, utf8_encode($row["CodiUF"]));
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		//print_r($aNotes);
+		//print('<hr>');
+		
+		// Notes
+		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
+			$RegistreAlumne = $RegistreNotes->UF[$i];
+			if ($RegistreNotes->Alumne[$i]['NivellMAT'] <= $Nivell) {
+				//print_r($RegistreAlumne);
+				$aNotes = [];
+				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
+				array_push($aNotes, $Nom);
+				for($j = 0; $j < count($RegistreAlumne); $j++) {
+					$row = $RegistreAlumne[$j];
+					switch ($Tipus) {
+						case Notes::teULTIMA_NOTA:
+							$UltimaNota = UltimaNota($row);
+							break;
+						case Notes::teULTIMA_CONVOCATORIA:
+							$UltimaNota = ($row["Convocatoria"] == 0) ? UltimaNota($row) : $row["nota".$row["Convocatoria"]];
+							break;
+					}
+					array_push($aNotes, $UltimaNota);
+				}
+				fputcsv($handle, $aNotes, $delimiter);
+				//print_r($aNotes);
+				//print('<hr>');
+			}
+		}
+
+		fclose($handle);
+
+		// Flush buffer
+		ob_flush();
+
+		// Use exit to get rid of unexpected output afterward
+		exit();
 	}	
 }
 
