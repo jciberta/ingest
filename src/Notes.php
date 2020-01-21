@@ -70,12 +70,37 @@ $Notes->CarregaRegistre($CursId, $Nivell);
 $Grup = new GrupClasse($conn, $Usuari);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 
+// Filtres
+echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 if ($Nivell == 2) {
 	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
 	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+}
+else {
+	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
+	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	echo $Grup->GeneraMostraGrup($CursId);
+	echo $Tutoria->GeneraMostraGrup($CursId);
+}
+echo '<span style="float:right;">';
+echo $Notes->CreaBotoDescarregaCSV($CursId);
+if ($Usuari->es_admin) {
+	// Administració avançada
+	echo '&nbsp';
+	if ($ActivaAdministracio==1) {
+		echo $Notes->CreaBoto('btnActivaAdministracio', 'Desactiva administració avançada', "Notes.php?CursId=$CursId");
+		$Notes->Administracio = true;
+	}
+	else
+		echo $Notes->CreaBoto('btnActivaAdministracio', 'Activa administració avançada', "Notes.php?ActivaAdministracio=1&CursId=$CursId");
+}
+echo '</span>';
+echo '</div>';
 
+// Graelles de notes
+if ($Nivell == 2) {
 	// Notes de 2n 
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre2, 2, $Professor, $Avaluacio);
 
@@ -83,25 +108,6 @@ if ($Nivell == 2) {
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 1, $Professor, $Avaluacio);
 }
 else {
-	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-	echo $Grup->GeneraMostraGrup($CursId);
-	echo $Tutoria->GeneraMostraGrup($CursId);
-
-	if ($Usuari->es_admin) {
-		// Administració avançada
-		echo '<span style="float:right;">';
-		echo '&nbsp';
-		if ($ActivaAdministracio==1) {
-			echo '<a href="Notes.php?CursId='.$CursId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaAdministracio">Desactiva administració avançada</a>';
-			$Notes->Administracio = true;
-		}
-		else
-			echo '<a href="Notes.php?ActivaAdministracio=1&CursId='.$CursId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaAdministracio">Activa administració avançada</a>';
-		echo '</span>';
-	}
-
-
 	// Notes de 1r d'alumnes de 1r
 	$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $Avaluacio);
 

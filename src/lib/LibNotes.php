@@ -309,8 +309,6 @@ class Notes extends Form
 			}
 		}
 		echo "</TABLE>";
-		if ($IdGraella == $Nivell)
-			echo $this->CreaBotoDescarregaCSV($this->CursId);
 		echo "<input type=hidden name=TempNota value=''>";
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
 		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
@@ -324,7 +322,7 @@ class Notes extends Form
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @return string Codi HTML del botó.
 	 */
-	private function CreaBotoDescarregaCSV(string $CursId): string {
+	public function CreaBotoDescarregaCSV(string $CursId): string {
 		$URL = "Descarrega.php?Accio=ExportaNotesCSV&CursId=$CursId";
 		return $this->CreaBoto('btnDescarregaCSV', 'Descarrega en CSV', $URL);
  	}	

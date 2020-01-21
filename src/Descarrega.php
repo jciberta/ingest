@@ -9,6 +9,10 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+// Report all errors except E_NOTICE
+// https://www.php.net/manual/en/function.error-reporting.php
+error_reporting(E_ALL & ~E_NOTICE);
+
 require_once('Config.php');
 require_once(ROOT.'/lib/LibNotes.php');
 
@@ -30,10 +34,9 @@ switch ($Accio) {
 	case "ExportaNotesCSV":
 		$CursId = $_GET['CursId'];
 		$Notes = new Notes($conn, $Usuari);
-		//$Notes->ExportaCSV(1, Notes::teULTIMA_NOTA);
-		$Notes->ExportaCSV(1, Notes::teULTIMA_CONVOCATORIA);
+		$Notes->ExportaCSV($CursId, Notes::teULTIMA_CONVOCATORIA);
+		//$Notes->ExportaCSV($CursId, Notes::teULTIMA_NOTA);
 		break;
-
 }
 
 $conn->close(); 
