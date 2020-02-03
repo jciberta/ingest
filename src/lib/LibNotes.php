@@ -162,6 +162,19 @@ function UltimaNota($Registre)
 }
 
 /**
+ * Classe per a les estadístiques d'un alumne.
+ */
+class EstadistiquesAlumne
+{
+	public $HoresTotals = 0;
+	public $HoresFetes = 0;
+	public $HoresAprovades = 0;
+	public $NotaMitjana = 0;
+	public $UFAprovades = 0;
+	public $UFSuspeses = 0;
+}
+
+/**
  * Classe que calcula les següents estadístiques d'una unitat formativa (d'un curs).
  * 	- Alumnes aprovats
  * 	- Alumnes aprovats altres anys
@@ -183,16 +196,23 @@ class EstadistiquesUF
 	 */
 	public static function Calcula($Notes, $Nivell, $IdUF) {
 		$Retorn = new EstadistiquesUF();
+		
+		
+		
 		for($i = 0; $i < count($Notes->UF); $i++) {
 			$row = $Notes->UF[$i][$IdUF];
-//print_r($row);
-//print('<hr>');
+			
+		//foreach ($Notes->UF as $i => $NotesUF) {
+			//$row = $NotesUF[$IdUF];
+ 			
+			
 			if ($row["BaixaMatricula"] != 1 && !$row["baixa"] && $row["NivellMAT"] == $Nivell) {
 				if ($row['Convocatoria'] > 0) {
 					$Retorn->AlumnesConvocatoriaActual++;
 					$Nota = $row['nota'.$row['Convocatoria']];
-					if ($Nota >= 5)
+					if ($Nota >= 5) {
 						$Retorn->AlumnesAprovats++;
+					}
 				}
 				else {
 					// Si la convocatòria està a 0, es suposa aprovat
@@ -419,9 +439,9 @@ class Notes extends Form
 		$NotesAlumne = $Notes->Alumne[$i];
 		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
 //		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
-		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$NotesAlumne['HoresAprovades'].'</TD>';
+		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$NotesAlumne['Estadistiques']->HoresAprovades.'</TD>';
 		$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
-		$TotalPercentatge = $NotesAlumne['HoresAprovades']/$NotesAlumne['HoresTotals']*100;
+		$TotalPercentatge = $NotesAlumne['Estadistiques']->HoresAprovades/$NotesAlumne['Estadistiques']->HoresTotals*100;
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
 		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
@@ -431,8 +451,8 @@ class Notes extends Form
 
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
 //			$Retorn .= "<TD style='text-align:center;color:grey;'>".$this->NotaMitjana($Notes->UF[$i])."</TD>";style="color:grey;"
-			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['UFSuspeses']."</TD>";
-			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['NotaMitjana']."</TD>";
+			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->UFSuspeses."</TD>";
+			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->NotaMitjana."</TD>";
 		}
 		else
 			$Retorn .= "<TD></TD><TD></TD>";
@@ -539,6 +559,41 @@ class Notes extends Form
 	 * @return string Codi HTML de la cel·la.
 	 */
 	private function CreaEstadistiquesUF($Notes, $Nivell): string {
+		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($Notes, $Nivell);
+
+		$Retorn = '<TR style="color:grey;">';
+		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats</TD>';
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovats.'</TD>';
+			
+		}
+		$Retorn .= '</TR>';
+
+		$Retorn .= '<TR style="color:grey;">';
+		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats convocatòries anteriors</TD>';
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovatsConvocatoriaAnterior.'</TD>';
+			
+		}
+		$Retorn .= '</TR>';
+
+		$Retorn .= '<TR style="color:grey;">';
+		$Retorn .= '<TD colspan=4 style="text-align:right;">% aprovats convocatòria actual</TD>';
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$Retorn .= '<TD style="text-align:center;">'.$euf->PercentatgeAprovats.'</TD>';
+			
+		}
+		$Retorn .= '</TR>';
+
+		return $Retorn;
+	}
+
+	private function CreaEstadistiquesUF2($Notes, $Nivell): string {
+		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($Notes, $Nivell);
+
 		$Retorn = '<TR style="color:grey;">';
 		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats</TD>';
 		for($i = 0; $i < count($Notes->UF[0]); $i++) {
@@ -803,7 +858,7 @@ class Notes extends Form
 	}	
 	
 	/**
-	 * Calcula estadístiques d'un alumne (amb les notes que té entrades) i les afegeix al mateix registre de notes.
+	 * Calcula les estadístiques d'un alumne (amb les notes que té entrades) i les afegeix al mateix registre de notes.
 	 * NOTA: S'usen variables per referència!
 	 * Les estadístiques són:
 	 * 	- Hores totals
@@ -823,13 +878,14 @@ class Notes extends Form
 
 //		foreach($Notes as &$NotesAlumne) {
 		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
-			
-			$NotesAlumne['HoresTotals'] = 0;
-			$NotesAlumne['HoresFetes'] = 0;
-			$NotesAlumne['HoresAprovades'] = 0;
-			$NotesAlumne['NotaMitjana'] = 0;
-			$NotesAlumne['UFAprovades'] = 0;
-			$NotesAlumne['UFSuspeses'] = 0;
+			$ea = new EstadistiquesAlumne;
+			$NotesAlumne['Estadistiques'] = $ea;
+			//$NotesAlumne['HoresTotals'] = 0;
+			//$NotesAlumne['HoresFetes'] = 0;
+			//$NotesAlumne['HoresAprovades'] = 0;
+			//$NotesAlumne['NotaMitjana'] = 0;
+			//$NotesAlumne['UFAprovades'] = 0;
+			//$NotesAlumne['UFSuspeses'] = 0;
 
 //print_r($i);			
 //print('<HR>');	
@@ -859,29 +915,43 @@ class Notes extends Form
 	//print_r($row);			
 	//print('<HR>');			
 	//exit;
-					$NotesAlumne['HoresTotals'] += $row['Hores'];
+					$ea->HoresTotals += $row['Hores'];
 					$UltimaNota = UltimaNota($row);
 					if ($UltimaNota != '') {
-						$NotesAlumne['HoresFetes'] += $row['Hores'];
+						$ea->HoresFetes += $row['Hores'];
 						$TotalNota += $UltimaNota*$row['Hores'];
 						if ($UltimaNota >= 5)
-							$NotesAlumne['HoresAprovades'] += $row['Hores'];
+							$ea->HoresAprovades += $row['Hores'];
 					}
 					if ($row['Convocatoria'] > 0) {
 						$Nota = $row['nota'.$row['Convocatoria']];
 						if ($Nota > 0 && $Nota < 5)
-							$NotesAlumne['UFSuspeses']++;
+							$ea->UFSuspeses++;
 						else if ($Nota >= 5)
-							$NotesAlumne['UFAprovades']++;
+							$ea->UFAprovades++;
 					}
 	//print_r($row);			
 	//print('<HR>');			
-					if ($TotalNota > 0 && $NotesAlumne['HoresFetes'] != 0)
-						$NotesAlumne['NotaMitjana'] = number_format($TotalNota / $NotesAlumne['HoresFetes'], 2);
+					if ($TotalNota > 0 && $ea->HoresFetes != 0)
+						$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);
 				}
 				//$row['HoresTotals'] = 0;
 			}
 		}
+	}
+
+	/**
+	 * Calcula les estadístiques de les UFs de la graella de notes.
+	 * @param object $Notes Graella de notes.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @return array Array amb les estadístiques de cada UF.
+	 */
+	private function CalculaEstadistiquesUF($Notes, $Nivell) {
+		$Retorn = [];
+		for($i = 0; $i < count($Notes->UF[0]); $i++) {
+			$Retorn[$i] = EstadistiquesUF::Calcula($Notes, $Nivell, $i); 
+		}
+		return $Retorn;
 	}
 	
 	/**
