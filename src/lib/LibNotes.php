@@ -937,7 +937,38 @@ class Notes extends Form
 //exit;
 
 		$handle = fopen('php://output', 'w');
+		switch ($Nivell) {
+			case 1:
+				$this->ExportaCSVRegistre($this->Registre1, $handle, 1, $Tipus, $filename, $delimiter);
+				fputcsv($handle, [], $delimiter);
+				$this->ExportaCSVRegistre($this->Registre1, $handle, 2, $Tipus, $filename, $delimiter);
+				break;
+			case 2:
+				$this->ExportaCSVRegistre($this->Registre2, $handle, 2, $Tipus, $filename, $delimiter);
+				fputcsv($handle, [], $delimiter);
+				$this->ExportaCSVRegistre($this->Registre1, $handle, 2, $Tipus, $filename, $delimiter);
+				break;
+		}
+		fclose($handle);
 
+		// Flush buffer
+		ob_flush();
+
+		// Use exit to get rid of unexpected output afterward
+		exit();
+	}	
+	
+	/**
+	 * Exporta les notes d'un registre (corresponent a 1r o 2n).
+	 * @param string $RegistreNotes Registre de notes.
+	 * @param resource $handle Identificador del fitxer.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
+	 * @param string $filename Nom del fitxer.
+	 * @param string $delimiter Separador.
+	 */				
+	public function ExportaCSVRegistre($RegistreNotes, $handle, $Nivell, int $Tipus=self::teULTIMA_NOTA, string $filename="export.csv", string $delimiter=";")
+	{
 		// Mòduls
 		$aNotes = [];
 		array_push($aNotes, '');
@@ -946,8 +977,9 @@ class Notes extends Form
 			array_push($aNotes, utf8_encode($row["CodiMP"]));
 		}
 		fputcsv($handle, $aNotes, $delimiter);
-		//print_r($aNotes);
-		//print('<hr>');
+//print_r($aNotes);
+//print('<hr>');
+//exit;
 
 		// Unitats formatives
 		$aNotes = [];
@@ -969,7 +1001,7 @@ class Notes extends Form
 		// Notes
 		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
 			$RegistreAlumne = $RegistreNotes->UF[$i];
-			if ($RegistreNotes->Alumne[$i]['NivellMAT'] <= $Nivell) {
+			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$aNotes = [];
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
 				//$Nom = utf8_encode($Nom);
@@ -991,7 +1023,7 @@ class Notes extends Form
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresFetes);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades);
-				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana);
+				array_push($aNotes, str_replace('.', ',', $RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana));
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFAprovades);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses);
 				fputcsv($handle, $aNotes, $delimiter);
@@ -1003,35 +1035,27 @@ class Notes extends Form
 		// Estadístiques UF
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		$aNotes = [];
-		array_push($aNotes, utf8_encode('Alumnes aprovats'));
+		array_push($aNotes, utf8_decode('Alumnes aprovats'));
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			array_push($aNotes, $euf->AlumnesAprovats);
 		}
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
-		array_push($aNotes, utf8_encode('Alumnes aprovats convocatòries anteriors'));
+		array_push($aNotes, utf8_decode('Alumnes aprovats convocatòries anteriors'));
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			array_push($aNotes, $euf->AlumnesAprovatsConvocatoriaAnterior);
 		}
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
-		array_push($aNotes, utf8_encode('% aprovats convocatòria actual'));
+		array_push($aNotes, utf8_decode('% aprovats convocatòria actual'));
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			array_push($aNotes, $euf->PercentatgeAprovats);
+			array_push($aNotes, str_replace('.', ',', $euf->PercentatgeAprovats));
 		}
 		fputcsv($handle, $aNotes, $delimiter);
-
-		fclose($handle);
-
-		// Flush buffer
-		ob_flush();
-
-		// Use exit to get rid of unexpected output afterward
-		exit();
-	}	
+	}
 }
 
 /**
