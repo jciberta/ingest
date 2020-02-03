@@ -591,48 +591,6 @@ class Notes extends Form
 		return $Retorn;
 	}
 
-	private function CreaEstadistiquesUF2($Notes, $Nivell): string {
-		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($Notes, $Nivell);
-
-		$Retorn = '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats</TD>';
-		for($i = 0; $i < count($Notes->UF[0]); $i++) {
-			$row = $Notes->UF[0][$i];
-			$UFId = $row["unitat_formativa_id"];
-//			$euf = EstadistiquesUF::Calcula($Notes, $UFId);
-			$euf = EstadistiquesUF::Calcula($Notes, $Nivell, $i);
-			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovats.'</TD>';
-			
-		}
-		$Retorn .= '</TR>';
-
-		$Retorn .= '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats convocatòries anteriors</TD>';
-		for($i = 0; $i < count($Notes->UF[0]); $i++) {
-			$row = $Notes->UF[0][$i];
-			$UFId = $row["unitat_formativa_id"];
-//			$euf = EstadistiquesUF::Calcula($Notes, $UFId);
-			$euf = EstadistiquesUF::Calcula($Notes, $Nivell, $i);
-			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovatsConvocatoriaAnterior.'</TD>';
-			
-		}
-		$Retorn .= '</TR>';
-
-		$Retorn .= '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">% aprovats convocatòria actual</TD>';
-		for($i = 0; $i < count($Notes->UF[0]); $i++) {
-			$row = $Notes->UF[0][$i];
-			$UFId = $row["unitat_formativa_id"];
-			$euf = EstadistiquesUF::Calcula($Notes, $Nivell, $i);
-			$Retorn .= '<TD style="text-align:center;">'.$euf->PercentatgeAprovats.'</TD>';
-			
-		}
-		$Retorn .= '</TR>';
-
-
-		return $Retorn;
-	}
-
 	/**
 	 * Donat un registre de notes, torna la última convocatòria.
      * Si la convocatòria és 0, torna la que té l'ultima nota.
@@ -975,6 +933,8 @@ class Notes extends Form
 		$Nivell = $Curs->ObteNivell();
 		$Notes = $this->CarregaRegistre($CursId, $Nivell);
 		$RegistreNotes = ($Nivell == 1) ? $this->Registre1 : $this->Registre2;
+//print_r($RegistreNotes);
+//exit;
 
 		$handle = fopen('php://output', 'w');
 
@@ -996,6 +956,12 @@ class Notes extends Form
 			$row = $RegistreNotes->UF[0][$j];
 			array_push($aNotes, utf8_encode($row["CodiUF"]));
 		}
+		array_push($aNotes, 'HoresTotals');
+		array_push($aNotes, 'HoresFetes');
+		array_push($aNotes, 'HoresAprovades');
+		array_push($aNotes, 'NotaMitjana');
+		array_push($aNotes, 'UFAprovades');
+		array_push($aNotes, 'UFSuspeses');
 		fputcsv($handle, $aNotes, $delimiter);
 		//print_r($aNotes);
 		//print('<hr>');
@@ -1004,13 +970,14 @@ class Notes extends Form
 		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
 			$RegistreAlumne = $RegistreNotes->UF[$i];
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] <= $Nivell) {
-				//print_r($RegistreAlumne);
 				$aNotes = [];
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
 				//$Nom = utf8_encode($Nom);
 				array_push($aNotes, $Nom);
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];
+//print_r($row);
+//exit;
 					switch ($Tipus) {
 						case Notes::teULTIMA_NOTA:
 							$UltimaNota = UltimaNota($row);
@@ -1021,11 +988,41 @@ class Notes extends Form
 					}
 					array_push($aNotes, $UltimaNota);
 				}
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresFetes);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFAprovades);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses);
 				fputcsv($handle, $aNotes, $delimiter);
 				//print_r($aNotes);
 				//print('<hr>');
 			}
 		}
+
+		// Estadístiques UF
+		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
+		$aNotes = [];
+		array_push($aNotes, utf8_encode('Alumnes aprovats'));
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			array_push($aNotes, $euf->AlumnesAprovats);
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		$aNotes = [];
+		array_push($aNotes, utf8_encode('Alumnes aprovats convocatòries anteriors'));
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			array_push($aNotes, $euf->AlumnesAprovatsConvocatoriaAnterior);
+		}
+		fputcsv($handle, $aNotes, $delimiter);
+		$aNotes = [];
+		array_push($aNotes, utf8_encode('% aprovats convocatòria actual'));
+		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			array_push($aNotes, $euf->PercentatgeAprovats);
+		}
+		fputcsv($handle, $aNotes, $delimiter);
 
 		fclose($handle);
 
