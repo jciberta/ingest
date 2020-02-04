@@ -66,6 +66,8 @@ if ($Avaluacio->Estat() != Avaluacio::Tancada)
 
 $Notes = new Notes($conn, $Usuari);
 $Notes->CarregaRegistre($CursId, $Nivell);
+//echo $Notes->Estadistiques($CursId, $Nivell);
+//exit;
 
 $Grup = new GrupClasse($conn, $Usuari);
 $Tutoria = new GrupTutoria($conn, $Usuari);

@@ -170,8 +170,11 @@ class EstadistiquesAlumne
 	public $HoresFetes = 0;
 	public $HoresAprovades = 0;
 	public $NotaMitjana = 0;
+	public $UFTotals = 0;
+	public $UFFetes = 0;
 	public $UFAprovades = 0;
 	public $UFSuspeses = 0;
+	public $EsRepetidor = false; // Si té la nota aprovada de la convocatòria anterior
 }
 
 /**
@@ -197,14 +200,11 @@ class EstadistiquesUF
 	public static function Calcula($Notes, $Nivell, $IdUF) {
 		$Retorn = new EstadistiquesUF();
 		
-		
-		
 		for($i = 0; $i < count($Notes->UF); $i++) {
 			$row = $Notes->UF[$i][$IdUF];
-			
+		
 		//foreach ($Notes->UF as $i => $NotesUF) {
 			//$row = $NotesUF[$IdUF];
- 			
 			
 			if ($row["BaixaMatricula"] != 1 && !$row["baixa"] && $row["NivellMAT"] == $Nivell) {
 				if ($row['Convocatoria'] > 0) {
@@ -225,6 +225,25 @@ class EstadistiquesUF
 			$Retorn->PercentatgeAprovats = number_format($Retorn->AlumnesAprovats/$Retorn->AlumnesConvocatoriaActual*100, 1);
 		return $Retorn;
 	}
+}
+
+/**
+ * Classe per a les estadístiques d'un curs.
+ */
+class EstadistiquesCurs
+{
+	public $NumeroAlumnes = 0;
+	public $NumeroRepetidors = 0;
+	public $UFTotals = 0;
+	public $UFFetes = 0;
+
+	public $AlumnesTotAprovat = 0;
+	public $AlumnesPendent1UF = 0;
+	public $AlumnesPendent2UF = 0;
+	public $AlumnesPendent3UF = 0;
+	public $AlumnesPendent4UF = 0;
+	public $AlumnesPendent5UF = 0;
+	public $AlumnesPendentMesDe5UF = 0;
 }
 
 /**
@@ -873,9 +892,11 @@ class Notes extends Form
 	//print_r($row);			
 	//print('<HR>');			
 	//exit;
+					$ea->UFTotals++;
 					$ea->HoresTotals += $row['Hores'];
 					$UltimaNota = UltimaNota($row);
 					if ($UltimaNota != '') {
+						$ea->UFFetes++;
 						$ea->HoresFetes += $row['Hores'];
 						$TotalNota += $UltimaNota*$row['Hores'];
 						if ($UltimaNota >= 5)
@@ -888,6 +909,8 @@ class Notes extends Form
 						else if ($Nota >= 5)
 							$ea->UFAprovades++;
 					}
+					if ($row['Convocatoria'] == 0) 
+						$ea->EsRepetidor = true;
 	//print_r($row);			
 	//print('<HR>');			
 					if ($TotalNota > 0 && $ea->HoresFetes != 0)
@@ -1055,6 +1078,81 @@ class Notes extends Form
 			array_push($aNotes, str_replace('.', ',', $euf->PercentatgeAprovats));
 		}
 		fputcsv($handle, $aNotes, $delimiter);
+	}
+
+	/**
+	 * ---.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+     * @return oject Objecte amb les estadístiques del curs.
+	 */				
+	private function EstadistiquesCurs($Nivell) {
+		$Retorn = new EstadistiquesCurs();
+		//$Retorn->NumeroAlumnes = 0;
+		//$Retorn->NumeroRepetidors = 0;
+		//$Retorn->UFTotals = 0;
+		//$Retorn->UFFetes = 0;
+		$Registre = $this->Registre1->Alumne;
+		for($i = 0; $i < count($Registre); $i++) {
+			$row = $Registre[$i];
+			if ($row["BaixaMatricula"] != 1 && $row["NivellMAT"] == $Nivell) {
+				$Retorn->NumeroAlumnes++;
+				$Retorn->UFTotals = $row["Estadistiques"]->UFTotals;
+				if ($row["Estadistiques"]->EsRepetidor)
+					$Retorn->NumeroRepetidors++;
+				else
+					$Retorn->UFFetes = $row["Estadistiques"]->UFFetes;
+				switch ($row["Estadistiques"]->UFSuspeses) {
+					case 0: 
+						$Retorn->AlumnesTotAprovat++; break;
+					case 1: 
+						$Retorn->AlumnesPendent1UF++; break;
+					case 2: 
+						$Retorn->AlumnesPendent2UF++; break;
+					case 3: 
+						$Retorn->AlumnesPendent3UF++; break;
+					case 4: 
+						$Retorn->AlumnesPendent4UF++; break;
+					case 5: 
+						$Retorn->AlumnesPendent5UF++; break;
+					default: 
+						$Retorn->AlumnesPendentMesDe5UF++; break;
+				}
+			}
+		}
+		return $Retorn;
+	}
+	
+	/**
+	 * ---.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+     * @return string Taula HTML amb les estadístiques del curs.
+	 */				
+	public function Estadistiques($CursId, $Nivell) {
+		$Retorn = '<TABLE BORDER=1>';
+		$ec = $this->EstadistiquesCurs($Nivell);
+		
+		$Retorn .= "<TR><TD>Nombre d'alumnes</TD><TD>".$ec->NumeroAlumnes."</TD><TD>100%</TD></TR>";
+		$Retorn .= "<TR><TD>Repetidors</TD><TD>".$ec->NumeroRepetidors."</TD><TD>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Total UF's</TD><TD>".$ec->UFTotals."</TD><TD>100%</TD></TR>";
+		$Retorn .= "<TR><TD>UF's avaluades</TD><TD>".$ec->UFFetes."</TD><TD>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>&nbsp;</TD><TD></TD></TR>";
+
+		$Retorn .= "<TR><TD></TD><TD>Alumnes</TD><TD>%</TD></TR>";
+		$TotalUF = $ec->AlumnesTotAprovat+$ec->AlumnesPendent1UF+$ec->AlumnesPendent2UF+$ec->AlumnesPendent3UF+
+			$ec->AlumnesPendent4UF+$ec->AlumnesPendent5UF+$ec->AlumnesPendentMesDe5UF;
+		$Retorn .= "<TR><TD>Alumnes tot aprovat</TD><TD>".$ec->AlumnesTotAprovat."</TD><TD>".number_format($ec->AlumnesTotAprovat/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 1 UF</TD><TD>".$ec->AlumnesPendent1UF."</TD><TD>".number_format($ec->AlumnesPendent1UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 2 UF</TD><TD>".$ec->AlumnesPendent2UF."</TD><TD>".number_format($ec->AlumnesPendent2UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 3 UF</TD><TD>".$ec->AlumnesPendent3UF."</TD><TD>".number_format($ec->AlumnesPendent3UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 4 UF</TD><TD>".$ec->AlumnesPendent4UF."</TD><TD>".number_format($ec->AlumnesPendent4UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 5 UF</TD><TD>".$ec->AlumnesPendent5UF."</TD><TD>".number_format($ec->AlumnesPendent5UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent més de 5 UF</TD><TD>".$ec->AlumnesPendentMesDe5UF."</TD><TD>".number_format($ec->AlumnesPendentMesDe5UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD></TD><TD>".$TotalUF."</TD></TR>";
+		
+		$Retorn .= '</TABLE>';
+		return $Retorn;
 	}
 }
 
