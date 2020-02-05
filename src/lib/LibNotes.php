@@ -1125,7 +1125,7 @@ class Notes extends Form
 	 * @param string $Nivell Nivell: 1r o 2n.
      * @return string Taula HTML amb les estadístiques del curs.
 	 */				
-	public function GeneraEstadistiquesCurs($objCurs, $Nivell) {
+	public function GeneraEstadistiquesCurs($objCurs, $Nivell): string {
 		$style = " style='text-align:center;' ";
 		
 		$Retorn = '<TABLE BORDER=1>';
@@ -1152,6 +1152,47 @@ class Notes extends Form
 		$Retorn .= "<TR><TD></TD><TD $style>".$TotalUF."</TD><TD></TD></TR>";
 		
 		$Retorn .= '</TABLE>';
+		return $Retorn;
+	}
+	
+	/**
+	 * Genera un pastís amb les estadístiques d'un curs.
+	 * @param object $objCurs Objecte del curs.
+	 * @param string $Nivell Nivell: 1r o 2n.
+     * @return string Codi HTML amb el pastís.
+	 */				
+	public function GeneraPastisEstadistiquesCurs($objCurs, $Nivell): string {
+		$ec = $this->CalculaEstadistiquesCurs($Nivell);
+		
+		$Id = $objCurs->curs_id;
+		$NomCurs = utf8_encode($objCurs->NomCurs);
+		$NomCurs = str_replace("'", "&quot;", $NomCurs);
+
+		$Retorn = "<div id='canvas-holder$Id' style='width:100%'>";
+		$Retorn .= "    <canvas id='myChart$Id'></canvas>";
+		$Retorn .= "</div>";
+
+		$Retorn .= "<script>";
+		$Retorn .= "var ctx$Id = document.getElementById('myChart$Id').getContext('2d');";
+		$Retorn .= "var myChart$Id = new Chart(ctx$Id, {";
+		$Retorn .= "    type: 'pie',";
+		$Retorn .= "    data: {";
+		$Retorn .= "        labels: ['Alumnes tot aprovat', 'Alumnes pendent 1 UF', 'Alumnes pendent 2 UF', 'Alumnes pendent 3 UF', 'Alumnes pendent 4 UF', 'Alumnes pendent 5 UF', 'Alumnes pendent més de 5 UF'],";
+		$Retorn .= "        datasets: [{";
+		$Data = '['.$ec->AlumnesTotAprovat.','.$ec->AlumnesPendent1UF.','.$ec->AlumnesPendent2UF.','.$ec->AlumnesPendent3UF.','.
+			$ec->AlumnesPendent4UF.','.$ec->AlumnesPendent5UF.','.$ec->AlumnesPendentMesDe5UF.']';
+		$Retorn .= "            data: $Data,";
+		$Retorn .= "            backgroundColor: ['navy', 'blue', 'green', 'lime', 'yellow', 'orange', 'red'],";
+		$Retorn .= "            borderWidth: 2";
+		$Retorn .= "        }]";
+		$Retorn .= "    },";
+		$Retorn .= "	options: {";
+		$Retorn .= "		legend: {position: 'right'},";
+		$Retorn .= "		title: {display: true, text: '$NomCurs'}";
+		$Retorn .= "	}";
+		$Retorn .= "});";
+		$Retorn .= "</script>";
+		
 		return $Retorn;
 	}
 }

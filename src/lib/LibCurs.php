@@ -166,11 +166,12 @@ class Curs
 	public function Estadistiques()
 	{
 		$Retorn = GeneraIniciHTML($this->Usuari, 'Estadístiques cursos');
+		$Retorn .= '<script language="javascript" src="vendor/Chart.min.js" type="text/javascript"></script>';
 		
-		$bColumna1 = true;
+		//$bColumna1 = true;
 		$Retorn .= '<TABLE>';
 		$Retorn .= '<TR>';
-		$Retorn .= '<TD>';
+		$Retorn .= '<TD width=600px>';
 		$SQL = $this->CreaSQLCursosActuals();
 		$ResultSet = $this->Connexio->query($SQL);
 		while ($objCurs = $ResultSet->fetch_object()) {
@@ -180,10 +181,13 @@ class Curs
 			$Retorn .= $Notes->GeneraEstadistiquesCurs($objCurs, $Nivell);
 			$Retorn .= '<BR>';
 			$Retorn .= '</TD>';
-			if (!$bColumna1)
+			$Retorn .= '<TD width=500px>';
+			$Retorn .= $Notes->GeneraPastisEstadistiquesCurs($objCurs, $Nivell);
+			$Retorn .= '</TD>';
+			//if (!$bColumna1)
 				$Retorn .= '</TR><TR>';
-			$Retorn .= '<TD>';
-			$bColumna1 = !$bColumna1;
+			$Retorn .= '<TD width=600px>';
+			//$bColumna1 = !$bColumna1;
 		}
 		$ResultSet->close();		
 		$Retorn .= '</TD>';
