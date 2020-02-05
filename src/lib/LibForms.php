@@ -282,8 +282,8 @@ class Form {
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat.">";
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat." $NomesLectura>";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."' $NomesLectura>";
 		if ($CodiSeleccionat == '')
 			$Text = '';
 		else
@@ -1506,6 +1506,116 @@ class FormFitxa extends Form {
 		echo $this->GeneraTorna();
 		CreaFinalHTML();
 	}
+	
+	/**
+	 * Desa la fitxa a la base de dades.
+	 * @param string $jsonForm Fitxa a desar en format JSON.
+	 * @return string Missatge informatiu.
+	 */
+	public function Desa(string $jsonForm): string {
+		$Retorn = '';
+		$data = json_decode($jsonForm);
+		$sCamps = '';
+		$sValues = '';
+		foreach($data as $Valor) {
+			if ($Valor->name == 'hid_Taula') 
+				$Taula = $Valor->value;
+			else if ($Valor->name == 'hid_ClauPrimaria') 
+				$ClauPrimaria = $Valor->value;
+			else if ($Valor->name == 'hid_AutoIncrement') 
+				$AutoIncrement = $Valor->value;
+			else if ($Valor->name == 'hid_Id') 
+				$Id = $Valor->value;
+			else {
+				$Tipus = substr($Valor->name, 0, 3);
+				switch ($Tipus) {
+					case 'edt':
+						// Camp text
+						$sCamps .= substr($Valor->name, 4).", ";
+						$sValues .= TextAMySQL($Valor->value).', ';
+//						if ($Valor->value == '')
+//							$sValues .= "NULL, ";
+//						else
+//							$sValues .= "'".$Valor->value."', ";
+						break;
+					case 'edd':
+						// Camp data
+						$sCamps .= substr($Valor->name, 4).", ";
+//print '<br>Data: '.$Valor->value;
+//							if ComprovaData($Valor->value) 
+								$sValues .= DataAMySQL($Valor->value).", ";
+//							else
+//								throw new Exception('Data no vàlida.');
+						break;
+					case 'chb':
+						// Camp checkbox
+						$sCamps .= substr($Valor->name, 4).", ";
+						$sValues .= (($Valor->value == '') || ($Valor->value == 0)) ? '0, ' : '1, ';
+						break;
+					case 'cmb':
+						// Camp combobox (desplegable)
+						$sCamps .= substr($Valor->name, 4).", ";
+						$sValues .= TextAMySQL($Valor->value).', ';
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+//exit;
+						break;
+					case 'lkh':
+						if (substr($Valor->name, -6) != '_camps') {
+							// Camp lookup
+							$sCamps .= substr($Valor->name, 4).", ";
+							$sValues .= ($Valor->value == '') ? "NULL, " : $Valor->value.", ";
+							//if ($Valor->value == '')
+								//$sValues .= "NULL, ";
+							//else
+								//$sValues .= "'".$Valor->value."', ";
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+						}
+						break;
+				}
+			}
+		}
+		$sCamps = substr($sCamps, 0, -2);
+		$sValues = substr($sValues, 0, -2);
+//print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
+		if ($Id == 0) {
+			// INSERT
+			if ($AutoIncrement) {
+				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") VALUES (".$sValues.")";
+			}
+			else {
+				$sCamps = $ClauPrimaria.', '.$sCamps;
+				$sValues = '(SELECT MAX('.$ClauPrimaria.')+1 FROM '. $Taula.'), '.$sValues;
+				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") SELECT ".$sValues;
+			}
+		}
+		else {
+			// UPDATE
+			$SQL = "UPDATE ".$Taula." SET ";
+			$aCamps = explode(",", TrimXX($sCamps));
+//			$aValues = explode(",", Trim($sValues));
+			$aValues = CSVAArray(Trim($sValues));
+//print_r($aValues);
+			for($i=0; $i < count($aCamps); $i++) {
+				$SQL .= $aCamps[$i].'='.trim($aValues[$i]).', ';
+			}
+			$SQL = substr($SQL, 0, -2);
+			$SQL .= ' WHERE '.$ClauPrimaria.'='.$Id;
+			
+		}
+		$SQL = utf8_decode($SQL);
+		if (Config::Debug)		
+			$Retorn .= '<BR><b>SQL</b>: '.$SQL;
+		
+		try {
+			if (!$this->Connexio->query($SQL))
+				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		} catch (Exception $e) {
+			$Retorn .= "<BR><b>ERROR DesaFitxa</b>. Causa: ".$e->getMessage();
+		}		
+		return $Retorn;
+	}	
 } 
 
 ?>

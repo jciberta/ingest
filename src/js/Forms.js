@@ -181,7 +181,8 @@ console.dir('elements: ' + oForm.elements);
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
-		if (controls[i].name != '') {
+console.dir(controls[i]);		
+		if (controls[i].name != '' && !controls[i].readOnly) {
 			if (controls[i].type && controls[i].type === 'checkbox') {
 				msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
 			}
@@ -271,6 +272,7 @@ console.dir('jsonForm: ' + jsonForm);
 			else {
 				$('#MissatgeCorrecte').show();
 				$('#MissatgeTorna').show();
+				$('#debug').html('Dades rebudes: '+ JSON.stringify(data));
 			}
         }, 
 		error: function(data) {

@@ -17,7 +17,8 @@ require_once(ROOT.'/lib/LibDate.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
-	header("Location: ../index.html");
+	header("Location: ../Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -70,7 +71,12 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
-		if (Config::Debug)		
+		$frm = new FormFitxa($conn, $Usuari);
+//print "Hi";		
+//exit;
+		print $frm->Desa($jsonForm);
+		
+		/*if (Config::Debug)		
 			print '<br><b>DesaFitxa.jsonForm</b>: '.$jsonForm;
 		$data = json_decode($jsonForm);
 		$sCamps = '';
@@ -171,7 +177,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 				throw new Exception($conn->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
 			print "<BR><b>ERROR DesaFitxa</b>. Causa: ".$e->getMessage();
-		}		
+		}*/		
 	}
 	else {
 		if ($CFG->Debug)
