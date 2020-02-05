@@ -21,7 +21,20 @@
  */
 function CreaIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False)
 {
-	CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga);
+	echo CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga);
+}
+
+ /**
+ * Genera l'inici del document HTML.
+ * @param object $Usuari Usuari autenticat.
+ * @param string $Titol Títol de la pàgina.
+ * @param boolean $bMenu Indica si el menú ha d'haver menú a la capçalera o no.
+ * @param boolean $bSaga Indica si usem els estil de SAGA.
+ * @return string Codi HTML de la pàgina.
+ */
+function GeneraIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False)
+{
+	return CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga);
 }
 
 /**
@@ -47,143 +60,145 @@ function CreaFinalHTML()
  */
 function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, $bSaga = False)
 {
-	echo '<HTML>';
-	echo '<HEAD>';
-	echo '	<META charset=UTF8>';
-	echo '	<TITLE>InGest</TITLE>';
-	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
-	echo '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
-//	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
-	echo '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
-	echo '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
+	$Retorn = '<HTML>';
+	$Retorn .= '<HEAD>';
+	$Retorn .= '	<META charset=UTF8>';
+	$Retorn .= '	<TITLE>InGest</TITLE>';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
+//	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
 	if ($bSaga)
-		echo '	<link rel="stylesheet" href="css/saga.css">';
-	echo '	<script src="vendor/jquery.min.js"></script>';
-	echo '	<script src="vendor/popper.min.js"></script>';
-	echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
-	echo '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
-	echo '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
-	echo '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
-	echo '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
-	echo '	<script src="vendor/bootbox.min.js"></script>';
-	echo '	<script src="js/Util.js"></script>';
-	echo '</HEAD>';
-	echo '<BODY>';
+		$Retorn .= '	<link rel="stylesheet" href="css/saga.css">';
+	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
+	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
+	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
+	$Retorn .= '	<script src="js/Util.js"></script>';
+	$Retorn .= '</HEAD>';
+	$Retorn .= '<BODY>';
 	
 	if ($bMenu) {
-		echo '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
+		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
 		if ($Usuari->es_admin) 
-			echo '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
+			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
 		else
-			echo '	<span class="navbar-brand">inGest</span>';
-		echo '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
-		echo '		<span class="navbar-toggler-icon"></span>';
-		echo '	</button>';
-		echo '	<div class="collapse navbar-collapse">';
-		echo '		<ul class="navbar-nav mr-auto">';
-		echo '			<li class="nav-item active">';
-		echo '				<a class="nav-link" href="Escriptori.php">Inici</a>';
-		echo '			</li>';
+			$Retorn .= '	<span class="navbar-brand">inGest</span>';
+		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
+		$Retorn .= '		<span class="navbar-toggler-icon"></span>';
+		$Retorn .= '	</button>';
+		$Retorn .= '	<div class="collapse navbar-collapse">';
+		$Retorn .= '		<ul class="navbar-nav mr-auto">';
+		$Retorn .= '			<li class="nav-item active">';
+		$Retorn .= '				<a class="nav-link" href="Escriptori.php">Inici</a>';
+		$Retorn .= '			</li>';
 			
 		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
 			// Menú alumnes
-			echo '          <li class="nav-item dropdown">';
-			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
-			echo '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Alumnes">Alumnes</a>';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=AlumnesPares">Alumnes/pares</a>';
-			echo '              <div class="dropdown-divider"></div>';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Matricules">Matrícules</a>';
-			echo '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-			echo '            </div>';
-			echo '          </li>';
+			$Retorn .= '          <li class="nav-item dropdown">';
+			$Retorn .= '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
+			$Retorn .= '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
+			$Retorn .= '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Alumnes">Alumnes</a>';
+			$Retorn .= '              <a class="dropdown-item" href="UsuariRecerca.php?accio=AlumnesPares">Alumnes/pares</a>';
+			$Retorn .= '              <div class="dropdown-divider"></div>';
+			$Retorn .= '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Matricules">Matrícules</a>';
+			$Retorn .= '              <a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			$Retorn .= '            </div>';
+			$Retorn .= '          </li>';
 
 			// Menú Professors
-			echo '          <li class="nav-item dropdown">';
-			echo '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
-			echo '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
-			echo '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
-			echo '              <div class="dropdown-divider"></div>';
-			echo '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Tutors">Tutors</a>';
-			//echo '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
-			echo '            </div>';
-			echo '          </li>';
+			$Retorn .= '          <li class="nav-item dropdown">';
+			$Retorn .= '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
+			$Retorn .= '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
+			$Retorn .= '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Professors">Professors</a>';
+			$Retorn .= '              <a class="dropdown-item" href="AssignaUFs.php?accio=ProfessorsUF">Professors per UF</a>';
+			$Retorn .= '              <div class="dropdown-divider"></div>';
+			$Retorn .= '              <a class="dropdown-item" href="UsuariRecerca.php?accio=Tutors">Tutors</a>';
+			//$Retorn .= '              <a class="dropdown-item" href="Guardia.php">Guàrdies</a>';
+			$Retorn .= '            </div>';
+			$Retorn .= '          </li>';
 
 			// Menú FP
-			echo '			<li class="nav-item dropdown">';
-			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">FP</a>';
-			echo '				<div class="dropdown-menu" aria-labelledby="ddFP">';
-			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
-			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
-			echo '					<a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
-			echo '					<div class="dropdown dropright dropdown-submenu">';
-			echo '						<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
-			echo '						<div class="dropdown-menu">';
-			echo '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesCF">Unitats formatives/MP/CF</a>';
-			echo '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesDates">Unitats formatives/Dates</a>';
-			echo '						</div>';
-			echo '					<div class="dropdown-divider"></div>';
-			echo '					<a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
-			echo '					<div class="dropdown-divider"></div>';
-			echo '					<a class="dropdown-item" href="Escriptori.php">Cursos</a>';
-			echo '				</div>';
-			echo '			</li>';
+			$Retorn .= '			<li class="nav-item dropdown">';
+			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">FP</a>';
+			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddFP">';
+			$Retorn .= '					<a class="dropdown-item" href="FPRecerca.php?accio=Families">Famílies</a>';
+			$Retorn .= '					<a class="dropdown-item" href="FPRecerca.php?accio=CiclesFormatius">Cicles formatius</a>';
+			$Retorn .= '					<a class="dropdown-item" href="FPRecerca.php?accio=ModulsProfessionals">Mòduls professionals</a>';
+			$Retorn .= '					<div class="dropdown dropright dropdown-submenu">';
+			$Retorn .= '						<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
+			$Retorn .= '						<div class="dropdown-menu">';
+			$Retorn .= '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesCF">Unitats formatives/MP/CF</a>';
+			$Retorn .= '							<a class="dropdown-item" href="FPRecerca.php?accio=UnitatsFormativesDates">Unitats formatives/Dates</a>';
+			$Retorn .= '						</div>';
+			$Retorn .= '					<div class="dropdown-divider"></div>';
+			$Retorn .= '					<a class="dropdown-item" href="FormMatricula.php">Matriculació alumnes</a>';
+			$Retorn .= '					<div class="dropdown-divider"></div>';
+			$Retorn .= '					<a class="dropdown-item" href="Escriptori.php">Cursos</a>';
+			$Retorn .= '				</div>';
+			$Retorn .= '			</li>';
 
 			// Menú Centre
-			echo '			<li class="nav-item dropdown">';
-			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddCentre" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Centre</a>';
-			echo '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
-			echo '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
-			echo '					<div class="dropdown-divider"></div>';
-			echo '              	<a class="dropdown-item" href="Recerca.php?accio=AnyAcademic">Any acadèmic</a>';
-			echo '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
-			echo '					<div class="dropdown-divider"></div>';
-			echo '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
-//			echo '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
-			echo '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
-			echo '				</div>';
-			echo '			</li>';
+			$Retorn .= '			<li class="nav-item dropdown">';
+			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddCentre" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Centre</a>';
+			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
+			$Retorn .= '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
+			$Retorn .= '					<div class="dropdown-divider"></div>';
+			$Retorn .= '              	<a class="dropdown-item" href="Recerca.php?accio=AnyAcademic">Any acadèmic</a>';
+			$Retorn .= '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
+			$Retorn .= '					<div class="dropdown-divider"></div>';
+			$Retorn .= '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
+//			$Retorn .= '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
+			$Retorn .= '	                <a class="dropdown-item" href="ImportaMatriculaDialeg.php">Importa matrícules</a>';
+			$Retorn .= '				</div>';
+			$Retorn .= '			</li>';
 
 			// Menú Informes
-			echo '			<li class="nav-item dropdown">';
-			echo '				<a class="nav-link dropdown-toggle" href="#" id="ddInformes" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Informes</a>';
-			echo '				<div class="dropdown-menu" aria-labelledby="ddInformes">';
-			echo '              	<a class="dropdown-item" href="UsuariRecerca.php?accio=UltimLogin">Darrers accessos</a>';
-			echo '				</div>';
-			echo '			</li>';
+			$Retorn .= '			<li class="nav-item dropdown">';
+			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddInformes" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Informes</a>';
+			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddInformes">';
+			$Retorn .= '              	<a class="dropdown-item" href="UsuariRecerca.php?accio=UltimLogin">Darrers accessos</a>';
+			$Retorn .= '              	<a class="dropdown-item" href="Estadistiques.php?accio=EstadistiquesNotes">Estadístiques notes</a>';
+			$Retorn .= '				</div>';
+			$Retorn .= '			</li>';
 		}	
-		echo '		</ul>';
+		$Retorn .= '		</ul>';
 	
 		// Menú usuari
 		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
-		echo '		<ul class="navbar-nav">';
-		echo '		  <li class="nav-item dropdown">';
-//		echo '			<a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
-		echo '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
-		echo '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
-		echo '				<a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
-		echo '				<div class="dropdown-divider"></div>';
+		$Retorn .= '		<ul class="navbar-nav">';
+		$Retorn .= '		  <li class="nav-item dropdown">';
+//		$Retorn .= '			<a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
+		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
+		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
+		$Retorn .= '				<a class="dropdown-item" href="CanviPassword.html">Canvia password</a>';
+		$Retorn .= '				<div class="dropdown-divider"></div>';
 		if ($Usuari->es_cap_estudis) {
-			echo '				<a class="dropdown-item" href="CanviaRol.php">Canvia a professor</a>';
-			echo '				<div class="dropdown-divider"></div>';
+			$Retorn .= '				<a class="dropdown-item" href="CanviaRol.php">Canvia a professor</a>';
+			$Retorn .= '				<div class="dropdown-divider"></div>';
 		}
 		if ($Usuari->es_admin) {
-			echo '				<a class="dropdown-item" href="Administra.php">Administra</a>';
-			echo '				<div class="dropdown-divider"></div>';
+			$Retorn .= '				<a class="dropdown-item" href="Administra.php">Administra</a>';
+			$Retorn .= '				<div class="dropdown-divider"></div>';
 		}
-		echo '				<a class="dropdown-item" href="Surt.php">Surt</a>';
-		echo '			</div>';
-		echo '		  </li>';
-		echo '		</ul>';
+		$Retorn .= '				<a class="dropdown-item" href="Surt.php">Surt</a>';
+		$Retorn .= '			</div>';
+		$Retorn .= '		  </li>';
+		$Retorn .= '		</ul>';
 
-		echo '	</div>';
-		echo '</nav>';
-		echo '<BR><BR>'; // Per donar espai al menú
+		$Retorn .= '	</div>';
+		$Retorn .= '</nav>';
+		$Retorn .= '<BR><BR>'; // Per donar espai al menú
 	}
-	echo '      <div class="starter-template" style="padding:20px">';
-//	echo '<H1>'.utf8_encode($Titol).'</H1>';
-	echo '<H1>'.$Titol.'</H1>';
+	$Retorn .= '      <div class="starter-template" style="padding:20px">';
+//	$Retorn .= '<H1>'.utf8_encode($Titol).'</H1>';
+	$Retorn .= '<H1>'.$Titol.'</H1>';
+	return $Retorn;
 }
 
 function CreaIniciHTML_BootstrapStarterTemplate2($Usuari, $Titol, $bMenu = True)

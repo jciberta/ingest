@@ -886,7 +886,7 @@ class Notes extends Form
 //print_r($Notes->UF);			
 //print('<HR>');			
 //exit;
-			if (array_key_exists($i, $Notes->UF)) {
+			if (property_exists($Notes, 'UF') && (array_key_exists($i, $Notes->UF))) {
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
 	//print_r($row);			
@@ -1081,17 +1081,13 @@ class Notes extends Form
 	}
 
 	/**
-	 * ---.
+	 * Calcula les estadístiques d'un curs.
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
      * @return oject Objecte amb les estadístiques del curs.
 	 */				
-	private function EstadistiquesCurs($Nivell) {
+	private function CalculaEstadistiquesCurs($Nivell) {
 		$Retorn = new EstadistiquesCurs();
-		//$Retorn->NumeroAlumnes = 0;
-		//$Retorn->NumeroRepetidors = 0;
-		//$Retorn->UFTotals = 0;
-		//$Retorn->UFFetes = 0;
 		$Registre = $this->Registre1->Alumne;
 		for($i = 0; $i < count($Registre); $i++) {
 			$row = $Registre[$i];
@@ -1124,32 +1120,36 @@ class Notes extends Form
 	}
 	
 	/**
-	 * ---.
-	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * Genera una taula amb les estadístiques d'un curs.
+	 * @param object $objCurs Objecte del curs.
 	 * @param string $Nivell Nivell: 1r o 2n.
      * @return string Taula HTML amb les estadístiques del curs.
 	 */				
-	public function Estadistiques($CursId, $Nivell) {
-		$Retorn = '<TABLE BORDER=1>';
-		$ec = $this->EstadistiquesCurs($Nivell);
+	public function GeneraEstadistiquesCurs($objCurs, $Nivell) {
+		$style = " style='text-align:center;' ";
 		
-		$Retorn .= "<TR><TD>Nombre d'alumnes</TD><TD>".$ec->NumeroAlumnes."</TD><TD>100%</TD></TR>";
-		$Retorn .= "<TR><TD>Repetidors</TD><TD>".$ec->NumeroRepetidors."</TD><TD>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Total UF's</TD><TD>".$ec->UFTotals."</TD><TD>100%</TD></TR>";
-		$Retorn .= "<TR><TD>UF's avaluades</TD><TD>".$ec->UFFetes."</TD><TD>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>&nbsp;</TD><TD></TD></TR>";
+		$Retorn = '<TABLE BORDER=1>';
+		$ec = $this->CalculaEstadistiquesCurs($Nivell);
+		
+		$Retorn .= "<TR><TD style='background-color:black;color:white;' COLSPAN=3>".utf8_encode($objCurs->NomCurs)."</TD></TR>";
 
-		$Retorn .= "<TR><TD></TD><TD>Alumnes</TD><TD>%</TD></TR>";
+		$Retorn .= "<TR><TD>Nombre d'alumnes</TD><TD $style>".$ec->NumeroAlumnes."</TD><TD $style>100%</TD></TR>";
+		$Retorn .= "<TR><TD>Repetidors</TD><TD $style>".$ec->NumeroRepetidors."</TD><TD $style>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Total UF's</TD><TD $style>".$ec->UFTotals."</TD><TD $style>100%</TD></TR>";
+		$Retorn .= "<TR><TD>UF's avaluades</TD><TD $style>".$ec->UFFetes."</TD><TD $style>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."%</TD></TR>";
+		//$Retorn .= "<TR><TD>&nbsp;</TD><TD></TD></TR>";
+
+		$Retorn .= "<TR><TD></TD><TD $style>Alumnes</TD><TD $style>%</TD></TR>";
 		$TotalUF = $ec->AlumnesTotAprovat+$ec->AlumnesPendent1UF+$ec->AlumnesPendent2UF+$ec->AlumnesPendent3UF+
 			$ec->AlumnesPendent4UF+$ec->AlumnesPendent5UF+$ec->AlumnesPendentMesDe5UF;
-		$Retorn .= "<TR><TD>Alumnes tot aprovat</TD><TD>".$ec->AlumnesTotAprovat."</TD><TD>".number_format($ec->AlumnesTotAprovat/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent 1 UF</TD><TD>".$ec->AlumnesPendent1UF."</TD><TD>".number_format($ec->AlumnesPendent1UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent 2 UF</TD><TD>".$ec->AlumnesPendent2UF."</TD><TD>".number_format($ec->AlumnesPendent2UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent 3 UF</TD><TD>".$ec->AlumnesPendent3UF."</TD><TD>".number_format($ec->AlumnesPendent3UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent 4 UF</TD><TD>".$ec->AlumnesPendent4UF."</TD><TD>".number_format($ec->AlumnesPendent4UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent 5 UF</TD><TD>".$ec->AlumnesPendent5UF."</TD><TD>".number_format($ec->AlumnesPendent5UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD>Alumnes pendent més de 5 UF</TD><TD>".$ec->AlumnesPendentMesDe5UF."</TD><TD>".number_format($ec->AlumnesPendentMesDe5UF/$TotalUF*100, 2)."%</TD></TR>";
-		$Retorn .= "<TR><TD></TD><TD>".$TotalUF."</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes tot aprovat</TD><TD $style>".$ec->AlumnesTotAprovat."</TD><TD $style>".number_format($ec->AlumnesTotAprovat/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 1 UF</TD><TD $style>".$ec->AlumnesPendent1UF."</TD><TD $style>".number_format($ec->AlumnesPendent1UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 2 UF</TD><TD $style>".$ec->AlumnesPendent2UF."</TD><TD $style>".number_format($ec->AlumnesPendent2UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 3 UF</TD><TD $style>".$ec->AlumnesPendent3UF."</TD><TD $style>".number_format($ec->AlumnesPendent3UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 4 UF</TD><TD $style>".$ec->AlumnesPendent4UF."</TD><TD $style>".number_format($ec->AlumnesPendent4UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent 5 UF</TD><TD $style>".$ec->AlumnesPendent5UF."</TD><TD $style>".number_format($ec->AlumnesPendent5UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD>Alumnes pendent més de 5 UF</TD><TD $style>".$ec->AlumnesPendentMesDe5UF."</TD><TD $style>".number_format($ec->AlumnesPendentMesDe5UF/$TotalUF*100, 2)."%</TD></TR>";
+		$Retorn .= "<TR><TD></TD><TD $style>".$TotalUF."</TD><TD></TD></TR>";
 		
 		$Retorn .= '</TABLE>';
 		return $Retorn;
