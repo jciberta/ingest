@@ -17,7 +17,7 @@ cd /var/www/html
 mkdir InGest-v$VERSIO
 cd InGest-v$VERSIO
 git clone https://github.com/jciberta/ingest.git
-chmod 755 * -R
+chown www-data:www-data -R *
 nano ingest/src/Config.php
 ```
 
