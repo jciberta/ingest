@@ -75,7 +75,15 @@ else if ($Usuari->es_professor) {
 	echo '      <a href="FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	echo '    </div>';
 	echo '  </div>';
-	
+
+	// Estadístiques FP
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Informes</h5>';
+	echo '      <p class="card-text">Estadístiques FP</p>';
+	echo '      <a href="Estadistiques.php?accio=EstadistiquesNotes" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
 }
 else if ($Usuari->es_alumne) {
 	CreaIniciHTML($Usuari, '');
