@@ -59,7 +59,7 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
-		$SQL = ' SELECT EQ.equip_id, '.
+		$SQL = ' SELECT EQ.equip_id, AA.nom AS AnyAcademic, '.
 			' CASE EQ.tipus '.
 			'     WHEN "DP" THEN "Departament" '.
 			'     WHEN "ED" THEN "Equip docent" '.
@@ -68,12 +68,13 @@ switch ($accio) {
 			' EQ.nom AS NomEquip, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username '.
 			' FROM EQUIP EQ '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (EQ.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id) ';
 		$frm->SQL = $SQL;
-		$frm->Taula = 'DEPARTAMENT';
+		$frm->Taula = 'EQUIP';
 		$frm->ClauPrimaria = 'equip_id';
-		$frm->Camps = 'Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor';
-		$frm->Descripcions = 'Tipus, Equip, Nom, 1r cognom, 2n cognom';
+		$frm->Camps = 'AnyAcademic, Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor';
+		$frm->Descripcions = 'Any, Tipus, Equip, Nom, 1r cognom, 2n cognom';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Equip';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);

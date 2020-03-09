@@ -131,6 +131,10 @@ switch ($accio) {
 		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
 		
+		$SQL = 'SELECT AA.any_academic_id, AA.nom '.
+			' FROM ANY_ACADEMIC AA ';
+		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "any_academic_id", "nom");
+		$frm->AfegeixLlista('any_academic_id', 'Any', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLlista('tipus', 'Tipus', 30, array("DP", "ED", "CM"), array("Departament", "Equip docent", "Comissió"));
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
