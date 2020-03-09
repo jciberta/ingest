@@ -198,27 +198,28 @@ CREATE TABLE NOTES
     CONSTRAINT N_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE DEPARTAMENT
+CREATE TABLE EQUIP
 (
-    /* DEP */
-    departament_id INT NOT NULL AUTO_INCREMENT,
+    /* EQP */
+    equip_id INT NOT NULL AUTO_INCREMENT,
+    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CM: Comissió */
     nom VARCHAR(50) NOT NULL,
-    cap INT NOT NULL,
+    cap INT NULL,
 
-    CONSTRAINT DepartamentPK PRIMARY KEY (departament_id),
-    CONSTRAINT DEP_CapFK FOREIGN KEY (cap) REFERENCES USUARI(usuari_id)
+    CONSTRAINT EquipPK PRIMARY KEY (equip_id),
+    CONSTRAINT EQP_CapFK FOREIGN KEY (cap) REFERENCES USUARI(usuari_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE PROFESSOR_DEPARTAMENT
+CREATE TABLE PROFESSOR_EQUIP
 (
-    /* PUD */
-    professor_departament_id INT NOT NULL AUTO_INCREMENT,
+    /* PEQ */
+    professor_equip_id INT NOT NULL AUTO_INCREMENT,
     professor_id INT NOT NULL,
-    departament_id INT NOT NULL,
+    equip_id INT NOT NULL,
 
-    CONSTRAINT ProfessorDepartamentPK PRIMARY KEY (professor_departament_id),
-    CONSTRAINT PUD_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
-    CONSTRAINT PUD_DepartamentFK FOREIGN KEY (departament_id) REFERENCES DEPARTAMENT(departament_id)
+    CONSTRAINT ProfessorEquipPK PRIMARY KEY (professor_equip_id),
+    CONSTRAINT PEQ_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
+    CONSTRAINT PEQ_DepartamentFK FOREIGN KEY (equip_id) REFERENCES EQUIP(equip_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE FESTIU

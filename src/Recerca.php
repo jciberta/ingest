@@ -55,21 +55,27 @@ switch ($accio) {
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;
-    case "Departament":
+    case "Equip":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
-		$frm->Titol = 'Departaments';
-		$SQL = ' SELECT D.departament_id, D.nom AS NomDepartament, '.
+		$frm->Titol = 'Equips';
+		$SQL = ' SELECT EQ.equip_id, '.
+			' CASE EQ.tipus '.
+			'     WHEN "DP" THEN "Departament" '.
+			'     WHEN "ED" THEN "Equip docent" '.
+			'     WHEN "CM" THEN "Comissió" '.
+			' END AS Tipus, '.
+			' EQ.nom AS NomEquip, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username '.
-			' FROM DEPARTAMENT D '.
-			' LEFT JOIN USUARI U ON (D.cap=U.usuari_id) ';
+			' FROM EQUIP EQ '.
+			' LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id) ';
 		$frm->SQL = $SQL;
 		$frm->Taula = 'DEPARTAMENT';
-		$frm->ClauPrimaria = 'departament_id';
-		$frm->Camps = 'NomDepartament, NomProfessor, Cognom1Professor, Cognom2Professor';
-		$frm->Descripcions = 'Departament, Nom, 1r cognom, 2n cognom';
+		$frm->ClauPrimaria = 'equip_id';
+		$frm->Camps = 'Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor';
+		$frm->Descripcions = 'Tipus, Equip, Nom, 1r cognom, 2n cognom';
 		$frm->PermetEditar = True;
-		$frm->URLEdicio = 'Fitxa.php?accio=Departament';
+		$frm->URLEdicio = 'Fitxa.php?accio=Equip';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();

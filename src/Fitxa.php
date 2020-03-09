@@ -117,7 +117,7 @@ switch ($accio) {
 	
 		$frm->EscriuHTML();
         break;
-    case "Departament":
+    case "Equip":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 	
@@ -125,12 +125,13 @@ switch ($accio) {
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
 		$frm = new FormFitxa($conn, $Usuari);
-		$frm->Titol = 'Departament';
-		$frm->Taula = 'DEPARTAMENT';
-		$frm->ClauPrimaria = 'departament_id';
+		$frm->Titol = 'Equip';
+		$frm->Taula = 'EQUIP';
+		$frm->ClauPrimaria = 'equip_id';
 		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
 		
+		$frm->AfegeixLlista('tipus', 'Tipus', 30, array("DP", "ED", "CM"), array("Departament", "Equip docent", "Comissió"));
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 	

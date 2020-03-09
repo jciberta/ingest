@@ -150,7 +150,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			$Retorn .= '              	<a class="dropdown-item" href="UsuariRecerca.php">Usuaris</a>';
 			$Retorn .= '					<div class="dropdown-divider"></div>';
 			$Retorn .= '              	<a class="dropdown-item" href="Recerca.php?accio=AnyAcademic">Any acadèmic</a>';
-			$Retorn .= '              	<a class="dropdown-item" href="Recerca.php?accio=Departament">Departaments</a>';
+			$Retorn .= '              	<a class="dropdown-item" href="Recerca.php?accio=Equip">Equips</a>';
 			$Retorn .= '					<div class="dropdown-divider"></div>';
 			$Retorn .= '	                <a class="dropdown-item" href="ImportaUsuarisDialeg.php">Importa usuaris</a>';
 //			$Retorn .= '	                <a class="dropdown-item" href="ImportaPasswordsDialeg.php">Importa passwords iEduca</a>';
