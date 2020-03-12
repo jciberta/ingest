@@ -63,7 +63,7 @@ CREATE TABLE USUARI
     /* U */
     usuari_id          INT NOT NULL,
     username           VARCHAR(100) NOT NULL,
-    password           VARCHAR(255) NOT NULL,
+    password           VARCHAR(255) NOT NULL DEFAULT '*';
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),
