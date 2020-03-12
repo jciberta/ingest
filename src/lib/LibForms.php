@@ -276,7 +276,7 @@ class Form {
 	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
 	 * @return string Codi HTML del lookup.
 	 */
-	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], string $CodiSeleccionat = '') {
+	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
 		// $NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off)) ? ' readonly' : '';
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
@@ -1579,18 +1579,8 @@ class FormFitxa extends Form {
 		$sCamps = substr($sCamps, 0, -2);
 		$sValues = substr($sValues, 0, -2);
 //print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
-		if ($Id == 0) {
-			// INSERT
-			if ($AutoIncrement) {
-				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") VALUES (".$sValues.")";
-			}
-			else {
-				$sCamps = $ClauPrimaria.', '.$sCamps;
-				$sValues = '(SELECT MAX('.$ClauPrimaria.')+1 FROM '. $Taula.'), '.$sValues;
-				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") SELECT ".$sValues;
-			}
-		}
-		else {
+
+		if ($Id > 0) {
 			// UPDATE
 			$SQL = "UPDATE ".$Taula." SET ";
 			$aCamps = explode(",", TrimXX($sCamps));
@@ -1602,8 +1592,19 @@ class FormFitxa extends Form {
 			}
 			$SQL = substr($SQL, 0, -2);
 			$SQL .= ' WHERE '.$ClauPrimaria.'='.$Id;
-			
 		}
+		else {
+			// INSERT
+			if ($AutoIncrement) {
+				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") VALUES (".$sValues.")";
+			}
+			else {
+				$sCamps = $ClauPrimaria.', '.$sCamps;
+				$sValues = '(SELECT MAX('.$ClauPrimaria.')+1 FROM '. $Taula.'), '.$sValues;
+				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") SELECT ".$sValues;
+			}
+		}
+
 		$SQL = utf8_decode($SQL);
 		if (Config::Debug)		
 			$Retorn .= '<BR><b>SQL</b>: '.$SQL;

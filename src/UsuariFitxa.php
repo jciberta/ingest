@@ -76,6 +76,10 @@ $frm->AfegeixText('municipi', 'Municipi', 100);
 $frm->AfegeixText('provincia', 'Província', 100);
 $frm->AfegeixCheckBox('permet_tutor', "Permet tutor? (vàlid pels >=18 anys)");
 
+$frm->Pestanya('Pares');
+$frm->AfegeixLookUp('pare_id', 'Pare', 100, 'UsuariRecerca.php?accio=Pares', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+$frm->AfegeixLookUp('mare_id', 'Mare', 100, 'UsuariRecerca.php?accio=Pares', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+
 if (!$Usuari->es_professor) {
 	$frm->Pestanya('Rols');
 	//$frm->IniciaColumnes();
