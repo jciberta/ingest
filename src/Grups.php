@@ -42,7 +42,8 @@ echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javasc
 
 $SQL = ' SELECT * FROM MATRICULA M '.
 	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' WHERE curs_id='.$CursId;
+	' WHERE curs_id='.$CursId.
+	' ORDER BY U.cognom1, U.cognom2, U.nom ';
 
 $ResultSet = $conn->query($SQL);
 
