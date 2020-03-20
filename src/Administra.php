@@ -134,6 +134,9 @@ switch ($accio) {
 				echo "</TR>";
 			}
 			echo "</TABLE>";
+			$URL = "Administra.php?accio=EditaTaula&Taula=$Taula&Clau=$ClauPrimaria&Valor=-1"; 
+			echo '<TD><a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a></TD>';
+			
 			echo '</form>';
 		}
 		$ResultSet->close();

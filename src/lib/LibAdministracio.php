@@ -109,7 +109,6 @@ class Administracio
 	 */
 	public function EscriuFitxaEdicioRegistre(string $Taula, string $Clau, string $Valor) {
 		$Metadades = $this->ObteMetadades($Taula);
-
 		$frm = new FormFitxa($this->Connexio, $this->Usuari);
 		$frm->Titol = 'Edició registre';
 		$frm->Taula = $Taula;
@@ -117,17 +116,16 @@ class Administracio
 		$frm->Id = $Valor;
 		for ($i=0; $i<count($Metadades); $i++) {
 			$row = $Metadades[$i];
-//print_r($row);			
-//print '<BR>';
 			$Tipus = strtoupper($row['Type']);
-//print_r($Tipus);			
-//print '<BR>';
 			$aTipus = explode('(', $Tipus);
-//print_r($aTipus);			
-//print '<BR>';
+
+			$off = ($row['Key'] == 'PRI') ? [Form::offNOMES_LECTURA] : [];
+			if (($row['Key'] == 'PRI') && ($row['Extra'] == 'auto_increment'))
+				$frm->AutoIncrement = True;
+
 			switch ($aTipus[0]) {
 				case 'INT':
-					$frm->AfegeixEnter($row['Field'], $row['Field'], 50, []);
+					$frm->AfegeixEnter($row['Field'], $row['Field'], 50, $off);
 					break;
 				case 'CHAR':
 				case 'VARCHAR':
