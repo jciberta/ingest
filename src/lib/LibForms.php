@@ -34,11 +34,15 @@ class Form {
 	const tcSELECCIO = 7;
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
-	const tcPESTANYA = 10;
-	const tcCOLUMNA_INICI = 11;
-	const tcCOLUMNA_SALT = 12;
-	const tcCOLUMNA_FINAL = 13;
-	const tcESPAI = 14;
+	const tcCALCULAT = 10;
+	const tcPESTANYA = 20;
+	const tcCOLUMNA_INICI = 21;
+	const tcCOLUMNA_SALT = 22;
+	const tcCOLUMNA_FINAL = 23;
+	const tcESPAI = 24;
+
+	// Tipus de camps calculat.
+	const tccEDAT = 1;
 	
 	// Opcions del FormFitxa.
 	const offNOMES_LECTURA = 1; // Indica si el camp és pot escriure o no.
@@ -298,6 +302,35 @@ class Form {
 		$sRetorn .= '</TD>';
 		return $sRetorn;
 	}
+	
+	/**
+	 * Crea un camp de tipus camp calculat.
+	 *
+	 * @param string $Calcul Tipus de camp calculat.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud del desplegable.
+	 * @param boolean $Valor Valor per defecte de l'element.
+	 * @param array $off Opcions del formulari.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaCalculat(int $Calcul, string $Nom, string $Titol, int $Longitud, string $Valor, array $off = []) {
+		$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		$TextValor = '';
+		switch ($Calcul) {
+			case Form::tccEDAT:
+				$diff = date_diff(date_create("now"), date_create($Valor));
+				$TextValor = $diff->format("%y");
+//print("Edat: $TextValor<hr>");
+				break;
+		}
+
+		$sNom = 'cfd_' . $Nom;
+		$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn .= '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
+		return $sRetorn;
+	}	
 } 
 
 /**
@@ -1212,6 +1245,28 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Longitud = $altura;
 		$this->Camps[$i]->Opcions = [];
 	}
+	
+	/**
+	 * Afegeix un camp calculat del tipus especificat al formulari.
+	 *
+	 * @param string $calcul Tipus de camp calculat.
+	 * @param string $camp Camp de la taula.
+	 * @param string $titol Títol del camp.
+	 * @param integer $longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
+	 * @return void
+	 */
+	public function AfegeixCalculat(int $calcul, string $camp, string $titol, int $longitud, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcCALCULAT;
+		$this->Camps[$i]->Camp = $camp;
+		$this->Camps[$i]->Calcul = $calcul;
+		$this->Camps[$i]->Titol = $titol;
+		$this->Camps[$i]->Longitud = 5*$longitud;
+		$this->Camps[$i]->Opcions = $off;
+	}
 
 	/**
 	 * Marca l'inici d'una pestanya.
@@ -1396,6 +1451,10 @@ class FormFitxa extends Form {
 						$Valor->Lookup->Camps, 
 						$Valor->Opcions, 
 						$CodiSeleccionat);
+					break;
+				case self::tcCALCULAT:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaCalculat($Valor->Calcul, $Valor->Camp, $Valor->Titol, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;

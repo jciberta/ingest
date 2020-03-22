@@ -56,10 +56,11 @@ $frm->AfegeixText('codi', 'Codi (codi professor, IDALU per alumne)', 100);
 $frm->AfegeixLlista('sexe', 'Sexe', 30, array('H', 'D', 'N'), array('Home', 'Dona', 'Neutre'), [FormFitxa::offREQUERIT]);
 $frm->AfegeixLlista('tipus_document', 'Tipus document', 30, array('D', 'N', 'P'), array('Dni', 'Nie', 'Passaport'), [FormFitxa::offREQUERIT]);
 $frm->AfegeixText('document', 'Document', 100, [FormFitxa::offAL_COSTAT]);
-$frm->AfegeixText('email', 'Correu electrònic', 100);
 $frm->AfegeixData('data_naixement', 'Data naixement');
+$frm->AfegeixCalculat(Form::tccEDAT, 'data_naixement', 'Edat', 100, [FormFitxa::offAL_COSTAT]);
 $frm->AfegeixText('municipi_naixement', 'Municipi naixement', 100);
 $frm->AfegeixText('nacionalitat', 'Nacionalitat', 100);
+$frm->AfegeixText('email', 'Correu electrònic', 100);
 
 //$frm->AfegeixPassword('password', 'Contrasenya', 100, [FormFitxa::offREQUERIT]);
 if (!$Usuari->es_professor) {
