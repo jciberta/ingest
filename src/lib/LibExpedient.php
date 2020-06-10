@@ -169,7 +169,8 @@ class Expedient
 					$Qualificacions[$i]->Nom = utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
 					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
-						$Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
+						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_professional_id"]]);
+//						$Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
 					else
 						$Qualificacions[$i]->Qualf = '';
 					$Qualificacions[$i]->Conv = 'Ord.';

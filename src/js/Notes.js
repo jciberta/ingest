@@ -838,7 +838,7 @@ console.log('->CalculaQualificacionsFinalsModul');
 	var ArrayHores = JSON.parse(objArrayHores.value);	
 	var TotalHores = document.getElementById('grd2_TotalHores').value;	
 
-	for (var y = 1; y <= TotalY; y++) {
+	for (var y = 0; y <= TotalY; y++) {
 console.log('Fila '+y);
 		ArrayNotes = [];
 		for (var x = 0; x < TotalX; x++) {
@@ -899,7 +899,7 @@ function EsborraQualificacionsFinalsModul() {
 console.log('->EsborraQualificacionsFinalsModul');
 	var TotalX = document.getElementById('TotalX').value;
 	var TotalY = document.getElementById('TotalY').value;
-	for (var y = 1; y <= TotalY; y++) {
+	for (var y = 0; y <= TotalY; y++) {
 		CellaId = 'grd2_' + y + '_' + TotalX;
 		objCella = document.getElementById(CellaId);
 		objCella.value = '';

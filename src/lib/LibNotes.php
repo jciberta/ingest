@@ -339,12 +339,20 @@ class Notes extends Form
 //print_r($aOcurrenciesModuls);
 //print_r($aModulsNom);
 
+		// PEDAÇ. Cal arreglar
+		$Curs = new Curs($this->Connexio, $this->Usuari);
+		$Curs->CarregaRegistre($this->CursId);
+		$NivellCurs = $Curs->ObteNivell();
+		$IdCurs = ($NivellCurs == $Nivell) ? $row["IdCurs"] : $row["IdCurs"]+1;
+
 		// Mòdul
 		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
+//			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index].'NIVELL='.$Nivell;
+//			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
+			$Link = 'NotesModul.php?CursId='.$IdCurs.'&ModulId='.$aModulsId[$index];
 			$MPId = $aModulsId[$index];
 			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
