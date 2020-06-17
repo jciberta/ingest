@@ -171,10 +171,12 @@ class Form {
 	 * @param string $Nom Nom del botó.
 	 * @param string $Titol Títol de l'ajuda.
 	 * @param string $Funcio Funció JavaScript.
+	 * @param boolean $Deshabilitat Botó deshabilitat.
 	 * @return string Codi HTML del botó.
 	 */
-	public function CreaBotoJS(string $Nom, string $Titol, string $Funcio): string {
-		$sRetorn = '<a href=# class="btn btn-primary active" role="button" aria-pressed="true" '.
+	public function CreaBotoJS(string $Nom, string $Titol, string $Funcio, $Deshabilitat = False): string {
+		$Deshabilitat = $Deshabilitat ? ' disabled ' : '';
+		$sRetorn = "<a href=# class='btn btn-primary active $Deshabilitat' role='button' aria-pressed='true' ".
 			" name='$Nom'".
 			" onClick='$Funcio'>$Titol</a>&nbsp;";
 		return $sRetorn;

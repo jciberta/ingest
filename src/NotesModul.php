@@ -71,8 +71,13 @@ $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 echo $Tutoria->GeneraMostraGrup($CursId);
 
+// Si l'avaluació (el curs) està tancada, tot deshabilitat.
+$Deshabilitat = ($Avaluacio->Estat() == Avaluacio::Tancada);
+// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
+$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? True : $Deshabilitat;
+
 echo '<span style="float:right;">';
-echo $NotesModul->CreaBotoJS('btn', 'Calcula qualificacions finals del mòdul', 'CalculaQualificacionsFinalsModul();');
+echo $NotesModul->CreaBotoJS('btn', 'Calcula qualificacions finals del mòdul', 'CalculaQualificacionsFinalsModul();', $Deshabilitat);
 echo $NotesModul->CreaAjuda('Càlcul de les qualificacions finals del mòdul', 
 	'Per al càlcul de les qualificació final del mòdul es té en compte els següents casos:<br>'.
 	'<ol>'.
@@ -82,7 +87,7 @@ echo $NotesModul->CreaAjuda('Càlcul de les qualificacions finals del mòdul',
 	'</ol>'.
 	'No obstant, la qualificació final es pot introduir també a mà.'
 	);
-echo $NotesModul->CreaBotoJS('btn', 'Esborra qualificacions finals del mòdul', 'EsborraQualificacionsFinalsModul();');
+echo $NotesModul->CreaBotoJS('btn', 'Esborra qualificacions finals del mòdul', 'EsborraQualificacionsFinalsModul();', $Deshabilitat);
 echo '</span>';
 
 echo "<P>";

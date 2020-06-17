@@ -1559,9 +1559,12 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 			$Hores += $row["Hores"];
 		else if ($Nota!='' && $Nota>=0 && $Nota<5)
 			$style .= ";color:red";
-		
+
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
+
+		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
+		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 
 		$ClassInput = 'nota';
 		if ($row["FCTMP"] == 1)
