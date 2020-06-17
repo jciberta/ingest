@@ -689,10 +689,11 @@ class FormRecerca extends Form {
 			foreach ($aFiltreText as $sValor) {
 				$sWhere .= '(';
 				foreach ($aCamps as $sCamp) {
+					$sCamp = $this->EliminaTipusPredefinit($sCamp);
 					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
 						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
 					else
-						$sWhere .= $this->EliminaTipusPredefinit($sCamp) . " LIKE '%" . $sValor . "%' OR ";
+						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
 				}
 				$sWhere = substr($sWhere, 0, -4) . ') AND ';
 			}
@@ -719,7 +720,7 @@ class FormRecerca extends Form {
 			if ($iOrder != 0) {
 				$sRetorn = trim(substr($sRetorn, 0, $iOrder));
 			}
-			$sRetorn .= ' ORDER BY '.$this->Ordre;
+			$sRetorn .= ' ORDER BY '.$this->EliminaTipusPredefinit($this->Ordre);
 		}
 //print $sRetorn;		
 		return $sRetorn;
@@ -760,15 +761,12 @@ class FormRecerca extends Form {
 	private function CreaFletxaOrdenacio(string $camp): string {
 		$Retorn = '';
 		if ($this->PermetOrdenar) {
+			$camp = $this->EliminaTipusPredefinit($camp);
 			$FuncioAvall = 'OrdenaColumna("'.$camp.'", "")';
 			$FuncioAmunt = 'OrdenaColumna("'.$camp.'", "DESC")';
 			$Retorn .= "<span id='FletxaAvall_".$camp."'><img src=img/down.svg style='cursor:pointer' onclick='$FuncioAvall'></span>";
 			$Retorn .= "<span id='FletxaAmunt_".$camp."' style='display:none'><img src=img/up.svg style='cursor:pointer' onclick='$FuncioAmunt'></span>";
 		}
-		
-
-
-
 		return $Retorn;
 	}
 
@@ -833,7 +831,7 @@ class FormRecerca extends Form {
 					$aData = explode(':', $data);
 					if (count($aData)>1) {
 						if ($aData[0] == 'bool') {
-							$sValor = ($row[$aData[1]]) ? 'Sí' : '';
+							$sValor = ($row[$aData[1]]) ? '<input type="checkbox" checked disabled>' : '';
 						$sRetorn .= "<TD>".$sValor."</TD>";
 						}
 					}

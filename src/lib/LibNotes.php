@@ -567,13 +567,17 @@ class Notes extends Form
 		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
 		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 		
+		$ClassInput = 'nota';
+		if ($row["FCT"] == 1)
+			$ClassInput .= ' fct';
+		
 		// <INPUT>
 		// name: conté id i convocatòria
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 		return "<TD $Class width=2>"
-			."<input class='nota' type=text ".$Deshabilitat." style='".$style."'".
+			."<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip.
 			" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
@@ -764,7 +768,7 @@ class Notes extends Form
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
+			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT, '.
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
@@ -1252,8 +1256,8 @@ class NotesModul extends Notes
 	{
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, '.
-			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
+			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT,'.
+			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, '.
@@ -1558,6 +1562,10 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
+
+		$ClassInput = 'nota';
+		if ($row["FCTMP"] == 1)
+			$ClassInput .= ' fct';
 		
 		// <INPUT>
 		// name: conté id i matrícula
@@ -1565,7 +1573,7 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 		return "<TD $Class width=2>".
-			"<input class='nota' type=text ".$Deshabilitat." style='".$style."'".
+			"<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaModulId_".$NotaId."_".$MatriculaId.
 			" id='".$Id."' value='".$ValorNota."' size=1 ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";

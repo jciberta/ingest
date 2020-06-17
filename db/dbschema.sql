@@ -15,11 +15,11 @@ CREATE TABLE CICLE_FORMATIU
 (
     /* CF */
     cicle_formatiu_id INT NOT NULL,
+    familia_fp_id INT NOT NULL,
     nom VARCHAR(200) NOT NULL,
     grau CHAR(2) NOT NULL,
     codi CHAR(3) NOT NULL,
     codi_xtec CHAR(4) NOT NULL,
-    familia_fp_id INT NOT NULL,
 
     CONSTRAINT CicleFormatiuPK PRIMARY KEY (cicle_formatiu_id),
     CONSTRAINT CF_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id) 
@@ -29,13 +29,14 @@ CREATE TABLE MODUL_PROFESSIONAL
 (
     /* MP */
     modul_professional_id INT NOT NULL,
+    cicle_formatiu_id INT NOT NULL,
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
     hores_setmana INT,
     especialitat VARCHAR(20),
     cos CHAR(1),
-    cicle_formatiu_id INT NOT NULL,
+    es_fct BIT,
 
     CONSTRAINT ModulProfessionalPK PRIMARY KEY (modul_professional_id),
     CONSTRAINT CF_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id) 
@@ -45,14 +46,15 @@ CREATE TABLE UNITAT_FORMATIVA
 (
     /* UF */
     unitat_formativa_id INT NOT NULL,
+    modul_professional_id INT NOT NULL,
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
     nivell INT CHECK (nivell IN (1, 2)),
-    modul_professional_id INT NOT NULL,
 	data_inici DATE,
 	data_final DATE,
     orientativa BIT,
+    es_fct BIT,
 
     CONSTRAINT UnitatFormativaPK PRIMARY KEY (unitat_formativa_id),
     CONSTRAINT MP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
