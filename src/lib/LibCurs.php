@@ -153,6 +153,9 @@ class Curs
 		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
 
 		// Filtre
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
+
 //		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
 		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('0', '1', ''), array('Oberta', 'Tancada', 'Totes'));
 
