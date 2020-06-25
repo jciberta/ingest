@@ -907,7 +907,7 @@ class Notes extends Form
 					$ea->UFTotals++;
 					$ea->HoresTotals += $row['Hores'];
 					$UltimaNota = UltimaNota($row);
-					if ($UltimaNota != '') {
+					if ($UltimaNota != '' && !$row['FCT']) {
 						$ea->UFFetes++;
 						$ea->HoresFetes += $row['Hores'];
 						$TotalNota += $UltimaNota*$row['Hores'];
@@ -916,16 +916,16 @@ class Notes extends Form
 					}
 					if ($row['Convocatoria'] > 0) {
 						$Nota = $row['nota'.$row['Convocatoria']];
-						if ($Nota > 0 && $Nota < 5)
+//						if ($Nota > 0 && $Nota < 5)
+						if ($Nota < 5 && $Nota != '')
 							$ea->UFSuspeses++;
 						else if ($Nota >= 5)
 							$ea->UFAprovades++;
 					}
 					if ($row['Convocatoria'] == 0) 
 						$ea->EsRepetidor = true;
-	//print_r($row);			
-	//print('<HR>');			
-					if ($TotalNota > 0 && $ea->HoresFetes != 0)
+//					if ($TotalNota > 0 && $ea->HoresFetes != 0)
+					if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
 						$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);
 				}
 				//$row['HoresTotals'] = 0;
