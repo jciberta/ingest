@@ -70,6 +70,10 @@ $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 
 $Tutoria = new GrupTutoria($conn, $Usuari);
 echo $Tutoria->GeneraMostraGrup($CursId);
+//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+$TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
+echo $NotesModul->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 
 // Si l'avaluació (el curs) està tancada, tot deshabilitat.
 $Deshabilitat = ($Avaluacio->Estat() == Avaluacio::Tancada);

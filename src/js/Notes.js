@@ -92,6 +92,17 @@ function MostraTotAprovat(obj) {
 }
 
 /**
+ * MostraConvocatoriesAnteriors
+ * Mostra/Oculta els alumnes que ho tenen tot aprovat a les convocatòries anteriors i estan matriculats.
+ * @param obj Objecte que ha provocat la crida.
+ */
+function MostraConvocatoriesAnteriors(obj) {
+	// Seleccionem els que ho tenen tot aprovat a les convocatòries anteriors
+	var tr = $('tr.ConvocatoriesAnteriors');
+	(obj.checked) ? tr.show() : tr.hide();
+}
+
+/**
  * MostraGrup
  * Mostra/Oculta els alumnes d'un grup
  * @param obj Objecte que ha provocat la crida.
@@ -864,8 +875,11 @@ console.log('  Qualificació: ' + Qualificacio);
 		CellaId = 'grd2_' + y + '_' + x;
 		objCella = document.getElementById(CellaId);
 		//document.getElementById(CellaId).value(Qualificacio);
-		objCella.value = Qualificacio;
-		ActualitzaNotaModul(objCella);
+
+		if (!objCella.disabled) {
+			objCella.value = Qualificacio;
+			ActualitzaNotaModul(objCella);
+		}
 	}
 }
 	
@@ -913,7 +927,9 @@ console.log('->EsborraQualificacionsFinalsModul');
 	for (var y = 0; y <= TotalY; y++) {
 		CellaId = 'grd2_' + y + '_' + TotalX;
 		objCella = document.getElementById(CellaId);
-		objCella.value = '';
-		ActualitzaNotaModul(objCella, true);
+		if (!objCella.disabled) {
+			objCella.value = '';
+			ActualitzaNotaModul(objCella, true);
+		}
 	}
 }

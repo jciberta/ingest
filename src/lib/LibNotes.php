@@ -441,6 +441,7 @@ class Notes extends Form
 	 */
 	public function CreaFilaNotes(string $IdGraella, int $Nivell, int $i, $Notes, $row, $Professor, int $TotalHores, $Avaluacio): string {
 		$Retorn = "";
+		$bConvocatoriesAnteriors = True;
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 		$AlumneId = $row["AlumneId"];
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
@@ -460,6 +461,8 @@ class Notes extends Form
 		$Hores = 0;
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
+			if ($row['convocatoria'] != 0)
+				$bConvocatoriesAnteriors = False;
 			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio);
 		}
 
@@ -492,9 +495,12 @@ class Notes extends Form
 		$Retorn .= "</TR>";
 
 		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
-		if ($Hores == $TotalHores)
-			$class .= ' Aprovat100';
-		$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
+		//if ($Hores == $TotalHores)
+		//	$class .= ' Aprovat100';
+		//$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
+		if ($bConvocatoriesAnteriors)
+			$class .= ' ConvocatoriesAnteriors';
+		$style = ($bConvocatoriesAnteriors) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
@@ -859,34 +865,9 @@ class Notes extends Form
 	 * @param object $Notes Graella de notes.
 	 */
 	private function CalculaEstadistiquesAlumne(&$Notes) {
-//		$TotalHores = 0;
-
-//print_r($Notes->Alumne);			
-//print('<HR>');	
-//exit;		
-
-//		foreach($Notes as &$NotesAlumne) {
 		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
 			$ea = new EstadistiquesAlumne;
 			$NotesAlumne['Estadistiques'] = $ea;
-			//$NotesAlumne['HoresTotals'] = 0;
-			//$NotesAlumne['HoresFetes'] = 0;
-			//$NotesAlumne['HoresAprovades'] = 0;
-			//$NotesAlumne['NotaMitjana'] = 0;
-			//$NotesAlumne['UFAprovades'] = 0;
-			//$NotesAlumne['UFSuspeses'] = 0;
-
-//print_r($i);			
-//print('<HR>');	
-//print_r($NotesAlumne);			
-//print('<HR>');	
-//exit;		
-			
-//		for($i = 0; $i < count($Notes); $i++) {
-//			$NotesAlumne = $Notes[$i];
-//print_r($NotesAlumne);			
-//print('<HR>');			
-
 			$TotalNota = 0;
 			$HoresTotals = 0;
 
@@ -907,10 +888,12 @@ class Notes extends Form
 					$ea->UFTotals++;
 					$ea->HoresTotals += $row['Hores'];
 					$UltimaNota = UltimaNota($row);
-					if ($UltimaNota != '' && !$row['FCT']) {
+					if ($UltimaNota != '') {
 						$ea->UFFetes++;
-						$ea->HoresFetes += $row['Hores'];
-						$TotalNota += $UltimaNota*$row['Hores'];
+						if (!$row['FCT']) {
+							$ea->HoresFetes += $row['Hores'];
+							$TotalNota += $UltimaNota*$row['Hores'];
+						}
 						if ($UltimaNota >= 5)
 							$ea->HoresAprovades += $row['Hores'];
 					}
@@ -1454,6 +1437,7 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		$Class = 'class="llistat'.$Llista.'"';
 		
 		$Retorn = "";
+		$bConvocatoriesAnteriors = True;
 //		if ($row["BaixaMatricula"] == 1)
 //			return $Retorn;
 		$style = ($row["BaixaMatricula"] == 1) ? " style='display:none' " : "";
@@ -1466,20 +1450,29 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		$Hores = 0;
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
+			if ($row['convocatoria'] != 0)
+				$bConvocatoriesAnteriors = False;
 			$Retorn .= '<td '.$Class.' style="text-align:center">'.$row["Hores"].'</td>';			
 			$Retorn .= $this->CreaCellaNota($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, $Class);
 		}
+//print_r($Hores.'-');
 		// Nota mòdul
+		$EstilNotaModul = ($bConvocatoriesAnteriors) ? "background-color:black;color:white;" : "";
 		$Retorn .= '<td '.$Class.' style="text-align:center">'.$TotalHores.'</td>';			
-		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, $Class);
+		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, '', $EstilNotaModul);
 		
 		$Retorn .= "<TD></TD></TR>";
 
 		$class = ($row["BaixaMatricula"] != 1) ? 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"] : '';
 		//$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
-		if ($Hores == $TotalHores)
-			$class .= ' Aprovat100';
-		//$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
+
+//print_r($Hores.'-');
+//print_r($TotalHores.' ');
+
+		if ($bConvocatoriesAnteriors) {
+			$class .= ' ConvocatoriesAnteriors';
+			$style = " style='display:none'";
+		}
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
@@ -1499,9 +1492,10 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 	 * @param integer $Hores Hores que es sumen per saber el total.
 	 * @param object $Avaluacio Objecte avaluació.
 	 * @param string $Class Classe CSS per a la cel·la.
+	 * @param string $style Estil CSS per a la cel·la.
 	 * @return string Codi HTML de la cel·la.
 	 */
-	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio, $Class = ''): string {
+	public function CreaCellaNotaModul(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio, $Class = '', $style = ''): string {
 		$EstatAvaluacio = $Avaluacio->Estat();
 		$MatriculaId = $row["matricula_id"];
 		$Llista = $this->FilaAlterna ? 2 : 1;
@@ -1514,8 +1508,7 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 			$Nota = $this->RegistreMitjanes[$MatriculaId]['nota'];
 		}
 		
-		
-		$style = "text-align:center;text-transform:uppercase";
+		$style .= "text-align:center;text-transform:uppercase;";
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
 
@@ -1555,16 +1548,25 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 			// Sense nota
 			$style .= ";background-color:grey";
 */		
-		if ($Nota >= 5)
-			$Hores += $row["Hores"];
-		else if ($Nota!='' && $Nota>=0 && $Nota<5)
-			$style .= ";color:red";
+		//if ($Nota >= 5)
+		//	$Hores += $row["Hores"];
+		//else 
+		if ($Nota!='' && $Nota>=0 && $Nota<5)
+			$style .= "color:red;";
 
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
 
 		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
 		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
+
+		// Si estan totes les UF aprovades de les convocatòries anteriors.
+//print_r('$style: '.$style.'<BR>');		
+//print_r('$Deshabilitat:'.strpos($style, 'background-color:black').'<BR>');
+		// Comportament estrany si començava exactament així.
+		if (strpos('*'.$style, 'background-color:black') > 0) {
+			$Deshabilitat = ' disabled ';
+		}
 
 		$ClassInput = 'nota';
 		if ($row["FCTMP"] == 1)

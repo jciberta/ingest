@@ -51,8 +51,12 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
+
+// Inicialització de l'ajuda
+// https://getbootstrap.com/docs/4.0/components/popovers/
+echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
@@ -73,16 +77,21 @@ $Grup = new GrupClasse($conn, $Usuari);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 
 // Filtres
+$TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
 echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 if ($Nivell == 2) {
 	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
-	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 }
 else {
 	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-	echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
+	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 	echo $Grup->GeneraMostraGrup($CursId);
 	echo $Tutoria->GeneraMostraGrup($CursId);
 }
