@@ -61,6 +61,12 @@ $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
+if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria) {
+	// Missatge recordatori a l'avaluació extraordinària
+	echo '<script>$(document).ready(function(){$("#RecordatoriAvExt").modal("show");});</script>';	
+	Notes::CreaMissatgeInici();
+}
+
 if ($Avaluacio->Estat() != Avaluacio::Tancada)
 	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 

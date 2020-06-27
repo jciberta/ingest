@@ -726,6 +726,29 @@ class Notes extends Form
 		echo '});';
 		echo '</script>';
 	}
+
+	// Missatge recordatori a l'avaluació extraordinària
+	public static function CreaMissatgeInici() {
+		// Adaptat de https://www.tutorialrepublic.com/faq/how-to-launch-bootstrap-modal-on-page-load.php
+		echo "<div id='RecordatoriAvExt' class='modal fade'>";
+		echo "  <div class='modal-dialog'>";
+		echo "    <div class='modal-content'>";
+		echo "      <div class='modal-header'>";
+		echo "        <h4 class='modal-title'>Avaluació extraordinària</h4>";
+		echo "        <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>";
+		echo "      </div>";
+		echo "      <div class='modal-body'>";
+		echo "		  <p>Esteu a l'avaluació extraordinària.</p>";
+		echo "		  <p>Recordeu que només heu d'entrar les notes dels alumnes que s'han presentat. La resta les heu de deixar en blanc.</p>";
+		echo "		  <p>També heu de tornar a calcular la qualificació final del mòdul per a aquells alumnes que els hi ha variat la nota de les UF.</p>";
+		echo "      </div>";
+		echo '      <div class="modal-footer">';
+		echo "        <button type='button' class='btn btn-primary' data-dismiss='modal'>D'acord</button>";
+		echo '      </div>';
+		echo "    </div>";
+		echo "  </div>";
+		echo "</div>";
+	}
 	
 	/**
 	 * Donat un 1r curs, retorna l'identificador del 2n curs per a aquell any i cicle.
