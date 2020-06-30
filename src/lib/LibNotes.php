@@ -699,6 +699,26 @@ class Notes extends Form
 		else 
 			return -999;
 	}
+
+	/**
+	 * Donat un registre de notes, torna la darrera nota (última convocatòria avaluada).
+	 * @param array $Registre Registre de notes corresponent a un alumne i una UF.
+	 * @return int Última convocatòria.
+	 */
+	public static function UltimaNotaAvaluada($Registre) {
+		if ($Registre['nota5'] != '') 
+			return $Registre['nota5'];
+		else if ($Registre['nota4'] != '') 
+			return $Registre['nota4'];
+		else if ($Registre['nota3'] != '') 
+			return $Registre['nota3'];
+		else if ($Registre['nota2'] != '') 
+			return $Registre['nota2'];
+		else if ($Registre['nota1'] != '') 
+			return $Registre['nota1'];
+		else 
+			'';
+	}
 	
 	public static function CreaMenuContextual($Usuari) {
 		// Adaptat de http://jsfiddle.net/KyleMit/X9tgY/
@@ -821,12 +841,16 @@ class Notes extends Form
 	 * Carrega el registre amb les notes dels curs i nivell.
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param string $Avaluacio Avaluacio ordinària o extraordinària.
 	 */				
-	public function CarregaRegistre($CursId, $Nivell) {
+	public function CarregaRegistre($CursId, $Nivell, $Avaluacio = 'Ordinària') {
 		$this->CursId = $CursId;
 		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
+//print_r($SQL);	
 		$ResultSet = $this->Connexio->query($SQL);
+		if (!$ResultSet)
+			die("<b>ERROR</b>. SQL: ".$SQL); 
 		
 //print_r($ResultSet);	
 
@@ -869,8 +893,8 @@ class Notes extends Form
 //print('<hr>');
 //print_r($this->Registre2);
 //print('<hr>');
-		$this->CalculaEstadistiquesAlumne($this->Registre1);
-		$this->CalculaEstadistiquesAlumne($this->Registre2);
+		$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio);
+		$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio);
 //print_r($this->Registre2);
 //print('<hr>');
 	}	
@@ -886,8 +910,9 @@ class Notes extends Form
 	 * 	- UF aprovades
 	 * 	- UF suspeses
 	 * @param object $Notes Graella de notes.
+	 * @param string $Avaluacio Avaluacio ordinària o extraordinària.
 	 */
-	private function CalculaEstadistiquesAlumne(&$Notes) {
+	private function CalculaEstadistiquesAlumne(&$Notes, $Avaluacio) {
 		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
 			$ea = new EstadistiquesAlumne;
 			$NotesAlumne['Estadistiques'] = $ea;
@@ -905,35 +930,82 @@ class Notes extends Form
 			if (property_exists($Notes, 'UF') && (array_key_exists($i, $Notes->UF))) {
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
-	//print_r($row);			
-	//print('<HR>');			
-	//exit;
-					$ea->UFTotals++;
-					$ea->HoresTotals += $row['Hores'];
-					$UltimaNota = UltimaNota($row);
-					if ($UltimaNota != '') {
-						$ea->UFFetes++;
-						if (!$row['FCT']) {
-							$ea->HoresFetes += $row['Hores'];
-							$TotalNota += $UltimaNota*$row['Hores'];
+//if ($row['AlumneId']==1022)	{
+//	print_r($row);			
+//	print('<HR>');			
+//}
+//	exit;
+					if ($Avaluacio == 'Ordinària') {
+						$ea->UFTotals++;
+						$ea->HoresTotals += $row['Hores'];
+						$UltimaNota = UltimaNota($row);
+						if ($UltimaNota != '') {
+							$ea->UFFetes++;
+							if (!$row['FCT']) {
+								$ea->HoresFetes += $row['Hores'];
+								$TotalNota += $UltimaNota*$row['Hores'];
+							}
+							if ($UltimaNota >= 5)
+								$ea->HoresAprovades += $row['Hores'];
 						}
-						if ($UltimaNota >= 5)
-							$ea->HoresAprovades += $row['Hores'];
+						if ($row['Convocatoria'] > 0) {
+							$Nota = $row['nota'.$row['Convocatoria']];
+	//						if ($Nota > 0 && $Nota < 5)
+							if ($Nota < 5 && $Nota != '')
+								$ea->UFSuspeses++;
+							else if ($Nota >= 5)
+								$ea->UFAprovades++;
+						}
+						if ($row['Convocatoria'] == 0) 
+							$ea->EsRepetidor = true;
+	//					if ($TotalNota > 0 && $ea->HoresFetes != 0)
+						if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
+							$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);
 					}
-					if ($row['Convocatoria'] > 0) {
-						$Nota = $row['nota'.$row['Convocatoria']];
-//						if ($Nota > 0 && $Nota < 5)
-						if ($Nota < 5 && $Nota != '')
+					else if ($Avaluacio == 'Extraordinària') {
+						
+						$ea->UFTotals++;
+						$ea->HoresTotals += $row['Hores'];
+						$ea->UFFetes++;
+						$UltimaNota = Notes::UltimaNotaAvaluada($row);  
+//if ($row['AlumneId']==1022)	echo "UltimaNota: $UltimaNota<BR>";
+
+						if ($UltimaNota != '') {
+							if ($UltimaNota < 5 && $UltimaNota != '')
+								$ea->UFSuspeses++;
+							else if ($UltimaNota >= 5)
+								$ea->UFAprovades++;
+							
+							if (!$row['FCT']) {
+								$ea->HoresFetes += $row['Hores'];
+								$TotalNota += $UltimaNota*$row['Hores'];
+							}
+							if ($UltimaNota >= 5)
+								$ea->HoresAprovades += $row['Hores'];
+						}
+						else
 							$ea->UFSuspeses++;
-						else if ($Nota >= 5)
-							$ea->UFAprovades++;
+						/*if ($row['Convocatoria'] > 0) {
+							$Nota = $row['nota'.$row['Convocatoria']];
+	//						if ($Nota > 0 && $Nota < 5)
+							if ($Nota < 5 && $Nota != '')
+								$ea->UFSuspeses++;
+							else if ($Nota >= 5)
+								$ea->UFAprovades++;
+						}
+						if ($row['Convocatoria'] == 0) 
+							$ea->EsRepetidor = true;*/
+						
+	//					if ($TotalNota > 0 && $ea->HoresFetes != 0)
+						if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
+							$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);						
+						
+						//$ea->UFSuspeses = $ea->UFTotals - $ea->UFAprovades;
+						//$ea->UFFetes = $ea->UFTotals;
 					}
-					if ($row['Convocatoria'] == 0) 
-						$ea->EsRepetidor = true;
-//					if ($TotalNota > 0 && $ea->HoresFetes != 0)
-					if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
-						$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);
 				}
+//if ($row['AlumneId']==1022)	print_r($ea);
+					
 				//$row['HoresTotals'] = 0;
 			}
 		}
@@ -1100,15 +1172,26 @@ class Notes extends Form
 
 	/**
 	 * Calcula les estadístiques d'un curs.
-	 * @param string $CursId Identificador del curs del cicle formatiu.
+//	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
      * @return oject Objecte amb les estadístiques del curs.
 	 */				
 	private function CalculaEstadistiquesCurs($Nivell) {
 		$Retorn = new EstadistiquesCurs();
-		$Registre = $this->Registre1->Alumne;
+		
+		
+		$Registre = ($Nivell == 1) ? $this->Registre1->Alumne : $this->Registre2->Alumne;
+		
+		
 		for($i = 0; $i < count($Registre); $i++) {
 			$row = $Registre[$i];
+			
+//print_r(utf8_encode($row["NomAlumne"].' '.$row["Cognom1Alumne"].' '.$row["Cognom2Alumne"]).' '.$row["NivellMAT"].'<br>');	
+//print_r('NivellMAT: '.$row["NivellMAT"].'<br>');	
+//echo "Nivell: $Nivell<br>";
+//print_r($row["Estadistiques"]);	
+//echo "<hr>";		
+			
 			if ($row["BaixaMatricula"] != 1 && $row["NivellMAT"] == $Nivell) {
 				$Retorn->NumeroAlumnes++;
 				$Retorn->UFTotals = $row["Estadistiques"]->UFTotals;
@@ -1116,6 +1199,14 @@ class Notes extends Form
 					$Retorn->NumeroRepetidors++;
 				else
 					$Retorn->UFFetes = $row["Estadistiques"]->UFFetes;
+				
+				/*$UFSuspeses = $row["Estadistiques"]->UFSuspeses;
+				if ($Avaluació == 'Extraordinària') {
+					// Cas especial a l'avaluació extraordinària
+					$Retorn->UFFetes = $row["Estadistiques"]->UFTotals;
+					$UFSuspeses = $row["Estadistiques"]->UFTotals - $row["Estadistiques"]->UFAprovades;
+				}*/
+				
 				switch ($row["Estadistiques"]->UFSuspeses) {
 					case 0: 
 						$Retorn->AlumnesTotAprovat++; break;
@@ -1147,6 +1238,8 @@ class Notes extends Form
 		$style = " style='text-align:center;' ";
 		
 		$Retorn = '<TABLE BORDER=1>';
+//print_r($objCurs);		
+//exit;
 		$ec = $this->CalculaEstadistiquesCurs($Nivell);
 		
 		$Retorn .= "<TR><TD style='background-color:black;color:white;' COLSPAN=3>".utf8_encode($objCurs->NomCurs)."</TD></TR>";

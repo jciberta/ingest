@@ -32,6 +32,11 @@ switch ($Accio) {
 		$Curs = new Curs($conn, $Usuari);
 		echo $Curs->Estadistiques();
 		break;
+	case "EstadistiquesNotesCurs":
+		$CursId = $_GET['CursId'];
+		$Curs = new Curs($conn, $Usuari);
+		echo $Curs->EstadistiquesCurs($CursId);
+		break;
 }
 
 $conn->close(); 

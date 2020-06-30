@@ -84,9 +84,10 @@ class Curs
 
 	/**
 	 * Crea la SQL pel llistat de cursos.
+	 * @param integer $CursId Identificador del curs (opcional).
      * @return string Sentència SQL.
 	 */
-	private function CreaSQL() {
+	private function CreaSQL(int $CursId = -1) {
 		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
@@ -101,6 +102,8 @@ class Curs
 			' butlleti_visible '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) ';
+		if ($CursId != -1)
+			$SQL .= ' WHERE C.curs_id='.$CursId;
 		return $SQL;
 	}
 
@@ -144,10 +147,12 @@ class Curs
 		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
 		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
-		if ($this->Usuari->es_admin)
+		$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
+		$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+		if ($this->Usuari->es_admin) {
 			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
 		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
@@ -161,12 +166,13 @@ class Curs
 
 		$frm->EscriuHTML();
 	}
-	
+
 	/**
-	 * Genera una pàgina amb les estadístiques de les notes del curs actual.
+	 * Genera una pàgina amb les estadístiques d'un o més cursos indicats per una SQL.
+	 * @param string $SQL Sentència SQL amb els cursos.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	public function Estadistiques()
+	private function GeneraEstadistiques(string $SQL): string
 	{
 		$Retorn = GeneraIniciHTML($this->Usuari, 'Estadístiques cursos');
 		$Retorn .= '<script language="javascript" src="vendor/Chart.min.js" type="text/javascript"></script>';
@@ -175,12 +181,13 @@ class Curs
 		$Retorn .= '<TABLE>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD width=600px>';
-		$SQL = $this->CreaSQLCursosActuals();
 		$ResultSet = $this->Connexio->query($SQL);
 		while ($objCurs = $ResultSet->fetch_object()) {
 			$Nivell = $objCurs->nivell;
 			$Notes = new Notes($this->Connexio, $this->Usuari);
-			$Notes->CarregaRegistre($objCurs->curs_id, $Nivell);
+//print_r($objCurs);			
+//exit;
+			$Notes->CarregaRegistre($objCurs->curs_id, $Nivell, $objCurs->avaluacio);
 			$Retorn .= $Notes->GeneraEstadistiquesCurs($objCurs, $Nivell);
 			$Retorn .= '<BR>';
 			$Retorn .= '</TD>';
@@ -199,6 +206,27 @@ class Curs
 		
 		$Retorn .= '';
 		return $Retorn;
+	}
+	
+	/**
+	 * Genera una pàgina amb les estadístiques de les notes dels cursos actuals.
+	 * @return string Codi HTML de la pàgina.
+	 */				
+	public function Estadistiques()
+	{
+		$SQL = $this->CreaSQLCursosActuals();
+		return $this->GeneraEstadistiques($SQL);
+	}
+	
+	/**
+	 * Genera una pàgina amb les estadístiques de les notes d'un curs.
+	 * @param integer $CursId Identificador del curs.
+	 * @return string Codi HTML de la pàgina.
+	 */				
+	public function EstadistiquesCurs(int $CursId)
+	{
+		$SQL = $this->CreaSQL($CursId);
+		return $this->GeneraEstadistiques($SQL);
 	}
 }
 
