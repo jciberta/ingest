@@ -1107,6 +1107,7 @@ class Notes extends Form
 		array_push($aNotes, 'NotaMitjana');
 		array_push($aNotes, 'UFAprovades');
 		array_push($aNotes, 'UFSuspeses');
+		array_push($aNotes, 'PercentatgeAprovat');
 		fputcsv($handle, $aNotes, $delimiter);
 		//print_r($aNotes);
 		//print('<hr>');
@@ -1136,9 +1137,11 @@ class Notes extends Form
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresFetes);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades);
-				array_push($aNotes, str_replace('.', ',', $RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana));
+				array_push($aNotes, number_format($RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana, 2));
+//				array_push($aNotes, str_replace('.', ',', $RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana));
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFAprovades);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses);
+				array_push($aNotes, number_format($RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades/$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals*100, 2));
 				fputcsv($handle, $aNotes, $delimiter);
 				//print_r($aNotes);
 				//print('<hr>');
