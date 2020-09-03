@@ -312,12 +312,31 @@ CREATE TABLE NOTES_MP
     CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE PROJECTE
+(
+    /* PRJ */
+    projecte_id INT NOT NULL AUTO_INCREMENT,
+    codi VARCHAR(50) NOT NULL,
+    nom VARCHAR(200) NOT NULL,
+    tipus CHAR(2) NOT NULL, /* E+ */
+    descripcio TEXT,
+    periode VARCHAR(10) NOT NULL,
+    data_inici DATE,
+    data_final DATE,
+    coordinador_id INT NOT NULL,
+
+    CONSTRAINT ProjectePK PRIMARY KEY (projecte_id),
+    CONSTRAINT PRJ_UsuariFK FOREIGN KEY (coordinador_id) REFERENCES USUARI(usuari_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 CREATE VIEW CURS_ACTUAL AS
 	SELECT C.* 
     FROM CURS C 
     LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) 
     WHERE AA.actual=1
 ;
+
 
 /*
  * Edat
