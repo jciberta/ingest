@@ -805,17 +805,20 @@ class ImportaMatricula extends Importa {
 	* @var array
 	*/    
 	private static $CURSOS = array(
-		'CFPM 1601 A' => 13, // CAI1
-		'CFPM 1601 B' => 14, // CAI2
-		'CFPM IC10 A' => 5,  // SMX1 AB
-		'CFPM IC10 B' => 5,  // SMX1 BC
-		'CFPM IC10 C' => 6,  // SMX2
-		'CFPM SA20 A' => 9,  // FIP1
-		'CFPM SA20 B' => 10, // FIP1
-		'CFPM SC10 A' => 11, // APD1
-		'CFPM SC10 B' => 12, // APD2
-		'CFPS ICB0 A' => 7,  // DAM1
-		'CFPS ICB0 B' => 8   // DAM2
+		'CFPM IC10 A' => 15, // SMX1 AB
+		'CFPM IC10 B' => 15, // SMX1 BC
+		'CFPM IC10 C' => 16, // SMX2
+		'CFPS ICB0 A' => 17, // DAM1
+		'CFPS ICB0 B' => 18, // DAM2
+		'CFPM SA20 A' => 19, // FIP1
+		'CFPM SA20 B' => 20, // FIP1
+		'CFPM SC10 A' => 21, // APD1
+		'CFPM SC10 C' => 22, // APD2
+		'CFPM 1601 A' => 23, // CAI1
+		'CFPM 1601 B' => 23, // CAI1
+		'CFPM 1601 C' => 24, // CAI2 1r trimestre
+		'CFPM 1601 D' => 24, // CAI2 2n trimestre
+		'CFPM 1601 E' => 24  // CAI2 3r trimestre
 	);
 
 	/**
