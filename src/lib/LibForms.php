@@ -316,7 +316,7 @@ class Form {
 	 * @param array $off Opcions del formulari.
 	 * @return string Codi HTML del checkbox.
 	 */
-	public function CreaCalculat(int $Calcul, string $Nom, string $Titol, int $Longitud, string $Valor, array $off = []) {
+	public function CreaCalculat(int $Calcul, string $Nom, string $Titol, int $Longitud, $Valor, array $off = []) {
 		$bAlCostat = in_array(self::offAL_COSTAT, $off);
 		$TextValor = '';
 		switch ($Calcul) {
