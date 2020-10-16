@@ -103,6 +103,8 @@ switch ($accio) {
 		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu';
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
+		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormativesDates":
@@ -124,6 +126,8 @@ switch ($accio) {
 		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
+		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
         break;
 }
