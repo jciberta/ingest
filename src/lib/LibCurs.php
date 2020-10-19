@@ -163,7 +163,7 @@ class Curs
 		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
 
 //		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
-		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('0', '1', ''), array('Oberta', 'Tancada', 'Totes'));
+		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('', '0', '1'), array('Totes', 'Oberta', 'Tancada'));
 
 		$frm->EscriuHTML();
 	}

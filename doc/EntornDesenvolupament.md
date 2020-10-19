@@ -44,11 +44,22 @@ mysql -u root -p InGest < InGest.sql
 
 #### XAMPP
 
+##### MariaDB
+
+Actualització del password (es pot fer amb el mateix MySQL Workbench):
+
+```
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('new_password');
+```
+
+##### MySQL
+
 XAMPP - Replacing MariaDB with MySQL
 * https://odan.github.io/2017/08/13/xampp-replacing-mariadb-with-mysql.html
 * https://gist.github.com/odan/c799417460470c3776ffa8adce57eece
 
 No copiar la carpeta Data de MariaDB i fer a la carpeta Data:
+
 ```
 mysqld --initialize-insecure (with blank root password)
 mysql -u root -p
@@ -57,5 +68,6 @@ UPDATE mysql.user
     WHERE User = 'root' AND Host = 'localhost';
 FLUSH PRIVILEGES;
 ```
+
 
 
