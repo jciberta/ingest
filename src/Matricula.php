@@ -14,6 +14,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibMatricula.php');
@@ -29,6 +30,8 @@ if ($conn->connect_error)
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
+
+RecuperaGET($_GET);
 
 CreaIniciHTML($Usuari, 'Matrícula');
 
@@ -57,7 +60,7 @@ else {
 	echo '</div>';
 	
 	// Llistem les UF del cicle/nivell
-	$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.* '.
+	$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.* '.
 		' FROM UNITAT_FORMATIVA UF '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
@@ -69,7 +72,7 @@ else {
 
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
-		echo '<TABLE class="table table-striped">';
+		echo '<TABLE class="table table-sm table-striped">';
 		echo '<THEAD class="thead-dark">';
 		echo "<TH>Cicle</TH>";
 		echo "<TH>Mòdul</TH>";
@@ -79,7 +82,7 @@ else {
 		while($row = $ResultSet->fetch_assoc()) {
 			echo "<TR>";
 			echo utf8_encode("<TD>".$row["NomCF"]."</TD>");
-			echo utf8_encode("<TD>".$row["NomMP"]."</TD>");
+			echo utf8_encode("<TD>".$row["CodiMP"].'. '.$row["NomMP"]."</TD>");
 			echo utf8_encode("<TD>".$row["NomUF"]."</TD>");
 			echo "<TD>".$row["HoresUF"]."</TD>";
 			echo "</TR>";

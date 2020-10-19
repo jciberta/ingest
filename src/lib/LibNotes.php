@@ -16,6 +16,7 @@
  */
 
 require_once(ROOT.'/lib/LibArray.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
@@ -350,9 +351,7 @@ class Notes extends Form
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-//			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index].'NIVELL='.$Nivell;
-//			$Link = 'NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index];
-			$Link = 'NotesModul.php?CursId='.$IdCurs.'&ModulId='.$aModulsId[$index];
+			$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
 			$MPId = $aModulsId[$index];
 			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
@@ -369,8 +368,9 @@ class Notes extends Form
 			$row = $Notes->UF[0][$j];
 			
 			$UFId = $row["unitat_formativa_id"];
+			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a href="FPFitxa.php?accio=UnitatsFormatives&Id='.$UFId.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
+				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
 			else
 				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
@@ -423,7 +423,7 @@ class Notes extends Form
 	 * @return string Codi HTML del botó.
 	 */
 	public function CreaBotoDescarregaCSV(string $CursId): string {
-		$URL = "Descarrega.php?Accio=ExportaNotesCSV&CursId=$CursId";
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaNotesCSV&CursId=$CursId");
 		return $this->CreaBoto('btnDescarregaCSV', 'Descarrega en CSV', $URL);
  	}	
 	
@@ -446,15 +446,17 @@ class Notes extends Form
 		$AlumneId = $row["AlumneId"];
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 
+		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
 		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
-			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href='UsuariFitxa.php?Id=$AlumneId'>$NomAlumne</a></TD>";
+			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href=$URL>$NomAlumne</a></TD>";
 		else
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
+		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
 		else
-			$Retorn .= "<TD><A href='MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]."'><IMG src=img/grades-sm.svg></A></TD>";
+			$Retorn .= "<TD><A href=$URL><IMG src=img/grades-sm.svg></A></TD>";
 
 		$Retorn .= "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 		$Retorn .= "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";

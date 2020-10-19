@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibCurs.php');
 
 session_start();
@@ -20,6 +21,8 @@ $Usuari = unserialize($_SESSION['USUARI']);
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+RecuperaGET($_GET);
 
 $CursId = $_GET['CursId'];
 

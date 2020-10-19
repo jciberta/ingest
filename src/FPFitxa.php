@@ -14,6 +14,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 
@@ -23,9 +24,10 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
+
+RecuperaGET($_GET);
 
 if (empty($_GET))
 	$accio = 'Families';

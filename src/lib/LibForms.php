@@ -11,10 +11,12 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
-require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
 /**
@@ -283,6 +285,13 @@ class Form {
 	 * @return string Codi HTML del lookup.
 	 */
 	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+		
+		$Connector = (strpos($URL, '?') === False) ? '?' : '&';
+		$URL .= $Connector . 'Modalitat=mfBusca';
+		
+		if (Config::EncriptaURL)
+			$URL = GeneraURL($URL);
+		
 		// $NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off)) ? ' readonly' : '';
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
@@ -845,7 +854,8 @@ class FormRecerca extends Form {
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
-					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
+					$URL = $this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria];
+					$sRetorn .= "<A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
 					$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
@@ -883,8 +893,9 @@ class FormRecerca extends Form {
 		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
 			$sRetorn .= '<TD style="align:right">';
 			$sRetorn .= '<span style="float:right;">';
-			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
-			$sRetorn .= '  <a href="'.$this->URLEdicio.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
+//			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
+			$URL = GeneraURL($this->URLEdicio);
+			$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
 			$sRetorn .= '</span>';
 			$sRetorn .= '</TD>';
 		}
@@ -992,7 +1003,7 @@ class FormRecerca extends Form {
 //				$Retorn .= '<TD><A HREF="'.$URL.'">'.$obj->Titol.'<A>';
 				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
 				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
-				$Retorn .= '<TD><A HREF="'.$URL.'">'.$Text.'<A>';
+				$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
 				
 			}
 			else if ($obj->Tipus == self::toAJAX) {

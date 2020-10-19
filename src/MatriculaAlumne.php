@@ -18,6 +18,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibUsuari.php');
@@ -34,7 +35,9 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
+RecuperaGET($_GET);
 //print_r($_GET);
+//exit;
 
 if (!empty($_POST)) {
 //	$alumne = $_POST['alumne'];
@@ -107,14 +110,19 @@ if ($ButlletiVisible) {
 		}		
 		if ($accio == 'MostraExpedient') {
 			//echo "<DIV id=DescarregaExpedientPDF>";
-			echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+			$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$MatriculaId");
+			echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
 			if ($Usuari->es_admin) {
 				// Edició de l'expedient
 				echo '&nbsp';
-				if ($ActivaEdicio==1) 
-					echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
-				else
-					echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
+				if ($ActivaEdicio==1) { 
+					$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=$MatriculaId");
+					echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
+				}
+				else {
+					$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId=$MatriculaId");
+					echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
+				}
 			}
 		}
 		echo '</span>';
