@@ -113,11 +113,12 @@ class Curs
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE (0=0) ';
 		if ($this->NomesProfessor)			
-			$SQL .= ' AND C.cicle_formatiu_id IN ( '.
-			' SELECT DISTINCT CF.cicle_formatiu_id FROM PROFESSOR_UF PUF '.
+			$SQL .= ' AND C.curs_id IN ( '.
+			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND uf.nivell=c.nivell) '.
 			' WHERE professor_id='.$this->Usuari->usuari_id.		
 			' ) ';
 		if ($CursId != -1)
