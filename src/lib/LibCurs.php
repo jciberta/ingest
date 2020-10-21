@@ -9,6 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
@@ -40,12 +41,19 @@ class Curs
 	private $Registre = NULL;
 
 	/**
+	* Indica que només és professor i no admin, ni cap d'estudis...
+	* @var boolean
+	*/    
+	private $NomesProfessor = True;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
 	function __construct($con, $user) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
+		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);			
 	}	
 
 	/**
@@ -88,7 +96,7 @@ class Curs
      * @return string Sentència SQL.
 	 */
 	private function CreaSQL(int $CursId = -1) {
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
+		$SQL = ' SELECT C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
 			'     WHEN C.finalitzat = 1 THEN "Tancada" '.
@@ -101,9 +109,18 @@ class Curs
 			' END AS trimestre, '.
 			' butlleti_visible '.
 			' FROM CURS C '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) ';
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' WHERE (0=0) ';
+		if ($this->NomesProfessor)			
+			$SQL .= ' AND C.cicle_formatiu_id IN ( '.
+			' SELECT DISTINCT CF.cicle_formatiu_id FROM PROFESSOR_UF PUF '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' WHERE professor_id='.$this->Usuari->usuari_id.		
+			' ) ';
 		if ($CursId != -1)
-			$SQL .= ' WHERE C.curs_id='.$CursId;
+			$SQL .= ' AND C.curs_id='.$CursId;
 		return $SQL;
 	}
 
@@ -144,18 +161,24 @@ class Curs
 		$frm->Camps = 'codi, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		$frm->AfegeixOpcioAJAX('Butlletí', '', 'curs_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'butlleti_visible');
-		$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
-		$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
+		if (!$this->NomesProfessor) {
+			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
+			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
+		}
 		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
-		$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
-		$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+		if (!$this->NomesProfessor) {
+			$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
+			$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
+			$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+		}
 		if ($this->Usuari->es_admin) {
 			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
 		}
-		$frm->PermetEditar = True;
-		$frm->URLEdicio = 'Fitxa.php?accio=Curs';
-		$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+		if (!$this->NomesProfessor) {
+			$frm->PermetEditar = True;
+			$frm->URLEdicio = 'Fitxa.php?accio=Curs';
+			$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+		}
 
 		// Filtre
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");

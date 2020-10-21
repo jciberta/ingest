@@ -13,6 +13,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -28,7 +29,7 @@ if (empty($_GET))
 
 $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
 
 // Obtenció de la modalitat del formulari
@@ -41,6 +42,8 @@ unset($frm);
 
 switch ($accio) {
     case "AnyAcademic":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Any acadèmic';
@@ -56,6 +59,8 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "Equip":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
@@ -81,6 +86,10 @@ switch ($accio) {
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;
+    case "HistoricCurs":
+		$curs = new Curs($conn, $Usuari);
+		$curs->EscriuFormulariRecera();
+        break;		
 }
 
 ?>
