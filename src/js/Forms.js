@@ -255,6 +255,8 @@ console.dir('jsonForm: ' + jsonForm);
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());
 //console.dir('jsonForm2: ' + jsonForm2);
 
+	$('#MissatgeCorrecte').hide();
+	$('#MissatgeError').hide();
 	$.ajax( {
 		type: 'POST',
 		url: 'lib/LibForms.ajax.php',

@@ -137,7 +137,7 @@ class Curs
 	public function EscriuFormulariRecera() {
 		$SQL = $this->CreaSQL();
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
-		$frm->AfegeixJavaScript('Matricula.js?v1.0');
+		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Cursos';
 		$frm->SQL = utf8_decode($SQL);
 		$frm->Taula = 'CURS';

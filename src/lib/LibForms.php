@@ -342,6 +342,19 @@ class Form {
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
 		return $sRetorn;
 	}	
+	
+	/**
+	 * Genera els missatges de succés i error per quan es desen les dades.
+	 */
+	protected function GeneraMissatges() {
+		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
+		$sRetorn .= "L'acció s'ha realitzat correctament.";
+		$sRetorn .= '</div>';
+		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
+		$sRetorn .= "Hi ha hagut un error en realitzar l'acció.";
+		$sRetorn .= '</div>';
+		return $sRetorn;
+	}
 } 
 
 /**
@@ -931,10 +944,11 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.5" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
+		echo $this->GeneraMissatges();
 		echo $this->GeneraCerca();
 		echo $this->GeneraFiltre();
 		echo $this->GeneraTaula();
@@ -1538,19 +1552,6 @@ class FormFitxa extends Form {
 				$this->Registre = $ResultSet->fetch_assoc();
 			}
 		}
-	}
-
-	/**
-	 * Genera els missatges de succés i error per quan es desen les dades.
-	 */
-	private function GeneraMissatges() {
-		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
-		$sRetorn .= "Les dades s'han desat correctament.";
-		$sRetorn .= '</div>';
-		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
-		$sRetorn .= "Hi ha hagut un error en desar les dades.";
-		$sRetorn .= '</div>';
-		return $sRetorn;
 	}
 
 	/**
