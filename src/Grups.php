@@ -50,8 +50,8 @@ $SQL = ' SELECT * FROM MATRICULA M '.
 
 $ResultSet = $conn->query($SQL);
 
-$aGrups = array('A', 'B', 'C');
-$aTutoria = array('AB', 'BC');
+$aGrups = array('A', 'B', 'C', 'D');
+$aTutoria = array('AB', 'BC', 'CD');
 
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE id="taula" class="table table-fixed table-striped table-hover table-sm">';
