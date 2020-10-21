@@ -79,6 +79,15 @@ else if ($Usuari->es_professor) {
 	echo '    </div>';
 	echo '  </div>';
 
+	// Històric
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Històric</h5>';
+	echo '      <p class="card-text">Notes FP</p>';
+	echo '      <a href="Recerca.php?accio=HistoricCurs" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
+
 	// Estadístiques FP
 	$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
 	echo '  <div class="card">';
