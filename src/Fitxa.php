@@ -62,6 +62,8 @@ switch ($accio) {
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('grups_classe', 'Grups classe', 50);
+		$frm->AfegeixText('grups_tutoria', 'Grups tutoria', 50);
 
 		$frm->AfegeixEspai();
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
