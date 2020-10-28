@@ -7,6 +7,11 @@ SELECT distinct(matricula_id) FROM NOTES WHERE nota3 is null AND convocatoria>3;
 SELECT distinct(matricula_id) FROM NOTES WHERE nota4 is null AND convocatoria>4;
 SELECT distinct(matricula_id) FROM NOTES WHERE nota5 is null AND convocatoria>5;
 
+/*
+	MySQL WorkBench:
+    You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode, 
+    toggle the option in Preferences -> SQL Editor and reconnect.	
+*/
 
 /* Correcció apuntadors convocatòria */
 
