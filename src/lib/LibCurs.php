@@ -287,12 +287,24 @@ class GrupClasse
 		$this->Connexio = $con;
 		$this->Usuari = $user;
 	}
+
+	/**
+	 * Carrega el registre especificat de la taula CURS.
+	 * @param integer $Id Identificador del registre.
+	 */				
+	public function Carrega(int $CursId) {
+		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$this->Registre = $ResultSet->fetch_object();
+		}
+	}
 	
 	/**
 	 * Carrega els diferents grups-classe d'un curs i els emmagatzema en l'atribut Registre.
      * @param int $CursId Identificador del curs.
 	 */
-	public function Carrega(int $CursId) {
+	/*public function Carrega(int $CursId) {
 		$SQL = " SELECT DISTINCT grup ".
 			" FROM MATRICULA M ".
 			" WHERE curs_id=$CursId ".
@@ -306,6 +318,16 @@ class GrupClasse
 				$row = $ResultSet->fetch_object();
 			}
 		}
+	}*/
+	
+	/**
+	 * Genera un array amb els grups d'un curs.
+     * @param int $CursId Identificador del curs.
+	 * @return array Grups dels curs.
+	 */
+	public function ObteGrups(int $CursId): array {
+		$this->Carrega($CursId);
+		return explode(',', $this->Registre->grups_classe);
 	}
 	
 	/**
@@ -315,8 +337,8 @@ class GrupClasse
 	 */
 	public function GeneraMostraGrup(int $CursId): string {
 		$Retorn = '';
-		$this->Carrega($CursId);
-		foreach ($this->Registre as $Grup) {
+		$aGrups = $this->ObteGrups($CursId);
+		foreach ($aGrups as $Grup) {
 			$Valor = '"'.$Grup.'"';	
 			$Retorn .= "<input type='checkbox' name='chbGrup$Grup' checked onclick='MostraGrup(this, $Valor);'>Grup $Grup &nbsp";
 		}
@@ -358,25 +380,27 @@ class GrupTutoria
 	}
 
 	/**
-	 * Carrega els diferents grups de tutoria d'un curs i els emmagatzema en l'atribut Registre.
-     * @param int $CursId Identificador del curs.
-	 */
+	 * Carrega el registre especificat de la taula CURS.
+	 * @param integer $Id Identificador del registre.
+	 */				
 	public function Carrega(int $CursId) {
-		$SQL = " SELECT DISTINCT grup_tutoria ".
-			" FROM MATRICULA M ".
-			" WHERE curs_id=$CursId ".
-			" ORDER BY grup_tutoria ";	
+		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
-			$row = $ResultSet->fetch_object();
-			while($row) {
-				if ($row->grup_tutoria != '')
-					array_push($this->Registre, $row->grup_tutoria);
-				$row = $ResultSet->fetch_object();
-			}
+			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
+
+	/**
+	 * Genera un array amb els grups d'un curs.
+     * @param int $CursId Identificador del curs.
+	 * @return array Grups dels curs.
+	 */
+	public function ObteGrups(int $CursId): array {
+		$this->Carrega($CursId);
+		return explode(',', $this->Registre->grups_tutoria);
+	}
+
 	/**
 	 * Genera els checkboxs per filtrar per grup.
      * @param int $CursId Identificador del curs.
@@ -384,8 +408,8 @@ class GrupTutoria
 	 */
 	public function GeneraMostraGrup(int $CursId): string {
 		$Retorn = '';
-		$this->Carrega($CursId);
-		foreach ($this->Registre as $GrupTutoria) {
+		$aGrups = $this->ObteGrups($CursId);
+		foreach ($aGrups as $GrupTutoria) {
 			$Valor = '"'.$GrupTutoria.'"';	
 			$Retorn .= "<input type='checkbox' name='chbGrup$GrupTutoria' checked onclick='MostraTutoria(this, $Valor);'>Tutoria $GrupTutoria &nbsp";
 		}

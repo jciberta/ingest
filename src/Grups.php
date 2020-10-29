@@ -54,8 +54,13 @@ $SQL = ' SELECT * FROM MATRICULA M '.
 
 $ResultSet = $conn->query($SQL);
 
-$aGrups = array('A', 'B', 'C', 'D');
-$aTutoria = array('AB', 'BC', 'CD');
+$GrupClasse = new GrupClasse($conn, $Usuari);
+$aGrups = $GrupClasse->ObteGrups($CursId);
+//print_r($aGrups);
+$GrupTutoria = new GrupTutoria($conn, $Usuari);
+$aTutoria = $GrupTutoria->ObteGrups($CursId);
+//$aGrups = array('A', 'B', 'C', 'D');
+//$aTutoria = array('AB', 'BC', 'CD');
 
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE id="taula" class="table table-fixed table-striped table-hover table-sm">';
