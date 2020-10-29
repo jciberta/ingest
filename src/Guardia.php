@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibGuardia.php');
 
@@ -27,6 +28,8 @@ if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+RecuperaGET($_GET);
 
 // Paràmetres de la URL (si n'hi ha).
 $Dia = (isset($_GET) && array_key_exists('Dia', $_GET)) ? $_GET['Dia'] : 0;

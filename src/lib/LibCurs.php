@@ -9,6 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
@@ -112,11 +113,12 @@ class Curs
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE (0=0) ';
 		if ($this->NomesProfessor)			
-			$SQL .= ' AND C.cicle_formatiu_id IN ( '.
-			' SELECT DISTINCT CF.cicle_formatiu_id FROM PROFESSOR_UF PUF '.
+			$SQL .= ' AND C.curs_id IN ( '.
+			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND UF.nivell=C.nivell) '.
 			' WHERE professor_id='.$this->Usuari->usuari_id.		
 			' ) ';
 		if ($CursId != -1)
@@ -153,7 +155,7 @@ class Curs
 	public function EscriuFormulariRecera() {
 		$SQL = $this->CreaSQL();
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
-		$frm->AfegeixJavaScript('Matricula.js?v1.0');
+		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Cursos';
 		$frm->SQL = utf8_decode($SQL);
 		$frm->Taula = 'CURS';
@@ -285,12 +287,24 @@ class GrupClasse
 		$this->Connexio = $con;
 		$this->Usuari = $user;
 	}
+
+	/**
+	 * Carrega el registre especificat de la taula CURS.
+	 * @param integer $Id Identificador del registre.
+	 */				
+	public function Carrega(int $CursId) {
+		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$this->Registre = $ResultSet->fetch_object();
+		}
+	}
 	
 	/**
 	 * Carrega els diferents grups-classe d'un curs i els emmagatzema en l'atribut Registre.
      * @param int $CursId Identificador del curs.
 	 */
-	public function Carrega(int $CursId) {
+	/*public function Carrega(int $CursId) {
 		$SQL = " SELECT DISTINCT grup ".
 			" FROM MATRICULA M ".
 			" WHERE curs_id=$CursId ".
@@ -304,6 +318,16 @@ class GrupClasse
 				$row = $ResultSet->fetch_object();
 			}
 		}
+	}*/
+	
+	/**
+	 * Genera un array amb els grups d'un curs.
+     * @param int $CursId Identificador del curs.
+	 * @return array Grups dels curs.
+	 */
+	public function ObteGrups(int $CursId): array {
+		$this->Carrega($CursId);
+		return explode(',', $this->Registre->grups_classe);
 	}
 	
 	/**
@@ -313,8 +337,8 @@ class GrupClasse
 	 */
 	public function GeneraMostraGrup(int $CursId): string {
 		$Retorn = '';
-		$this->Carrega($CursId);
-		foreach ($this->Registre as $Grup) {
+		$aGrups = $this->ObteGrups($CursId);
+		foreach ($aGrups as $Grup) {
 			$Valor = '"'.$Grup.'"';	
 			$Retorn .= "<input type='checkbox' name='chbGrup$Grup' checked onclick='MostraGrup(this, $Valor);'>Grup $Grup &nbsp";
 		}
@@ -356,25 +380,27 @@ class GrupTutoria
 	}
 
 	/**
-	 * Carrega els diferents grups de tutoria d'un curs i els emmagatzema en l'atribut Registre.
-     * @param int $CursId Identificador del curs.
-	 */
+	 * Carrega el registre especificat de la taula CURS.
+	 * @param integer $Id Identificador del registre.
+	 */				
 	public function Carrega(int $CursId) {
-		$SQL = " SELECT DISTINCT grup_tutoria ".
-			" FROM MATRICULA M ".
-			" WHERE curs_id=$CursId ".
-			" ORDER BY grup_tutoria ";	
+		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
-			$row = $ResultSet->fetch_object();
-			while($row) {
-				if ($row->grup_tutoria != '')
-					array_push($this->Registre, $row->grup_tutoria);
-				$row = $ResultSet->fetch_object();
-			}
+			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
+
+	/**
+	 * Genera un array amb els grups d'un curs.
+     * @param int $CursId Identificador del curs.
+	 * @return array Grups dels curs.
+	 */
+	public function ObteGrups(int $CursId): array {
+		$this->Carrega($CursId);
+		return explode(',', $this->Registre->grups_tutoria);
+	}
+
 	/**
 	 * Genera els checkboxs per filtrar per grup.
      * @param int $CursId Identificador del curs.
@@ -382,8 +408,8 @@ class GrupTutoria
 	 */
 	public function GeneraMostraGrup(int $CursId): string {
 		$Retorn = '';
-		$this->Carrega($CursId);
-		foreach ($this->Registre as $GrupTutoria) {
+		$aGrups = $this->ObteGrups($CursId);
+		foreach ($aGrups as $GrupTutoria) {
 			$Valor = '"'.$GrupTutoria.'"';	
 			$Retorn .= "<input type='checkbox' name='chbGrup$GrupTutoria' checked onclick='MostraTutoria(this, $Valor);'>Tutoria $GrupTutoria &nbsp";
 		}

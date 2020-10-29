@@ -11,10 +11,12 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
-require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
 /**
@@ -283,6 +285,13 @@ class Form {
 	 * @return string Codi HTML del lookup.
 	 */
 	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+		
+		$Connector = (strpos($URL, '?') === False) ? '?' : '&';
+		$URL .= $Connector . 'Modalitat=mfBusca';
+		
+		if (Config::EncriptaURL)
+			$URL = GeneraURL($URL);
+		
 		// $NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off)) ? ' readonly' : '';
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
@@ -333,6 +342,19 @@ class Form {
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
 		return $sRetorn;
 	}	
+	
+	/**
+	 * Genera els missatges de succés i error per quan es desen les dades.
+	 */
+	protected function GeneraMissatges() {
+		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
+		$sRetorn .= "L'acció s'ha realitzat correctament.";
+		$sRetorn .= '</div>';
+		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
+		$sRetorn .= "Hi ha hagut un error en realitzar l'acció.";
+		$sRetorn .= '</div>';
+		return $sRetorn;
+	}
 } 
 
 /**
@@ -845,7 +867,8 @@ class FormRecerca extends Form {
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
-					$sRetorn .= "<A href='".$this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria]."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
+					$URL = $this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria];
+					$sRetorn .= "<A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
 					$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
@@ -883,8 +906,9 @@ class FormRecerca extends Form {
 		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
 			$sRetorn .= '<TD style="align:right">';
 			$sRetorn .= '<span style="float:right;">';
-			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
-			$sRetorn .= '  <a href="'.$this->URLEdicio.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
+//			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
+			$URL = GeneraURL($this->URLEdicio);
+			$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
 			$sRetorn .= '</span>';
 			$sRetorn .= '</TD>';
 		}
@@ -920,10 +944,11 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.5" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
+		echo $this->GeneraMissatges();
 		echo $this->GeneraCerca();
 		echo $this->GeneraFiltre();
 		echo $this->GeneraTaula();
@@ -992,7 +1017,7 @@ class FormRecerca extends Form {
 //				$Retorn .= '<TD><A HREF="'.$URL.'">'.$obj->Titol.'<A>';
 				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
 				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
-				$Retorn .= '<TD><A HREF="'.$URL.'">'.$Text.'<A>';
+				$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
 				
 			}
 			else if ($obj->Tipus == self::toAJAX) {
@@ -1527,19 +1552,6 @@ class FormFitxa extends Form {
 				$this->Registre = $ResultSet->fetch_assoc();
 			}
 		}
-	}
-
-	/**
-	 * Genera els missatges de succés i error per quan es desen les dades.
-	 */
-	private function GeneraMissatges() {
-		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
-		$sRetorn .= "Les dades s'han desat correctament.";
-		$sRetorn .= '</div>';
-		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
-		$sRetorn .= "Hi ha hagut un error en desar les dades.";
-		$sRetorn .= '</div>';
-		return $sRetorn;
 	}
 
 	/**

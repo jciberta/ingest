@@ -11,6 +11,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibMatricula.php');
@@ -37,6 +38,8 @@ else {
 	if (!isset($_SESSION['usuari_id'])) 
 		header("Location: Surt.php");
 	$Usuari = unserialize($_SESSION['USUARI']);
+
+	RecuperaGET($_GET);
 
 	if (!empty($_GET))
 		$MatriculaId = $_GET['MatriculaId'];

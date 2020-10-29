@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
 session_start();
@@ -22,9 +23,11 @@ if ($conn->connect_error) {
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 } 
 
-CreaIniciHTML($Usuari, 'Alumnes cicle');
+RecuperaGET($_GET);
 
 $CicleId = $_GET['CicleId'];
+
+CreaIniciHTML($Usuari, 'Alumnes cicle');
 
 $SQL = ' SELECT '.
 	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, M.curs_id, M.nivell, M.grup, M.alumne_id '.

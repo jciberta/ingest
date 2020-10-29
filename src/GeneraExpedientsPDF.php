@@ -13,6 +13,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibSistema.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibExpedient.php');
@@ -30,6 +31,8 @@ if ($conn->connect_error) {
 // Comprovem que l'usuari té accés a aquesta pàgina.
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
+
+RecuperaGET($_GET);
 
 // Paràmetres de la URL (si n'hi ha).
 $CursId = (isset($_GET) && array_key_exists('CursId', $_GET)) ? $_GET['CursId'] : -1;

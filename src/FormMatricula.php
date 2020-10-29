@@ -34,7 +34,8 @@ $frmMatricula = new Form($conn, $Usuari);
 echo '<form action="Matricula.php" method="post" id="FormMatricula">';
 echo '<TABLE>';
 echo '<TR>';
-echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'NomAlumne, Cognom1Alumne, Cognom2Alumne');
+//echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'NomAlumne, Cognom1Alumne, Cognom2Alumne');
+echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 echo '</TR><TR>';
 //$SQL = 'SELECT C.curs_id, C.nom '.
 //	' FROM CURS C'.

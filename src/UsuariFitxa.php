@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 
@@ -21,6 +22,8 @@ $Usuari = unserialize($_SESSION['USUARI']);
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+RecuperaGET($_GET);
 
 // Obtenció de l'identificador, sinó registre nou.
 $Id = empty($_GET) ? -1 : $_GET['Id'];
@@ -56,6 +59,7 @@ $frm->AfegeixText('codi', 'Codi (codi professor, IDALU per alumne)', 100);
 $frm->AfegeixLlista('sexe', 'Sexe', 30, array('H', 'D', 'N'), array('Home', 'Dona', 'Neutre'), [FormFitxa::offREQUERIT]);
 $frm->AfegeixLlista('tipus_document', 'Tipus document', 30, array('D', 'N', 'P'), array('Dni', 'Nie', 'Passaport'), [FormFitxa::offREQUERIT]);
 $frm->AfegeixText('document', 'Document', 100, [FormFitxa::offAL_COSTAT]);
+
 $frm->AfegeixData('data_naixement', 'Data naixement');
 $frm->AfegeixCalculat(Form::tccEDAT, 'data_naixement', 'Edat', 100, [FormFitxa::offAL_COSTAT]);
 $frm->AfegeixText('municipi_naixement', 'Municipi naixement', 100);

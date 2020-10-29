@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibNotes.php');
@@ -26,6 +27,8 @@ $Usuari = unserialize($_SESSION['USUARI']);
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+RecuperaGET($_GET);
 
 $CursId = $_GET['CursId'];
 $Curs = new Curs($conn, $Usuari);
@@ -51,7 +54,7 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
-echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Notes.js?v1.4" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
 // Inicialització de l'ajuda
@@ -62,7 +65,7 @@ $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
-if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria) {
+if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria && !$Avaluacio->ButlletiVisible()) {
 	// Missatge recordatori a l'avaluació extraordinària
 	echo '<script>$(document).ready(function(){$("#RecordatoriAvExt").modal("show");});</script>';	
 	Notes::CreaMissatgeInici();
@@ -106,11 +109,14 @@ if ($Usuari->es_admin) {
 	// Administració avançada
 	echo '&nbsp';
 	if ($ActivaAdministracio==1) {
-		echo $Notes->CreaBoto('btnActivaAdministracio', 'Desactiva administració avançada', "Notes.php?CursId=$CursId");
+		$URL = GeneraURL("Notes.php?CursId=$CursId");
+		echo $Notes->CreaBoto('btnActivaAdministracio', 'Desactiva administració avançada', $URL);
 		$Notes->Administracio = true;
 	}
-	else
-		echo $Notes->CreaBoto('btnActivaAdministracio', 'Activa administració avançada', "Notes.php?ActivaAdministracio=1&CursId=$CursId");
+	else {
+		$URL = GeneraURL("Notes.php?ActivaAdministracio=1&CursId=$CursId");
+		echo $Notes->CreaBoto('btnActivaAdministracio', 'Activa administració avançada', $URL);
+	}
 }
 echo '</span>';
 echo '</div>';

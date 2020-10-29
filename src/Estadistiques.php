@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibNotes.php');
 
@@ -24,6 +25,8 @@ if ($conn->connect_error)
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
+
+RecuperaGET($_GET);
 
 $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 

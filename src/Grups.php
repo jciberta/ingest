@@ -10,7 +10,9 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -21,6 +23,8 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
+RecuperaGET($_GET);
+
 $CursId = $_GET['CursId'];
 
 $Curs = new Curs($conn, $Usuari);
@@ -28,7 +32,10 @@ $Curs->CarregaRegistre($CursId);
 
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+$Professor = new Professor($conn, $Usuari);
+$CursTutorId = $Professor->ObteCursTutorId();
+if (!($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->es_professor && $CursId == $CursTutorId)))
+//if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && )
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Grups', True);
@@ -47,8 +54,13 @@ $SQL = ' SELECT * FROM MATRICULA M '.
 
 $ResultSet = $conn->query($SQL);
 
-$aGrups = array('A', 'B', 'C');
-$aTutoria = array('AB', 'BC');
+$GrupClasse = new GrupClasse($conn, $Usuari);
+$aGrups = $GrupClasse->ObteGrups($CursId);
+//print_r($aGrups);
+$GrupTutoria = new GrupTutoria($conn, $Usuari);
+$aTutoria = $GrupTutoria->ObteGrups($CursId);
+//$aGrups = array('A', 'B', 'C', 'D');
+//$aTutoria = array('AB', 'BC', 'CD');
 
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE id="taula" class="table table-fixed table-striped table-hover table-sm">';

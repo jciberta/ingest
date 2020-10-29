@@ -5,13 +5,16 @@
  *
  * Formularis de fitxa per a diferents taules:
  *  - Curs
- *  - 
+ *  - Any acadèmic
+ *  - Equip
+ *  - Tutor
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 
@@ -21,9 +24,10 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-if ($conn->connect_error) {
+if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-} 
+
+RecuperaGET($_GET);
 
 // Paràmetres de la URL
 if (!isset($_GET))
@@ -58,6 +62,8 @@ switch ($accio) {
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('grups_classe', 'Grups classe', 50);
+		$frm->AfegeixText('grups_tutoria', 'Grups tutoria', 50);
 
 		$frm->AfegeixEspai();
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);

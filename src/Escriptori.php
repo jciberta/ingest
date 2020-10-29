@@ -11,9 +11,11 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -55,11 +57,12 @@ else if ($Usuari->es_professor) {
 	if ($ResultSet->num_rows > 0) {
 		$row = $ResultSet->fetch_assoc();
 		while($row) {
+			$URL = GeneraURL('Notes.php?CursId='.$row['curs_id']);
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Notes '.$row['CodiCF'].$row['nivell'].'</h5>';
 			echo '      <p class="card-text">'.utf8_encode($row['NomCF']).'.</p>';
-			echo '      <a href="Notes.php?CursId='.$row['curs_id'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 			echo '    </div>';
 			echo '  </div>';
 			$row = $ResultSet->fetch_assoc();
@@ -67,12 +70,27 @@ else if ($Usuari->es_professor) {
 	}
 	$ResultSet->close();
 	
+	// Grups tutoria
+	$Professor = new Professor($conn, $Usuari);
+	$CursId = $Professor->ObteCursTutorId();
+	if ($CursId > 0) {
+		$URL = GeneraURL('Grups.php?CursId='.$CursId);
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Tutoria</h5>';
+		echo '      <p class="card-text">Grups</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+	}
+	
 	// Les meves UF
+	$URL = GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id);
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
 	echo '      <h5 class="card-title">Unitats formatives</h5>';
 	echo '      <p class="card-text">Les meves UF</p>';
-	echo '      <a href="FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	echo '    </div>';
 	echo '  </div>';
 
@@ -86,11 +104,12 @@ else if ($Usuari->es_professor) {
 	echo '  </div>';
 
 	// Estadístiques FP
+	$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
 	echo '      <h5 class="card-title">Informes</h5>';
 	echo '      <p class="card-text">Estadístiques FP</p>';
-	echo '      <a href="Estadistiques.php?accio=EstadistiquesNotes" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	echo '    </div>';
 	echo '  </div>';
 }
@@ -99,12 +118,13 @@ else if ($Usuari->es_alumne) {
 	$Alumne	= new Alumne($conn, $Usuari);
 	$MatriculaId = $Alumne->ObteMatriculaActiva($Usuari->usuari_id);
 	if ($MatriculaId > 0) {
+		$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
 		echo '<div class="card-columns" style="column-count:6">';
 		echo '  <div class="card">';
 		echo '    <div class="card-body">';
 		echo '      <h5 class="card-title">Expedient</h5>';
 		echo '      <p class="card-text">Visualitza el teu expedient.</p>';
-		echo '      <a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 		echo '    </div>';
 		echo '  </div>';
 	}
@@ -127,12 +147,13 @@ else if ($Usuari->es_pare) {
 	if ($ResultSet->num_rows > 0) {
 		$row = $ResultSet->fetch_assoc();
 		while($row) {
+			$URL = GeneraURL('ExpedientPDF.php?MatriculaId='.$row['MatriculaId']);
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Expedient</h5>';
 			$NomComplet = trim(trim($row['NomAlumne']).' '.trim($row['Cognom1Alumne']).' '.trim($row['Cognom2Alumne']));
 			echo '      <p class="card-text">'.utf8_encode($NomComplet).'</p>';
-			echo '      <a href="ExpedientPDF.php?MatriculaId='.$row['MatriculaId'].'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 			echo '    </div>';
 			echo '  </div>';
 			$row = $ResultSet->fetch_assoc();

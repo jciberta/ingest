@@ -255,6 +255,8 @@ console.dir('jsonForm: ' + jsonForm);
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());
 //console.dir('jsonForm2: ' + jsonForm2);
 
+	$('#MissatgeCorrecte').hide();
+	$('#MissatgeError').hide();
 	$.ajax( {
 		type: 'POST',
 		url: 'lib/LibForms.ajax.php',
@@ -350,9 +352,9 @@ function CercaLookup(codi, valor, url, camps) {
 	var left = (screen.width/2)-(w/2);
 	var top = (screen.height/2)-(h/2);
 
-	var connector = (url.indexOf('?') == -1) ? '?' : '&';
-
-	var w = window.open(url + connector + 'Modalitat=mfBusca','_blank','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+//	var connector = (url.indexOf('?') == -1) ? '?' : '&';
+//	var w = window.open(url + connector + 'Modalitat=mfBusca','_blank','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+	var w = window.open(url,'_blank','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 	// pass the targetField to the pop up window
 	w.targetFieldCodi = targetFieldCodi;
 	w.targetFieldValor = targetFieldValor;

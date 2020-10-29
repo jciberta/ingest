@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibDB.php');
 
@@ -17,10 +18,16 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+RecuperaGET($_GET);
+//print_r($_GET);
+//exit;
 
 // Obtenció de la modalitat del formulari.
 $Modalitat = FormRecerca::mfLLISTA;
@@ -33,13 +40,11 @@ if (isset($_GET) && array_key_exists('CursId', $_GET))
 
 $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
-
 switch ($Accio) {
     case "Professors":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
+		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, usuari_bloquejat '.
@@ -53,6 +58,8 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcio('Assigna UFs', 'AssignaUFs.php?accio=AssignaUF&ProfessorId=');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 
@@ -85,6 +92,7 @@ switch ($Accio) {
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
+		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
@@ -98,6 +106,8 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 		$frm->EscriuHTML();
         break;

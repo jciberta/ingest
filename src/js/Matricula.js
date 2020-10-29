@@ -135,6 +135,8 @@ function BaixaMatricula(element, matricula_id) {
  */
 function EliminaMatriculaCurs(curs_id) { 
 console.log('EliminaMatriculaCurs '+curs_id);
+	$('#MissatgeCorrecte').hide();
+	$('#MissatgeError').hide();
 	bootbox.confirm({
 		message: "Esteu segur que voleu eliminar totes les matrícules d'aquest curs?",
 		buttons: {
@@ -156,7 +158,18 @@ console.log('EliminaMatriculaCurs '+curs_id);
 						'id': curs_id
 						},
 					success: function(data) {
-						$('#debug').html(data);
+//						$('#debug').html(data);
+
+						i = data.indexOf('ERROR');
+						if (i > -1) {
+							$('#MissatgeError').html("Hi ha hagut un error en realitzar l''acció." + data);
+							$('#MissatgeError').show();
+						}
+						else {
+							$('#MissatgeCorrecte').show();
+							//$('#MissatgeTorna').show();
+							$('#debug').html('Dades rebudes: '+ JSON.stringify(data));
+						}
 					}, 
 					error: function (data) {
 						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));

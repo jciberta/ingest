@@ -152,6 +152,8 @@ CREATE TABLE CURS
     codi VARCHAR(10) NOT NULL,
     cicle_formatiu_id INT NOT NULL,
     nivell INT CHECK (nivell IN (1, 2)),
+    grups_classe VARCHAR(100),
+    grups_tutoria VARCHAR(100),
 	avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
     trimestre INT NOT NULL DEFAULT 1, /* 1, 2, 3 */
 	butlleti_visible BIT NOT NULL DEFAULT 0,

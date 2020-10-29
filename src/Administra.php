@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibAdministracio.php');
@@ -25,6 +26,8 @@ if ($conn->connect_error)
 
 if (!$Usuari->es_admin)
 	header("Location: Surt.php");
+
+RecuperaGET($_GET);
 
 // Prevalen les dades passades per POST.
 if (isset($_POST) && !empty($_POST))
@@ -54,7 +57,9 @@ switch ($accio) {
 		//		$my_arr[$keys[1]]
 		//print_r($row);		
 				echo "<TR>";
-				echo "<TD><A HREF='Administra.php?accio=Taula&taula=".$row[$keys[0]]."'>".$row[$keys[0]]."</A></TD>";
+				$URL = GeneraURL('Administra.php?accio=Taula&taula='.$row[$keys[0]]);
+				echo "<TD><A HREF=$URL>".$row[$keys[0]]."</A></TD>";
+//				echo "<TD><A HREF='Administra.php?accio=Taula&taula=".$row[$keys[0]]."'>".$row[$keys[0]]."</A></TD>";
 				echo "</TR>";
 			}
 			echo "</TABLE>";
@@ -124,8 +129,10 @@ switch ($accio) {
 					for ($i=0; $i<count($aClauPrimaria); $i++)
 						array_push($aValor, $row[$aClauPrimaria[$i]]);
 					$Valor = implode(",", $aValor);
-					
-					echo "<A href='Administra.php?accio=EditaTaula&Taula=$Taula&Clau=".$ClauPrimaria."&Valor=".$Valor."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
+	
+					$URL = GeneraURL("Administra.php?accio=EditaTaula&Taula=$Taula&Clau=$ClauPrimaria&Valor=$Valor");
+					echo "<A href=$URL><IMG src=img/edit.svg></A>&nbsp&nbsp";
+//					echo "<A href='Administra.php?accio=EditaTaula&Taula=$Taula&Clau=".$ClauPrimaria."&Valor=".$Valor."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 					//$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
 					$Funcio = '';
 					echo "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
@@ -134,9 +141,6 @@ switch ($accio) {
 				echo "</TR>";
 			}
 			echo "</TABLE>";
-			$URL = "Administra.php?accio=EditaTaula&Taula=$Taula&Clau=$ClauPrimaria&Valor=-1"; 
-			echo '<TD><a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a></TD>';
-			
 			echo '</form>';
 		}
 		$ResultSet->close();
