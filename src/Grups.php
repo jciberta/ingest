@@ -12,6 +12,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -31,7 +32,10 @@ $Curs->CarregaRegistre($CursId);
 
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+$Professor = new Professor($conn, $Usuari);
+$CursTutorId = $Professor->ObteCursTutorId();
+if (!($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->es_professor && $CursId == $CursTutorId)))
+//if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && )
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Grups', True);

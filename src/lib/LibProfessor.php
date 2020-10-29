@@ -110,6 +110,25 @@ class Professor extends Usuari
 		$ResultSet->close();
 		$this->Tutor = $bRetorn;
 	}
+
+	/**
+	 * Obté el identificador del curs del qual un professor és tutor.
+	 * @returns int Identificador del curs, -1 si no és tutor.
+	 */
+	function ObteCursTutorId(): int {
+		$iRetorn = -1;
+		$SQL = ' SELECT * FROM TUTOR T '.
+			' LEFT JOIN CURS C ON (C.curs_id=T.curs_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' WHERE actual=1 AND professor_id='.$this->Usuari->usuari_id;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$obj = $ResultSet->fetch_object();
+			$iRetorn = $obj->curs_id;
+		}
+		$ResultSet->close();
+		return $iRetorn;
+	}
 	
 	/**
 	 * Comprova si és tutor d'un alumne.

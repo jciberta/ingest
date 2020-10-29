@@ -15,6 +15,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -68,6 +69,20 @@ else if ($Usuari->es_professor) {
 		}
 	}
 	$ResultSet->close();
+	
+	// Grups tutoria
+	$Professor = new Professor($conn, $Usuari);
+	$CursId = $Professor->ObteCursTutorId();
+	if ($CursId > 0) {
+		$URL = GeneraURL('Grups.php?CursId='.$CursId);
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Tutoria</h5>';
+		echo '      <p class="card-text">Grups</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+	}
 	
 	// Les meves UF
 	$URL = GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id);

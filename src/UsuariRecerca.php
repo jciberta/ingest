@@ -44,6 +44,7 @@ switch ($Accio) {
     case "Professors":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
+		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, usuari_bloquejat '.
@@ -57,6 +58,8 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcio('Assigna UFs', 'AssignaUFs.php?accio=AssignaUF&ProfessorId=');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 
@@ -89,6 +92,7 @@ switch ($Accio) {
     case "Alumnes":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
+		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, usuari_bloquejat '.
@@ -102,6 +106,8 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
+		if ($Usuari->es_admin)
+			$frm->AfegeixOpcioAJAX('Password', 'CanviPassword', 'usuari_id');
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 		$frm->EscriuHTML();
         break;
