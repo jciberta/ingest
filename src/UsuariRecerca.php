@@ -69,14 +69,13 @@ switch ($Accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
-		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, '.
+		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, C.any_academic_id, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, '.
 			' TUT.tutor_id, TUT.grup_tutoria '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 			' RIGHT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
-			' LEFT JOIN USUARI U ON (TUT.professor_id=U.usuari_id) '.
-			' WHERE AA.actual=1 ';
+			' LEFT JOIN USUARI U ON (TUT.professor_id=U.usuari_id) ';
 //print '<BR><BR><BR>'.$SQL;
 		$frm->SQL = $SQL;
 		$frm->Taula = 'TUTOR';
@@ -87,6 +86,8 @@ switch ($Accio) {
 		$frm->URLEdicio = 'Fitxa.php?accio=Tutor';
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
+		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
