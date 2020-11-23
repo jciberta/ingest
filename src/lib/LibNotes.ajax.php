@@ -127,9 +127,16 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			throw new Exception($conn->error.'. SQL: '.$SQL);
 		print $SQL;
 	}
+	else if ($_REQUEST['accio'] == 'Desconvalida') {
+		$NotaId = $_REQUEST['id'];
+		$SQL = 'UPDATE NOTES SET convalidat=0, convocatoria=1, nota1=NULL WHERE notes_id='.$NotaId;
+		if (!$conn->query($SQL))
+			throw new Exception($conn->error.'. SQL: '.$SQL);
+		print $SQL;
+	}
 	else if ($_REQUEST['accio'] == 'AugmentaConvocatoriaFila') {
 		$NotesFila = $_REQUEST['dades'];
-print_r($NotesFila);
+//print_r($NotesFila);
 		$aNotesFila = json_decode($NotesFila, true);
 		foreach ($aNotesFila as $key => $value) {
 			if ($value != '') {

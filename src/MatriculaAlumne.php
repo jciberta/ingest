@@ -160,6 +160,7 @@ if ($ButlletiVisible) {
 			echo "<TD width=50>".$row["NivellUF"]."</TD>";
 			echo "<TD width=50>".$row["HoresUF"]."</TD>";
 			$Baixa = ($row["Baixa"] == True);
+			$Convalidat = ($row["Convalidat"] == True);
 			if ($Baixa) 
 				$sChecked = '';
 			else
@@ -169,6 +170,10 @@ if ($ButlletiVisible) {
 			if ($accio == 'MostraExpedient') {
 				for ($i=1; $i<6; $i++) {
 					$style = 'width:2em;text-align:center';
+					if (($Convalidat) && ($i == 1)) {
+						$Deshabilitat = " disabled ";
+						$style .= ";background-color:blue;color:white";
+					}
 					if (($row['convocatoria'] == $i) && (!$Baixa)) {
 						// Marquem la convocatòria actual
 						$style .= ';border-width:1px;border-color:blue';
@@ -192,6 +197,7 @@ if ($ButlletiVisible) {
 					echo "<A HREF=# onclick='RedueixConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/left.svg data-toggle='tooltip' data-placement='top' title='Redueix convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='AugmentaConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/right.svg data-toggle='tooltip' data-placement='top' title='Augmenta convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='ConvocatoriaA0(".$row["NotaId"].");'><IMG SRC=img/check.svg data-toggle='tooltip' data-placement='top' title='Convocatòria a 0 (aprovat)'></A>";
+					echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
 					echo "</TD>";
 				}
 			}
