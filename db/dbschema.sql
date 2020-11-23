@@ -331,6 +331,14 @@ CREATE TABLE PROJECTE
     CONSTRAINT PRJ_UsuariFK FOREIGN KEY (coordinador_id) REFERENCES USUARI(usuari_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE PASSWORD_RESET_TEMP
+(
+    /* PRT */
+    email           VARCHAR(250) NOT NULL,
+    clau            VARCHAR(250) NOT NULL,
+    data_expiracio  DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE VIEW CURS_ACTUAL AS
 	SELECT C.* 
