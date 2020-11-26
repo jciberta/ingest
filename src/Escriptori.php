@@ -74,12 +74,21 @@ else if ($Usuari->es_professor) {
 	$Professor = new Professor($conn, $Usuari);
 	$CursId = $Professor->ObteCursTutorId();
 	if ($CursId > 0) {
-		$URL = GeneraURL('Grups.php?CursId='.$CursId);
+		$URL1 = GeneraURL('Grups.php?CursId='.$CursId);
+		$URL2 = GeneraURL('UsuariRecerca.php?accio=UltimLogin');
 		echo '  <div class="card">';
 		echo '    <div class="card-body">';
 		echo '      <h5 class="card-title">Tutoria</h5>';
-		echo '      <p class="card-text">Grups</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '<table style="border-collapse: separate;border-spacing: 0px 6px ">';
+		echo '<tr>';
+		echo '      <td width=100><p class="card-text">Grups</p></td>';
+		echo '      <td><p class="card-text">Darrers accessos</p></td>';
+		echo '</tr>';
+		echo '<tr>';
+		echo '      <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+		echo '      <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+		echo '</tr>';
+		echo '</table>';
 		echo '    </div>';
 		echo '  </div>';
 	}
