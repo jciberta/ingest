@@ -197,7 +197,8 @@ if ($ButlletiVisible) {
 					echo "<A HREF=# onclick='RedueixConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/left.svg data-toggle='tooltip' data-placement='top' title='Redueix convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='AugmentaConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/right.svg data-toggle='tooltip' data-placement='top' title='Augmenta convocatòria'></A>&nbsp;";
 					echo "<A HREF=# onclick='ConvocatoriaA0(".$row["NotaId"].");'><IMG SRC=img/check.svg data-toggle='tooltip' data-placement='top' title='Convocatòria a 0 (aprovat)'></A>";
-					echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
+					if ($Convalidat)
+						echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
 					echo "</TD>";
 				}
 			}
