@@ -54,6 +54,9 @@ $frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
 $frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offREQUERIT]);
 $frm->AfegeixText('cognom2', '2n cognom', 100, [FormFitxa::offAL_COSTAT]);
 
+$frm->Pestanya('Fotografia');
+$frm->AfegeixFotografia('document', '.jpg');
+
 $frm->Pestanya('Dades');
 $frm->AfegeixText('codi', 'Codi (codi professor, IDALU per alumne)', 100);
 $frm->AfegeixLlista('sexe', 'Sexe', 30, array('H', 'D', 'N'), array('Home', 'Dona', 'Neutre'), [FormFitxa::offREQUERIT]);

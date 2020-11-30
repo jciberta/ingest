@@ -37,6 +37,7 @@ class Form {
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
+	const tcFOTOGRAFIA = 11;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -340,6 +341,27 @@ class Form {
 		$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
 		$sRetorn .= '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un camp de tipus fotografia.
+	 *
+	 * @param string $Calcul Tipus de camp calculat.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud del desplegable.
+	 * @param boolean $Valor Valor per defecte de l'element.
+	 * @param array $off Opcions del formulari.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaFotografia(string $Valor, string $Sufix): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		$Fitxer = 'img/pix/'.$Valor.$Sufix;
+		if (!file_exists($Fitxer))
+			$Fitxer = 'img/nobody.png';
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn .= '<TD><IMG SRC="'.$Fitxer.'"></TD>';
 		return $sRetorn;
 	}	
 	
@@ -1294,6 +1316,21 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix una fotografia.
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Sufix Sufix del fitxer.
+	 * @return void
+	 */
+	public function AfegeixFotografia(string $Camp, string $Sufix) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcFOTOGRAFIA;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Sufix = $Sufix;
+	}
+
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -1480,6 +1517,13 @@ class FormFitxa extends Form {
 				case self::tcCALCULAT:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaCalculat($Valor->Calcul, $Valor->Camp, $Valor->Titol, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					break;
+				case self::tcFOTOGRAFIA:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+//echo '<hr>'.$Valor->Camp;
+//echo '<hr>'.$this->ValorCampText($Valor->Camp);
+//echo '<hr>'.$this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;
