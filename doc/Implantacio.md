@@ -37,7 +37,7 @@ ln -s InGest-v$VERSIO/ingest/src ingest
 
 Per les imatges:
 ```
-cd /var/www/html/InGest-v$VERSIO/src/img
+cd /var/www/html/ingest/src/img
 ln -s /var/www/ingest-data/pix pix
 ```
 
