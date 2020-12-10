@@ -96,6 +96,33 @@ class Alumne extends Usuari
 		}
 		return $Retorn;
 	}
+	
+	/**
+	 * Llista les matrícules d'un alumne.
+	 * @param $alumne Identificador de l'alumne
+	 * @return string Codi HTML de la llista de matrícules.
+	 */
+	function Matricules(int $alumne): string {
+		$Retorn = '';
+		$SQL = ' SELECT M.matricula_id, C.nom FROM MATRICULA M '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' WHERE alumne_id='.$alumne;
+//print_r($this);
+//exit;
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($rsMatricula = $ResultSet->fetch_object()) {
+			$URL = '';
+			if ($this->EsAdmin() || $this->EsDireccio() || $this->EsCapEstudis()) {
+				$URL = 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$rsMatricula->matricula_id;
+				if (Config::EncriptaURL)
+					$URL = GeneraURL($URL);
+				$Retorn .= "<A HREF='$URL'>".utf8_encode($rsMatricula->nom)."</A><br>";
+			}
+			else
+				$Retorn .= utf8_encode($rsMatricula->nom).'<br>';
+		}		
+		return $Retorn;
+	}	
 }
 
 ?>

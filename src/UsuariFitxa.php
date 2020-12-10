@@ -12,6 +12,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 
 session_start();
@@ -102,8 +103,10 @@ if (!$Usuari->es_professor) {
 	$frm->AfegeixCheckBox('es_pare', "És pare?");
 	//$frm->FinalitzaColumnes();
 
-	$frm->Pestanya('Expedient');
 }
+$frm->Pestanya('Expedient');
+$Alumne = new Alumne($conn, $Usuari);
+$frm->AfegeixHTML($Alumne->Matricules($Id), 'Matrícules');
 
 $frm->EscriuHTML();
 

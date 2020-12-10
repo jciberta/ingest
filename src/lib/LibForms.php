@@ -38,6 +38,7 @@ class Form {
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
 	const tcFOTOGRAFIA = 11;
+	const tcHTML = 12;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -346,13 +347,8 @@ class Form {
 
 	/**
 	 * Crea un camp de tipus fotografia.
-	 *
-	 * @param string $Calcul Tipus de camp calculat.
-	 * @param string $Nom Nom del element.
-	 * @param string $Titol Títol del camp.
-	 * @param integer $Longitud Longitud del desplegable.
-	 * @param boolean $Valor Valor per defecte de l'element.
-	 * @param array $off Opcions del formulari.
+	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
 	 * @return string Codi HTML del checkbox.
 	 */
 	public function CreaFotografia(string $Valor, string $Sufix): string {
@@ -362,6 +358,20 @@ class Form {
 			$Fitxer = 'img/nobody.png';
 		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
 		$sRetorn .= '<TD><IMG SRC="'.$Fitxer.'"></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un text amb contingut HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaHTML(string $Text, string $Titol): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn .= '<TD valign=top><label>'.$Titol.'&nbsp</label></TD>';
+		$sRetorn .= "<TD>$Text</TD>";
 		return $sRetorn;
 	}	
 	
@@ -1331,6 +1341,21 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix un text fix en HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return void
+	 */
+	public function AfegeixHTML(string $Text, string $Titol) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcHTML;
+		$this->Camps[$i]->Text = $Text;
+		$this->Camps[$i]->Titol = $Titol;
+	}
+
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -1524,6 +1549,10 @@ class FormFitxa extends Form {
 //echo '<hr>'.$this->ValorCampText($Valor->Camp);
 //echo '<hr>'.$this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
+					break;
+				case self::tcHTML:
+					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;
