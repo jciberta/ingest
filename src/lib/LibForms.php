@@ -305,11 +305,12 @@ class Form {
 			$Text = '';
 		else
 			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 2);">';
+		$onkeydown = ($NomesLectura) ? '':' onkeydown="FormFitxaKeyDown(this, event, 2);" ';
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.$onkeydown.'>';
 		$sRetorn .= '  <div class="input-group-append">';
-		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+		$onClick = " onclick=".'"'."CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');".'"';
 		$onClick = ($NomesLectura) ? '': $onClick;
-		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" '.$onClick.'>Cerca</button>';
 		$sRetorn .= '  </div>';
 		$sRetorn .= '</div>';
 		$sRetorn .= '</TD>';
@@ -1527,6 +1528,8 @@ class FormFitxa extends Form {
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
 //print_r($this->Registre);	
 //exit;			
+					if ($this->NomesLectura)
+						array_push($Valor->Opcions, self::offNOMES_LECTURA);
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaLookup(
 						$Valor->Camp, 
