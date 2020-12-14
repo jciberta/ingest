@@ -52,14 +52,15 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'ActualitzaNotaModul') {
 		$nom = $_REQUEST['nom'];
 		$data = explode("_", $nom);
-		$mp = $_REQUEST['mp'];
+//		$mp = $_REQUEST['mp'];
 		$valor = $_REQUEST['valor'];
 		if (EsNotaValida($valor)) {
 			$NotaNumerica = NotaANumero($valor);
 			if ($data[1]==0) {
 				$SQL = 'INSERT INTO NOTES_MP (matricula_id, modul_professional_id, nota) VALUES ('.
 					$data[2].', '.
-					$mp.', '.
+					$data[3].', '.
+//					$mp.', '.
 					$NotaNumerica.
 				')';
 			

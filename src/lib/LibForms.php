@@ -66,6 +66,12 @@ class Form {
 	public $Usuari;
 
 	/**
+	* Títol del formulari.
+	* @var string
+	*/    
+    public $Titol = '';
+
+	/**
 	* Taula principal.
 	* @var string
 	*/    
@@ -76,6 +82,12 @@ class Form {
 	* @var string
 	*/    
     public $ClauPrimaria = '';	
+
+	/**
+	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	* @var object
+	*/    
+//    public $Registre = NULL;
 
 	/**
 	* Fitxers JavaScript.
@@ -621,13 +633,6 @@ class FormRecerca extends Form {
     public $SQL = '';
 	
 	/**
-	* Títol del formulari de recerca.
-	* @access public
-	* @var string
-	*/    
-    public $Titol = '';
-	
-	/**
 	* Camps a visualitzar separats per comes.
 	* @access public
 	* @var string
@@ -1105,31 +1110,37 @@ class FormFitxa extends Form {
 	* @var boolean
 	*/    
     public $AutoIncrement = False;	
+
 	/**
 	* Camps del formulari amb les seves característiques. S'usa per generar els components visuals.
 	* @var array
 	*/    
     private $Camps = [];	
+
 	/**
 	* Títol del formulari de recerca.
 	* @var string
 	*/    
     public $Titol = '';
+
 	/**
 	* Permet editar un registre.
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
+
 	/**
 	* Permet suprimir un registre.
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
+
 	/**
 	* En el cas que s'estigui editant un registre, carrega les dades de la base de dades.
 	* @var object
 	*/    
     public $Registre = null;
+
 	/**
 	* Indica si el formulari té pestanyes.
 	* @var boolean

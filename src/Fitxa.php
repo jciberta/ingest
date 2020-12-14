@@ -8,6 +8,7 @@
  *  - Any acadèmic
  *  - Equip
  *  - Tutor
+ *  - Expedient acadèmic (visió SAGA)
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -17,6 +18,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibExpedient.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -68,7 +70,7 @@ switch ($accio) {
 		$frm->AfegeixEspai();
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
-		$frm->AfegeixCheckBox('butlleti_visible', 'Butlletí visible', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixCheckBox('butlleti_visible', 'ButlletÃ­ visible', [FormFitxa::offREQUERIT]);
 		$frm->AfegeixCheckBox('finalitzat', 'Curs finalitzat', [FormFitxa::offREQUERIT]);
 		
 //		$frm->AfegeixText('any_inici', 'Any inici', True, 20);
@@ -145,6 +147,15 @@ switch ($accio) {
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 	
+		$frm->EscriuHTML();
+        break;
+    case "ExpedientSaga":
+		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
+		if ($MatriculaId == -1)
+			header("Location: Surt.php");
+
+		$frm = new ExpedientSaga($conn, $Usuari, $MatriculaId);
+		$frm->Titol = "Avaluació d'alumnes";
 		$frm->EscriuHTML();
         break;
     case "Altre":

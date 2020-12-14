@@ -14,8 +14,10 @@
  */
 function EnEntrarCellaNota(element) { 
 	ObteNota(element);
-	ResaltaFila(element, 'dodgerblue', 'dodgerblue');
-	ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
+	if ($('input#Formulari').val() != 'ExpedientSaga') {
+		ResaltaFila(element, 'dodgerblue', 'dodgerblue');
+		ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
+	}
 }
 
 /**
@@ -28,8 +30,10 @@ function EnSortirCellaNota(element) {
 	else
 		element.style.color = 'black';
 	ActualitzaNota(element);
-	ResaltaFila(element, '#A9A9A9', 'black');
-	ResaltaColumna(element, '#A9A9A9', 'black');
+	if ($('input#Formulari').val() != 'ExpedientSaga') {
+		ResaltaFila(element, '#A9A9A9', 'black');
+		ResaltaColumna(element, '#A9A9A9', 'black');
+	}
 }
 
 /**
@@ -38,8 +42,10 @@ function EnSortirCellaNota(element) {
  */
 function EnEntrarCellaNotaModul(element) { 
 	ObteNotaModul(element);
-	ResaltaFila(element, 'dodgerblue', 'dodgerblue');
-	ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
+	if ($('input#Formulari').val() != 'ExpedientSaga') {
+		ResaltaFila(element, 'dodgerblue', 'dodgerblue');
+		ResaltaColumna(element, 'dodgerblue', 'dodgerblue');
+	}
 }
 
 /**
@@ -52,8 +58,10 @@ function EnSortirCellaNotaModul(element) {
 	else
 		element.style.color = 'black';
 	ActualitzaNotaModul(element);
-	ResaltaFila(element, '#A9A9A9', 'black');
-	ResaltaColumna(element, '#A9A9A9', 'black');
+	if ($('input#Formulari').val() != 'ExpedientSaga') {
+		ResaltaFila(element, '#A9A9A9', 'black');
+		ResaltaColumna(element, '#A9A9A9', 'black');
+	}
 }
 
 /**
@@ -244,8 +252,8 @@ function NotaKeyDown(obj, event) {
 	
 	var data = (obj.id).split('_');
 //console.dir(obj);
-console.log('Valor anterior: '+obj.value);
-console.log(event.keyCode);
+//console.log('Valor anterior: '+obj.value);
+//console.log(event.keyCode);
 	if ((event.keyCode === KeyCode.KEY_RETURN) || (event.keyCode === KeyCode.KEY_DOWN)) {
 		// Avall
 		data[1]++;
@@ -395,7 +403,8 @@ function ResaltaFila(element, color, colorAlumne) {
 	var y = data[2];
 
 	var alumne = document.getElementById('alumne_' + x);
-	alumne.style.color = colorAlumne;
+	if (alumne !== null)
+		alumne.style.color = colorAlumne;
 
 	var i = 0;
 	var CellaId = grd + '_' + x + '_' + i;
@@ -562,7 +571,7 @@ console.log(sText);
 	}
 	else {
 		// <INPUT>
-		// name: conté id i matrícula
+		// name: conté identificadors de la nota, matrícula i mòdul.
 		// id: conté les coordenades x, y. Inici a (0, 0).
 			
 console.log(element.name);
@@ -578,7 +587,7 @@ console.dir(element.id);
 			url: 'lib/LibNotes.ajax.php',
 			data:{
 				'accio': 'ActualitzaNotaModul',
-				'mp': $('input#ModulId').val(),
+//				'mp': $('input#ModulId').val(),
 				'nom': element.name,
 				'valor': element.value
 				},

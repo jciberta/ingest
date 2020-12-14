@@ -82,6 +82,8 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 echo '<script language="javascript" src="js/Matricula.js?v1.5" type="text/javascript"></script>';
 echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
 
+echo "<DIV id=debug></DIV>";
+
 // L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 $ButlletiVisible = True;
 if ($Usuari->es_alumne || $Usuari->es_pare) {
@@ -95,7 +97,15 @@ if ($ButlletiVisible) {
 
 	$ResultSet = $conn->query($SQL);
 
+	// PROVES
+/*	$NotesExpedient = Expedient::CarregaNotesExpedient($ResultSet);
+	echo "<pre>";
+	print_r($NotesExpedient);
+	echo "</pre>";
+	exit;*/
+
 	if ($ResultSet->num_rows > 0) {
+		
 		$row = $ResultSet->fetch_assoc();
 		$NomComplet = trim(utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
 		if ($CFG->Debug)
@@ -240,8 +250,6 @@ if ($ButlletiVisible) {
 }
 else
 	echo 'El butlletí de notes no està disponible.';	
-
-echo "<DIV id=debug></DIV>";
 
 $conn->close();
 
