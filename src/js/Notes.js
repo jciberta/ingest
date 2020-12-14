@@ -674,6 +674,28 @@ function ConvocatoriaA0(NotaId) {
 }
 
 /**
+ * Desconvalida
+ * Treu la convalidació d'una UF.
+ * @param NotaId Identificador de la nota.
+ */
+function Desconvalida(NotaId) { 
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'Desconvalida',
+			'id': NotaId
+		},
+		success: function(data) {
+			$('#debug').html(data);
+		}, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	});		
+}
+
+/**
  * AugmentaConvocatoriaFila
  * Augmenta la convocatòria d'una fila de notes.
  * @param fila Fila de notes.

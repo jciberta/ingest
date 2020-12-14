@@ -296,6 +296,7 @@ class Notes extends Form
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);
