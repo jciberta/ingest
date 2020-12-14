@@ -294,6 +294,18 @@ class Notes extends Form
 	public $Administracio = false;
 
 	/**
+	* Nivell: 1r o 2n.
+	* @var int
+	*/    
+	private $Nivell = 0;
+
+	/**
+	* Identificador de la graella de notes.
+	* @var int
+	*/    
+	private $IdGraella = -1;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
@@ -316,7 +328,9 @@ class Notes extends Form
 	 * @return void.
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
-//print_r($Notes);
+		$this->Nivell = $Nivell;
+		$this->IdGraella = $IdGraella;
+
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
@@ -448,7 +462,7 @@ class Notes extends Form
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 
 		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
-		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || ($Professor->Tutor == 1 && $this->Nivell == $Avaluacio->Nivell))
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href=$URL>$NomAlumne</a></TD>";
 		else
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";

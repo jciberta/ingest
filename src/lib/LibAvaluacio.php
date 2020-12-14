@@ -40,6 +40,12 @@ class Avaluacio
 	public $Avaluacio = self::Ordinaria;
 
 	/**
+	* Nivell (1 o 2)
+	* @var int
+	*/    
+	public $Nivell = 0;
+
+	/**
 	* Dades dels curs.
 	* @var object
 	*/    
@@ -85,6 +91,7 @@ class Avaluacio
 		if ($ResultSet->num_rows > 0) {		
 			$row = $ResultSet->fetch_object();
 			$this->Registre = $row;
+			$this->Nivell = $row->nivell;
 		}
 	}
 
