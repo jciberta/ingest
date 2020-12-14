@@ -94,6 +94,17 @@ function Ocurrencies($array)
 }
  
 /**
+ * Escriu una variable en format humà.
+ * @param mixed $Variable Variable a mostrar.
+ */ 
+function print_h($Variable)
+{
+	echo '<pre>';
+	print_r($Variable);
+	echo '</pre>';
+}
+ 
+/**
  * JSONEncodeUTF8Especial
  *
  * La funció de PHP json_encode no funciona si té caràcters que no són UTF8 i no retorna res.

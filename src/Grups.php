@@ -42,7 +42,7 @@ CreaIniciHTML($Usuari, 'Grups', True);
 //CreaIniciHTML($Usuari, 'Grups '.$cf->ObteCodi($CicleId).' '.$Nivell);
 
 //echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
-// Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
+// Pedaç per forçar el navegador a recarregar el JavaScript i no usar la caché.
 // https://stackoverflow.com/questions/44456644/javascript-function-not-working-due-to-cached-js-file
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
