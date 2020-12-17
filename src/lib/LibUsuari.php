@@ -76,6 +76,14 @@ class Usuari
 	 * Comprova si l'usuari és alumne.
 	 * @returns boolean Cert si l'usuari és alumne.
 	 */
+	function EsProfessor(): bool {
+		return $this->Usuari->es_professor == '1';
+	}	
+
+	/**
+	 * Comprova si l'usuari és alumne.
+	 * @returns boolean Cert si l'usuari és alumne.
+	 */
 	function EsAlumne(): bool {
 		return $this->Usuari->es_alumne == '1';
 	}	
@@ -143,7 +151,7 @@ class Usuari
 		$frm->AfegeixText('email', 'Correu electrònic', 100);
 
 		//$frm->AfegeixPassword('password', 'Contrasenya', 100, [FormFitxa::offREQUERIT]);
-		if (!$Usuari->es_professor) {
+		if (!$this->EsProfessor()) {
 			$frm->AfegeixCheckBox('imposa_canvi_password', 'Imposa nova contrasenya?');
 			$frm->AfegeixCheckBox('usuari_bloquejat', "Bloqueja l'usuari?");
 		}
