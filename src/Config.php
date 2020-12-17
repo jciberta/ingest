@@ -20,7 +20,7 @@ class Config {
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
 	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
-	const PasswordCorreu = Password;
+	const PasswordCorreu = Config::Password;
 }
 
 unset($CFG);
