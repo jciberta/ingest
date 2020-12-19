@@ -370,7 +370,7 @@ class Form {
 		if (!file_exists($Fitxer))
 			$Fitxer = 'img/nobody.png';
 		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
-		$sRetorn .= '<TD><IMG SRC="'.$Fitxer.'"></TD>';
+		$sRetorn = '<TD><IMG SRC="'.$Fitxer.'"></TD>';
 		return $sRetorn;
 	}	
 
@@ -383,7 +383,7 @@ class Form {
 	public function CreaHTML(string $Text, string $Titol): string {
 		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
 		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
-		$sRetorn .= '<TD valign=top><label>'.$Titol.'&nbsp</label></TD>';
+		$sRetorn = '<TD valign=top><label>'.$Titol.'&nbsp</label></TD>';
 		$sRetorn .= "<TD>$Text</TD>";
 		return $sRetorn;
 	}	
@@ -1350,6 +1350,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Tipus = self::tcFOTOGRAFIA;
 		$this->Camps[$i]->Camp = $Camp;
 		$this->Camps[$i]->Sufix = $Sufix;
+		$this->Camps[$i]->Opcions = [];
 	}
 
 	/**
@@ -1365,6 +1366,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Tipus = self::tcHTML;
 		$this->Camps[$i]->Text = $Text;
 		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Opcions = [];
 	}
 
 	/**
