@@ -294,8 +294,21 @@ class Notes extends Form
 	public $Administracio = false;
 
 	/**
+	* Nivell: 1r o 2n.
+	* @var int
+	*/    
+	private $Nivell = 0;
+
+	/**
+	* Identificador de la graella de notes.
+	* @var int
+	*/    
+	private $IdGraella = -1;
+
+	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);
@@ -315,10 +328,13 @@ class Notes extends Form
 	 * @return void.
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
-//print_r($Notes);
+		$this->Nivell = $Nivell;
+		$this->IdGraella = $IdGraella;
+
 		// Formulari amb les notes
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
+		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
 		echo '<TABLE id="TaulaNotes" border=0>';
@@ -447,12 +463,13 @@ class Notes extends Form
 		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 
 		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
-		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || $Professor->Tutor)
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || ($Professor->Tutor == 1 && $this->Nivell == $Avaluacio->Nivell))
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href=$URL>$NomAlumne</a></TD>";
 		else
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
-		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
+//		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
+		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
 		else
@@ -1323,6 +1340,12 @@ class NotesModul extends Notes
 	* @var object
 	*/    
 	private $Registre = NULL;
+	
+	/**
+	* Identificador del mòdul professional.
+	* @var integer
+	*/    
+	private $IdMP = 0;
 
 	/**
 	* Registre carregat amb CarregaRegistreMitjana.
@@ -1397,7 +1420,7 @@ class NotesModul extends Notes
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $ModulId Identificador del mòdul.
 	 */				
-	public function CarregaRegistre($CursId, $ModulId) {
+	public function CarregaRegistre($CursId, $ModulId, $Avaluacio = '') {
 		$SQL = $this->CreaSQL($CursId, $ModulId);
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
@@ -1482,7 +1505,8 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 //print_r($aOcurrenciesModuls[0][1]);
 //print_r($aModulsNom);
 
-		echo '<input type=hidden id=ModulId value='.$aModulsId[0].'>';
+		$this->IdMP = $aModulsId[0];
+//		echo '<input type=hidden id=ModulId value='.$this->IdMP.'>';
 
 //		$iNumeroUF = $aOcurrenciesModuls[0][1];
 
@@ -1527,6 +1551,7 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		}
 		echo '</TBODY>';
 		echo "</TABLE>";
+		echo '<input type=hidden id=Formulari value=NotesModul>';
 		echo "<input type=hidden name=TempNota value=''>";
 		echo "<input type=hidden name=TempNotaModul value=''>";
 		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
@@ -1694,13 +1719,13 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 			$ClassInput .= ' fct';
 		
 		// <INPUT>
-		// name: conté id i matrícula
+		// name: conté identificadors de la nota, matrícula i mòdul.
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
 		return "<TD $Class width=2>".
 			"<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
-			" name=txtNotaModulId_".$NotaId."_".$MatriculaId.
+			" name=txtNotaModulId_".$NotaId."_".$MatriculaId."_".$this->IdMP.
 			" id='".$Id."' value='".$ValorNota."' size=1 ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 	}

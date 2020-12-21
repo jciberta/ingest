@@ -37,6 +37,8 @@ class Form {
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
+	const tcFOTOGRAFIA = 11;
+	const tcHTML = 12;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -64,6 +66,12 @@ class Form {
 	public $Usuari;
 
 	/**
+	* Títol del formulari.
+	* @var string
+	*/    
+    public $Titol = '';
+
+	/**
 	* Taula principal.
 	* @var string
 	*/    
@@ -74,6 +82,12 @@ class Form {
 	* @var string
 	*/    
     public $ClauPrimaria = '';	
+
+	/**
+	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	* @var object
+	*/    
+//    public $Registre = NULL;
 
 	/**
 	* Fitxers JavaScript.
@@ -313,11 +327,12 @@ class Form {
 			$Text = '';
 		else
 			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 2);">';
+		$onkeydown = ($NomesLectura) ? '':' onkeydown="FormFitxaKeyDown(this, event, 2);" ';
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.$onkeydown.'>';
 		$sRetorn .= '  <div class="input-group-append">';
-		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+		$onClick = " onclick=".'"'."CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');".'"';
 		$onClick = ($NomesLectura) ? '': $onClick;
-		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" '.$onClick.'>Cerca</button>';
 		$sRetorn .= '  </div>';
 		$sRetorn .= '</div>';
 		$sRetorn .= '</TD>';
@@ -350,6 +365,36 @@ class Form {
 		$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
 		$sRetorn .= '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un camp de tipus fotografia.
+	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaFotografia(string $Valor, string $Sufix): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		$Fitxer = 'img/pix/'.$Valor.$Sufix;
+		if (!file_exists($Fitxer))
+			$Fitxer = 'img/nobody.png';
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn .= '<TD><IMG SRC="'.$Fitxer.'"></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un text amb contingut HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaHTML(string $Text, string $Titol): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn .= '<TD valign=top><label>'.$Titol.'&nbsp</label></TD>';
+		$sRetorn .= "<TD>$Text</TD>";
 		return $sRetorn;
 	}	
 	
@@ -656,13 +701,6 @@ class FormRecerca extends Form {
 	* @var string
 	*/    
     public $SQL = '';
-	
-	/**
-	* Títol del formulari de recerca.
-	* @access public
-	* @var string
-	*/    
-    public $Titol = '';
 	
 	/**
 	* Camps a visualitzar separats per comes.
@@ -1142,31 +1180,37 @@ class FormFitxa extends Form {
 	* @var boolean
 	*/    
     public $AutoIncrement = False;	
+
 	/**
 	* Camps del formulari amb les seves característiques. S'usa per generar els components visuals.
 	* @var array
 	*/    
     private $Camps = [];	
+
 	/**
 	* Títol del formulari de recerca.
 	* @var string
 	*/    
     public $Titol = '';
+
 	/**
 	* Permet editar un registre.
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
+
 	/**
 	* Permet suprimir un registre.
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
+
 	/**
 	* En el cas que s'estigui editant un registre, carrega les dades de la base de dades.
 	* @var object
 	*/    
     public $Registre = null;
+
 	/**
 	* Indica si el formulari té pestanyes.
 	* @var boolean
@@ -1364,6 +1408,36 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix una fotografia.
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Sufix Sufix del fitxer.
+	 * @return void
+	 */
+	public function AfegeixFotografia(string $Camp, string $Sufix) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcFOTOGRAFIA;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Sufix = $Sufix;
+	}
+
+	/**
+	 * Afegeix un text fix en HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return void
+	 */
+	public function AfegeixHTML(string $Text, string $Titol) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcHTML;
+		$this->Camps[$i]->Text = $Text;
+		$this->Camps[$i]->Titol = $Titol;
+	}
+
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -1542,6 +1616,8 @@ class FormFitxa extends Form {
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
 //print_r($this->Registre);	
 //exit;			
+					if ($this->NomesLectura)
+						array_push($Valor->Opcions, self::offNOMES_LECTURA);
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaLookup(
 						$Valor->Camp, 
@@ -1557,6 +1633,17 @@ class FormFitxa extends Form {
 				case self::tcCALCULAT:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaCalculat($Valor->Calcul, $Valor->Camp, $Valor->Titol, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					break;
+				case self::tcFOTOGRAFIA:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+//echo '<hr>'.$Valor->Camp;
+//echo '<hr>'.$this->ValorCampText($Valor->Camp);
+//echo '<hr>'.$this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
+					break;
+				case self::tcHTML:
+					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;

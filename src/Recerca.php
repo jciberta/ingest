@@ -20,6 +20,8 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+	header("Location: Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -31,9 +33,6 @@ if (empty($_GET))
 	header("Location: Surt.php");
 
 $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
-
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-			header("Location: Surt.php");
 
 // Obtenció de la modalitat del formulari
 $Modalitat = FormRecerca::mfLLISTA;

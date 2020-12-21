@@ -91,6 +91,25 @@ class RecuperaPassword
 }
 
 /**
+ * Classe que encapsula les utilitats per a la recuperació de la contrasenya del professor.
+ */
+// https://www.allphptricks.com/forgot-password-recovery-reset-using-php-and-mysql/
+// https://phppot.com/php/php-forgot-password-recover-code/
+class RecuperaPasswordProfessor extends RecuperaPassword
+{
+	/**
+	 * Crea la SQL per comprovar que existeix el correu.
+	 * @param string $email Correu del professor.
+     * @return string Sentència SQL.
+	 */
+	public function CreaSQL($email) {
+		$SQL = " SELECT * FROM USUARI ".
+			" WHERE email='$email' ";
+		return $SQL;
+	}	
+}
+
+/**
  * Classe que encapsula les utilitats per a la recuperació de la contrasenya del tutor.
  */
 class RecuperaPasswordTutor extends RecuperaPassword
@@ -254,6 +273,73 @@ class RecuperaPasswordAlumne extends RecuperaPassword
 		//return $SQL;
 		return $Retorn;
 	}
+}
+
+/**
+ * Classe que encapsula el formulari per al canvi de la contrasenya.
+ */
+class CanviPassword extends Portal
+{
+	/**
+	 * Constructor de l'objecte.
+	 */
+	function __construct() {
+		$this->JavaScript = '<script src="js/CanviPassword.js?v1.0"></script>';
+	}
+
+	/**
+	 * Escriu el peu de la pàgina web.
+	 */				
+/*	public function EscriuPeu() {
+		echo '	<footer class="footer">';
+		echo '	<p>Institut de Palamós</p>';
+		echo '	</footer>';
+		echo '</div>';
+		echo '</body> ';
+		echo '</html>';
+	}*/
+
+	/**
+	 * Escriu el formulari.
+	 * @param boolean $bContrasenyaActual Si cal demanar la contrasenya actual.
+	 * @param string $Correu Correu en el cas que canvien provenint d'un correu.
+	 * @param string $Clau Clau en el cas que canvien provenint d'un correu.
+	 */				
+	public function EscriuFormulari($bContrasenyaActual = True, $Correu = '', $Clau = '') {
+		echo '	<div class="d-flex justify-content-center">';
+		echo '		<form action="CanviPassword.php" name="CanviPassword" method="post" onSubmit="return ComprovaCamps()">';
+		echo '			<h3 class="d-flex justify-content-center">Canvi de contrasenya</h3>';
+		echo '			<br><br>';
+		echo '			<table>';
+		if ($bContrasenyaActual) {
+			echo '				<tr>';
+			echo '					<td><div style="width:200px">Contrasenya actual</div></td>';
+			echo '					<td><input type="password" class="form-control" name="contrasenya_actual" required></td>';
+			echo '				</tr>';
+		}
+		else {
+			echo '<input type="hidden" name="clau" value="'.$Clau.'">';
+			echo '<input type="hidden" name="email" value="'.$Correu.'">';
+		}
+		echo '				<tr>';
+		echo '					<td>Nova contrasenya</td>';
+		echo '					<td><input type="password" class="form-control" name="contrasenya1" required></td>';
+		echo '				</tr>';
+		echo '				<tr>';
+		echo '					<td>Repeteix contrasenya</td>';
+		echo '					<td><input type="password" class="form-control" name="contrasenya2" required></td>';
+		echo '				</tr>';
+		echo '			</table>';
+		echo '			<br>';
+		echo '			<div class="small">';
+		echo '			La nova contrasenya ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres.';
+		echo '			</div>';
+		echo '			<br>';
+		echo '			<button type="submit" class="btn btn-primary">Desa</button>';
+		echo '		</form>';
+		echo '	</div>';
+	}
+	
 }
 
 ?>
