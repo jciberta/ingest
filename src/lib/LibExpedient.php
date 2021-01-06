@@ -16,6 +16,7 @@ require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibProfessor.php');
 require_once(ROOT.'/lib/LibMatricula.php');
+require_once(ROOT.'/lib/LibAvaluacio.php');
 
 
 /**
@@ -392,7 +393,8 @@ class ExpedientSaga extends Expedient
 		$this->Matricula = new Matricula($conn, $user);
 		$this->Matricula->Carrega($this->MatriculaId);
 		$this->RegistreMitjanes = [];
-
+//print_h($this->Matricula);
+//exit;
 
 
 		$this->Professor = new Professor($conn, $user);
@@ -616,6 +618,37 @@ $nivell = $Matricula->ObteNivell();
 	}
 	
 	/**
+	 * Cerca la matrícula anterior d'una matrícula dins un array ordenat per nom de l'alumne.
+	 * @param array $aMatricules Array de matrícules.
+	 * @param integer $$MatriculaId Identificador de la matrícula.
+	 * @return integer Identificador de la matrícula anterior o -1 si no trobat.
+	 */
+	private function MatriculaAnterior(array $aMatricules, int $MatriculaId): int {
+		$iRetorn = -1;
+		for($i = 0; $i < count($aMatricules); $i++) {
+			if ($i > 0 && $aMatricules[$i] == $MatriculaId)
+				$iRetorn = $aMatricules[$i-1];
+		}
+		return $iRetorn;
+	}	
+
+	/**
+	 * Cerca la matrícula posterior d'una matrícula dins un array ordenat per nom de l'alumne.
+	 * @param array $aMatricules Array de matrícules.
+	 * @param integer $$MatriculaId Identificador de la matrícula.
+	 * @return integer Identificador de la matrícula posterior o -1 si no trobat.
+	 */
+	private function MatriculaPosterior(array $aMatricules, int $MatriculaId): int {
+		$iRetorn = -1;
+		$c = count($aMatricules);
+		for($i = 0; $i < $c; $i++) {
+			if ($i < ($c-1) && $aMatricules[$i] == $MatriculaId)
+				$iRetorn = $aMatricules[$i+1];
+		}
+		return $iRetorn;
+	}	
+	
+	/**
 	 * Genera la capçalera de l'expedient.
 	 * @return string HTML amb la capçalera l'expedient.
 	 */
@@ -624,7 +657,11 @@ $nivell = $Matricula->ObteNivell();
 
 //print_r($this->Registre);
 		$Retorn = '<BR>';
-		$Retorn .= '<TABLE style="color:white;">';
+		
+		$Retorn .= '<TABLE width="740px"><TR><TD>';
+		
+		// Dades alumne
+		$Retorn .= '<TABLE style="color:white;" width="450px">';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Cicle Formatiu</B></TD>';
 		$Retorn .= '<TD>'.utf8_encode($this->Registre->nom).'</TD>';
@@ -644,6 +681,46 @@ $nivell = $Matricula->ObteNivell();
 		$Retorn .= '</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '</TABLE>';
+
+		$Retorn .= '</TD><TD>';
+
+		// Botons navegació
+		$av = new Avaluacio($this->Connexio, $this->Usuari);
+		$CursId = $this->Matricula->ObteCurs();
+		$Grup = $this->Matricula->ObteGrupTutoria();
+		$CursIdGrup = $CursId.','.$Grup;
+		$aMatricules = $av->LlistaMatricules($CursIdGrup);		
+//print_h($aMatricules);
+		$MatriculaAnterior = $this->MatriculaAnterior($aMatricules, $this->MatriculaId);
+		$MatriculaPosterior = $this->MatriculaPosterior($aMatricules, $this->MatriculaId);
+//echo "MatriculaAnterior: $MatriculaAnterior<br>";
+//echo "MatriculaPosterior: $MatriculaPosterior<br>";
+		$Retorn .= '<table><tr><td>';
+		if ($MatriculaAnterior == -1) {
+			$Retorn .= '<div style="width:70px;">';
+			$Retorn .= '</div>';
+		}
+		else {
+			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaAnterior");
+			$Retorn .= '<div class="boto" style="width:70px">';
+			$Retorn .= '<a href="Fitxa.php?accio=ExpedientSaga&Id='.$MatriculaAnterior.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
+			$Retorn .= '</div>';
+		}
+		$Retorn .= '</td><td>';
+		if ($MatriculaPosterior == -1) {
+			$Retorn .= '<div style="width:70px;">';
+			$Retorn .= '</div>';
+		}
+		else {
+			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaPosterior");
+			$Retorn .= '<div class="boto" style="width:70px">';
+			$Retorn .= '<a href="Fitxa.php?accio=ExpedientSaga&Id='.$MatriculaPosterior.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
+			$Retorn .= '</div>';
+		}
+		$Retorn .= '</td></tr></table>';
+
+		$Retorn .= '</TD></TR></TABLE>';
+
 		$Retorn .= '<BR>';
 		return $Retorn;
 	}
@@ -714,7 +791,7 @@ $nivell = $Matricula->ObteNivell();
 	}
 
 	/**
-	 * Genera lel peu de l'expedient.
+	 * Genera el peu de l'expedient.
 	 * @return string HTML amb el peu l'expedient.
 	 */
 	private function GeneraPeu(): string {

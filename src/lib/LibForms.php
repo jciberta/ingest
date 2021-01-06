@@ -78,7 +78,7 @@ class Form {
     public $Taula = '';	
 
 	/**
-	* Clau primària de la taula.
+	* Clau primària de la taula. Es permet que sigui múltiple.
 	* @var string
 	*/    
     public $ClauPrimaria = '';	
@@ -915,13 +915,40 @@ class FormRecerca extends Form {
 				}
 				$sRetorn .= "</TD>";
 				if ($this->Modalitat == self::mfLLISTA) 
-					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
+//print_h($row);					
+					$sRetorn .= $this->GeneraOpcions($this->ValorClauPrimaria($row, $this->ClauPrimaria), $row);
+//					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
 				$sRetorn .= "</TR>";
 			}
 			$sRetorn .= "</TABLE>";
 		}
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
+	}
+
+	/**
+	 * Obté el valor de la clau primària. Permet que la clau sigui múltiple.
+     * @param mixed $row Registre.
+     * @param string $cp Clau primària.
+     * @return string Retorna el valor de la clau primària. Si és múltiple, retorna els valors separats per coma.
+	 */
+	private function ValorClauPrimaria($row, $cp) {
+		$Retorn = NULL;
+		if ((strpos($cp, ',') === False)) {
+			$Retorn = $row[$this->ClauPrimaria];
+		}
+		else {
+			// La clau és múltiple
+			$acp = explode(',', TrimXX($cp));
+			
+			$Retorn = '';
+			for($i=0; $i < count($acp); $i++) {
+				$Retorn .= utf8_encode($row[$acp[$i]]).',';
+			}
+			$Retorn = substr($Retorn, 0, -1); // Treiem la darrera coma
+			
+		}
+		return $Retorn;	
 	}
 
 	/**

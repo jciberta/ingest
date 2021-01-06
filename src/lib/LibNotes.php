@@ -468,8 +468,8 @@ class Notes extends Form
 		else
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
-//		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
-		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
+		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
+//		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
 		else

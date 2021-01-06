@@ -145,7 +145,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			$Retorn .= Menu::Separador();
 			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('FormMatricula.php').'">Matriculació alumnes</a>';
 			$Retorn .= Menu::Separador();
-			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('Escriptori.php').'">Cursos</a>';
+			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
+			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
+//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('Escriptori.php').'">Cursos</a>';
+//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('Recerca.php?accio=Avaluacio').'">Avaluacions</a>';
 			$Retorn .= '				</div>';
 			$Retorn .= '			</li>';
 
@@ -182,8 +185,9 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 //		$Retorn .= '			<a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
 		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
 		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
-		$Retorn .= '				<a class="dropdown-item" href="'.GeneraURL('CanviPassword.html').'">Canvia password</a>';
-			$Retorn .= Menu::Separador();
+		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
+//		$Retorn .= '				<a class="dropdown-item" href="'.GeneraURL('CanviPassword.html').'">Canvia password</a>';
+		$Retorn .= Menu::Separador();
 		if ($Usuari->es_cap_estudis) {
 			$Retorn .= Menu::Opcio('Canvia a professor', 'CanviaRol.php');
 			$Retorn .= Menu::Separador();
