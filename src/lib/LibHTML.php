@@ -102,40 +102,29 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		$Retorn .= '			</li>';
 //exit;
 		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
-			// Menú alumnes
-			$Retorn .= '          <li class="nav-item dropdown">';
-			$Retorn .= '            <a class="nav-link dropdown-toggle" href="#" id="ddAlumnes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Alumnes</a>';
-			$Retorn .= '            <div class="dropdown-menu" aria-labelledby="ddAlumnes">';
+			// Menú Alumnes
+			$Retorn .= Menu::Obre('Alumnes');
 			$Retorn .= Menu::Opcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes');
 			$Retorn .= Menu::Opcio('Alumnes/pares', 'UsuariRecerca.php?accio=AlumnesPares');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Matrícules', 'UsuariRecerca.php?accio=Matricules');
 			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
-			$Retorn .= '            </div>';
-			$Retorn .= '          </li>';
+			$Retorn .= Menu::Tanca();
 
 			// Menú Professors
-			$Retorn .= '          <li class="nav-item dropdown">';
-			$Retorn .= '            <a class="nav-link dropdown-toggle" href="#" id="ddProfessors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professors</a>';
-			$Retorn .= '            <div class="dropdown-menu" aria-labelledby="ddProfessors">';
+			$Retorn .= Menu::Obre('Professors');
 			$Retorn .= Menu::Opcio('Professors', 'UsuariRecerca.php?accio=Professors');
 			$Retorn .= Menu::Opcio('Professors per UF', 'AssignaUFs.php?accio=ProfessorsUF');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Tutors', 'UsuariRecerca.php?accio=Tutors');
 			//$Retorn .= Menu::Opcio('Guàrdies', 'Guardia.php');
-			$Retorn .= '            </div>';
-			$Retorn .= '          </li>';
+			$Retorn .= Menu::Tanca();
 
 			// Menú FP
-			$Retorn .= '			<li class="nav-item dropdown">';
-			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddFP" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">FP</a>';
-			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddFP">';
+			$Retorn .= Menu::Obre('FP');
 			$Retorn .= Menu::Opcio('Famílies', 'FPRecerca.php?accio=Families');
 			$Retorn .= Menu::Opcio('Cicles formatius', 'FPRecerca.php?accio=CiclesFormatius');
 			$Retorn .= Menu::Opcio('Mòduls professionals', 'FPRecerca.php?accio=ModulsProfessionals');
-//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=Families').'">Famílies</a>';
-//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=CiclesFormatius').'">Cicles formatius</a>';
-//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=ModulsProfessionals').'">Mòduls professionals</a>';
 			$Retorn .= '					<div class="dropdown dropright dropdown-submenu">';
 			$Retorn .= '						<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
 			$Retorn .= '						<div class="dropdown-menu">';
@@ -143,19 +132,14 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			$Retorn .= '							<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates').'">Unitats formatives/Dates</a>';
 			$Retorn .= '						</div>';
 			$Retorn .= Menu::Separador();
-			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('FormMatricula.php').'">Matriculació alumnes</a>';
+			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
 			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
-//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('Escriptori.php').'">Cursos</a>';
-//			$Retorn .= '					<a class="dropdown-item" href="'.GeneraURL('Recerca.php?accio=Avaluacio').'">Avaluacions</a>';
-			$Retorn .= '				</div>';
-			$Retorn .= '			</li>';
+			$Retorn .= Menu::Tanca();
 
 			// Menú Centre
-			$Retorn .= '			<li class="nav-item dropdown">';
-			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddCentre" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Centre</a>';
-			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddCentre">';
+			$Retorn .= Menu::Obre('Centre');
 			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Any acadèmic', 'Recerca.php?accio=AnyAcademic');
@@ -164,17 +148,13 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			$Retorn .= Menu::Opcio('Importa usuaris', 'ImportaUsuarisDialeg.php');
 			//$Retorn .= Menu::Opcio('Importa passwords iEduca', 'ImportaPasswordsDialeg.php');
 			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
-			$Retorn .= '				</div>';
-			$Retorn .= '			</li>';
+			$Retorn .= Menu::Tanca();
 
 			// Menú Informes
-			$Retorn .= '			<li class="nav-item dropdown">';
-			$Retorn .= '				<a class="nav-link dropdown-toggle" href="#" id="ddInformes" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">Informes</a>';
-			$Retorn .= '				<div class="dropdown-menu" aria-labelledby="ddInformes">';
+			$Retorn .= Menu::Obre('Informes');
 			$Retorn .= Menu::Opcio('Darrers accessos', 'UsuariRecerca.php?accio=UltimLogin');
 			$Retorn .= Menu::Opcio('Estadístiques notes', 'Estadistiques.php?accio=EstadistiquesNotes');
-			$Retorn .= '				</div>';
-			$Retorn .= '			</li>';
+			$Retorn .= Menu::Tanca();
 		}	
 		$Retorn .= '		</ul>';
 	
@@ -197,8 +177,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 			$Retorn .= Menu::Separador();
 		}
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
-		$Retorn .= '			</div>';
-		$Retorn .= '		  </li>';
+		$Retorn .= Menu::Tanca();
 		$Retorn .= '		</ul>';
 
 		$Retorn .= '	</div>';
@@ -377,6 +356,17 @@ class Portal
  */
 class Menu
 {
+	static public function Obre(string $Text): string {
+		$Retorn = '<li class="nav-item dropdown">';
+		$Retorn .= '<a class="nav-link dropdown-toggle" href="#" id="dd'.$Text.'" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">'.$Text.'</a>';
+		$Retorn .= '<div class="dropdown-menu" aria-labelledby="dd'.$Text.'">';
+		return $Retorn;
+	}
+
+	static public function Tanca(): string {
+		return '</div></li>';
+	}
+
 	static public function Separador(): string {
 		return '<div class="dropdown-divider"></div>';
 	}
