@@ -97,6 +97,24 @@ switch ($accio) {
 		$avaluacio = new Avaluacio($conn, $Usuari);
 		$avaluacio->EscriuFormulariRecera();
         break;		
+    case "Registre":
+		if (!$Usuari->es_admin)
+				header("Location: Surt.php");
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Registres';
+		$SQL = ' SELECT usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ';
+		$frm->SQL = $SQL;
+		$frm->Taula = 'REGISTRE';		
+		$frm->Camps = 'usuari_id, nom_usuari, data, ip, seccio, missatge';
+		$frm->Descripcions = 'usuari_id, Usuari, Data, IP, Secció, Missatge';
+		$frm->Filtre->AfegeixLookup('usuari_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
+
+//	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '', $onChange = '') {
+
+
+		$frm->EscriuHTML();
+        break;		
 }
 
 ?>

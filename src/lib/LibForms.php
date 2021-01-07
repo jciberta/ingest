@@ -212,7 +212,8 @@ class Form {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' disabled' : '';
 		$TextValor = $Valor ? ' value=1 checked ' : ' value=0 ';
-		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 
 		$sNom = 'chb_' . $Nom;
 		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
@@ -267,7 +268,8 @@ class Form {
 		$NomesLectura = ($this->NomesLectura) ? ' disabled' : '';
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
-		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 		$sRetorn .= "  <select class='custom-select' $NomesLectura style='width:".$Longitud."px' name='cmb_$Nom' $onChange>";
 		$LongitudCodi = count($Codi); 
 		for ($i = 0; $i < $LongitudCodi; $i++) {
@@ -296,12 +298,20 @@ class Form {
 	 * @param string $Camps Camps a mostrar al lookup separats per comes.
 	 * @param array $off Opcions del formulari.
 	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
+	 * @param string $onChange Funció que crida l'event onChange (opcional).
 	 * @return string Codi HTML del lookup.
 	 */
-	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '', $onChange = '') {
 		
 		$Connector = (strpos($URL, '?') === False) ? '?' : '&';
 		$URL .= $Connector . 'Modalitat=mfBusca';
+
+		// Només en els formularis de recerca
+//echo '<hr>'.get_class($this);		
+//echo '<hr>'.get_class();		
+//echo '<hr>'.get_called_class();
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 		
 		if (Config::EncriptaURL)
 			$URL = GeneraURL($URL);
@@ -311,7 +321,7 @@ class Form {
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat." $NomesLectura>";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value='".$CodiSeleccionat."' $onChange $NomesLectura>";
 		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."' $NomesLectura>";
 		if ($CodiSeleccionat == '')
 			$Text = '';
@@ -431,10 +441,14 @@ class Filtre {
 
 	/**
 	 * Constructor de l'objecte.
+	 * @param object $frm Formulari que crea el filtre.
 	 */
-	function __construct() {
-		$this->Form = new Form();
+	function __construct($frm) {
+		$this->Form = $frm;
 	}	
+/*	function __construct() {
+		$this->Form = new Form();
+	}	*/
 
 	/**
 	 * Afegeix un camp del tipus especificat al filtre.
@@ -515,6 +529,41 @@ class Filtre {
 	}
 	
 	/**
+	 * Afegeix un "lookup" (element INPUT + BUTTON per cercar les dades en una altra finestra).
+	 *
+	 * @param string $Nom Nom del lookup.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param string $URL Pàgina web de recerca.
+	 * @param string $Taula Taula associada.
+	 * @param string $Id Identificador del registre que es mostra.
+	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 * @param array $off Opcions del formulari.
+	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
+	 * @return void
+	 */
+	public function AfegeixLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = Form::tcLOOKUP;
+		$this->Camps[$i]->Camp = $Nom;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Longitud = 5*$Longitud;
+		$this->Camps[$i]->Opcions = $off;
+		$this->Camps[$i]->Lookup = new stdClass();
+		$this->Camps[$i]->Lookup->URL = $URL;
+		$this->Camps[$i]->Lookup->Taula = $Taula;
+		$this->Camps[$i]->Lookup->Id = $Id;
+		$this->Camps[$i]->Lookup->Camps = $Camps;		
+	}
+	
+	
+//echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+	
+	
+	
+	/**
 	 * Crea el filtre del formulari.
 	 * @return string HTML del filtre.
 	 */
@@ -551,6 +600,23 @@ exit;*/
 //					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors);
 					break;
+				case Form::tcLOOKUP:
+					//$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
+					$CodiSeleccionat = '';
+//print_r($this->Registre);	
+//exit;			
+					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$Retorn .= $this->Form->CreaLookup(
+						$Valor->Camp, 
+						$Valor->Titol, 
+						$Valor->Longitud, 
+						$Valor->Lookup->URL, 
+						$Valor->Lookup->Taula, 
+						$Valor->Lookup->Id, 
+						$Valor->Lookup->Camps, 
+						$Valor->Opcions, 
+						$CodiSeleccionat);
+					break;
 			}			
 		}
 		$Retorn .= '</DIV><P/>';
@@ -559,7 +625,7 @@ exit;*/
 	}
 	
 	/**
-	 * Crea el filtre JSON per a la primera vegada que s'executa el formaulari de recerca.
+	 * Crea el filtre JSON per a la primera vegada que s'executa el formulari de recerca.
 	 * @return void.
 	 */
 	private function CreaFiltreJSON() {
@@ -586,6 +652,10 @@ exit;*/
 //					$CodiSeleccionat = $this->Registre[$Valor->Camp];
 //					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->Codis[0].'", ';
+					break;
+				case Form::tcLOOKUP:
+//print_r($Valor);
+					$sFiltre .= '"'.$Valor->Camp.'": "", ';
 					break;
 			}					
 		}
@@ -715,7 +785,7 @@ class FormRecerca extends Form {
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);
-		$this->Filtre = new Filtre();
+		$this->Filtre = new Filtre($this);
 	}	
 
 	/**
@@ -914,7 +984,7 @@ class FormRecerca extends Form {
 //					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";
-				if ($this->Modalitat == self::mfLLISTA) 
+				if ($this->Modalitat == self::mfLLISTA && $this->ClauPrimaria != '')
 //print_h($row);					
 					$sRetorn .= $this->GeneraOpcions($this->ValorClauPrimaria($row, $this->ClauPrimaria), $row);
 //					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
@@ -1009,7 +1079,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.14" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -1449,7 +1519,11 @@ class FormFitxa extends Form {
 	 * @return string Valor que conté.
 	 */
 	private function ValorCampText(string $camp) {
-		return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+		if ($this->Registre == NULL)
+			$Retorn = '';
+		else 
+			$Retorn = ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+		return $Retorn;
 	}
 
 	/**
@@ -1561,8 +1635,11 @@ class FormFitxa extends Form {
 					break;
 				case self::tcSELECCIO:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$CodiSeleccionat = $this->Registre[$Valor->Camp];
-					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
+//exit;
+					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
+//					$CodiSeleccionat = $this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $CodiSeleccionat);
+//					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					break;
 				case self::tcLOOKUP:
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
