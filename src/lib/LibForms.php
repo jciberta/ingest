@@ -901,6 +901,24 @@ class FormRecerca extends Form {
 		}
 		return $Retorn;
 	}
+	
+	/**
+	 * Crea el botó per a la descàrrega en CSV.
+	 * @param string $URL URL que realitza l'acció de la descàrrega.
+	 * @return string Codi HTML del botó.
+	 */
+	private function CreaBotoDescarrega(string $URL): string {
+		$sRetorn = '<div class="btn-group" role="group">';
+		$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+		$sRetorn .= '      Descarrega';
+		$sRetorn .= '    </button>';
+		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		$sRetorn .= '      <a class="dropdown-item" href="'.$URL.'">CSV</a>';
+		$sRetorn .= '    </div>';
+		$sRetorn .= '  </div>';		
+		return $sRetorn;
+ 	}
 
 	/**
 	 * Elimina el prefix, en el cas de tenir un tipus predefinit (per exemple bool:).
@@ -1011,15 +1029,36 @@ class FormRecerca extends Form {
 		$sRetorn .= '    <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnRecerca" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</a>';
 
 		$sRetorn .= '    </TD>';
+		
+		$sRetorn .= '<TD style="align:right">';
+		$sRetorn .= '<span style="float:right;">';
+		// De moment només admin
+		if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
+//			$sRetorn .= '<TD style="align:right">';
+//			$sRetorn .= '<span style="float:right;">';
+
+			$SQL = bin2hex(Encripta(TrimX($this->CreaSQL())));
+//print('<B>SQL</B>: '.$SQL.'<BR>');
+			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+//print('<B>URL</B>: '.$URL.'<BR>');
+
+			$sRetorn .= $this->CreaBotoDescarrega($URL).'&nbsp';
+//			$sRetorn .= '</span>';
+//			$sRetorn .= '</TD>';		
+			
+		}
+		
 		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
-			$sRetorn .= '<TD style="align:right">';
-			$sRetorn .= '<span style="float:right;">';
-//			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
+//			$sRetorn .= '<TD style="align:right">';
+//			$sRetorn .= '<span style="float:right;">';
 			$URL = GeneraURL($this->URLEdicio);
 			$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
-			$sRetorn .= '</span>';
-			$sRetorn .= '</TD>';
+//			$sRetorn .= '</span>';
+//			$sRetorn .= '</TD>';
 		}
+		$sRetorn .= '</span>';
+		$sRetorn .= '</TD>';		
+		
 		$sRetorn .= '    </TR>';
 		$sRetorn .= '    </TABLE>';
 		$sRetorn .= $this->GeneraPartOculta();
@@ -1167,6 +1206,48 @@ class FormRecerca extends Form {
 		}
 		return $Retorn;
 	}
+	
+		/**
+	 * Exporta el contingut d'una SQL a un fitxer CSV.
+ 	 * @param string $SQL Sentència SQL a exportar.
+	 * @param string $filename Nom del fitxer.
+	 * @param string $delimiter Separador.
+	 */
+	 public function ExportaCSV(string $SQL, string $filename="export.csv", string $delimiter=";") {
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="'. $filename .'";');
+
+		// Clean output buffer
+		ob_end_clean();
+
+		$handle = fopen('php://output', 'w');
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$bPrimerRegistre = True;
+			while($row = $ResultSet->fetch_assoc()) {
+				$aExport = [];
+				if ($bPrimerRegistre) {
+					foreach ($row as $key => $value) {
+						array_push($aExport, utf8_encode($key));
+					}
+					fputcsv($handle, $aExport, $delimiter);
+					$bPrimerRegistre = False;
+					$aExport = [];
+				}					
+				foreach ($row as $key => $value) {
+					array_push($aExport, utf8_encode($value));
+				}
+				fputcsv($handle, $aExport, $delimiter);
+			}
+		}
+		fclose($handle);
+
+		// Flush buffer
+		ob_flush();
+
+		// Use exit to get rid of unexpected output afterward
+		exit();		
+	}	
 } 
 
 /**
