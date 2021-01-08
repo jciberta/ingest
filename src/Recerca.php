@@ -15,6 +15,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibAvaluacio.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -91,6 +92,10 @@ switch ($accio) {
     case "HistoricCurs":
 		$curs = new Curs($conn, $Usuari);
 		$curs->EscriuFormulariRecera();
+        break;		
+    case "Avaluacio":
+		$avaluacio = new Avaluacio($conn, $Usuari);
+		$avaluacio->EscriuFormulariRecera();
         break;		
     case "Registre":
 		if (!$Usuari->es_admin)

@@ -87,7 +87,7 @@ $Tutoria = new GrupTutoria($conn, $Usuari);
 // Filtres
 $TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
 echo '<div>';
-echo '<input type="checkbox" name="chbBaixes" checked onclick="MostraBaixes(this);">Mostra baixes &nbsp';
+echo '<input type="checkbox" name="chbBaixes" onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 if ($Nivell == 2) {
 	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
 	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';

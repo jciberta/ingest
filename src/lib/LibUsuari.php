@@ -128,6 +128,10 @@ class Usuari
 		$ProfessorSenseCarrecDirectiu = ($this->Usuari->es_professor) && (!$this->Usuari->es_direccio) && (!$this->Usuari->es_cap_estudis);
 		$frm->NomesLectura = $ProfessorSenseCarrecDirectiu;
 
+		if ($this->Usuari->es_admin)
+			$frm->AfegeixText('usuari_id', 'Id', 20, [FormFitxa::offNOMES_LECTURA]);
+			
+			
 		$frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offREQUERIT]);
@@ -190,6 +194,10 @@ class Usuari
 			$frm->Pestanya('Expedient');
 			$frm->AfegeixHTML($this->Matricules($UsuariId), 'Matrícules');
 		}
+		if ($this->Registre->es_pare) {
+			$frm->Pestanya('Fills');
+			$frm->AfegeixHTML($this->MatriculesFills($UsuariId), 'Matrícules');
+		}
 		$frm->EscriuHTML();
 	}
 	
@@ -231,10 +239,45 @@ class Usuari
 				$URL = 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$rsMatricula->matricula_id;
 				if (Config::EncriptaURL)
 					$URL = GeneraURL($URL);
-				$Retorn .= "<A HREF='$URL'>".utf8_encode($rsMatricula->nom)."</A><br>";
+				$Retorn .= "<A TARGET=_blank HREF='$URL'>".utf8_encode($rsMatricula->nom)."</A><br>";
 			}
 			else
 				$Retorn .= utf8_encode($rsMatricula->nom).'<br>';
+		}		
+		return $Retorn;
+	}	
+
+	/**
+	 * Llista les matrícules dels fills d'un progenitor.
+	 * @param $progenitor Identificador del progenitor
+	 * @return string Codi HTML de la llista de matrícules.
+	 */
+	function MatriculesFills(int $progenitor): string {
+		$Retorn = '';
+		$SQL = " SELECT M.matricula_id, C.nom AS NomCurs, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2 FROM USUARI U ".
+			" LEFT JOIN MATRICULA M ON (U.usuari_id=M.alumne_id) ".
+			" LEFT JOIN CURS C ON (C.curs_id=M.curs_id) ".
+			" WHERE pare_id=$progenitor OR mare_id=$progenitor ".
+			" ORDER BY usuari_id, matricula_id ";
+//print_r($this);
+//exit;
+		$NomCognom1Cognom2Anterior = '';
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($rs = $ResultSet->fetch_object()) {
+			$NomCognom1Cognom2 = $rs->NomCognom1Cognom2;
+			if ($NomCognom1Cognom2 != $NomCognom1Cognom2Anterior) {
+				$Retorn .= $NomCognom1Cognom2."<br>";
+				$NomCognom1Cognom2Anterior = $NomCognom1Cognom2;
+			}
+			$URL = '';
+			if ($this->EsAdmin() || $this->EsDireccio() || $this->EsCapEstudis()) {
+				$URL = 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$rs->matricula_id;
+				if (Config::EncriptaURL)
+					$URL = GeneraURL($URL);
+				$Retorn .= "- <A TARGET=_blank HREF='$URL'>".utf8_encode($rs->NomCurs)."</A><br>";
+			}
+			else
+				$Retorn .= utf8_encode($rs->NomCurs).'<br>';
 		}		
 		return $Retorn;
 	}	

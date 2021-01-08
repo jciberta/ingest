@@ -154,9 +154,39 @@ switch ($accio) {
 		if ($MatriculaId == -1)
 			header("Location: Surt.php");
 
+		// Comprovem que l'usuari té accés a aquesta pàgina
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
+		if (!$Professor->TeUFEnMatricula($MatriculaId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");		
+
 		$frm = new ExpedientSaga($conn, $Usuari, $MatriculaId);
 		$frm->Titol = "Avaluació d'alumnes";
 		$frm->EscriuHTML();
+        break;
+    case "ExpedientSagaAvaluacio":
+		// Entrada inicial per a avaluació. Comença per la primera matrícula del <curs,grup>.
+		$CursIdGrup = empty($_GET) ? -1 : $_GET['Id'];
+		if ($CursIdGrup == -1)
+			header("Location: Surt.php");
+
+		$CursId = explode(',', $CursIdGrup)[0];
+//echo "CursId: $CursId<br>";
+		// Comprovem que l'usuari té accés a aquesta pàgina
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
+		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");		
+		
+		$av = new Avaluacio($conn, $Usuari);
+		$aMatricules = $av->LlistaMatricules($CursIdGrup);
+//print_h($aMatricules);
+//exit;
+		if (count($aMatricules) > 0) {
+			$frm = new ExpedientSaga($conn, $Usuari, $aMatricules[0]);
+			$frm->Titol = "Avaluació d'alumnes";
+			$frm->EscriuHTML();
+		}
         break;
     case "Altre":
         break;

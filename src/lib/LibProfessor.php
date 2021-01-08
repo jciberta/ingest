@@ -70,6 +70,45 @@ class Professor extends Usuari
 	}
 
 	/**
+	 * Comprova si té alguna UF en un determinat curs.
+	 * @param integer $CursId Identificador del curs.
+	 * @returns boolean Cert si té alguna UF en un determinat curs.
+	 */
+	function TeUFEnCurs(int $CursId): bool {
+		$SQL = ' SELECT COUNT(*) AS UF '.
+			' FROM CURS C '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id) '.
+			' LEFT JOIN PROFESSOR_UF PUF ON (UF.unitat_formativa_id=PUF.uf_id) '.
+			' WHERE professor_id='.$this->Usuari->usuari_id.
+			' AND curs_id='.$CursId;
+		$ResultSet = $this->Connexio->query($SQL);
+		$obj = $ResultSet->fetch_object();
+		return ($obj->UF > 0);
+	}
+
+	/**
+	 * Comprova si té alguna UF en un determinat curs (donada una matrícula).
+	 * @param integer $MatriculaId Identificador de la matrícula.
+	 * @returns boolean Cert si té alguna UF en un determinat curs.
+	 */
+	function TeUFEnMatricula(int $MatriculaId): bool {
+		$SQL = ' SELECT COUNT(*) AS UF '.
+			' FROM MATRICULA M '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id) '.
+			' LEFT JOIN PROFESSOR_UF PUF ON (UF.unitat_formativa_id=PUF.uf_id) '.
+			' WHERE professor_id='.$this->Usuari->usuari_id.
+			' AND matricula_id='.$MatriculaId;
+		$ResultSet = $this->Connexio->query($SQL);
+		$obj = $ResultSet->fetch_object();
+		return ($obj->UF > 0);
+	}
+	
+	/**
 	 * Comprova si té assignada una UF.
 	 * @param integer $UF Identificador de la UF.
 	 * @returns boolean Cert si té assignada la UF.

@@ -81,6 +81,24 @@ class Avaluacio
 	}	
 	
 	/**
+	 * Crea la SQL pel llistat de cursos actuals.
+     * @return string Sentència SQL.
+	 */
+	private function CreaSQLAvaluacionsActuals() {
+		$SQL = ' SELECT '.
+			'   C.curs_id, '.
+			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) grups_tutoria, ".
+			'   C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
+			'   CASE WHEN C.finalitzat = 1 THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre, butlleti_visible '.
+			' FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers '.
+			" RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1 ".
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' WHERE AA.actual=1 '.
+			' ORDER by C.curs_id, C.grups_tutoria ';
+		return $SQL;
+	}
+	
+	/**
 	 * Carrega les dades d'una avaluació i les  emmagatzema en l'atribut Registre.
      * @param int $CursId Identificador del curs.
 	 */
@@ -260,6 +278,45 @@ class Avaluacio
 	}
 	
 	/**
+	 * Escriu el llistat de les avaluacions actuals.
+	 */
+	public function EscriuFormulariRecera() {
+		$SQL = $this->CreaSQLAvaluacionsActuals();
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		//$frm->AfegeixJavaScript('Matricula.js?v1.2');
+		$frm->Titol = 'Avaluacions';
+		$frm->SQL = utf8_decode($SQL);
+		$frm->Taula = 'CURS';
+		$frm->ClauPrimaria = 'curs_id, grups_tutoria';
+		$frm->Camps = 'codi, grups_tutoria, NomCurs, nivell, Any, avaluacio, trimestre';
+		$frm->Descripcions = 'Codi, Nom, Grup, Nivell, Any, Avaluació, Trimestre';
+		
+		$frm->AfegeixOpcio('Avaluació', 'Fitxa.php?accio=ExpedientSagaAvaluacio&Id=');
+		
+/*		$frm->AfegeixOpcioAJAX('Butlletí', '', 'curs_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'butlleti_visible');
+		if (!$this->NomesProfessor) {
+			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
+			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
+		}
+		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
+		if (!$this->NomesProfessor) {
+			$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
+			$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
+			$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+		}
+
+		// Filtre
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
+
+//		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
+		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('', '0', '1'), array('Totes', 'Oberta', 'Tancada'));
+*/
+		$frm->EscriuHTML();
+	}
+	
+	
+	/**
 	 * Escriu els botons disponibles depenent de les característiques del curs.
 	 */
 	public function EscriuBotons() {
@@ -361,6 +418,32 @@ class Avaluacio
 			$this->Connexio->query('ROLLBACK');
 			die("ERROR TancaCurs. Causa: ".$e->getMessage());
 		}	
+	}
+	
+	/**
+	 * Retorna la llista de matrícules d'un curs i grup.
+	 * @param string $CursIdGrup Identificador del <curs,grup>.
+     * @return array Llista de matrícules.
+	 */
+	public function LlistaMatricules($CursIdGrup): array {
+		$aRetorn = [];
+		$aCursIdGrup = explode(',', $CursIdGrup); 
+		
+		$SQL = ' SELECT M.*, '. 
+			'     U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne '.
+			' FROM MATRICULA M '.
+			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
+			' WHERE curs_id='.$aCursIdGrup[0];
+		if ($aCursIdGrup[1] != '')
+			$SQL .= ' AND grup_tutoria="'.$aCursIdGrup[1].'"';
+		$SQL .= ' ORDER BY U.cognom1, U.cognom2, U.nom ';
+			
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($obj = $ResultSet->fetch_object()) {
+			array_push($aRetorn, $obj->matricula_id); 
+		}
+		
+		return $aRetorn;
 	}
 }
 

@@ -370,7 +370,7 @@ class Notes extends Form
 			$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
 			$MPId = $aModulsId[$index];
 			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				$TextModul = "<A href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+				$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
 			else
 				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
 			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
@@ -386,7 +386,7 @@ class Notes extends Form
 			$UFId = $row["unitat_formativa_id"];
 			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
+				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
 			else
 				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
@@ -464,16 +464,16 @@ class Notes extends Form
 
 		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
 		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || ($Professor->Tutor == 1 && $this->Nivell == $Avaluacio->Nivell))
-			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a href=$URL>$NomAlumne</a></TD>";
+			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a target=_blank href=$URL>$NomAlumne</a></TD>";
 		else
 			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
 
-//		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
-		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
+		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
+//		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD></TD>";
 		else
-			$Retorn .= "<TD><A href=$URL><IMG src=img/grades-sm.svg></A></TD>";
+			$Retorn .= "<TD><A target=_blank href=$URL><IMG src=img/grades-sm.svg></A></TD>";
 
 		$Retorn .= "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
 		$Retorn .= "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
