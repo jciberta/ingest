@@ -97,6 +97,8 @@ CREATE TABLE USUARI
     usuari_bloquejat BIT,
     pare_id INT,
     mare_id INT,
+    data_creacio       DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_modificacio   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     data_ultim_login DATETIME,
     ip_ultim_login VARCHAR(15),
  
