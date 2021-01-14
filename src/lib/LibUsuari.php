@@ -131,13 +131,12 @@ class Usuari
 		if ($this->Usuari->es_admin)
 			$frm->AfegeixText('usuari_id', 'Id', 20, [FormFitxa::offNOMES_LECTURA]);
 			
-			
 		$frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('cognom2', '2n cognom', 100, [FormFitxa::offAL_COSTAT]);
 
-		if ($this->Registre->es_alumne) {
+		if ($this->Registre->es_alumne && $UsuariId > 0) {
 			$frm->Pestanya('Fotografia');
 			$frm->AfegeixFotografia('document', '.jpg');
 		}
