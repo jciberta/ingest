@@ -835,7 +835,7 @@ class Notes extends Form
 	{
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
-			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT, '.
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
@@ -1136,6 +1136,8 @@ class Notes extends Form
 			$RegistreAlumne = $RegistreNotes->UF[$i];
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$aNotes = [];
+				$Document = $RegistreNotes->Alumne[$i]['document'];
+				array_push($aNotes, $Document);
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
 				//$Nom = utf8_encode($Nom);
 				array_push($aNotes, $Nom);
