@@ -18,7 +18,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
@@ -42,6 +42,8 @@ $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '
 
 switch ($Accio) {
     case "Professors":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
@@ -66,6 +68,8 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Tutors":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
@@ -91,6 +95,8 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
@@ -113,6 +119,8 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Matricules":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
@@ -160,6 +168,8 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "AlumnesPares":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
@@ -181,6 +191,8 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Pares":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Pares";
@@ -196,17 +208,24 @@ switch ($Accio) {
         break;
     case "":
 		// Tots
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Usuaris";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, es_alumne, es_professor, es_pare, usuari_bloquejat FROM USUARI ORDER BY cognom1, cognom2, nom';
+//		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, es_alumne, es_professor, es_pare, usuari_bloquejat FROM USUARI ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = 'SELECT *, Edat(data_naixement) AS Edat FROM USUARI ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		//$frm->Camps = 'nom, cognom1, cognom2, username, bool:es_alumne, bool:es_professor, bool:es_pare';
 		$frm->Camps = 'nom, cognom1, cognom2, username';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, Edat, poblacio ';
+			$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Població ';
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
@@ -219,12 +238,23 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "UltimLogin":
+		$NomesProfessor = ($Usuari->es_professor && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis);			
+	
+	
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Últims logins";
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
-		
+		if ($NomesProfessor)			
+			$Where .= ' AND C.curs_id IN ( '.
+			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
+			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
+			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND UF.nivell=C.nivell) '.
+			' WHERE professor_id='.$Usuari->usuari_id.		
+			' ) ';
 		$SQL = ' SELECT '.
 			' 	U.usuari_id AS UsuariId, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS NomAlumne, U.username, '.
 			' 	Edat(U.data_naixement) AS edat, FormataData(U.data_ultim_login) AS UltimLoginAlumne, '.
@@ -249,13 +279,15 @@ switch ($Accio) {
 		$frm->Descripcions = 'Alumne, Últim login, Edat, Curs, Nivell, Grup, Nom resp1, Últim login, Nom resp2, Últim login';
 
 		// Filtre
-		if ($CursId < 0) {
-			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
-			array_unshift($aCurs[0], '');
-			array_unshift($aCurs[1], '');
-			$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+		if (!$NomesProfessor) {
+			if ($CursId < 0) {
+				$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
+				array_unshift($aCurs[0], '');
+				array_unshift($aCurs[1], '');
+				$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
+			}
 		}
-		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C'), array('', 'A', 'B', 'C'));
+		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D'), array('', 'A', 'B', 'C', 'D'));
 
 		$frm->EscriuHTML();
         break;

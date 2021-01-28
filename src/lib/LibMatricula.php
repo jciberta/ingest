@@ -161,6 +161,18 @@ class Matricula
 	}
 
 	/**
+	 * Obté l'identificador del curs a partir de les dades en l'atribut Registre.
+	 * @return integer Identificador del curs.
+	 */
+	public function ObteCurs(): int {
+		if ($this->Registre === null)
+			$iRetorn = -1;
+		else 
+			$iRetorn = $this->Registre->curs_id;
+		return $iRetorn;
+	}
+
+	/**
 	 * Obté el nivell (1r o 2n) de la matrícula a partir de les dades en l'atribut Registre.
 	 * @return integer Nivell.
 	 */
@@ -169,6 +181,18 @@ class Matricula
 			$iRetorn = -1;
 		else 
 			$iRetorn = $this->Registre->nivell;
+		return $iRetorn;
+	}
+	
+	/**
+	 * Obté el grup de tutoria a partir de les dades en l'atribut Registre.
+	 * @return string Grup de tutoria.
+	 */
+	public function ObteGrupTutoria(): string {
+		if ($this->Registre === null)
+			$iRetorn = -1;
+		else 
+			$iRetorn = $this->Registre->grup_tutoria;
 		return $iRetorn;
 	}
 }

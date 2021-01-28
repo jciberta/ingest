@@ -15,11 +15,14 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibAvaluacio.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+	header("Location: Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -31,9 +34,6 @@ if (empty($_GET))
 	header("Location: Surt.php");
 
 $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
-
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-			header("Location: Surt.php");
 
 // Obtenció de la modalitat del formulari
 $Modalitat = FormRecerca::mfLLISTA;
@@ -92,6 +92,28 @@ switch ($accio) {
     case "HistoricCurs":
 		$curs = new Curs($conn, $Usuari);
 		$curs->EscriuFormulariRecera();
+        break;		
+    case "Avaluacio":
+		$avaluacio = new Avaluacio($conn, $Usuari);
+		$avaluacio->EscriuFormulariRecera();
+        break;		
+    case "Registre":
+		if (!$Usuari->es_admin)
+				header("Location: Surt.php");
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Registres';
+		$SQL = ' SELECT usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ';
+		$frm->SQL = $SQL;
+		$frm->Taula = 'REGISTRE';		
+		$frm->Camps = 'usuari_id, nom_usuari, data, ip, seccio, missatge';
+		$frm->Descripcions = 'usuari_id, Usuari, Data, IP, Secció, Missatge';
+		$frm->Filtre->AfegeixLookup('usuari_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
+
+//	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '', $onChange = '') {
+
+
+		$frm->EscriuHTML();
         break;		
 }
 

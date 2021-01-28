@@ -10,8 +10,16 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+// Import PHPMailer classes into the global namespace
+// These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 require_once('Config.php');
-require_once('vendor/PHPMailer/PHPMailerAutoload.php');
+require_once('vendor/PHPMailer/PHPMailer.php');
+require_once('vendor/PHPMailer/Exception.php');
+require_once('vendor/PHPMailer/SMTP.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibPassword.php');
 

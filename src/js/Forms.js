@@ -34,16 +34,17 @@ function ComprovaCamps(FormId) {
  * @param element Botó que ha fet la crida.
  */
 function ActualitzaTaula(element) { 
+console.log('-> ActualitzaTaula');
 	var sCerca = $('input[name="edtRecerca"]').val();	
 //	var sSQL = $('input[name="edtSQL"]').val();	
 //	var sCamps = $('input[name="edtCamps"]').val();	
 //	var sDescripcions = $('input[name="edtDescripcions"]').val();	
 
 	var filtre = document.getElementById('filtre');
-//console.log('Filtre');
-//console.dir(filtre);
+console.log('Filtre');
+console.dir(filtre);
 	var sFiltre = CreaFiltreJSON(filtre);
-console.log(sFiltre);
+console.log('sFiltre: ' + sFiltre);
 	
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
@@ -83,23 +84,44 @@ function CreaFiltreJSON(filtre) {
 	var Retorn = '{';
 //console.dir(filtre.childNodes);
 	for (i=0; i<filtre.childNodes.length; i++) {
-console.dir(filtre.childNodes[i]);	
+//console.dir(filtre.childNodes[i]);	
 		var obj = filtre.childNodes[i];
+//console.log('obj.tagName: '+obj.tagName);
 		if (obj.tagName == 'SELECT') {
-console.log('SELECT');
+//console.log('SELECT');
 			nom = obj.name;
 			nom = nom.replace('cmb_', '');
 			Retorn += '"' + nom + '": "' + obj.value + '", ';
 		}
 		else if (obj.tagName == 'INPUT') {
-console.log('INPUT');
+//console.log('INPUT');
 
 			if (obj.type == 'checkbox') {
-console.log('checkbox');
+//console.log('checkbox');
 				nom = obj.name;
 				nom = nom.replace('chb_', '');
 				valor = (obj.checked) ? 1 : 0;
 				Retorn += '"' + nom + '": ' + valor + ', ';
+			}
+		}
+		else if (obj.tagName == 'DIV') {
+			// Usat en el lookup
+//console.log('obj.name: '+obj.name);
+//console.dir(obj);	
+			for (i=0; i<obj.childNodes.length; i++) {
+				var subobj = obj.childNodes[i];
+//console.log('subobj.tagName: '+subobj.tagName);	
+//console.dir(subobj);	
+				if (subobj.tagName == 'INPUT') {
+					if (subobj.type == 'hidden') {
+						// Control lookup
+						nom = subobj.name;
+						nom = nom.replace('lkh_', '');	
+						Retorn += '"' + nom + '": "' + subobj.value + '", ';
+						break; // Només necessitem el primer lkh
+					}
+				}
+				
 			}
 		}
 	}
@@ -162,6 +184,7 @@ function FormFitxaKeyDown(obj, event, tipus) {
 			nom = nom.replace('lkp_', 'lkh_');
 			obj = document.getElementsByName(nom)[0];
 			obj.value = "";
+			ActualitzaTaula(obj);
 		}
 		break;
 	}
@@ -343,9 +366,13 @@ function decode_utf8(s) {
  * @param camps Camps a mostrar al lookup.
  */
 function CercaLookup(codi, valor, url, camps) { 
+console.log('-> CercaLookup');
 	targetFieldCodi = document.getElementsByName(codi)[0];
 	targetFieldValor = document.getElementsByName(valor)[0];
 	targetCamps = camps;
+console.log('targetFieldCodi: ' + targetFieldCodi.name);
+console.dir(targetFieldCodi);
+console.log('targetFieldValor: ' + targetFieldValor.name);
 
 	w = screen.width - 100;
 	h = screen.height - 100;
@@ -364,6 +391,7 @@ function CercaLookup(codi, valor, url, camps) {
 
 // this function is called by the pop up window
 function setSearchResult(targetFieldCodi, targetFieldValor, returnValue) {
+console.log('-> setSearchResult');
 	//alert("returnValue:" + returnValue);
 console.dir(targetFieldValor);
 
@@ -389,10 +417,16 @@ console.dir(obj);
 	var bPrimer = true;
 	var sText = '';
 	for (var key in obj) {
+//console.log("key: " + key);
 		if (obj.hasOwnProperty(key)) {
+//console.log("obj[key]: " + obj[key]);
 			if (bPrimer) {
 				targetFieldCodi.value = obj[key]; 
-console.log("targetFieldCodi: " + obj[key]);
+				// En el cas que estiguem en un formulari de recerca, cal realitzar alguna acció (actualitzar la taula).
+				// https://stackoverflow.com/questions/1003053/does-html-hidden-control-have-any-events-like-onchange-or-something
+				if (targetFieldCodi.onchange !== null)
+					targetFieldCodi.onchange();
+//console.log("targetFieldCodi: " + obj[key]);
 				bPrimer = false;
 			}
 			else {
@@ -409,6 +443,7 @@ console.log("targetFieldValor: " + sText);
 
 // return the value to the parent window
 function returnYourChoice(choice) {
+console.log('-> returnYourChoice');
 	opener.setSearchResult(targetFieldCodi, targetFieldValor, choice);
 	close();
 }

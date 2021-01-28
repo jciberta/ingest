@@ -8,13 +8,25 @@
 apt update
 apt install tasksel
 tasksel install lamp-server
-apt php-zip
+apt install php-zip php-mbstring
+service apache2 restart
 apt install mysql-workbench
 ```
 
 Password de MySQL (depenent versió Ubuntu):
 ```
-sudo mysql_secure_installation
+mysql_secure_installation
+```
+
+Per a les versions noves de MariaDB (MariaDB 10.4.3 and later):
+
+```
+$ sudo mysql -u root 
+mysql> USE mysql;
+mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+mysql> FLUSH PRIVILEGES;
+mysql> exit;
+$ service mysql restart
 ```
 
 Accés a BD (si no és té accés):

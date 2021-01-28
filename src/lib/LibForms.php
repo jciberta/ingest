@@ -37,6 +37,8 @@ class Form {
 	const tcCHECKBOX = 8;
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
+	const tcFOTOGRAFIA = 11;
+	const tcHTML = 12;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -64,16 +66,28 @@ class Form {
 	public $Usuari;
 
 	/**
+	* Títol del formulari.
+	* @var string
+	*/    
+    public $Titol = '';
+
+	/**
 	* Taula principal.
 	* @var string
 	*/    
     public $Taula = '';	
 
 	/**
-	* Clau primària de la taula.
+	* Clau primària de la taula. Es permet que sigui múltiple.
 	* @var string
 	*/    
     public $ClauPrimaria = '';	
+
+	/**
+	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	* @var object
+	*/    
+//    public $Registre = NULL;
 
 	/**
 	* Fitxers JavaScript.
@@ -198,7 +212,8 @@ class Form {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' disabled' : '';
 		$TextValor = $Valor ? ' value=1 checked ' : ' value=0 ';
-		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 
 		$sNom = 'chb_' . $Nom;
 		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
@@ -253,7 +268,8 @@ class Form {
 		$NomesLectura = ($this->NomesLectura) ? ' disabled' : '';
 		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
-		$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 		$sRetorn .= "  <select class='custom-select' $NomesLectura style='width:".$Longitud."px' name='cmb_$Nom' $onChange>";
 		$LongitudCodi = count($Codi); 
 		for ($i = 0; $i < $LongitudCodi; $i++) {
@@ -282,12 +298,20 @@ class Form {
 	 * @param string $Camps Camps a mostrar al lookup separats per comes.
 	 * @param array $off Opcions del formulari.
 	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
+	 * @param string $onChange Funció que crida l'event onChange (opcional).
 	 * @return string Codi HTML del lookup.
 	 */
-	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '', $onChange = '') {
 		
 		$Connector = (strpos($URL, '?') === False) ? '?' : '&';
 		$URL .= $Connector . 'Modalitat=mfBusca';
+
+		// Només en els formularis de recerca
+//echo '<hr>'.get_class($this);		
+//echo '<hr>'.get_class();		
+//echo '<hr>'.get_called_class();
+		if (get_class($this) == 'FormRecerca')
+			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 		
 		if (Config::EncriptaURL)
 			$URL = GeneraURL($URL);
@@ -297,17 +321,18 @@ class Form {
 		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
-		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value=".$CodiSeleccionat." $NomesLectura>";
+		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value='".$CodiSeleccionat."' $onChange $NomesLectura>";
 		$sRetorn .= "  <input type=hidden name=lkh_".$Nom."_camps value='".$Camps."' $NomesLectura>";
 		if ($CodiSeleccionat == '')
 			$Text = '';
 		else
 			$Text = $this->ObteCampsTaula($Taula, $Id, $CodiSeleccionat, $Camps);
-		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 2);">';
+		$onkeydown = ($NomesLectura) ? '':' onkeydown="FormFitxaKeyDown(this, event, 2);" ';
+		$sRetorn .= '  <input type="text" class="form-control" style="width:'.$Longitud.'px" name="lkp_'.$Nom.'" value="'.$Text.'"'.$NomesLectura.$onkeydown.'>';
 		$sRetorn .= '  <div class="input-group-append">';
-		$onClick = "CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');";
+		$onClick = " onclick=".'"'."CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');".'"';
 		$onClick = ($NomesLectura) ? '': $onClick;
-		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" onclick="'.$onClick.'">Cerca</button>';
+		$sRetorn .= '    <button class="btn btn-outline-secondary" type="button" '.$onClick.'>Cerca</button>';
 		$sRetorn .= '  </div>';
 		$sRetorn .= '</div>';
 		$sRetorn .= '</TD>';
@@ -340,6 +365,36 @@ class Form {
 		$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
 		$sRetorn .= '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="'.$sNom.'" value="'.$TextValor.'" disabled></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un camp de tipus fotografia.
+	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaFotografia(string $Valor, string $Sufix): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		$Fitxer = 'img/pix/'.$Valor.$Sufix;
+		if (!file_exists($Fitxer))
+			$Fitxer = 'img/nobody.png';
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn = '<TD><IMG SRC="'.$Fitxer.'"></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un text amb contingut HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return string Codi HTML del checkbox.
+	 */
+	public function CreaHTML(string $Text, string $Titol): string {
+		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
+		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
+		$sRetorn = '<TD valign=top><label>'.$Titol.'&nbsp</label></TD>';
+		$sRetorn .= "<TD>$Text</TD>";
 		return $sRetorn;
 	}	
 	
@@ -386,10 +441,14 @@ class Filtre {
 
 	/**
 	 * Constructor de l'objecte.
+	 * @param object $frm Formulari que crea el filtre.
 	 */
-	function __construct() {
-		$this->Form = new Form();
+	function __construct($frm) {
+		$this->Form = $frm;
 	}	
+/*	function __construct() {
+		$this->Form = new Form();
+	}	*/
 
 	/**
 	 * Afegeix un camp del tipus especificat al filtre.
@@ -470,6 +529,41 @@ class Filtre {
 	}
 	
 	/**
+	 * Afegeix un "lookup" (element INPUT + BUTTON per cercar les dades en una altra finestra).
+	 *
+	 * @param string $Nom Nom del lookup.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param string $URL Pàgina web de recerca.
+	 * @param string $Taula Taula associada.
+	 * @param string $Id Identificador del registre que es mostra.
+	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 * @param array $off Opcions del formulari.
+	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
+	 * @return void
+	 */
+	public function AfegeixLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '') {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = Form::tcLOOKUP;
+		$this->Camps[$i]->Camp = $Nom;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Longitud = 5*$Longitud;
+		$this->Camps[$i]->Opcions = $off;
+		$this->Camps[$i]->Lookup = new stdClass();
+		$this->Camps[$i]->Lookup->URL = $URL;
+		$this->Camps[$i]->Lookup->Taula = $Taula;
+		$this->Camps[$i]->Lookup->Id = $Id;
+		$this->Camps[$i]->Lookup->Camps = $Camps;		
+	}
+	
+	
+//echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+	
+	
+	
+	/**
 	 * Crea el filtre del formulari.
 	 * @return string HTML del filtre.
 	 */
@@ -506,6 +600,23 @@ exit;*/
 //					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors);
 					break;
+				case Form::tcLOOKUP:
+					//$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
+					$CodiSeleccionat = '';
+//print_r($this->Registre);	
+//exit;			
+					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$Retorn .= $this->Form->CreaLookup(
+						$Valor->Camp, 
+						$Valor->Titol, 
+						$Valor->Longitud, 
+						$Valor->Lookup->URL, 
+						$Valor->Lookup->Taula, 
+						$Valor->Lookup->Id, 
+						$Valor->Lookup->Camps, 
+						$Valor->Opcions, 
+						$CodiSeleccionat);
+					break;
 			}			
 		}
 		$Retorn .= '</DIV><P/>';
@@ -514,7 +625,7 @@ exit;*/
 	}
 	
 	/**
-	 * Crea el filtre JSON per a la primera vegada que s'executa el formaulari de recerca.
+	 * Crea el filtre JSON per a la primera vegada que s'executa el formulari de recerca.
 	 * @return void.
 	 */
 	private function CreaFiltreJSON() {
@@ -541,6 +652,10 @@ exit;*/
 //					$CodiSeleccionat = $this->Registre[$Valor->Camp];
 //					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->Codis[0].'", ';
+					break;
+				case Form::tcLOOKUP:
+//print_r($Valor);
+					$sFiltre .= '"'.$Valor->Camp.'": "", ';
 					break;
 			}					
 		}
@@ -586,13 +701,6 @@ class FormRecerca extends Form {
 	* @var string
 	*/    
     public $SQL = '';
-	
-	/**
-	* Títol del formulari de recerca.
-	* @access public
-	* @var string
-	*/    
-    public $Titol = '';
 	
 	/**
 	* Camps a visualitzar separats per comes.
@@ -677,7 +785,7 @@ class FormRecerca extends Form {
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);
-		$this->Filtre = new Filtre();
+		$this->Filtre = new Filtre($this);
 	}	
 
 	/**
@@ -793,6 +901,24 @@ class FormRecerca extends Form {
 		}
 		return $Retorn;
 	}
+	
+	/**
+	 * Crea el botó per a la descàrrega en CSV.
+	 * @param string $URL URL que realitza l'acció de la descàrrega.
+	 * @return string Codi HTML del botó.
+	 */
+	private function CreaBotoDescarrega(string $URL): string {
+		$sRetorn = '<div class="btn-group" role="group">';
+		$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+		$sRetorn .= '      Descarrega';
+		$sRetorn .= '    </button>';
+		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		$sRetorn .= '      <a class="dropdown-item" href="'.$URL.'">CSV</a>';
+		$sRetorn .= '    </div>';
+		$sRetorn .= '  </div>';		
+		return $sRetorn;
+ 	}
 
 	/**
 	 * Elimina el prefix, en el cas de tenir un tipus predefinit (per exemple bool:).
@@ -876,14 +1002,41 @@ class FormRecerca extends Form {
 //					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
 				$sRetorn .= "</TD>";
-				if ($this->Modalitat == self::mfLLISTA) 
-					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
+				if ($this->Modalitat == self::mfLLISTA && $this->ClauPrimaria != '')
+//print_h($row);					
+					$sRetorn .= $this->GeneraOpcions($this->ValorClauPrimaria($row, $this->ClauPrimaria), $row);
+//					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
 				$sRetorn .= "</TR>";
 			}
 			$sRetorn .= "</TABLE>";
 		}
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
+	}
+
+	/**
+	 * Obté el valor de la clau primària. Permet que la clau sigui múltiple.
+     * @param mixed $row Registre.
+     * @param string $cp Clau primària.
+     * @return string Retorna el valor de la clau primària. Si és múltiple, retorna els valors separats per coma.
+	 */
+	private function ValorClauPrimaria($row, $cp) {
+		$Retorn = NULL;
+		if ((strpos($cp, ',') === False)) {
+			$Retorn = $row[$this->ClauPrimaria];
+		}
+		else {
+			// La clau és múltiple
+			$acp = explode(',', TrimXX($cp));
+			
+			$Retorn = '';
+			for($i=0; $i < count($acp); $i++) {
+				$Retorn .= utf8_encode($row[$acp[$i]]).',';
+			}
+			$Retorn = substr($Retorn, 0, -1); // Treiem la darrera coma
+			
+		}
+		return $Retorn;	
 	}
 
 	/**
@@ -903,15 +1056,36 @@ class FormRecerca extends Form {
 		$sRetorn .= '    <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnRecerca" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</a>';
 
 		$sRetorn .= '    </TD>';
+		
+		$sRetorn .= '<TD style="align:right">';
+		$sRetorn .= '<span style="float:right;">';
+		// De moment només admin
+		if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
+//			$sRetorn .= '<TD style="align:right">';
+//			$sRetorn .= '<span style="float:right;">';
+
+			$SQL = bin2hex(Encripta(TrimX($this->CreaSQL())));
+//print('<B>SQL</B>: '.$SQL.'<BR>');
+			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+//print('<B>URL</B>: '.$URL.'<BR>');
+
+			$sRetorn .= $this->CreaBotoDescarrega($URL).'&nbsp';
+//			$sRetorn .= '</span>';
+//			$sRetorn .= '</TD>';		
+			
+		}
+		
 		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
-			$sRetorn .= '<TD style="align:right">';
-			$sRetorn .= '<span style="float:right;">';
-//			$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
+//			$sRetorn .= '<TD style="align:right">';
+//			$sRetorn .= '<span style="float:right;">';
 			$URL = GeneraURL($this->URLEdicio);
 			$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
-			$sRetorn .= '</span>';
-			$sRetorn .= '</TD>';
+//			$sRetorn .= '</span>';
+//			$sRetorn .= '</TD>';
 		}
+		$sRetorn .= '</span>';
+		$sRetorn .= '</TD>';		
+		
 		$sRetorn .= '    </TR>';
 		$sRetorn .= '    </TABLE>';
 		$sRetorn .= $this->GeneraPartOculta();
@@ -944,7 +1118,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.6" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.14" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -1059,6 +1233,48 @@ class FormRecerca extends Form {
 		}
 		return $Retorn;
 	}
+	
+		/**
+	 * Exporta el contingut d'una SQL a un fitxer CSV.
+ 	 * @param string $SQL Sentència SQL a exportar.
+	 * @param string $filename Nom del fitxer.
+	 * @param string $delimiter Separador.
+	 */
+	 public function ExportaCSV(string $SQL, string $filename="export.csv", string $delimiter=";") {
+		header('Content-Type: application/csv');
+		header('Content-Disposition: attachment; filename="'. $filename .'";');
+
+		// Clean output buffer
+		ob_end_clean();
+
+		$handle = fopen('php://output', 'w');
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$bPrimerRegistre = True;
+			while($row = $ResultSet->fetch_assoc()) {
+				$aExport = [];
+				if ($bPrimerRegistre) {
+					foreach ($row as $key => $value) {
+						array_push($aExport, utf8_encode($key));
+					}
+					fputcsv($handle, $aExport, $delimiter);
+					$bPrimerRegistre = False;
+					$aExport = [];
+				}					
+				foreach ($row as $key => $value) {
+					array_push($aExport, utf8_encode($value));
+				}
+				fputcsv($handle, $aExport, $delimiter);
+			}
+		}
+		fclose($handle);
+
+		// Flush buffer
+		ob_flush();
+
+		// Use exit to get rid of unexpected output afterward
+		exit();		
+	}	
 } 
 
 /**
@@ -1072,31 +1288,37 @@ class FormFitxa extends Form {
 	* @var boolean
 	*/    
     public $AutoIncrement = False;	
+
 	/**
 	* Camps del formulari amb les seves característiques. S'usa per generar els components visuals.
 	* @var array
 	*/    
     private $Camps = [];	
+
 	/**
 	* Títol del formulari de recerca.
 	* @var string
 	*/    
     public $Titol = '';
+
 	/**
 	* Permet editar un registre.
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
+
 	/**
 	* Permet suprimir un registre.
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
+
 	/**
 	* En el cas que s'estigui editant un registre, carrega les dades de la base de dades.
 	* @var object
 	*/    
     public $Registre = null;
+
 	/**
 	* Indica si el formulari té pestanyes.
 	* @var boolean
@@ -1294,6 +1516,38 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix una fotografia.
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Sufix Sufix del fitxer.
+	 * @return void
+	 */
+	public function AfegeixFotografia(string $Camp, string $Sufix) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcFOTOGRAFIA;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Sufix = $Sufix;
+		$this->Camps[$i]->Opcions = [];
+	}
+
+	/**
+	 * Afegeix un text fix en HTML.
+	 * @param string $Text Camp de la taula.
+	 * @param string $Titol Títol del camp.
+	 * @return void
+	 */
+	public function AfegeixHTML(string $Text, string $Titol) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcHTML;
+		$this->Camps[$i]->Text = $Text;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Opcions = [];
+	}
+
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -1346,7 +1600,11 @@ class FormFitxa extends Form {
 	 * @return string Valor que conté.
 	 */
 	private function ValorCampText(string $camp) {
-		return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+		if ($this->Registre == NULL)
+			$Retorn = '';
+		else 
+			$Retorn = ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+		return $Retorn;
 	}
 
 	/**
@@ -1458,13 +1716,18 @@ class FormFitxa extends Form {
 					break;
 				case self::tcSELECCIO:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$CodiSeleccionat = $this->Registre[$Valor->Camp];
-					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
+//exit;
+					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
+//					$CodiSeleccionat = $this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $CodiSeleccionat);
+//					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					break;
 				case self::tcLOOKUP:
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
 //print_r($this->Registre);	
 //exit;			
+					if ($this->NomesLectura)
+						array_push($Valor->Opcions, self::offNOMES_LECTURA);
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaLookup(
 						$Valor->Camp, 
@@ -1480,6 +1743,17 @@ class FormFitxa extends Form {
 				case self::tcCALCULAT:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaCalculat($Valor->Calcul, $Valor->Camp, $Valor->Titol, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					break;
+				case self::tcFOTOGRAFIA:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+//echo '<hr>'.$Valor->Camp;
+//echo '<hr>'.$this->ValorCampText($Valor->Camp);
+//echo '<hr>'.$this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
+					break;
+				case self::tcHTML:
+					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;
