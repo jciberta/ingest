@@ -128,10 +128,14 @@ class Usuari
 		$ProfessorSenseCarrecDirectiu = ($this->Usuari->es_professor) && (!$this->Usuari->es_direccio) && (!$this->Usuari->es_cap_estudis);
 		$frm->NomesLectura = $ProfessorSenseCarrecDirectiu;
 
-		if ($this->Usuari->es_admin)
+		if ($this->Usuari->es_admin) {
 			$frm->AfegeixText('usuari_id', 'Id', 20, [FormFitxa::offNOMES_LECTURA]);
+			$frm->AfegeixText('data_creacio', 'Data creació', 50, array(FormFitxa::offNOMES_LECTURA, FormFitxa::offAL_COSTAT));
+		}
 			
 		$frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offREQUERIT]);
+		if ($this->Usuari->es_admin) 
+			$frm->AfegeixText('data_modificacio', 'Última modificació', 50, array(FormFitxa::offNOMES_LECTURA, FormFitxa::offAL_COSTAT));
 		$frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('cognom2', '2n cognom', 100, [FormFitxa::offAL_COSTAT]);
