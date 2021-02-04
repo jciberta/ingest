@@ -227,4 +227,19 @@ function Normalitza($Text) {
     return strtr($Text, $table);
 }
 
+/**
+ * Retorna la primera paraula d'un text.
+ * @param string $Text Text d'on treure la primera paraula.
+ * @return string Primera paraula.
+ */
+function PrimeraParaula($Text) {
+	$Retorn = Trim($Text);
+	$asRetorn = explode(' ', $Retorn);
+	if (count($asRetorn) > 0)
+		$Retorn = $asRetorn[0];
+	else
+		$Retorn = '';
+    return $Retorn;
+}
+
 ?>
