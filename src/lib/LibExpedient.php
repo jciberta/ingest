@@ -125,14 +125,14 @@ class Expedient extends Form
 	public function EsVisibleButlleti(int $MatriculaId): bool {
 		$SQL = ' SELECT * FROM MATRICULA M '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-			' WHERE C.finalitzat=0 '.
+			' WHERE C.estat<>"T" '.
 			' AND M.matricula_id='.$MatriculaId;
 //print "<hr>".$SQL."<hr>";
 		$bRetorn = False;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
-			$bRetorn = ($row['butlleti_visible'] == 1);
+			$bRetorn = ($row['estat'] == 'O');
 		}
 		return $bRetorn;
 	}

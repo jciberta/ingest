@@ -37,7 +37,7 @@ if ($CursId == -1)
 	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, "Avaluació");
-echo '<script language="javascript" src="js/Avaluacio.js?v1.5" type="text/javascript"></script>';
+echo '<script language="javascript" src="js/Avaluacio.js?v1.8" type="text/javascript"></script>';
 
 $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);

@@ -68,10 +68,10 @@ switch ($accio) {
 		$frm->AfegeixText('grups_tutoria', 'Grups tutoria', 50);
 
 		$frm->AfegeixEspai();
+		$frm->AfegeixLlista('estat', 'Estat', 30, array('A', 'J', 'I', 'O', 'T'), array('Actiu', 'Junta', 'Inactiu', 'Obertura', 'Tancat'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
-		$frm->AfegeixCheckBox('butlleti_visible', 'ButlletÃ­ visible', [FormFitxa::offREQUERIT]);
-		$frm->AfegeixCheckBox('finalitzat', 'Curs finalitzat', [FormFitxa::offREQUERIT]);
+//		$frm->AfegeixCheckBox('', 'Curs ', [FormFitxa::offREQUERIT]);
 		
 //		$frm->AfegeixText('any_inici', 'Any inici', True, 20);
 //		$frm->AfegeixText('any_final', 'Any final', True, 20);

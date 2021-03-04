@@ -24,15 +24,13 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
-	if ($_REQUEST['accio'] == 'MostraButlletins') {
-//print_r($_REQUEST);
+	if ($_REQUEST['accio'] == 'PosaEstatCurs') {
 		$Id = $_REQUEST['curs_id'];
-		$check = ($_REQUEST['check']=='true') ? 0 : 1;
-//		$check = !$_REQUEST['check'];
-		// Bloquegem/desbloquegem els butlletis
-		$SQL = 'UPDATE CURS SET butlleti_visible='.$check.' WHERE curs_id='.$Id;
+		$Estat = $_REQUEST['estat'];
+		// Canviem l'estat del curs
+		$SQL = 'UPDATE CURS SET estat="'.$Estat.'" WHERE curs_id='.$Id;
 		$conn->query($SQL);
-		//print $frm->GeneraTaula();
+		//print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'TancaAvaluacio') {
 //print_r($_REQUEST);

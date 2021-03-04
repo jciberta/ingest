@@ -158,8 +158,7 @@ CREATE TABLE CURS
     grups_tutoria VARCHAR(100),
 	avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
     trimestre INT NOT NULL DEFAULT 1, /* 1, 2, 3 */
-	butlleti_visible BIT NOT NULL DEFAULT 0,
-	finalitzat BIT NOT NULL DEFAULT 0,
+    estat char(1) NOT NULL DEFAULT 'A', /* Actiu, Junta, Inactiu, Obertura, Tancat */
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
     CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),

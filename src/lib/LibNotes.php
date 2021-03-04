@@ -589,6 +589,9 @@ class Notes extends Form
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
 
+		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
+		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
+
 		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
 		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 		
@@ -840,7 +843,7 @@ class Notes extends Form
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
-			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, '.
+			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
 			' N.*, U.* '.
 			' FROM NOTES N '.
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
@@ -1389,7 +1392,7 @@ class NotesModul extends Notes
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
-			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, '.
+			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
 			' N.*, U.* '.
 			' FROM NOTES N '.
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
@@ -1704,6 +1707,9 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 
 		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
 		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
+
+		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
+		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
 
 		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
 		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;

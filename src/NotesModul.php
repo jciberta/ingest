@@ -64,7 +64,7 @@ $Avaluacio = new Avaluacio($conn, $Usuari);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
-if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria && !$Avaluacio->ButlletiVisible()) {
+if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria && $Curs->Estat() == Curs::Actiu) {
 	// Missatge recordatori a l'avaluació extraordinària
 	echo '<script>$(document).ready(function(){$("#RecordatoriAvExt").modal("show");});</script>';	
 	Notes::CreaMissatgeInici();
@@ -84,10 +84,8 @@ echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraCon
 $TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
 echo $NotesModul->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 
-// Si l'avaluació (el curs) està tancada, tot deshabilitat.
-$Deshabilitat = ($Avaluacio->Estat() == Avaluacio::Tancada);
-// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
-$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? True : $Deshabilitat;
+// Si el curs no està en actiu, tot deshabilitat.
+$Deshabilitat = ($Curs->Estat() != Curs::Actiu);
 
 echo '<span style="float:right;">';
 echo $NotesModul->CreaBotoJS('btn', 'Calcula qualificacions finals del mòdul', 'CalculaQualificacionsFinalsModul();', $Deshabilitat);

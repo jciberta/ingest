@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 /**
  * Classe que encapsula les utilitats per a l'avaluació.
@@ -88,8 +89,8 @@ class Avaluacio
 		$SQL = ' SELECT '.
 			'   C.curs_id, '.
 			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) grups_tutoria, ".
-			'   C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
-			'   CASE WHEN C.finalitzat = 1 THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre, butlleti_visible '.
+			'   C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
+			'   CASE WHEN C.estat = "T" THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre '.
 			' FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers '.
 			" RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1 ".
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
@@ -122,7 +123,7 @@ class Avaluacio
 		$sRetorn = '';
 		if ($this->Registre != NULL) {
 			$row = $this->Registre;
-			if ($row->finalitzat)
+			if ($row->estat == Curs::Tancat)
 				$sRetorn = self::Tancada;
 			else
 				$sRetorn = ($row->avaluacio == 'ORD') ? self::Ordinaria : self::ExtraOrdinaria;
@@ -138,7 +139,7 @@ class Avaluacio
 		$sRetorn = '';
 		if ($this->Registre != NULL) {
 			$row = $this->Registre;
-			if ($row->finalitzat)
+			if ($row->estat == Curs::Tancat)
 				$sRetorn = '';
 			else if ($row->avaluacio == 'EXT')
 				$sRetorn = 'Ext.';
@@ -153,7 +154,7 @@ class Avaluacio
 	 * @returns boolean Cert si el butlletí és visible.
 	 */
 	function ButlletiVisible(): bool {
-		return $this->Registre->butlleti_visible == '1';
+		return $this->Registre->estat == Curs::Obert;
 	}	
 
 	/**
@@ -170,7 +171,7 @@ class Avaluacio
 			echo "Codi: <B>".utf8_encode($row->codi)."</B><br>";
 			echo "Nivell: <B>".utf8_encode($row->nivell)."</B><br>";
 			echo "<BR>";
-			if ($row->finalitzat) {
+			if ($row->estat == Curs::Tancat) {
 				echo "Avaluació: <B>El curs està tancat</B><br>";
 			}
 			else {
@@ -178,8 +179,8 @@ class Avaluacio
 				echo "Avaluació: <B>".$Avaluacio."</B><br>";
 				if ($row->avaluacio == 'ORD')
 					echo "Trimestre: <B>".utf8_encode($row->trimestre)."</B><br>";
-				$MostraButlletins = ($row->butlleti_visible == 1)? ' checked ' : '';
-				echo 'Butlletí visible: <input type="checkbox" disabled id="chb_butlleti_visible" '.$MostraButlletins.'><br>';
+				echo '<span id="estat">Estat: '.Curs::TextEstat($row->estat).'</span>';
+				
 			}
 			$this->Curs = $row;
 			$this->Avaluacio = $row->avaluacio;
@@ -198,8 +199,8 @@ class Avaluacio
 			$row = $this->Registre;
 			echo "Curs: <B>".utf8_encode($row->nom)."</B>";
 			
-			if ($row->finalitzat) {
-				echo " Avaluació: <B>Tancada</B><br>";
+			if ($row->estat == Curs::Tancat) {
+				echo " Avaluació: <img src=img/colorT.png> <B>Tancada</B>";
 			}
 			else {
 				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
@@ -207,6 +208,7 @@ class Avaluacio
 				if ($row->avaluacio == 'ORD')
 					echo " Trimestre: <B>".utf8_encode($row->trimestre)."</B>";
 				$this->Avaluacio = $row->avaluacio;
+				echo " Estat: ".Curs::TextEstatColor($row->estat);
 			}
 		}
 		$sRetorn .= '</DIV>';
@@ -231,19 +233,49 @@ class Avaluacio
 	}
 
 	/**
+	 * Crea un botó per a un estat.
+     * @return string HTML amb el botó.
+	 */
+	private function CreaBotoEstat(string $sEstat, $iCursId, string $sDisabled): string {
+		$sRetorn = '<SPAN id=div_actiu>'.
+			'<button class="btn btn-primary active"'.$sDisabled.' id="btn_'.$sEstat.'" '.
+			'onclick="PosaEstatCurs(this, '.$iCursId.', '."'$sEstat'".')">'.
+			Curs::TextEstat($sEstat).
+			'</button>&nbsp;';
+		return $sRetorn;
+	}
+
+	/**
 	 * Crea els botons disponibles depenent de les característiques del curs.
      * @return string HTML amb els botons.
 	 */
 	private function CreaBotons(): string {
 		$sRetorn = '<DIV id=botons>';
+		$aDisabled = array(Curs::Actiu => '', Curs::Junta => '', Curs::Inactiu => '', Curs::Obert => '', Curs::Tancat => '');
+		$aDisabled[$this->Curs->estat] = 'disabled';
 
-		if ($this->Curs->finalitzat) {
+		if ($this->Curs->estat == Curs::Tancat) {
 			$sRetorn .= "No es permeten accions.";
 		}
 		else {
-			$Text = ($this->Curs->butlleti_visible != 1) ? 'Mostra butlletins' : 'Amaga butlletins';
-			$sRetorn .= '<DIV id=div_MostraButlletins><P><button class="btn btn-primary active" id="btn_MostraButlletins" onclick="MostraButlletins(this, '.$this->Curs->curs_id.')">'.$Text.'</button>&nbsp;';
-			$sRetorn .= "Els alumnes d'aquest curs poden veure el butlletí de notes.</P></DIV>";
+			$sRetorn .= "<P>Passa al següent estat:</P>";
+			
+			$sRetorn .= $this->CreaBotoEstat(Curs::Actiu, $this->Curs->curs_id, $aDisabled[Curs::Actiu]);
+			$sRetorn .= $this->CreaBotoEstat(Curs::Junta, $this->Curs->curs_id, $aDisabled[Curs::Junta]);
+			$sRetorn .= $this->CreaBotoEstat(Curs::Inactiu, $this->Curs->curs_id, $aDisabled[Curs::Inactiu]);
+			$sRetorn .= $this->CreaBotoEstat(Curs::Obert, $this->Curs->curs_id, $aDisabled[Curs::Obert]);
+
+//			$sRetorn .= '<SPAN id=div_actiu><button class="btn btn-primary active"'.$aDisabled[Curs::Actiu].'id="btn_actiu" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', A)">Actiu</button>&nbsp;';
+//			$sRetorn .= '<SPAN id=div_junta><button class="btn btn-primary active"'.$aDisabled[Curs::Junta].'id="btn_junta" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', J)">Junta</button>&nbsp;';
+//			$sRetorn .= '<SPAN id=div_inactiu><button class="btn btn-primary active"'.$aDisabled[Curs::Inactiu].'id="btn_inactiu" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', I)">Inactiu</button>&nbsp;';
+//			$sRetorn .= '<SPAN id=div_obert><button class="btn btn-primary active"'.$aDisabled[Curs::Obert].'id="btn_obert" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', O)">Obert</button>&nbsp;';
+
+//			$Text = ($this->Curs->estat != Curs::Obert) ? 'Mostra butlletins' : 'Amaga butlletins';
+//			$sRetorn .= '<SPAN id=div_MostraButlletins><button class="btn btn-primary active" id="btn_MostraButlletins" onclick="MostraButlletins(this, '.$this->Curs->curs_id.')">'.$Text.'</button>&nbsp;';
+//			$sRetorn .= "Els alumnes d'aquest curs poden veure el butlletí de notes.</SPAN>";
+
+
+			$sRetorn .= "<BR><BR><P>La següent acció no es pot desfer:</P>";
 
 			$Estil = ($this->Curs->avaluacio == 'ORD') ? '' : 'style="display:none"';
 			$sRetorn .= '<DIV id=div_TancaAvaluacio '.$Estil.'><P><button class="btn btn-primary active" onclick="TancaAvaluacio(this, '.$this->Curs->curs_id.')">Tanca avaluació i ves a l\'extraordinària</button>&nbsp;'.
@@ -292,26 +324,6 @@ class Avaluacio
 		$frm->Descripcions = 'Codi, Nom, Grup, Nivell, Any, Avaluació, Trimestre';
 		
 		$frm->AfegeixOpcio('Avaluació', 'Fitxa.php?accio=ExpedientSagaAvaluacio&Id=');
-		
-/*		$frm->AfegeixOpcioAJAX('Butlletí', '', 'curs_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'butlleti_visible');
-		if (!$this->NomesProfessor) {
-			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
-			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
-		}
-		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		if (!$this->NomesProfessor) {
-			$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
-			$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
-			$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
-		}
-
-		// Filtre
-		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
-
-//		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
-		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('', '0', '1'), array('Totes', 'Oberta', 'Tancada'));
-*/
 		$frm->EscriuHTML();
 	}
 	
@@ -334,7 +346,7 @@ class Avaluacio
 		// S'ha d'executar de forma atòmica
 		$this->Connexio->query('START TRANSACTION');
 		try {
-			$SQL = ' UPDATE CURS SET avaluacio="EXT", butlleti_visible=0 WHERE curs_id='.$id;
+			$SQL = ' UPDATE CURS SET avaluacio="EXT", estat="A" WHERE curs_id='.$id;
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
 			
@@ -372,7 +384,7 @@ class Avaluacio
 	
 	/**
 	 * Tanca un curs.
-	 * 	1. Amaga els butlletins i marca el curs com finalitzat.
+	 * 	1. Amaga els butlletins i marca el curs com .
 	 * 	2. Es posa la convocatòria a 0 per a les notes aprovades. -> NO! Es fa al crear la següent matrícula
 	 *  3. Es passa una convocatòria per a les notes no superades. -> NO!
 	 * @param integer $id Identificador del curs.
@@ -381,7 +393,7 @@ class Avaluacio
 		// S'ha d'executar de forma atòmica
 		$this->Connexio->query('START TRANSACTION');
 		try {
-			$SQL = ' UPDATE CURS SET butlleti_visible=0, finalitzat=1 WHERE curs_id='.$id;
+			$SQL = ' UPDATE CURS SET estat="T" WHERE curs_id='.$id;
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
 

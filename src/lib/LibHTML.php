@@ -301,6 +301,19 @@ function PaginaHTMLMissatge($Titol, $Missatge)
 	echo '</BODY>';	
 }
  
+function CreaTargeta($Titol, $Text, $URL): string
+{
+	$Retorn = '  <div class="card">';
+	$Retorn .= '    <div class="card-body">';
+	$Retorn .= '      <h5 class="card-title">'.utf8_encode($Titol).'</h5>';
+	$Retorn .= '      <p class="card-text">'.utf8_encode($Text).'.</p>';
+	$Retorn .= '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	$Retorn .= '    </div>';
+	$Retorn .= '  </div>';
+	return $Retorn;			
+}
+ 
+ 
 /**
  * Classe que encapsula les utilitats per a la pàgina d'entrada.
  */

@@ -681,6 +681,7 @@ class FormRecerca extends Form {
 	// Tipus d'opcions
 	const toURL = 1;
 	const toAJAX = 2;
+	const toImatge = 3;
 	
 	// Opcions del FormRecerca.
 	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
@@ -959,8 +960,12 @@ class FormRecerca extends Form {
 			$sRetorn .= '<TH></TH>';
 			if ($this->Modalitat == self::mfLLISTA) 
 				foreach($this->Opcions as $obj) { 
-					if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions))
-						$sRetorn .= '<TH>'.$obj->Titol.'</TH>';
+					if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions) || ($obj->Tipus == self::toImatge)) {
+						$sRetorn .= '<TH>'.$obj->Titol;
+						if (isset($obj->Llegenda) && $obj->Llegenda != '')
+							$sRetorn .= ' '.$this->CreaAjuda($obj->Titol, $obj->Llegenda);
+						$sRetorn .= '</TH>';
+					}
 					else
 						$sRetorn .= '<TH></TH>';
 				}
@@ -1122,6 +1127,10 @@ class FormRecerca extends Form {
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
+		// Inicialització de l'ajuda
+		// https://getbootstrap.com/docs/4.0/components/popovers/
+		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
 		echo $this->GeneraMissatges();
 		echo $this->GeneraCerca();
 		echo $this->GeneraFiltre();
@@ -1168,6 +1177,27 @@ class FormRecerca extends Form {
 		$this->Opcions[$i]->Camp = $CampClau;
 		$this->Opcions[$i]->Opcions = $ofr;
 		$this->Opcions[$i]->CampValor = $CampValor;
+	}
+	
+	/**
+	 * Afegeix un color depenent d'un camp.
+	 * @param string $Titol Títol de l'opció.
+	 * @param string $CampClau Camp del registre que serveix com a identificador. 
+	 * @param string $Prefix Prefix de la imatge a posar en comptes del títol. 
+	 * @param string $Extensio Extensió de la imatge a posar en comptes del títol. 
+	 * @param string $Llegenda Llegenda del codi de colors. 
+	 */
+	public function AfegeixOpcioColor(string $Titol, string $CampClau, string $Prefix, string $Extensio, string $Llegenda = '') {
+		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toImatge;
+		$this->Opcions[$i]->Titol = $Titol;
+		$this->Opcions[$i]->Camp = $CampClau;
+		$this->Opcions[$i]->Prefix = $Prefix;
+		$this->Opcions[$i]->Extensio = $Extensio;
+		$this->Opcions[$i]->Llegenda = $Llegenda;
+		$this->Opcions[$i]->Opcions = [];
 	}
 	
 	/**
@@ -1229,6 +1259,10 @@ class FormRecerca extends Form {
 //				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
 				}
 			}
+			else if ($obj->Tipus == self::toImatge) {
+				$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
+				$Retorn .= '<IMG SRC="img/'.$obj->Prefix.$row[$obj->Camp].'.'.$obj->Extensio.'">';
+			}			
 			$Retorn .= '</TD>';
 		}
 		return $Retorn;

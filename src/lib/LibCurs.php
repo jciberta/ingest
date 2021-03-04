@@ -16,10 +16,31 @@ require_once(ROOT.'/lib/LibHTML.php');
 
 
 /**
- * Classe que encapsula les utilitats per al maneig de l'usuari.
+ * Classe que encapsula les utilitats per al maneig del curs.
  */
 class Curs
 {
+	// Estats del curs
+	const Actiu = 'A'; 		// Entrada de notes.
+	const Junta = 'J'; 		// Realització de l’avaluació (pantalla especial).
+	const Inactiu = 'I'; 	// Bloquejat.
+	const Obert = 'O'; 		// Visualització de butlletins.
+	const Tancat = 'T'; 	// Curs tancat.
+	// Flux:
+	//  - Actiu: el professors entren notes.
+	//  - Junta: es realitza l’avaluació.
+	//  - Inactiu: un cop acabada l’avaluació, es bloqueja la modificació de notes.
+	//  - Obertura: es mostren els butlletins.
+	//  - ...
+	//  - Tancat: es tanca el curs.
+	
+	// Colors dels estats del curs
+	const COLOR_ACTIU = '#00FF00';
+	const COLOR_JUNTA = '#CC00CC';
+	const COLOR_INACTIU = '#CCCCCC';
+	const COLOR_OBERTURA = '#FF9900';
+	const COLOR_TANCAT = '#FF0000';
+	
 	/**
 	* Connexió a la base de dades.
 	* @access public 
@@ -70,6 +91,17 @@ class Curs
 	}
 	
 	/**
+	 * Retorna l'estat del curs.
+     * @return string estat del curs.
+	 */
+	public function Estat(): string {
+		$sRetorn = '';
+		if ($this->Registre != NULL)
+			$sRetorn = $this->Registre->estat;
+		return $sRetorn;
+	}
+	
+	/**
 	 * Obté el codi del cicle formatiu del curs.
 	 * @returns integer Identificador del cicle formatiu, sinó -1.
 	 */
@@ -97,18 +129,17 @@ class Curs
      * @return string Sentència SQL.
 	 */
 	private function CreaSQL(int $CursId = -1) {
-		$SQL = ' SELECT C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
+		$SQL = ' SELECT C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.estat, C.nivell, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
-			'     WHEN C.finalitzat = 1 THEN "Tancada" '.
+			'     WHEN C.estat = "T" THEN "Tancada" '.
 			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
 			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" '.
 			' END AS avaluacio, '.
 			' CASE '.
 			'     WHEN C.avaluacio = "ORD" THEN C.trimestre '.
 			'     WHEN C.avaluacio = "EXT" THEN NULL '.
-			' END AS trimestre, '.
-			' butlleti_visible '.
+			' END AS trimestre '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE (0=0) ';
@@ -131,22 +162,89 @@ class Curs
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLCursosActuals() {
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.finalitzat, '.
+		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
-			'     WHEN C.finalitzat = 1 THEN "Tancada" '.
+			'     WHEN C.estat = "T" THEN "Tancada" '.
 			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
 			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" '.
 			' END AS avaluacio, '.
 			' CASE '.
 			'     WHEN C.avaluacio = "ORD" THEN C.trimestre '.
 			'     WHEN C.avaluacio = "EXT" THEN NULL '.
-			' END AS trimestre, '.
-			' butlleti_visible '.
+			' END AS trimestre '.
 			' FROM CURS C '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE AA.actual=1 ';
 		return $SQL;
+	}
+
+	/**
+	 * Retorna el text de l'estat.
+	 * @param string $sEstat Codi de l'estat.
+     * @return string Text de l'estat.
+	 */
+	static public function TextEstat(string $sEstat): string {
+		switch ($sEstat) {
+			case "A":
+				return 'Actiu';
+				break;
+			case "J":
+				return 'Junta';
+				break;
+			case "I":
+				return 'Inactiu';
+				break;
+			case "O":
+				return 'Obert';
+				break;
+			case "T":
+				return 'Tancat';
+				break;
+			default:
+				return '';
+		}
+	}
+
+	/**
+	 * Retorna el text de l'estat (inclosa la imatge).
+	 * @param string $sEstat Codi de l'estat.
+     * @return string Text de l'estat en format HTML.
+	 */
+	static public function TextEstatColor(string $sEstat): string {
+		switch ($sEstat) {
+			case "A":
+				return '<img src=img/colorA.png> Actiu. Entrada de notes.';
+				break;
+			case "J":
+				return '<img src=img/colorJ.png> Junta. Realització de l’avaluació (pantalla especial).';
+				break;
+			case "I":
+				return '<img src=img/colorI.png> Inactiu. Bloquejat per als professors i alumnes.';
+				break;
+			case "O":
+				return '<img src=img/colorO.png> Obert. Visualització de butlletins.';
+				break;
+			case "T":
+				return '<img src=img/colorT.png> Tancat. Els curs està tancat.';
+				break;
+			default:
+				return '';
+		}
+	}
+
+	/**
+	 * Retorna la llegenda dels estats del curs.
+     * @return string Llegenda en format HTML.
+	 */
+	private function LlegendaEstat(): string {
+		$Retorn = 'Els diferents estats en que pot estar un curs són els següents:<br>'.
+			Self::TextEstatColor('A').'<br>'.
+			Self::TextEstatColor('J').'<br>'.
+			Self::TextEstatColor('I').'<br>'.
+			Self::TextEstatColor('O').'<br>'.
+			Self::TextEstatColor('T').'<br>';
+		return $Retorn;
 	}
 	
 	/**
@@ -162,7 +260,7 @@ class Curs
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'codi, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
-		$frm->AfegeixOpcioAJAX('Butlletí', '', 'curs_id', [FormRecerca::ofrCHECK, FormRecerca::ofrNOMES_LECTURA], 'butlleti_visible');
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', $this->LlegendaEstat());
 		if (!$this->NomesProfessor) {
 			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
@@ -185,10 +283,6 @@ class Curs
 		// Filtre
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
-
-//		$frm->Filtre->AfegeixCheckBox('finalitzat', 'Avaluacions tancades', False); -> Funciona, però la casuística és estranya
-		$frm->Filtre->AfegeixLlista('finalitzat', 'Avaluació', 30, array('', '0', '1'), array('Totes', 'Oberta', 'Tancada'));
-
 		$frm->EscriuHTML();
 	}
 
