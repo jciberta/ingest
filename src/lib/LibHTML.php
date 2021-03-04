@@ -174,6 +174,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		}
 		if ($Usuari->es_admin) {
 			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
+			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
 			$Retorn .= Menu::Separador();
 		}
