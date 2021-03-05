@@ -24,7 +24,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ExecutaSQL') {
 		$SQL = $_REQUEST['sql'];
 		$Ordre = strtoupper(PrimeraParaula($SQL));
-		if ($Ordre == 'SELECT' or $Ordre =='DESCRIBE') {
+		if ($Ordre == 'SELECT' or $Ordre =='DESCRIBE' or $Ordre =='SHOW') {
 			$ResultSet = $conn->query($SQL);
 			if ($ResultSet->num_rows > 0) {
 				$Taula = "<BR><TABLE>";
