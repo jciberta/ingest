@@ -586,14 +586,8 @@ class Notes extends Form
 		else if ($Nota!='' && $Nota>=0 && $Nota<5)
 			$style .= ";color:red";
 		
-		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
-		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
-
 		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
 		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
-
-		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
-		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 		
 		$ClassInput = 'nota';
 		if ($row["FCT"] == 1)
@@ -1485,7 +1479,7 @@ class NotesModul extends Notes
 		echo '<DIV class="saga" id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
 		
-echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 641px;" id="content">';
+		echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 641px;" id="content">';
 
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
@@ -1664,55 +1658,12 @@ echo '<div style="padding-left: 20px; padding-right: 5px; background-color: rgb(
 		$Convalidat = ($row["Convalidat"] == True);
 
 		$Deshabilitat = '';
-/*		if ($Baixa)
-			$Deshabilitat = ' disabled ';
-		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
-			$Deshabilitat = ' disabled ';
 
-		$Nota = '';
-		$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
-		if (!$Baixa) {
-			if ($Convalidat) {
-				//$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$style .= ";background-color:blue;color:white";
-			}
-			else if ($row["Convocatoria"] == 0) {
-				//$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$style .= ";background-color:black;color:white";
-			}
-			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
-				// Nota recuperada
-				//$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$style .= ";background-color:lime";
-			}
-			else {
-				//$Nota = $row["nota".$row["Convocatoria"]];
-				if ($row["Orientativa"] && !$Baixa) {
-					$style .= ";background-color:yellow";
-				}
-			}
-		}
-		else
-			// Sense nota
-			$style .= ";background-color:grey";
-*/		
-		//if ($Nota >= 5)
-		//	$Hores += $row["Hores"];
-		//else 
 		if ($Nota!='' && $Nota>=0 && $Nota<5)
 			$style .= "color:red;";
 
-		// Si l'avaluació (el curs) està tancada, tot deshabilitat.
-		$Deshabilitat = ($EstatAvaluacio == Avaluacio::Tancada) ? ' disabled ' : $Deshabilitat;
-
 		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
 		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
-
-		// Si els butlletins de l'avaluació (el curs) són visibles pels alumnes, tot deshabilitat.
-		$Deshabilitat = ($Avaluacio->ButlletiVisible()) ? ' disabled ' : $Deshabilitat;
 
 		// Si estan totes les UF aprovades de les convocatòries anteriors.
 //print_r('$style: '.$style.'<BR>');		
