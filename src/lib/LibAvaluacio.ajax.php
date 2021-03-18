@@ -32,6 +32,14 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$conn->query($SQL);
 		//print $SQL;
 	}
+	else if ($_REQUEST['accio'] == 'PosaEstatTrimestre') {
+		$Id = $_REQUEST['curs_id'];
+		$Trimestre = $_REQUEST['trimestre'];
+		// Canviem l'estat del curs
+		$SQL = 'UPDATE CURS SET trimestre="'.$Trimestre.'" WHERE curs_id='.$Id;
+		$conn->query($SQL);
+		//print $SQL;
+	}
 	else if ($_REQUEST['accio'] == 'TancaAvaluacio') {
 //print_r($_REQUEST);
 		$Id = $_REQUEST['curs_id'];

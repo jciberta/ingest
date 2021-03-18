@@ -178,8 +178,8 @@ class Avaluacio
 				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
 				echo "Avaluació: <B>".$Avaluacio."</B><br>";
 				if ($row->avaluacio == 'ORD')
-					echo "Trimestre: <B>".utf8_encode($row->trimestre)."</B><br>";
-				echo '<span id="estat">Estat: '.Curs::TextEstat($row->estat).'</span>';
+					echo "<div id='trimestre'>Trimestre: <B>".utf8_encode($row->trimestre)."</B></div>";
+				echo '<div id="estat">Estat: '.Curs::TextEstat($row->estat).'</div>';
 				
 			}
 			$this->Curs = $row;
@@ -246,6 +246,19 @@ class Avaluacio
 	}
 
 	/**
+	 * Crea un botó per a un trimestre.
+     * @return string HTML amb el botó.
+	 */
+	private function CreaBotoTrimestre(string $iTrimestre, $iCursId, string $sDisabled): string {
+		$sRetorn = '<SPAN id=div_actiu>'.
+			'<button class="btn btn-primary active"'.$sDisabled.' id="btn_'.$iTrimestre.'" '.
+			'onclick="PosaTrimestreCurs(this, '.$iCursId.', '."'$iTrimestre'".')">'.
+			Ordinal($iTrimestre). ' trimestre'.
+			'</button>&nbsp;';
+		return $sRetorn;
+	}
+
+	/**
 	 * Crea els botons disponibles depenent de les característiques del curs.
      * @return string HTML amb els botons.
 	 */
@@ -253,29 +266,40 @@ class Avaluacio
 		$sRetorn = '<DIV id=botons>';
 		$aDisabled = array(Curs::Actiu => '', Curs::Junta => '', Curs::Inactiu => '', Curs::Obert => '', Curs::Tancat => '');
 		$aDisabled[$this->Curs->estat] = 'disabled';
+		$aTrimestre = array(1 => '', 2 => '', 3 => '');
+		$aTrimestre[$this->Curs->trimestre] = 'disabled';
 
 		if ($this->Curs->estat == Curs::Tancat) {
 			$sRetorn .= "No es permeten accions.";
 		}
 		else {
+			$sRetorn .= "<TABLE>";
+			$sRetorn .= "<TR>";
+			$sRetorn .= "<TD>";
 			$sRetorn .= "<P>Passa al següent estat:</P>";
 			
 			$sRetorn .= $this->CreaBotoEstat(Curs::Actiu, $this->Curs->curs_id, $aDisabled[Curs::Actiu]);
 			$sRetorn .= $this->CreaBotoEstat(Curs::Junta, $this->Curs->curs_id, $aDisabled[Curs::Junta]);
 			$sRetorn .= $this->CreaBotoEstat(Curs::Inactiu, $this->Curs->curs_id, $aDisabled[Curs::Inactiu]);
 			$sRetorn .= $this->CreaBotoEstat(Curs::Obert, $this->Curs->curs_id, $aDisabled[Curs::Obert]);
+			$sRetorn .= "</TD>";
+			$sRetorn .= "<TD ROWSPAN=2><DIV STYLE='margin-left:100px'>";
+			$sRetorn .= Curs::LlegendaEstat();
+			$sRetorn .= "</DIV></TD>";
 
-//			$sRetorn .= '<SPAN id=div_actiu><button class="btn btn-primary active"'.$aDisabled[Curs::Actiu].'id="btn_actiu" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', A)">Actiu</button>&nbsp;';
-//			$sRetorn .= '<SPAN id=div_junta><button class="btn btn-primary active"'.$aDisabled[Curs::Junta].'id="btn_junta" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', J)">Junta</button>&nbsp;';
-//			$sRetorn .= '<SPAN id=div_inactiu><button class="btn btn-primary active"'.$aDisabled[Curs::Inactiu].'id="btn_inactiu" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', I)">Inactiu</button>&nbsp;';
-//			$sRetorn .= '<SPAN id=div_obert><button class="btn btn-primary active"'.$aDisabled[Curs::Obert].'id="btn_obert" onclick="PosaEstatCurs(this, '.$this->Curs->curs_id.', O)">Obert</button>&nbsp;';
+			$sRetorn .= "</TR>";
+			$sRetorn .= "<TR>";
+			$sRetorn .= "<TD>";
 
-//			$Text = ($this->Curs->estat != Curs::Obert) ? 'Mostra butlletins' : 'Amaga butlletins';
-//			$sRetorn .= '<SPAN id=div_MostraButlletins><button class="btn btn-primary active" id="btn_MostraButlletins" onclick="MostraButlletins(this, '.$this->Curs->curs_id.')">'.$Text.'</button>&nbsp;';
-//			$sRetorn .= "Els alumnes d'aquest curs poden veure el butlletí de notes.</SPAN>";
+			$sRetorn .= "<BR><P>Tria el trimestre:</P>";
+			$sRetorn .= $this->CreaBotoTrimestre(1, $this->Curs->curs_id, $aTrimestre[1]);
+			$sRetorn .= $this->CreaBotoTrimestre(2, $this->Curs->curs_id, $aTrimestre[2]);
+			$sRetorn .= $this->CreaBotoTrimestre(3, $this->Curs->curs_id, $aTrimestre[3]);
+			$sRetorn .= "</TD>";
+			$sRetorn .= "</TR>";
+			$sRetorn .= "</TABLE>";
 
-
-			$sRetorn .= "<BR><BR><P>La següent acció no es pot desfer:</P>";
+			$sRetorn .= "<BR><P>La següent acció no es pot desfer:</P>";
 
 			$Estil = ($this->Curs->avaluacio == 'ORD') ? '' : 'style="display:none"';
 			$sRetorn .= '<DIV id=div_TancaAvaluacio '.$Estil.'><P><button class="btn btn-primary active" onclick="TancaAvaluacio(this, '.$this->Curs->curs_id.')">Tanca avaluació i ves a l\'extraordinària</button>&nbsp;'.

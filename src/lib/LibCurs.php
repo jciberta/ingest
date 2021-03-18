@@ -237,7 +237,7 @@ class Curs
 	 * Retorna la llegenda dels estats del curs.
      * @return string Llegenda en format HTML.
 	 */
-	private function LlegendaEstat(): string {
+	static public function LlegendaEstat(): string {
 		$Retorn = 'Els diferents estats en que pot estar un curs són els següents:<br>'.
 			Self::TextEstatColor('A').'<br>'.
 			Self::TextEstatColor('J').'<br>'.
@@ -260,7 +260,7 @@ class Curs
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'codi, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
-		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', $this->LlegendaEstat());
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', Curs::LlegendaEstat());
 		if (!$this->NomesProfessor) {
 			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');

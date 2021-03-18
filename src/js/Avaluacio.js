@@ -38,7 +38,7 @@ function TextEstat(sEstat) {
 /**
  * Deshabilita els botons d'estat.
  */
-function DeshabilitaBotons() {
+function DeshabilitaBotonsEstat() {
 	var btnActiu = document.getElementById('btn_A');
 	var btnJunta = document.getElementById('btn_J');
 	var btnInactiu = document.getElementById('btn_I');
@@ -51,27 +51,29 @@ function DeshabilitaBotons() {
 }
 
 /**
+ * Deshabilita els botons dels trimestres.
+ */
+function DeshabilitaBotonsTrimestre() {
+	var btn1 = document.getElementById('btn_1');
+	var btn2 = document.getElementById('btn_2');
+	var btn3 = document.getElementById('btn_3');
+	btn1.disabled = false;
+	btn2.disabled = false;
+	btn3.disabled = false;
+}
+
+/**
  * PosaEstatCurs
  * Posa el curs a un estat determinat.
  * @param obj Objecte que ha provocat la crida.
  * @param curs_id Identificador del curs.
- * @param estat Identificador del curs.
+ * @param estat estat del curs.
  */
 function PosaEstatCurs(obj, curs_id, estat) {
 console.log('->PosaEstatCurs');
 
-	//var sCerca = $('input[name="edtRecerca"]').val();	
 	var btn = document.getElementById('btn_'+estat);
-	DeshabilitaBotons();
-/*	var btnActiu = document.getElementById('btn_A');
-	var btnJunta = document.getElementById('btn_J');
-	var btnInactiu = document.getElementById('btn_I');
-	var btnObert = document.getElementById('btn_O');
-	var spanEstat = document.getElementById('estat');
-	btnActiu.disabled = false;
-	btnJunta.disabled = false;
-	btnInactiu.disabled = false;
-	btnObert.disabled = false;*/
+	DeshabilitaBotonsEstat();
 
     $.ajax( {
         type: 'POST',
@@ -85,13 +87,40 @@ console.log('->PosaEstatCurs');
         success: function(data) {
             $('#debug').html(data);
 			btn.disabled = true;
-			spanEstat.value = "Estat: " + TextEstat(estat);
-			//chb.checked = !chb.checked;
-//console.dir(obj);
-			//if (chb.checked)
-			//	obj.innerHTML = 'Amaga butlletins'
-			//else
-			//	obj.innerHTML = 'Mostra butlletins';
+			$('#estat').html("Estat: " + TextEstat(estat));
+        }, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}
+
+/**
+ * PosaTrimestreCurs
+ * Posa el curs en un trimestre determinat.
+ * @param obj Objecte que ha provocat la crida.
+ * @param curs_id Identificador del curs.
+ * @param trimestre Trimestre del curs.
+ */
+function PosaTrimestreCurs(obj, curs_id, trimestre) {
+console.log('->PosaTrimestreCurs');
+
+	var btn = document.getElementById('btn_'+trimestre);
+	DeshabilitaBotonsTrimestre();
+
+    $.ajax( {
+        type: 'POST',
+        url: 'lib/LibAvaluacio.ajax.php',
+        data:{
+			'accio': 'PosaEstatTrimestre',
+            'nom': obj.name,
+            'curs_id': curs_id,
+            'trimestre': trimestre
+            },
+        success: function(data) {
+            $('#debug').html(data);
+			btn.disabled = true;
+			$('#trimestre').html("Trimestre: <b>" + trimestre + "</b>");
         }, 
 		error: function (data) {
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
@@ -108,7 +137,6 @@ console.log('->PosaEstatCurs');
 function MostraButlletins(obj, curs_id) {
 console.log('MostraButlletins');
 
-	//var sCerca = $('input[name="edtRecerca"]').val();	
 	var chb = document.getElementById('chb_butlleti_visible');
 
     $.ajax( {
