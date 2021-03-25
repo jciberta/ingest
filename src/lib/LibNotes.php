@@ -255,6 +255,13 @@ class Notes extends Form
 	// Tipus d'exportació.
 	const teULTIMA_NOTA = 1;
 	const teULTIMA_CONVOCATORIA = 2;
+	
+	// Mides
+	const AMPLADA_NOM = 300;
+	const AMPLADA_EXPEDIENT = 20;
+	const AMPLADA_GRUP = 25;
+	const AMPLADA_UF = 45;
+	const AMPLADA_HORA = 50;
 
 	/**
 	* Connexió a la base de dades.
@@ -332,12 +339,12 @@ class Notes extends Form
 		$this->IdGraella = $IdGraella;
 
 		// Formulari amb les notes
-		echo '<DIV id=notes'.$IdGraella.'>';
+		echo '<DIV id=notes'.$IdGraella.' style="height:850px;">';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
 		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-		echo '<TABLE id="TaulaNotes" border=0>';
+		echo '<TABLE id="TaulaNotes" class="table table-fixed table-striped table-hover table-sm" border=0>';
 
 		// Capçalera de la taula
 		$aModuls = [];
@@ -363,7 +370,8 @@ class Notes extends Form
 		$IdCurs = ($NivellCurs == $Nivell) ? $row["IdCurs"] : $row["IdCurs"]+1;
 
 		// Mòdul
-		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		echo '<THEAD class="thead-dark">';
+		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
@@ -373,49 +381,53 @@ class Notes extends Form
 				$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
 			else
 				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
-			echo '<TD width='.($iOcurrencies*25).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
+			echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
 			$index += $iOcurrencies;
 		}
 		echo "<TD></TD></TR>";
 	
 		// Unitat formativa
-		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
+		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
+//		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			
 			$UFId = $row["unitat_formativa_id"];
 			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
+				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
 			else
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
 		}
-		echo "<TD style='text-align:center' colspan=2>Hores</TD>";
+		echo "<TD width=125 style='text-align:center' colspan=2>Hores</TD>";
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
-			echo "<TD style='text-align:center;color:grey;'>UF</TD>";
-			echo "<TD style='text-align:center;color:grey;'>Nota</TD>";
+			echo "<TD width=50 style='text-align:center;color:grey;'>UF</TD>";
+			echo "<TD width=50 style='text-align:center;color:grey;'>Nota</TD>";
 		}
+		echo "<TD></TD>";
 		echo "</TR>";
 
 		// Hores
-		echo "<TR><TD></TD><TD></TD>";
-		echo "<TD style='text-align:center'>Grup</TD>";
-		echo "<TD style='text-align:center'>Tutoria</TD>";
+		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD>";
+		echo "<TD width=25 style='text-align:center'>G</TD>";
+		echo "<TD width=25 style='text-align:center'>T</TD>";
 		$TotalHores = 0;
 		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$TotalHores += $row["Hores"];
-			echo "<TD width=20 align=center>".$row["Hores"]."</TD>";
+			echo "<TD width=".self::AMPLADA_UF." align=center>".$row["Hores"]."</TD>";
 			array_push($aHores, $row["Hores"]);
 		}
-		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		echo "<TD style='text-align:center'>&percnt;</TD>";
+		echo "<TD width=50 style='text-align:center'>".$TotalHores."</TD>";
+		echo "<TD width=75 style='text-align:center'>&percnt;</TD>";
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
-			echo "<TD style='text-align:center;color:grey;'>suspeses</TD>";
-			echo "<TD style='text-align:center;color:grey;'>Mitjana</TD>";
+			echo "<TD width=50 style='text-align:center;color:grey;'>susp.</TD>";
+			echo "<TD width=50 style='text-align:center;color:grey;'>mitjana</TD>";
 		}
+		echo "<TD></TD>";
 		echo "</TR>";
+		echo "</THEAD>";
 
 		for($i = 0; $i < count($Notes->Alumne); $i++) {
 			$row = $Notes->Alumne[$i];
@@ -471,12 +483,12 @@ class Notes extends Form
 		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
 //		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
-			$Retorn .= "<TD></TD>";
+			$Retorn .= "<TD width=20></TD>";
 		else
-			$Retorn .= "<TD><A target=_blank href=$URL><IMG src=img/grades-sm.svg></A></TD>";
+			$Retorn .= "<TD width=20><A target=_blank href=$URL><IMG src=img/grades-sm.svg></A></TD>";
 
-		$Retorn .= "<TD style='text-align:center$Color'>".$row["Grup"]."</TD>";
-		$Retorn .= "<TD style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
+		$Retorn .= "<TD width=25 style='text-align:center$Color'>".$row["Grup"]."</TD>";
+		$Retorn .= "<TD width=25 style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";
 		$Hores = 0;
 		for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 			$row = $Notes->UF[$i][$j];
@@ -488,20 +500,17 @@ class Notes extends Form
 		$NotesAlumne = $Notes->Alumne[$i];
 		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
 //		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
-		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$NotesAlumne['Estadistiques']->HoresAprovades.'</TD>';
+		$Retorn .= '<TD width=50 id="'.$Id.'" style="text-align:center;color:grey">'.$NotesAlumne['Estadistiques']->HoresAprovades.'</TD>';
 		$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
 		$TotalPercentatge = $NotesAlumne['Estadistiques']->HoresAprovades/$NotesAlumne['Estadistiques']->HoresTotals*100;
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
-		$Retorn .= '<TD id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
+		$Retorn .= '<TD width=75 id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
 		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
 
 		// Estadístiques alumne
-//		$ea = EstadistiquesAlumne::Calcula($Notes->UF[$i]);
-
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
-//			$Retorn .= "<TD style='text-align:center;color:grey;'>".$this->NotaMitjana($Notes->UF[$i])."</TD>";style="color:grey;"
-			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->UFSuspeses."</TD>";
-			$Retorn .= "<TD style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->NotaMitjana."</TD>";
+			$Retorn .= "<TD width=50 style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->UFSuspeses."</TD>";
+			$Retorn .= "<TD width=50 style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->NotaMitjana."</TD>";
 		}
 		else
 			$Retorn .= "<TD></TD><TD></TD>";
@@ -519,7 +528,7 @@ class Notes extends Form
 		//$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
 		if ($bConvocatoriesAnteriors)
 			$class .= ' ConvocatoriesAnteriors';
-		$style = ($bConvocatoriesAnteriors) ? " style='display:none' " : "";
+		$style = ($bConvocatoriesAnteriors || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		
@@ -598,7 +607,7 @@ class Notes extends Form
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
-		return "<TD $Class width=2>"
+		return "<TD width=".self::AMPLADA_UF." $Class width=2>"
 			."<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip.
@@ -614,31 +623,37 @@ class Notes extends Form
 	private function CreaEstadistiquesUF($Notes, $Nivell): string {
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($Notes, $Nivell);
 
+		// Alumnes aprovats
 		$Retorn = '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats</TD>';
+		$Retorn .= '<TD width='.(self::AMPLADA_NOM+self::AMPLADA_EXPEDIENT+2*self::AMPLADA_GRUP).' colspan=4 style="text-align:right;">Alumnes aprovats</TD>';
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovats.'</TD>';
+			$Retorn .= '<TD width='.self::AMPLADA_UF.' style="text-align:center;">'.$euf->AlumnesAprovats.'</TD>';
 			
 		}
+		$Retorn .= '<TD></TD>';
 		$Retorn .= '</TR>';
 
+		// Alumnes aprovats convocatòries anteriors
 		$Retorn .= '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">Alumnes aprovats convocatòries anteriors</TD>';
+		$Retorn .= '<TD width='.(self::AMPLADA_NOM+self::AMPLADA_EXPEDIENT+2*self::AMPLADA_GRUP).' colspan=4 style="text-align:right;">Alumnes aprovats convocatòries anteriors</TD>';
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$Retorn .= '<TD style="text-align:center;">'.$euf->AlumnesAprovatsConvocatoriaAnterior.'</TD>';
+			$Retorn .= '<TD width='.self::AMPLADA_UF.' style="text-align:center;">'.$euf->AlumnesAprovatsConvocatoriaAnterior.'</TD>';
 			
 		}
+		$Retorn .= '<TD></TD>';
 		$Retorn .= '</TR>';
 
+		// % aprovats convocatòria actual
 		$Retorn .= '<TR style="color:grey;">';
-		$Retorn .= '<TD colspan=4 style="text-align:right;">% aprovats convocatòria actual</TD>';
+		$Retorn .= '<TD width='.(self::AMPLADA_NOM+self::AMPLADA_EXPEDIENT+2*self::AMPLADA_GRUP).' colspan=4 style="text-align:right;">% aprovats convocatòria actual</TD>';
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$Retorn .= '<TD style="text-align:center;">'.$euf->PercentatgeAprovats.'</TD>';
+			$Retorn .= '<TD width='.self::AMPLADA_UF.' style="text-align:center;">'.$euf->PercentatgeAprovats.'</TD>';
 			
 		}
+		$Retorn .= '<TD></TD>';
 		$Retorn .= '</TR>';
 
 		return $Retorn;
