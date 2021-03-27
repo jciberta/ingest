@@ -260,7 +260,7 @@ class Notes extends Form
 	const AMPLADA_NOM = 300;
 	const AMPLADA_EXPEDIENT = 20;
 	const AMPLADA_GRUP = 25;
-	const AMPLADA_UF = 45;
+	const AMPLADA_UF = 50;
 	const AMPLADA_HORA = 50;
 
 	/**
