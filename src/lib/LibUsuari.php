@@ -156,6 +156,7 @@ class Usuari
 		$frm->AfegeixText('municipi_naixement', 'Municipi naixement', 100);
 		$frm->AfegeixText('nacionalitat', 'Nacionalitat', 100);
 		$frm->AfegeixText('email', 'Correu electrònic', 100);
+		$frm->AfegeixText('email_ins', 'Correu electrònic INS', 100);
 
 		//$frm->AfegeixPassword('password', 'Contrasenya', 100, [FormFitxa::offREQUERIT]);
 		if (!$this->EsProfessor()) {

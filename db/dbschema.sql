@@ -75,6 +75,7 @@ CREATE TABLE USUARI
 	tipus_document     CHAR(1), /* Dni, Nie, Passaport */
 	document           VARCHAR(15),
     email              VARCHAR(100), 
+    email_ins          VARCHAR(100), /* @inspalamos.cat */
     telefon            VARCHAR(255),  
     adreca             VARCHAR(255), 
     codi_postal		   VARCHAR(10), 
