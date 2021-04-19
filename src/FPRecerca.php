@@ -71,22 +71,26 @@ switch ($accio) {
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Taula = 'CICLE_FORMATIU';
 		$frm->ClauPrimaria = 'cicle_formatiu_id';
-		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP';
-		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família';
+		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP, bool:actiu';
+		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família, Actiu';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=CiclesFormatius';
+		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		//$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->EscriuHTML();
         break;
     case "ModulsProfessionals":
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Mòduls professionals';
-		$frm->SQL = 'SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, es_fct AS FCT, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
+		$frm->SQL = 'SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, MP.actiu, es_fct AS FCT, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
 			' FROM MODUL_PROFESSIONAL MP '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Taula = 'MODUL_PROFESSIONAL';
 		$frm->ClauPrimaria = 'modul_professional_id';
-		$frm->Camps = 'codi, nom, hores, hores_setmana, bool:FCT, especialitat, cos, CodiCF, NomCF, NomFFP';
-		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, FCT, Especialitat, Cos, Codi, Cicle Formatiu, Família';
+		$frm->Camps = 'codi, nom, hores, hores_setmana, bool:FCT, especialitat, cos, CodiCF, NomCF, NomFFP, bool:actiu';
+		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, FCT, Especialitat, Cos, Codi, Cicle Formatiu, Família, Actiu';
 		$frm->PermetEditar = ($Usuari->es_admin);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ModulsProfessionals';
 		$frm->EscriuHTML();
@@ -95,14 +99,14 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
-		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.es_fct AS FCT, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, CF.nom AS NomCF'. 
+		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, CF.nom AS NomCF'. 
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
-		$frm->Camps = 'CodiUF, NomUF, nivell, HoresUF, bool:FCT, CodiMP, NomMP, CodiCF, NomCF ';
-		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu';
+		$frm->Camps = 'CodiUF, NomUF, nivell, HoresUF, bool:FCT, CodiMP, NomMP, CodiCF, NomCF, bool:activa';
+		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu, Activa';
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
@@ -113,7 +117,7 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
-		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, FormataData(data_inici) AS data_inici, FormataData(data_final) AS data_final ". 
+		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell, UF.activa, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, FormataData(data_inici) AS data_inici, FormataData(data_final) AS data_final ". 
 			' FROM UNITAT_FORMATIVA UF '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
@@ -124,8 +128,8 @@ switch ($accio) {
 					' WHERE PUF.professor_id='.$Usuari->usuari_id;
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
-		$frm->Camps = 'CodiCF, nivell, CodiMP, NomMP, CodiUF, NomUF, HoresUF, data_inici, data_final ';
-		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final';
+		$frm->Camps = 'CodiCF, nivell, CodiMP, NomMP, CodiUF, NomUF, HoresUF, data_inici, data_final, bool:activa';
+		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final, Activa';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));

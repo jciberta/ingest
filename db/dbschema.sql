@@ -20,6 +20,7 @@ CREATE TABLE CICLE_FORMATIU
     grau CHAR(2) NOT NULL,
     codi CHAR(3) NOT NULL,
     codi_xtec CHAR(4) NOT NULL,
+    actiu BIT NOT NULL DEFAULT 1,
 
     CONSTRAINT CicleFormatiuPK PRIMARY KEY (cicle_formatiu_id),
     CONSTRAINT CF_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id) 
@@ -37,6 +38,7 @@ CREATE TABLE MODUL_PROFESSIONAL
     especialitat VARCHAR(20),
     cos CHAR(1),
     es_fct BIT,
+    actiu BIT NOT NULL DEFAULT 1,
 
     CONSTRAINT ModulProfessionalPK PRIMARY KEY (modul_professional_id),
     CONSTRAINT CF_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id) 
@@ -55,6 +57,7 @@ CREATE TABLE UNITAT_FORMATIVA
 	data_final DATE,
     orientativa BIT,
     es_fct BIT,
+    activa BIT NOT NULL DEFAULT 1,
 
     CONSTRAINT UnitatFormativaPK PRIMARY KEY (unitat_formativa_id),
     CONSTRAINT MP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
@@ -65,7 +68,7 @@ CREATE TABLE USUARI
     /* U */
     usuari_id          INT NOT NULL,
     username           VARCHAR(100) NOT NULL,
-    password           VARCHAR(255) NOT NULL DEFAULT '*';
+    password           VARCHAR(255) NOT NULL DEFAULT '*',
     nom          	   VARCHAR(100),
     cognom1            VARCHAR(100), 
     cognom2            VARCHAR(100),

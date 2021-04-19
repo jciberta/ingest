@@ -56,6 +56,24 @@ switch ($accio) {
 		$frm->EscriuHTML();	
         break;
     case "CiclesFormatius":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php");
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Edició CF';
+		$frm->Taula = 'CICLE_FORMATIU';
+		$frm->ClauPrimaria = 'cicle_formatiu_id';
+		$frm->Id = $Id;
+		$frm->AfegeixText('codi', 'Codi', 20);
+		$frm->AfegeixText('nom', 'Nom', 200);
+		$frm->AfegeixText('grau', 'Grau', 20);
+		$frm->AfegeixText('codi_xtec', 'Codi XTEC', 20);
+		$frm->AfegeixLookup('familia_fp_id', 'Família', 200, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
+		$frm->AfegeixCheckBox('actiu', 'Actiu');
+		$frm->EscriuHTML();	
         break;
     case "ModulsProfessionals":
 		// Obtenció de l'identificador, sinó registre nou.
@@ -77,6 +95,7 @@ switch ($accio) {
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?');
 		$frm->AfegeixText('especialitat', 'Especialitat', 40);
 		$frm->AfegeixText('cos', 'Cos', 20);
+		$frm->AfegeixCheckBox('actiu', 'Actiu');
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormatives":
@@ -105,9 +124,9 @@ switch ($accio) {
 		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
 		$frm->AfegeixData('data_inici', 'Data inici');
 		$frm->AfegeixData('data_final', 'Data final');
-
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
 		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
+		$frm->AfegeixCheckBox('activa', 'Activa');		
 		$frm->EscriuHTML();
         break;
 }
