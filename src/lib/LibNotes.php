@@ -485,7 +485,7 @@ class Notes extends Form
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD width=20></TD>";
 		else
-			$Retorn .= "<TD width=20><A target=_blank href=$URL><IMG src=img/grades-sm.svg></A></TD>";
+			$Retorn .= "<TD style='width:20;vertical-align:middle;'><A target=_blank href=$URL><IMG src=img/grades-sm.svg></A></TD>";
 
 		$Retorn .= "<TD width=25 style='text-align:center$Color'>".$row["Grup"]."</TD>";
 		$Retorn .= "<TD width=25 style='text-align:center$Color'>".$row["GrupTutoria"]."</TD>";

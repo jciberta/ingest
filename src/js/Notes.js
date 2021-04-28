@@ -258,9 +258,23 @@ function NotaKeyDown(obj, event) {
 		// Avall
 		data[1]++;
 		var grd = data[0] + '_' + data[1] + '_' + data[2];
-		while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+		var objGrd = document.getElementById(grd);
+
+//console.log('grd:' + grd);
+//console.log($(objGrd).is(":visible"));
+//console.dir(objGrd);
+//console.log('window.getComputedStyle(objGrd).display: ' + window.getComputedStyle(objGrd).display);
+		var objTR = objGrd.parentNode.parentNode;
+//console.dir(objTR);
+//console.log('window.getComputedStyle(objTR).display: ' + window.getComputedStyle(objTR).display);
+//console.log('objGrd.style.display:' + objGrd.style.display);
+
+//		while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+		while ((objGrd !== null) && (objGrd.disabled || objTR.style.display === 'none')) {
 			data[1]++;
 			grd = data[0] + '_' + data[1] + '_' + data[2];
+			objGrd = document.getElementById(grd);
+			objTR = objGrd.parentNode.parentNode;
 		}
 		if (document.getElementById(grd) !== null)
 			document.getElementById(grd).focus();
@@ -271,9 +285,14 @@ function NotaKeyDown(obj, event) {
 		if (data[1] > 0) {
 			data[1]--;
 			var grd = data[0] + '_' + data[1] + '_' + data[2];
-			while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+			var objGrd = document.getElementById(grd);
+			var objTR = objGrd.parentNode.parentNode;
+//			while ((document.getElementById(grd) !== null) && (document.getElementById(grd).disabled)) {
+			while ((objGrd !== null) && (objGrd.disabled || objTR.style.display === 'none')) {
 				data[1]--;
 				grd = data[0] + '_' + data[1] + '_' + data[2];
+				objGrd = document.getElementById(grd);
+				objTR = objGrd.parentNode.parentNode;
 			}
 			if (document.getElementById(grd) !== null)
 				document.getElementById(grd).focus();
