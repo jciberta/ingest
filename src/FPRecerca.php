@@ -136,6 +136,14 @@ switch ($accio) {
 		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
         break;
+    case "PlaEstudisAny":
+		$frm = new PlaEstudisAny($conn, $Usuari);
+		$frm->EscriuHTML();
+        break;
+    case "PlaEstudisCicle":
+		$frm = new PlaEstudisCicle($conn, $Usuari);
+		$frm->EscriuHTML();
+        break;
 }
 
 ?>
