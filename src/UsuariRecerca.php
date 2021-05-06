@@ -49,12 +49,12 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, codi, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, usuari_bloquejat '.
 			' FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, email, codi';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Codi';
+		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -102,12 +102,12 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, telefon, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, codi, FormataData(data_naixement) AS data_naixement, Edat(data_naixement) AS edat, telefon, email, email_ins, usuari_bloquejat '.
 			' FROM USUARI WHERE es_alumne=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, telefon, codi';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, IDALU';
+		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, telefon, email, email_ins, codi';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Correu INS, IDALU';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -223,8 +223,8 @@ switch ($Accio) {
 		$frm->Camps = 'nom, cognom1, cognom2, username';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
 		if ($Usuari->es_admin) {
-			$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, Edat, poblacio ';
-			$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Població ';
+			$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, Edat, telefon, email, poblacio ';
+			$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Població ';
 		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
