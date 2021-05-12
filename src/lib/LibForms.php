@@ -270,7 +270,7 @@ class Form {
 		$sRetorn .= '<TD>';
 		if (get_class($this) == 'FormRecerca')
 			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
-		$sRetorn .= "  <select class='custom-select' $NomesLectura style='width:".$Longitud."px' name='cmb_$Nom' $onChange>";
+		$sRetorn .= "  <select class='custom-select' $NomesLectura style='width:".$Longitud."px' id='cmb_$Nom' name='cmb_$Nom' $onChange>";
 		$LongitudCodi = count($Codi); 
 		for ($i = 0; $i < $LongitudCodi; $i++) {
 			$Selected = (($CodiSeleccionat != '') && ($Codi[$i] == $CodiSeleccionat)) ? ' selected ': '';

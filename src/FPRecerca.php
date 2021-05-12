@@ -16,6 +16,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibPlaEstudis.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

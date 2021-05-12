@@ -1380,6 +1380,7 @@ class NotesModul extends Notes
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
 	 */
 	function __construct($con, $user) {
 		parent::__construct($con, $user);

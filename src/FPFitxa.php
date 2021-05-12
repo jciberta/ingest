@@ -33,6 +33,7 @@ if (empty($_GET))
 	$accio = 'Families';
 else
 	$accio = $_GET['accio'];
+//echo "Accio: $accio";
 
 // Destruim l'objecte per si estava ja creat.
 unset($frm);
@@ -98,6 +99,28 @@ switch ($accio) {
 		$frm->AfegeixCheckBox('actiu', 'Actiu');
 		$frm->EscriuHTML();
         break;
+    case "ModulsProfessionalsPlaEstudis":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php");
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = "Edició MP Pla d'estudis";
+		$frm->Taula = 'MODUL_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'modul_pla_estudi_id';
+		$frm->Id = $Id;
+		$frm->AfegeixText('codi', 'Codi', 20);
+		$frm->AfegeixText('nom', 'Nom', 200);
+		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixEnter('hores_setmana', 'Hores setmana', 20);
+//		$frm->AfegeixLookup('cicle_formatiu_id', 'Cicle formatiu', 200, 'FPRecerca.php?accio=CiclesFormatius', 'CICLE_FORMATIU', 'cicle_formatiu_id', 'codi, nom');
+		$frm->AfegeixCheckBox('es_fct', 'És FCT?');
+		$frm->AfegeixText('especialitat', 'Especialitat', 40);
+		$frm->AfegeixText('cos', 'Cos', 20);
+		$frm->EscriuHTML();
+        break;
     case "UnitatsFormatives":
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
@@ -127,6 +150,34 @@ switch ($accio) {
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
 		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->AfegeixCheckBox('activa', 'Activa');		
+		$frm->EscriuHTML();
+        break;
+    case "UnitatsFormativesPlaEstudis":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php");
+		
+		$Opcions = [FormFitxa::offREQUERIT];
+		$NomesLectura = !($Usuari->es_admin); // No cal
+		if ($NomesLectura)
+			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = "Edició UF Pla d'estudis";
+		$frm->Taula = 'UNITAT_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'unitat_pla_estudi_id';
+		$frm->Id = $Id;
+		$frm->AfegeixText('codi', 'Codi', 20, $Opcions);
+		$frm->AfegeixText('nom', 'Nom', 200, $Opcions);
+		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
+//		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $Opcions);
+		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
+		$frm->AfegeixData('data_inici', 'Data inici');
+		$frm->AfegeixData('data_final', 'Data final');
+		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
+		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->EscriuHTML();
         break;
 }
