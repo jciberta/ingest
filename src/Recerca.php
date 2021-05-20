@@ -6,7 +6,9 @@
  * Formularis de recerques per les taules generals:
  *  - Any acadèmic
  *  - Equips
- *
+ *  - Històric cursos
+ *  - Avaluacions
+ *  - Registres
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -108,11 +110,8 @@ switch ($accio) {
 		$frm->Taula = 'REGISTRE';		
 		$frm->Camps = 'usuari_id, nom_usuari, data, ip, seccio, missatge';
 		$frm->Descripcions = 'usuari_id, Usuari, Data, IP, Secció, Missatge';
-		$frm->Filtre->AfegeixLookup('usuari_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
-
-//	public function CreaLookup(string $Nom, string $Titol, int $Longitud, string $URL, string $Taula, string $Id, string $Camps, array $off = [], $CodiSeleccionat = '', $onChange = '') {
-
-
+//		$frm->Filtre->AfegeixLookup('usuari_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
+		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
 		$frm->EscriuHTML();
         break;		
 }
