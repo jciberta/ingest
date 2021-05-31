@@ -1116,6 +1116,7 @@ class Notes extends Form
 		// Mòduls
 		$aNotes = [];
 		array_push($aNotes, '');
+		array_push($aNotes, '');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
 			array_push($aNotes, utf8_encode($row["CodiMP"]));
@@ -1127,6 +1128,7 @@ class Notes extends Form
 
 		// Unitats formatives
 		$aNotes = [];
+		array_push($aNotes, '');
 		array_push($aNotes, '');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
