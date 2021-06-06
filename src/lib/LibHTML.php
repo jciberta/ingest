@@ -71,6 +71,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
 //	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
 	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
 	if ($bSaga)
 		$Retorn .= '	<link rel="stylesheet" href="css/saga.css">';
@@ -81,6 +82,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
 	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
 	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
+	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
 	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
 	$Retorn .= '	<script src="js/Util.js"></script>';
 	$Retorn .= '</HEAD>';
@@ -215,7 +217,11 @@ echo '  <a class="js-scroll-top scroll-top btn btn-primary btn-sm hidden" href="
 echo '    <span class="fas fa-caret-up fa-2x"></span>';
 echo '  </a>';
 */	
-
+	echo "<script>";
+	echo "$(document).ready(function() {";
+  	echo "	$('.summernote').summernote({lang:'ca-ES',height:100});";
+	echo "});";
+	echo "</script>";
 
 	echo '</BODY>';
 }

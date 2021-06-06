@@ -38,7 +38,8 @@ class Form {
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
 	const tcFOTOGRAFIA = 11;
-	const tcHTML = 12;
+	const tcTEXT_RIC = 12;
+	const tcHTML = 13;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -383,6 +384,27 @@ class Form {
 		$sRetorn = '<TD><IMG SRC="'.$Fitxer.'"></TD>';
 		return $sRetorn;
 	}	
+
+	/**
+	 * Crea un text amb format (RichEdit o RichMemo).
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del control.
+	 * @param integer $Longitud Longitud del text.
+	 * @param integer $Altura Altura del text.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Contingut Valor del text per defecte.
+	 * @return string Codi HTML del text enriquit.
+	 */
+	public function CreaTextRic(string $Nom, string $Titol, int $Longitud, int $Altura, string $Contingut = '', array $off = []) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+		$sNom = 'red__' . $Nom;
+		$sRetorn = '<TD valign=top><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= "<span class='summernote'>$Contingut</span>";
+		$sRetorn .= '</TD>';
+		return $sRetorn;
+	}
 
 	/**
 	 * Crea un text amb contingut HTML.
@@ -1564,6 +1586,28 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Sufix = $Sufix;
 		$this->Camps[$i]->Opcions = [];
 	}
+	
+	/**
+	 * Afegeix un text amb format (RichEdit o RichMemo).
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Titol Títol del control.
+	 * @param integer $Longitud Longitud del text.
+	 * @param integer $Altura Altura del text.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Contingut Valor del text per defecte.
+	 * @return string Codi HTML del text enriquit.
+	 */
+	public function AfegeixTextRic(string $Camp, string $Titol, int $Longitud, int $Altura, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcTEXT_RIC;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Longitud = 5*$Longitud;
+//		$this->Camps[$i]->Altura = $Altura;
+		$this->Camps[$i]->Opcions = $off;		
+	}	
 
 	/**
 	 * Afegeix un text fix en HTML.
@@ -1785,6 +1829,15 @@ class FormFitxa extends Form {
 //echo '<hr>'.$this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
 					break;
+				case self::tcTEXT_RIC:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
+//print_r($sRetorn);					
+//					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
+					break;
+					
+					
+					
 				case self::tcHTML:
 					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
