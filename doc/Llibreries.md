@@ -9,4 +9,5 @@
 - Datepicker for Bootstrap 1.6.4 (https://github.com/eternicode/bootstrap-datepicker). Llicència Apache License v2.0
 - TCPDF (https://tcpdf.org/). Llicència GNU LGPL v3
 - PHPMailer 6.1 (https://github.com/PHPMailer/PHPMailer). Llicència GNU LGPL 2.1
+- Chart.js 3.3.2 (https://www.chartjs.org/). Llicència MIT
 - Summernote 0.8.18 (https://summernote.org). Llicència MIT
