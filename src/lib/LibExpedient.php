@@ -37,10 +37,16 @@ class Expedient extends Form
 	private $SistemaOperatiu = '';
 
 	/**
-	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	* Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	* @var array
+	*/
+    public $Registre = [];
+
+	/**
+	* Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
 	* @var object
 	*/
-    public $Registre = NULL;
+    public $RegistreAlumne = NULL;
 
 	/**
 	* Registre que conté les notes dels mòduls. Es carrega amb CarregaNotesMP.
@@ -441,8 +447,23 @@ class ExpedientSaga extends Expedient
 		} catch (Exception $e) {
 			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
 		}
-		$this->Registre = $ResultSet;
-//print_r($this->Registre);
+		//$this->Registre = $ResultSet;
+		
+		$this->Registre = [];
+		
+		//$ResultSet = $this->Registre;
+
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				array_push($this->Registre, $row); 
+				$row = $ResultSet->fetch_assoc();
+			}
+		};		
+		
+		
+		
+//print_h($this->Registre);
 //exit;
 	}
 
@@ -450,7 +471,7 @@ class ExpedientSaga extends Expedient
 	 * Carrega les dades de l'alumne al Registre.
 	 */
 	private function CarregaDadesAlumne() {
-		$this->Registre = NULL;
+		$this->RegistreAlumne = NULL;
 		$SQL = self::SQLDadesAlumne($this->MatriculaId);
 //print_r($SQL);
 //exit;
@@ -462,8 +483,8 @@ class ExpedientSaga extends Expedient
 			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
 		}
 		if ($ResultSet->num_rows > 0)
-			$this->Registre = $ResultSet->fetch_object();
-//print_r($this->Registre);
+			$this->RegistreAlumne = $ResultSet->fetch_object();
+//print_r($this->RegistreAlumne);
 //exit;
 	}
 
@@ -636,9 +657,6 @@ class ExpedientSaga extends Expedient
 	 * @return string HTML amb la capçalera l'expedient.
 	 */
 	private function GeneraTitol(): string {
-		$this->CarregaDadesAlumne();
-
-//print_r($this->Registre);
 		$Retorn = '<BR>';
 
 		$Retorn .= '<TABLE width="740px"><TR><TD>';
@@ -647,20 +665,20 @@ class ExpedientSaga extends Expedient
 		$Retorn .= '<TABLE style="color:white;" width="450px">';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Cicle Formatiu</B></TD>';
-		$Retorn .= '<TD>'.utf8_encode($this->Registre->nom).'</TD>';
+		$Retorn .= '<TD>'.utf8_encode($this->RegistreAlumne->nom).'</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Grup classe</B></TD>';
-		$Retorn .= '<TD>'.$this->Registre->codi.' '.$this->Registre->grup_tutoria.' ('.$this->Registre->codi_xtec.')</TD>';
+		$Retorn .= '<TD>'.$this->RegistreAlumne->codi.' '.$this->RegistreAlumne->grup_tutoria.' ('.$this->RegistreAlumne->codi_xtec.')</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Alumne</TD>';
-		$Retorn .= '<TD>'.utf8_encode(trim($this->Registre->Cognom1Alumne.' '.$this->Registre->Cognom2Alumne).', '.$this->Registre->NomAlumne).'</TD>';
+		$Retorn .= '<TD>'.utf8_encode(trim($this->RegistreAlumne->Cognom1Alumne.' '.$this->RegistreAlumne->Cognom2Alumne).', '.$this->RegistreAlumne->NomAlumne).'</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= "<TD><B>Sessió d'avaluació</B></TD>";
 		$Retorn .= '<TD>';
-		$Retorn .= ($this->Registre->avaluacio == 'ORD') ? Ordinal($this->Registre->trimestre).' trimestre' : 'Extraordinària';
+		$Retorn .= ($this->RegistreAlumne->avaluacio == 'ORD') ? Ordinal($this->RegistreAlumne->trimestre).' trimestre' : 'Extraordinària';
 		$Retorn .= '</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '</TABLE>';
@@ -713,9 +731,6 @@ class ExpedientSaga extends Expedient
 	 * @return string Taula amb les notes de l'expedient.
 	 */
 	private function GeneraTaula(): string {
-		$this->Carrega();
-		$this->CarregaMitjanesModuls();
-
 		$i = 0; // Comptador de files
 		$sRetorn = '<input type=hidden id=Formulari value=ExpedientSaga>';
 
@@ -737,34 +752,30 @@ class ExpedientSaga extends Expedient
 		$sRetorn .= '<th class="contingut">Coment.</th>';
 		$sRetorn .= '</tr>';
 
-		$ResultSet = $this->Registre;
-
-		if ($ResultSet->num_rows > 0) {
-			$row = $ResultSet->fetch_assoc();
-			$ModulAnterior = '';
-			while($row) {
-				if ($row["CodiMP"] != $ModulAnterior) {
-					// Fila corresponent al mòdul
-					$sRetorn .= '<TR class="tdContingut_001">';
-					$sRetorn .= '<TD class="llistat3">'.utf8_encode($row["CodiMP"]).'</TD>';
-					$sRetorn .= '<TD class="llistat3"><b>'.utf8_encode($row["CodiMP"].'. '.$row["NomMP"]).'</b></TD>';
-					$sRetorn .= '<TD class="llistat3">'.$row["HoresMP"].'</TD>';
-					$sRetorn .= $this->CreaCellaNotaModul($row["IdMP"], $i);
-					$i++;
-					$sRetorn .= '</TR>';
-				}
-				$ModulAnterior = $row["CodiMP"];
-				// Fila corresponent a la UF
-				$sRetorn .= "<TR class='tdContingut_00101 Nivell".$row["NivellUF"]."'>";
-				$sRetorn .= "<TD class='llistat1'>"."</TD>";
-				$sRetorn .= "<TD class='llistat1' width=200>".utf8_encode($row["NomUF"])."</TD>";
-				$sRetorn .= "<TD class='llistat1' width=50>".$row["HoresUF"]."</TD>";
-				$sRetorn .= $this->CreaCellaNota($row, $i);
+		$ModulAnterior = '';
+		foreach ($this->Registre as $row) {
+			if ($row["CodiMP"] != $ModulAnterior) {
+				// Fila corresponent al mòdul
+				$sRetorn .= '<TR class="tdContingut_001">';
+				$sRetorn .= '<TD class="llistat3">'.utf8_encode($row["CodiMP"]).'</TD>';
+				$sRetorn .= '<TD class="llistat3"><b>'.utf8_encode($row["CodiMP"].'. '.$row["NomMP"]).'</b></TD>';
+				$sRetorn .= '<TD class="llistat3">'.$row["HoresMP"].'</TD>';
+				$sRetorn .= $this->CreaCellaNotaModul($row["IdMP"], $i);
 				$i++;
-				$sRetorn .= "</TR>";
-				$row = $ResultSet->fetch_assoc();
+				$sRetorn .= '</TR>';
 			}
-		};
+			$ModulAnterior = $row["CodiMP"];
+			// Fila corresponent a la UF
+			$sRetorn .= "<TR class='tdContingut_00101 Nivell".$row["NivellUF"]."'>";
+			$sRetorn .= "<TD class='llistat1'>"."</TD>";
+			$sRetorn .= "<TD class='llistat1' width=200>".utf8_encode($row["NomUF"])."</TD>";
+			$sRetorn .= "<TD class='llistat1' width=50>".$row["HoresUF"]."</TD>";
+			$sRetorn .= $this->CreaCellaNota($row, $i);
+			$i++;
+			$sRetorn .= "</TR>";
+		
+		}
+		
 		$sRetorn .= '</tbody>';
 		$sRetorn .= '</table>';
 		$sRetorn .= "<input type=hidden name=TempNota value=''>";
@@ -793,9 +804,13 @@ class ExpedientSaga extends Expedient
 		echo '<div style="padding-left: 20px; padding-right: 5px; color: white; background-color: rgb(141, 164, 160); height: 750px;" id="content">';
 		echo '<div id="dades" style="display: block;">';
 
+		$this->Carrega();
+		$this->CarregaMitjanesModuls();
+		$this->CarregaDadesAlumne();
+
 		echo $this->GeneraTitol();
 		echo $this->GeneraTaula();
-		//echo $this->GeneraPeu();
+		echo $this->GeneraPeu();
 
 		echo '</div>';
 		echo '</div>';
