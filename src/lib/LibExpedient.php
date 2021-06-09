@@ -1,6 +1,6 @@
 ﻿<?php
 
-/** 
+/**
  * LibExpedient.php
  *
  * Llibreria d'utilitats per a l'expedient.
@@ -20,32 +20,32 @@ require_once(ROOT.'/lib/LibAvaluacio.php');
 
 
 /**
- * Classe que encapsula les utilitats per al maneig de l'expedient. 
+ * Classe que encapsula les utilitats per al maneig de l'expedient.
  */
 class Expedient extends Form
 {
 	/**
 	* Connexió a la base de dades.
 	* @var object
-	*/    
+	*/
 	//public $Connexio;
 
 	/**
 	* Sistema operatiu (Windows, Linux).
 	* @var string
-	*/    
+	*/
 	private $SistemaOperatiu = '';
 
 	/**
 	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
 	* @var object
-	*/    
+	*/
     public $Registre = NULL;
 
 	/**
 	* Registre que conté les notes dels mòduls. Es carrega amb CarregaNotesMP.
 	* @var array
-	*/    
+	*/
 	private $NotesMP = NULL;
 
 	/**
@@ -57,11 +57,11 @@ class Expedient extends Form
 		parent::__construct($conn, $user);
 		//$this->Connexio = $con;
 		$this->NotesMP = [];
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 			$this->SistemaOperatiu = 'Windows';
-		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') 
+		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN')
 			$this->SistemaOperatiu = 'Linux';
-	}	
+	}
 
 	/**
 	 * Genera la SQL per obtenir l'expedient d'un alumne.
@@ -113,7 +113,7 @@ class Expedient extends Form
 		while($row) {
 			$this->NotesMP[$row["modul_professional_id"]] = $row["nota"];
 			$row = $ResultSet->fetch_assoc();
-		}		
+		}
 		$ResultSet->close();
     }
 
@@ -183,7 +183,7 @@ class Expedient extends Form
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
 					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
 						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_professional_id"]]);
-//						$Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
+//                                              $Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
 					else
 						$Qualificacions[$i]->Qualf = '';
 					$Qualificacions[$i]->Conv = 'Ord.';
@@ -214,7 +214,7 @@ class Expedient extends Form
 			$HTML = '<TABLE>';
 			$HTML .= "<TR>";
 			$HTML .= '<TD style="width:50%">';
-	
+
 			// Mòdul professional
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
@@ -247,12 +247,12 @@ class Expedient extends Form
 			$pdf->writeHTML($HTML, True);
 		}
 
-		$pdf->Titol2("Comentaris de l'avaluació");
+		$pdf->Titol2(utf8_decode("Comentaris de l'avaluació"));
 		$pdf->Escriu("Sense comentaris");
 
 		$pdf->Titol2("Llegenda");
-		$pdf->Escriu("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
-		$pdf->Escriu("L'anotació * identifica les qualificacions orientatives");
+		$pdf->Escriu(utf8_decode("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
+		$pdf->Escriu(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
 
 		// Close and output PDF document
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
@@ -268,13 +268,13 @@ class Expedient extends Form
 	 */
 	private function ComandaPHP(): string {
 		$Retorn = '';
-		if ($this->SistemaOperatiu === 'Windows') 
+		if ($this->SistemaOperatiu === 'Windows')
 			$Retorn = UNITAT_XAMPP.':\xampp\php\php.exe';
-		else if ($this->SistemaOperatiu === 'Linux') 
+		else if ($this->SistemaOperatiu === 'Linux')
 			$Retorn = 'php';
 		return $Retorn;
 	}
-	
+
 	/**
 	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
 	 * @param integer $Curs Identificador del curs.
@@ -313,16 +313,16 @@ class Expedient extends Form
 	public function EscriuScript($Curs, $Sufix): string {
 		echo GeneraScript($Curs, $Sufix);
 	}
-	
+
 	private function TextAvaluacio($Avaluacio, $Trimestre) {
 		if ($Avaluacio == 'ORD')
-			return 'Ordinària '.Ordinal($Trimestre).' T';
+			return utf8_decode('Ordinària ').Ordinal($Trimestre).' T';
 		else if ($Avaluacio == 'EXT')
-			return 'Extraordinària';
+			return utf8_decode('Extraordinària');
 		else
 			return '';
 	}
-	
+
 	public static function CarregaNotesExpedient($ResultSet) {
 		$Retorn = [];
 		if ($ResultSet->num_rows > 0) {
@@ -342,32 +342,32 @@ class Expedient extends Form
 				array_push($MP->UF, $row);
 				$row = $ResultSet->fetch_object();
 			}
-		};	
+		};
 		return $Retorn;
-	}	
+	}
 }
 
 /**
  * Classe per a l'expedient de SAGA.
  */
-class ExpedientSaga extends Expedient 
+class ExpedientSaga extends Expedient
 {
 	/**
 	* Identificador de la matrícula.
 	* @var integer
-	*/    
+	*/
 	private $MatriculaId = -1;
 
 	/**
 	* Objecte matrícula.
 	* @var object
-	*/    
+	*/
 	private $Matricula = NULL;
 
 	/**
 	* Objecte professor.
 	* @var object
-	*/    
+	*/
 	private $Professor = NULL;
 	/**
 	* Registre que conté les mitjanes dels mòduls per a una matrícula.
@@ -375,7 +375,7 @@ class ExpedientSaga extends Expedient
 	*  - Clau: Id del mòdul
 	*  - Valor: Registre de la taula NOTES_MP
 	* @var array
-	*/    
+	*/
 	private $RegistreMitjanes = NULL;
 
 	/**
@@ -385,34 +385,17 @@ class ExpedientSaga extends Expedient
 	 */
 	function __construct($conn, $user, $MatriculaId) {
 		parent::__construct($conn);
-		
+
 		$this->Connexio = $conn;
 		$this->Usuari = $user;
 		$this->MatriculaId = $MatriculaId;
-		
+
 		$this->Matricula = new Matricula($conn, $user);
 		$this->Matricula->Carrega($this->MatriculaId);
 		$this->RegistreMitjanes = [];
-//print_h($this->Matricula);
-//exit;
-
 
 		$this->Professor = new Professor($conn, $user);
 		$this->Professor->CarregaUFAssignades();
-//if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-//	header("Location: Surt.php");
-		//$this->Professor->CarregaTutor($CursId);
-
-
-
-/*
-$alumne = $Matricula->ObteAlumne();
-$nivell = $Matricula->ObteNivell();		
-	*/	
-		
-		
-		//$this->Registre = new stdClass();
-		//$this->RegistreMitjanes = [];
 	}
 
 	/**
@@ -432,8 +415,8 @@ $nivell = $Matricula->ObteNivell();
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' WHERE M.matricula_id='.$MatriculaId;
 		return $SQL;
-    }
-	
+}
+
 	/**
 	 * Genera la sentència SQL per recuperar les notes mitjanes dels mòduls d'una matrícula.
 	 * @return string Sentència SQL.
@@ -442,7 +425,7 @@ $nivell = $Matricula->ObteNivell();
 		$sRetorn = 'SELECT * FROM NOTES_MP WHERE matricula_id='.$this->MatriculaId;
 		return $sRetorn;
 	}
-	
+
 
 	/**
 	 * Carrega les dades de l'expedient al Registre.
@@ -457,7 +440,7 @@ $nivell = $Matricula->ObteNivell();
 				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
 			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
-		}	
+		}
 		$this->Registre = $ResultSet;
 //print_r($this->Registre);
 //exit;
@@ -477,8 +460,8 @@ $nivell = $Matricula->ObteNivell();
 				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
 			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
-		}	
-		if ($ResultSet->num_rows > 0) 
+		}
+		if ($ResultSet->num_rows > 0)
 			$this->Registre = $ResultSet->fetch_object();
 //print_r($this->Registre);
 //exit;
@@ -486,10 +469,10 @@ $nivell = $Matricula->ObteNivell();
 
 	/**
 	 * Carrega el registre de mitjanesdels mòduls.
-	 */				
+	 */
 	private function CarregaMitjanesModuls() {
 		$SQL = $this->SQLMitjanesModuls();
-//print_h($SQL);		
+//print_h($SQL);
 		$ResultSet = $this->Connexio->query($SQL);
 
 		if ($ResultSet->num_rows > 0) {
@@ -521,34 +504,34 @@ $nivell = $Matricula->ObteNivell();
 			// UF convalidada
 			$Nota = NumeroANota(Notes::UltimaNotaAvaluada($row));
 			$Convocatoria = Notes::UltimaConvocatoria($row);
-			
+
 			$style = "width:50px;text-align:center;background-color:blue;color:white;";
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
 			$sRetorn .= "<input type='text' style='$style' name='notaJunta' id='$Id' disabled value='A) $Nota'>";
-			$sRetorn .= '</td>';	
-			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50></td>";						
-			$sRetorn .= "<td class='llistat1' width=50>Convalidada</td>";						
+			$sRetorn .= '</td>';
+			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50></td>";
+			$sRetorn .= "<td class='llistat1' width=50>Convalidada</td>";
 		}
 		else if ($row['Baixa'] == True) {
 			// Baixa UF
 			$style = "width:50px;text-align:center;";
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
 			$sRetorn .= "<input type='text' class='micro numero no-editable' style='$style' id='$Id' disabled value=''>";
-			$sRetorn .= '</td>';	
-			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50></td>";						
-			$sRetorn .= "<td class='llistat1' width=50>Baixa</td>";						
+			$sRetorn .= '</td>';
+			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50></td>";
+			$sRetorn .= "<td class='llistat1' width=50>Baixa</td>";
 		}
 		else if ($row['convocatoria'] == 0) {
 			// UF aprovada
 			$Nota = NumeroANota(Notes::UltimaNotaAvaluada($row));
 			$Convocatoria = Notes::UltimaConvocatoria($row);
-			
+
 			$style = "width:50px;text-align:center;";
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
 			$sRetorn .= "<input type='text' class='micro numero no-editable' style='$style' name='notaJunta' id='$Id' disabled value='A) $Nota'>";
-			$sRetorn .= '</td>';	
-			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50>".$Convocatoria."</td>";						
-			$sRetorn .= "<td class='llistat1' width=50></td>";						
+			$sRetorn .= '</td>';
+			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50>".$Convocatoria."</td>";
+			$sRetorn .= "<td class='llistat1' width=50></td>";
 		}
 		else {
 			// UF actual
@@ -563,10 +546,10 @@ $nivell = $Matricula->ObteNivell();
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
 			$sRetorn .= "<input type=text class='micro numero' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
 				" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);' >";
-			$sRetorn .= '</td>';	
-			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50>".$Convocatoria."</td>";						
-			$sRetorn .= "<td class='llistat1' width=50></td>";						
-		}			
+			$sRetorn .= '</td>';
+			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50>".$Convocatoria."</td>";
+			$sRetorn .= "<td class='llistat1' width=50></td>";
+		}
 		return $sRetorn;
 	}
 
@@ -582,22 +565,22 @@ $nivell = $Matricula->ObteNivell();
 		if (array_key_exists($IdMP, $this->RegistreMitjanes)) {
 //print_h($this->RegistreMitjanes);
 //print_h($this->RegistreMitjanes[$IdMP]);
-//exit;				
+//exit;
 			$NotaId = $this->RegistreMitjanes[$IdMP]['notes_mp_id'];
 			$Nota = $this->RegistreMitjanes[$IdMP]['nota'];
 		}
-		
-//		$style .= "text-align:center;text-transform:uppercase;";
-//		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
-//		$Convalidat = ($row["Convalidat"] == True);
-//		$Deshabilitat = '';		
+
+//              $style .= "text-align:center;text-transform:uppercase;";
+//              $Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
+//              $Convalidat = ($row["Convalidat"] == True);
+//              $Deshabilitat = '';
 
 		$Deshabilitat = '';
 		if (!$this->Professor->TeMP($IdMP) && !$this->Professor->EsAdmin() && !$this->Professor->EsDireccio() && !$this->Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
-		
+
 		$sRetorn = '';
-	
+
 		// <INPUT>
 		// name: conté identificadors de la nota, matrícula i mòdul.
 		// id: conté les coordenades x, y. Inici a (0, 0). Y sempre 0 per compatibilitat amb LibNotes.
@@ -606,17 +589,17 @@ $nivell = $Matricula->ObteNivell();
 
 		$style = "width:50px;text-align:center;text-transform:uppercase;";
 		$sRetorn .= '<td class="llistat3" style="text-align:center;">';
-		
+
 		$sRetorn .= "<input type=text class='micro numero' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);' >";
-		
-		$sRetorn .= '</td>';	
-		$sRetorn .= "<td class='llistat3' width=50></td>";						
-		$sRetorn .= "<td class='llistat3' width=50></td>";						
+
+		$sRetorn .= '</td>';
+		$sRetorn .= "<td class='llistat3' width=50></td>";
+		$sRetorn .= "<td class='llistat3' width=50></td>";
 
 		return $sRetorn;
 	}
-	
+
 	/**
 	 * Cerca la matrícula anterior d'una matrícula dins un array ordenat per nom de l'alumne.
 	 * @param array $aMatricules Array de matrícules.
@@ -630,7 +613,7 @@ $nivell = $Matricula->ObteNivell();
 				$iRetorn = $aMatricules[$i-1];
 		}
 		return $iRetorn;
-	}	
+	}
 
 	/**
 	 * Cerca la matrícula posterior d'una matrícula dins un array ordenat per nom de l'alumne.
@@ -646,8 +629,8 @@ $nivell = $Matricula->ObteNivell();
 				$iRetorn = $aMatricules[$i+1];
 		}
 		return $iRetorn;
-	}	
-	
+	}
+
 	/**
 	 * Genera la capçalera de l'expedient.
 	 * @return string HTML amb la capçalera l'expedient.
@@ -657,9 +640,9 @@ $nivell = $Matricula->ObteNivell();
 
 //print_r($this->Registre);
 		$Retorn = '<BR>';
-		
+
 		$Retorn .= '<TABLE width="740px"><TR><TD>';
-		
+
 		// Dades alumne
 		$Retorn .= '<TABLE style="color:white;" width="450px">';
 		$Retorn .= '<TR>';
@@ -689,7 +672,7 @@ $nivell = $Matricula->ObteNivell();
 		$CursId = $this->Matricula->ObteCurs();
 		$Grup = $this->Matricula->ObteGrupTutoria();
 		$CursIdGrup = $CursId.','.$Grup;
-		$aMatricules = $av->LlistaMatricules($CursIdGrup);		
+		$aMatricules = $av->LlistaMatricules($CursIdGrup);
 //print_h($aMatricules);
 		$MatriculaAnterior = $this->MatriculaAnterior($aMatricules, $this->MatriculaId);
 		$MatriculaPosterior = $this->MatriculaPosterior($aMatricules, $this->MatriculaId);
@@ -724,7 +707,7 @@ $nivell = $Matricula->ObteNivell();
 		$Retorn .= '<BR>';
 		return $Retorn;
 	}
-		
+
 	/**
 	 * Genera la llista de notes de l'expedient.
 	 * @return string Taula amb les notes de l'expedient.
@@ -732,12 +715,12 @@ $nivell = $Matricula->ObteNivell();
 	private function GeneraTaula(): string {
 		$this->Carrega();
 		$this->CarregaMitjanesModuls();
-		
+
 		$i = 0; // Comptador de files
 		$sRetorn = '<input type=hidden id=Formulari value=ExpedientSaga>';
-			
+
 		$alumne = $this->Matricula->ObteAlumne();
-		$nivell = $this->Matricula->ObteNivell();		
+		$nivell = $this->Matricula->ObteNivell();
 
 		//$sRetorn .= '<div class="contingut" style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 696px;" id="content">';
 		$sRetorn .= '<div class="contingut" style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 650px; border: solid white 0px;" id="content">';
@@ -781,12 +764,12 @@ $nivell = $Matricula->ObteNivell();
 				$sRetorn .= "</TR>";
 				$row = $ResultSet->fetch_assoc();
 			}
-		};			
+		};
 		$sRetorn .= '</tbody>';
 		$sRetorn .= '</table>';
 		$sRetorn .= "<input type=hidden name=TempNota value=''>";
 		$sRetorn .= '</div>';
-		
+
 		return $sRetorn;
 	}
 
@@ -809,11 +792,11 @@ $nivell = $Matricula->ObteNivell();
 
 		echo '<div style="padding-left: 20px; padding-right: 5px; color: white; background-color: rgb(141, 164, 160); height: 750px;" id="content">';
 		echo '<div id="dades" style="display: block;">';
-		
+
 		echo $this->GeneraTitol();
 		echo $this->GeneraTaula();
 		//echo $this->GeneraPeu();
-		
+
 		echo '</div>';
 		echo '</div>';
 		CreaFinalHTML();
@@ -823,44 +806,44 @@ $nivell = $Matricula->ObteNivell();
 /**
  * Classe per a l'informe de qualificacions en PDF.
  */
-class QualificacionsPDF extends DocumentPDF 
+class QualificacionsPDF extends DocumentPDF
 {
 	/**
 	* Any acadèmic.
 	* @var string
-	*/    
+	*/
 	public $AnyAcademic = '';
 
 	/**
 	* Nom complet de l'alumne.
 	* @var string
-	*/    
+	*/
 	public $NomComplet = '';
 
 	/**
 	* DNI l'alumne.
 	* @var string
-	*/    
+	*/
 	public $DNI = '';
 
 	/**
 	* Nom del cicle formatiu.
 	* @var string
-	*/    
+	*/
 	public $CicleFormatiu = '';
 
 	/**
 	* Grup del curs de l'alumne.
 	* @var string
-	*/    
+	*/
 	public $Grup = '';
 
 	/**
 	* Avaluació.
 	* @var string
-	*/    
+	*/
 	public $Avaluacio = '';
-	
+
     // Capçalera
     public function Header() {
         // Logo
@@ -878,26 +861,26 @@ class QualificacionsPDF extends DocumentPDF
 
 		$this->Titol2("Dades del centre");
 		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
-		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
+		$this->Encolumna5(utf8_decode("Institut de Palamós"), "", "", "17005352", utf8_decode("Palamós"));
 
 		$this->Titol2("Dades de l'alumne");
 		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
 		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
 
 		$this->Titol2("Dades dels estudis");
-		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
+		$this->Encolumna5("Cicle formatiu", "", "", utf8_decode("Avaluació"), "");
 		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
 
 		$this->Titol2("Qualificacions");
 
 		$HTML = '<TABLE>';
 		$HTML .= "<TR>";
-	
+
 		// Mòdul professional
 		$HTML .= '<TD style="width:50%">';
 		$HTML .= "<TABLE>";
 		$HTML .= "<TR>";
-		$HTML .= '<TD style="width:55%">Mòdul</TD>';
+		$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
 		$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 		$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
 		$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
@@ -933,8 +916,9 @@ class QualificacionsPDF extends DocumentPDF
         $this->SetFont('helvetica', '', 8);
         // Page number
         $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+//        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }
- 
+
 ?>
