@@ -651,6 +651,33 @@ class ExpedientSaga extends Expedient
 		}
 		return $iRetorn;
 	}
+	
+	/**
+	 * Calcula el percentatge que té aprovat.
+	 * @return string Percentatge aprovat amb 2 decimals.
+	 */
+	private function CalculaPercentatgeAprovat(): string {
+		$HoresTotal = 0.0;
+		$HoresAprovat = 0.0;
+		$Percentatge = 0.0;
+		foreach ($this->Registre as $row) {
+			$UltimaNota = UltimaNota($row);
+			if ($UltimaNota != '') {
+				if ($row['es_fct'] && $UltimaNota='A') {
+					$HoresAprovat += $row['HoresUF'];
+				}
+				else if ($UltimaNota >= 5)
+					$HoresAprovat += $row['HoresUF'];
+			}			
+			$HoresTotal += $row['HoresUF'];
+//print_h($row);			
+		}
+		if ($HoresTotal > 0)
+			$Percentatge = $HoresAprovat/$HoresTotal*100;
+//print_h('HoresAprovat: '.$HoresAprovat);			
+//print_h('HoresTotal: '.$HoresTotal);			
+		return number_format($Percentatge, 2);
+	}	
 
 	/**
 	 * Genera la capçalera de l'expedient.
@@ -658,8 +685,9 @@ class ExpedientSaga extends Expedient
 	 */
 	private function GeneraTitol(): string {
 		$Retorn = '<BR>';
-
 		$Retorn .= '<TABLE width="740px"><TR><TD>';
+		
+		$PercentatgeAprovat = $this->CalculaPercentatgeAprovat();
 
 		// Dades alumne
 		$Retorn .= '<TABLE style="color:white;" width="450px">';
@@ -720,7 +748,11 @@ class ExpedientSaga extends Expedient
 		}
 		$Retorn .= '</td></tr></table>';
 
-		$Retorn .= '</TD></TR></TABLE>';
+		$Retorn .= '</TD>';
+		$Retorn .= '<TD style="color:white;font-weight:bold;font-size:large;">';
+		$Retorn .= $this->CalculaPercentatgeAprovat().'%';
+		$Retorn .= '</TD>';
+		$Retorn .='</TR></TABLE>';
 
 		$Retorn .= '<BR>';
 		return $Retorn;
