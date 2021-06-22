@@ -48,7 +48,8 @@ if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !
 $Professor->CarregaTutor($CursId);
 
 $cf = new CicleFormatiu($conn);
-CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
+//CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell, True, True, True);
+CreaIniciHTML_Notes($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
 
 echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
@@ -56,6 +57,43 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Notes.js?v1.6" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
+
+$Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
+
+if (Config::UsaDataTables) {
+	echo "<script>";
+	//echo "alert('Hi!');";
+	echo "$(document).ready(function() {";
+	echo "    var table = $('#TaulaNotes1').DataTable( {";
+	echo "        scrollY: '500px',";
+	echo "        scrollX: true,";
+	echo "        scrollCollapse: true,";
+	echo "		  searching: false,";
+	echo "		  ordering: false,";
+	echo "		  info: false,";
+	echo "        paging: false,";
+	echo "        fixedColumns: {";
+	echo "            leftColumns: 1,";
+//	echo "            rightColumns: $Columnes";
+	echo "        }";
+	echo "	  } );";
+	echo "    var table = $('#TaulaNotes2').DataTable( {";
+	echo "        scrollY: '500px',";
+	echo "        scrollX: true,";
+	echo "        scrollCollapse: true,";
+	echo "		  searching: false,";
+	echo "		  ordering: false,";
+	echo "		  info: false,";
+	echo "        paging: false,";
+	echo "        fixedColumns: {";
+	echo "            leftColumns: 1,";
+//	echo "            rightColumns: $Columnes";
+	echo "        }";
+	echo "	  } );";
+	echo "} );";
+	echo "</script>";
+}
+
 
 // Inicialització de l'ajuda
 // https://getbootstrap.com/docs/4.0/components/popovers/
@@ -122,6 +160,8 @@ if ($Usuari->es_admin) {
 echo '</span>';
 echo '</div>';
 
+echo '<br/>';
+
 // Graelles de notes
 if ($Nivell == 2) {
 	// Notes de 2n 
@@ -143,6 +183,11 @@ if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
+
+
+
+
+
 
 $conn->close(); 
  
