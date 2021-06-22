@@ -67,13 +67,18 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Cicles formatius';
-		$frm->SQL = ' SELECT CF.cicle_formatiu_id, CF.nom AS NomCF, CF.*, FFP.nom AS NomFFP '.
+		$frm->SQL = ' SELECT CF.cicle_formatiu_id, CF.nom AS NomCF, CF.*, '.
+			'   CASE CF.llei '.
+			'     WHEN "LO" THEN "LOE" '.
+			'     WHEN "LG" THEN "LOGSE" '.
+			'   END AS Llei, '.
+			' 	FFP.nom AS NomFFP '.
 			' FROM CICLE_FORMATIU CF '.
 			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
 		$frm->Taula = 'CICLE_FORMATIU';
 		$frm->ClauPrimaria = 'cicle_formatiu_id';
-		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP, bool:actiu';
-		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família, Actiu';
+		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP, Llei, bool:actiu';
+		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família, Llei, Actiu';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=CiclesFormatius';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);

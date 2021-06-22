@@ -369,22 +369,25 @@ class Notes extends Form
 		$NivellCurs = $Curs->ObteNivell();
 		$IdCurs = ($NivellCurs == $Nivell) ? $row["IdCurs"] : $row["IdCurs"]+1;
 
-		// Mòdul
 		echo '<THEAD class="thead-dark">';
-		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
-		$index = 0;
-		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
-			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
-			$MPId = $aModulsId[$index];
-			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
-			else
-				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
-			echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
-			$index += $iOcurrencies;
+
+		if ($row['llei'] == 'LO') {
+			// Mòdul
+			echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
+			$index = 0;
+			for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
+				$iOcurrencies = $aOcurrenciesModuls[$i][1];
+				$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
+				$MPId = $aModulsId[$index];
+				if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
+					$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+				else
+					$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+				echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
+				$index += $iOcurrencies;
+			}
+			echo "<TD></TD></TR>";
 		}
-		echo "<TD></TD></TR>";
 	
 		// Unitat formativa
 		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
@@ -850,6 +853,7 @@ class Notes extends Form
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT, '.
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
+			' CF.llei, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
@@ -860,6 +864,7 @@ class Notes extends Form
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
 			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 			' WHERE C.curs_id='.$CursId;
 		if ($iSegonCurs>0)
 			$sRetorn .= ' OR C.curs_id='.$iSegonCurs;
