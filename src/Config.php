@@ -21,6 +21,7 @@ class Config {
 	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
+	const UsaDataTables  = True;
 }
 
 unset($CFG);

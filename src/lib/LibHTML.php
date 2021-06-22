@@ -33,11 +33,12 @@ function CreaIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False)
  * @param string $Titol Títol de la pàgina.
  * @param boolean $bMenu Indica si el menú ha d'haver menú a la capçalera o no.
  * @param boolean $bSaga Indica si usem els estil de SAGA.
+ * @param boolean $bDataTables Indica si usem la llibreria DataTables.
  * @return string Codi HTML de la pàgina.
  */
-function GeneraIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False)
+function GeneraIniciHTML($Usuari, $Titol, $bMenu = True, $bSaga = False, $bDataTables = False)
 {
-	return CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga);
+	return CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu, $bSaga, $bDataTables);
 }
 
 /**
@@ -60,9 +61,13 @@ function CreaFinalHTML()
  * @param string $Titol Títol de la pàgina.
  * @param boolean $bMenu Indica si el menú ha d'haver menú a la capalera o no.
  * @param boolean $bSaga Indica si usem els estil de SAGA.
+ * @param boolean $bDataTables Indica si usem la llibreria DataTables.
+ * @return string Codi HTML de la pàgina.
  */
-function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, $bSaga = False)
+function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, $bSaga = False, $bDataTables = True)
 {
+//var_dump($bDataTables);	
+//exit;
 	$Retorn = '<HTML>';
 	$Retorn .= '<HEAD>';
 	$Retorn .= '	<META charset=UTF8>';
@@ -75,6 +80,10 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
 	if ($bSaga)
 		$Retorn .= '	<link rel="stylesheet" href="css/saga.css">';
+	if ($bDataTables) {
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
+	}
 	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
 	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
 	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
@@ -85,120 +94,76 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
 	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
 	$Retorn .= '	<script src="js/Util.js"></script>';
+	if ($bDataTables) {
+		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
+	}
 	$Retorn .= '</HEAD>';
 	$Retorn .= '<BODY>';
-	
 	if ($bMenu) {
-		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
-		if ($Usuari->es_admin) 
-			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
-		else
-			$Retorn .= '	<span class="navbar-brand">inGest</span>';
-		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
-		$Retorn .= '		<span class="navbar-toggler-icon"></span>';
-		$Retorn .= '	</button>';
-		$Retorn .= '	<div class="collapse navbar-collapse">';
-		$Retorn .= '		<ul class="navbar-nav mr-auto">';
-		$Retorn .= '			<li class="nav-item active">';
-		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>';
-		$Retorn .= '			</li>';
-//exit;
-		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
-			// Menú Alumnes
-			$Retorn .= Menu::Obre('Alumnes');
-			$Retorn .= Menu::Opcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes');
-			$Retorn .= Menu::Opcio('Alumnes/pares', 'UsuariRecerca.php?accio=AlumnesPares');
-			$Retorn .= Menu::Separador();
-			$Retorn .= Menu::Opcio('Matrícules', 'UsuariRecerca.php?accio=Matricules');
-			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
-			$Retorn .= Menu::Tanca();
-
-			// Menú Professors
-			$Retorn .= Menu::Obre('Professors');
-			$Retorn .= Menu::Opcio('Professors', 'UsuariRecerca.php?accio=Professors');
-			$Retorn .= Menu::Opcio('Professors per UF', 'AssignaUFs.php?accio=ProfessorsUF');
-			$Retorn .= Menu::Separador();
-			$Retorn .= Menu::Opcio('Tutors', 'UsuariRecerca.php?accio=Tutors');
-			//$Retorn .= Menu::Opcio('Guàrdies', 'Guardia.php');
-			$Retorn .= Menu::Tanca();
-
-			// Menú FP
-			$Retorn .= Menu::Obre('FP');
-			$Retorn .= Menu::Opcio('Famílies', 'FPRecerca.php?accio=Families');
-			$Retorn .= Menu::Opcio('Cicles formatius', 'FPRecerca.php?accio=CiclesFormatius');
-			$Retorn .= Menu::Opcio('Mòduls professionals', 'FPRecerca.php?accio=ModulsProfessionals');
-			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= '	<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
-			$Retorn .= '	<div class="dropdown-menu">';
-			$Retorn .= '		<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesCF').'">Unitats formatives/MP/CF</a>';
-			$Retorn .= '		<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates').'">Unitats formatives/Dates</a>';
-			$Retorn .= '	</div>';
-			$Retorn .= '</div>';
-			$Retorn .= Menu::Separador();
-			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Pla d'estudis</button>";
-			$Retorn .= '	<div class="dropdown-menu">';
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisAny')."'>Pla d'estudis per any</a>";
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisCicle')."'>Pla d'estudis per cicle</a>";
-			$Retorn .= '	</div>';
-			$Retorn .= '</div>';
-//			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
-			$Retorn .= Menu::Separador();
-			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
-			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
-			$Retorn .= Menu::Tanca();
-
-			// Menú Centre
-			$Retorn .= Menu::Obre('Centre');
-			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
-			$Retorn .= Menu::Separador();
-			$Retorn .= Menu::Opcio('Any acadèmic', 'Recerca.php?accio=AnyAcademic');
-			$Retorn .= Menu::Opcio('Equips', 'Recerca.php?accio=Equip');
-			$Retorn .= Menu::Separador();
-			$Retorn .= Menu::Opcio('Importa usuaris', 'ImportaUsuarisDialeg.php');
-			//$Retorn .= Menu::Opcio('Importa passwords iEduca', 'ImportaPasswordsDialeg.php');
-			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
-			$Retorn .= Menu::Tanca();
-
-			// Menú Informes
-			$Retorn .= Menu::Obre('Informes');
-			$Retorn .= Menu::Opcio('Darrers accessos', 'UsuariRecerca.php?accio=UltimLogin');
-			$Retorn .= Menu::Opcio('Estadístiques notes', 'Estadistiques.php?accio=EstadistiquesNotes');
-			$Retorn .= Menu::Tanca();
-		}	
-		$Retorn .= '		</ul>';
-	
-		// Menú usuari
-		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
-		$Retorn .= '		<ul class="navbar-nav">';
-		$Retorn .= '		  <li class="nav-item dropdown">';
-//		$Retorn .= '		  <a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
-		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
-		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
-		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
-		$Retorn .= Menu::Separador();
-		if ($Usuari->es_cap_estudis) {
-			$Retorn .= Menu::Opcio('Canvia a professor', 'CanviaRol.php');
-			$Retorn .= Menu::Separador();
-		}
-		if ($Usuari->es_admin) {
-			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
-			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
-			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
-			$Retorn .= Menu::Separador();
-		}
-		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
-		$Retorn .= Menu::Tanca();
-		$Retorn .= '		</ul>';
-
-		$Retorn .= '	</div>';
-		$Retorn .= '</nav>';
-		$Retorn .= '<BR><BR>'; // Per donar espai al menú
+		$Retorn .= Menu::Crea($Usuari);
 	}
 	$Retorn .= '      <div class="starter-template" style="padding:20px">';
 //	$Retorn .= '<H1>'.utf8_encode($Titol).'</H1>';
 	$Retorn .= '<H1>'.$Titol.'</H1>';
 	return $Retorn;
+}
+
+/**
+ * CreaIniciHTML_Notes
+ * @param object $Usuari Usuari autenticat.
+ * @param string $Titol Títol de la pàgina.
+ * @return string Codi HTML de la pàgina.
+ */
+function CreaIniciHTML_Notes($Usuari, $Titol)
+{
+	$Retorn = '<HTML>';
+	$Retorn .= '<HEAD>';
+	$Retorn .= '	<META charset=UTF8>';
+	$Retorn .= '	<TITLE>InGest</TITLE>';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
+//	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+//	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
+	if (Config::UsaDataTables) {
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
+	}
+	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
+	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
+//	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
+	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
+	$Retorn .= '	<script src="js/Util.js"></script>';
+	if (Config::UsaDataTables) {
+		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
+	}
+	$Retorn .= '</HEAD>';
+	
+	if (Config::UsaDataTables) {
+		$Retorn .= "<style>";
+		$Retorn .= "    th, td { white-space: nowrap; } ";
+		$Retorn .= "    div.dataTables_wrapper {";
+		$Retorn .= "        width: 99%;";
+		//$Retorn .= "        width: 1800px;";
+		$Retorn .= "        margin: 0 auto;";
+		$Retorn .= "    }";
+		$Retorn .= "</style>";
+	}	
+
+	$Retorn .= '<BODY>';
+	$Retorn .= Menu::Crea($Usuari);
+	$Retorn .= '      <div class="starter-template" style="padding:20px">';
+	$Retorn .= '<H1>'.$Titol.'</H1>';
+	echo $Retorn;
 }
 
 /**
@@ -402,6 +367,115 @@ class Menu
 	static public function Opcio(string $Text, string $URL): string {
 		return '<a class="dropdown-item" href="'.GeneraURL($URL).'">'.$Text.'</a>';
 	}
+	
+	static public function Crea($Usuari): string {
+		$Retorn = '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
+		if ($Usuari->es_admin) 
+			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
+		else
+			$Retorn .= '	<span class="navbar-brand">inGest</span>';
+		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
+		$Retorn .= '		<span class="navbar-toggler-icon"></span>';
+		$Retorn .= '	</button>';
+		$Retorn .= '	<div class="collapse navbar-collapse">';
+		$Retorn .= '		<ul class="navbar-nav mr-auto">';
+		$Retorn .= '			<li class="nav-item active">';
+		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>';
+		$Retorn .= '			</li>';
+		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
+			// Menú Alumnes
+			$Retorn .= Menu::Obre('Alumnes');
+			$Retorn .= Menu::Opcio('Alumnes', 'UsuariRecerca.php?accio=Alumnes');
+			$Retorn .= Menu::Opcio('Alumnes/pares', 'UsuariRecerca.php?accio=AlumnesPares');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Matrícules', 'UsuariRecerca.php?accio=Matricules');
+			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
+			$Retorn .= Menu::Tanca();
+
+			// Menú Professors
+			$Retorn .= Menu::Obre('Professors');
+			$Retorn .= Menu::Opcio('Professors', 'UsuariRecerca.php?accio=Professors');
+			$Retorn .= Menu::Opcio('Professors per UF', 'AssignaUFs.php?accio=ProfessorsUF');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Tutors', 'UsuariRecerca.php?accio=Tutors');
+			//$Retorn .= Menu::Opcio('Guàrdies', 'Guardia.php');
+			$Retorn .= Menu::Tanca();
+
+			// Menú FP
+			$Retorn .= Menu::Obre('FP');
+			$Retorn .= Menu::Opcio('Famílies', 'FPRecerca.php?accio=Families');
+			$Retorn .= Menu::Opcio('Cicles formatius', 'FPRecerca.php?accio=CiclesFormatius');
+			$Retorn .= Menu::Opcio('Mòduls professionals', 'FPRecerca.php?accio=ModulsProfessionals');
+			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
+			$Retorn .= '	<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
+			$Retorn .= '	<div class="dropdown-menu">';
+			$Retorn .= '		<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesCF').'">Unitats formatives/MP/CF</a>';
+			$Retorn .= '		<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates').'">Unitats formatives/Dates</a>';
+			$Retorn .= '	</div>';
+			$Retorn .= '</div>';
+			$Retorn .= Menu::Separador();
+			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
+			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Pla d'estudis</button>";
+			$Retorn .= '	<div class="dropdown-menu">';
+			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisAny')."'>Pla d'estudis per any</a>";
+			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisCicle')."'>Pla d'estudis per cicle</a>";
+			$Retorn .= '	</div>';
+			$Retorn .= '</div>';
+	//			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
+			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
+			$Retorn .= Menu::Tanca();
+
+			// Menú Centre
+			$Retorn .= Menu::Obre('Centre');
+			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Any acadèmic', 'Recerca.php?accio=AnyAcademic');
+			$Retorn .= Menu::Opcio('Equips', 'Recerca.php?accio=Equip');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Importa usuaris', 'ImportaUsuarisDialeg.php');
+			//$Retorn .= Menu::Opcio('Importa passwords iEduca', 'ImportaPasswordsDialeg.php');
+			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
+			$Retorn .= Menu::Tanca();
+
+			// Menú Informes
+			$Retorn .= Menu::Obre('Informes');
+			$Retorn .= Menu::Opcio('Darrers accessos', 'UsuariRecerca.php?accio=UltimLogin');
+			$Retorn .= Menu::Opcio('Estadístiques notes', 'Estadistiques.php?accio=EstadistiquesNotes');
+			$Retorn .= Menu::Tanca();
+		}	
+		$Retorn .= '		</ul>';
+
+		// Menú usuari
+		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
+		$Retorn .= '		<ul class="navbar-nav">';
+		$Retorn .= '		  <li class="nav-item dropdown">';
+	//		$Retorn .= '		  <a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
+		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
+		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
+		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
+		$Retorn .= Menu::Separador();
+		if ($Usuari->es_cap_estudis) {
+			$Retorn .= Menu::Opcio('Canvia a professor', 'CanviaRol.php');
+			$Retorn .= Menu::Separador();
+		}
+		if ($Usuari->es_admin) {
+			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
+			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
+			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
+			$Retorn .= Menu::Separador();
+		}
+		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
+		$Retorn .= Menu::Tanca();
+		$Retorn .= '		</ul>';
+
+		$Retorn .= '	</div>';
+		$Retorn .= '</nav>';
+		$Retorn .= '<BR><BR>'; // Per donar espai al menú
+	
+		return $Retorn;
+	}	
 }
 
 ?>
