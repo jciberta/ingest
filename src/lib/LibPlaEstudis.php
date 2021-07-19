@@ -362,4 +362,49 @@ class PlaEstudisCicle extends PlaEstudis
 	}
 }
 
+/**
+ * Classe que encapsula el formulari de recerca de les UF del pla d'estudis.
+ */
+class PlaEstudisUnitatRecerca extends FormRecerca
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$Usuari = $this->Usuari;
+		$frm->Modalitat = $this->Modalitat;
+		$frm->Titol = 'Unitats formatives';
+		$frm->SQL = 'SELECT '.
+			' 	UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell, UPE.orientativa, '.
+			' 	MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
+			'	CPE.codi AS CodiCF, FormataData(UPE.data_inici) AS data_inici, FormataData(UPE.data_final) AS data_final '. 
+			' FROM UNITAT_PLA_ESTUDI UPE '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			// És professor
+			if ($Usuari->es_professor)
+				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+					' WHERE PUF.professor_id='.$Usuari->usuari_id.
+					' AND AA.actual=1 ';
+//print '<br><br><br>'.$frm->SQL;
+		$frm->Taula = 'UNITAT_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'unitat_pla_estudi_id';
+		$frm->Camps = 'CodiCF, nivell, CodiMP, NomMP, CodiUF, NomUF, HoresUF, data_inici, data_final, bool:orientativa';
+		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final, Orientativa';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormativesPlaEstudis';
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$AnyAcademicId = $aAnys[0][0]; 
+			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		}
+		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+		$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
+		$frm->EscriuHTML();
+	}
+}
+
 ?>

@@ -10,7 +10,7 @@
  */
 
 class Config {
-	const Versio         = '0.28';
+	const Versio         = '1.0';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
@@ -18,7 +18,7 @@ class Config {
 	const Debug          = True; // Si està activat mostrara més informació.
 	const Manteniment    = False; 
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
-	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
+	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;

@@ -813,6 +813,10 @@ class Notes extends Form
 		if ($row["FCT"] == 1)
 			$ClassInput .= ' fct';
 		
+		$Events = "";
+		if ($Deshabilitat !== ' disabled ')
+			$Events = "onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'";
+		
 		// <INPUT>
 		// name: conté id i convocatòria
 		// id: conté les coordenades x, y. Inici a (0, 0).
@@ -821,8 +825,7 @@ class Notes extends Form
 		return "<TD width=".self::AMPLADA_UF." $Class width=2>"
 			."<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
-			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip.
-			" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." $Events></TD>";
 	}
 
 	/**
@@ -1040,15 +1043,21 @@ class Notes extends Form
 		$iRetorn = -1;
 		
 		$SQL = 'SELECT curs_id FROM CURS C '.
-		' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
-		' WHERE cicle_formatiu_id in ( '.
-		' 	SELECT cicle_formatiu_id FROM CURS C '.
-		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+		' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+//		' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' WHERE C.cicle_formatiu_id in ( '.
+		' 	SELECT C1.cicle_formatiu_id FROM CURS C1 '.
+		' 	LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C1.cicle_formatiu_id) '.
+		' 	LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+//		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 		' 	WHERE curs_id='.$CursId.
 		' ) '.
 		' AND any_inici in ( '.
-		' 	SELECT any_inici FROM CURS C '.
-		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+		' 	SELECT any_inici FROM CURS C2 '.
+		' 	LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C2.cicle_formatiu_id) '.
+		' 	LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+//		' 	LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 		' 	WHERE curs_id='.$CursId.
 		' ) '.
 		' AND nivell=2 ';
@@ -1065,10 +1074,7 @@ class Notes extends Form
 	}	
 	
 	/**
-	 * CreaSQL
-	 *
 	 * Crea la sentència SQL per recuperar les notes d'un curs i un nivell concret.
-	 *
 	 * @param string $CursId Identificador del curs del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @return string Sentència SQL.
@@ -1078,8 +1084,8 @@ class Notes extends Form
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT, '.
-			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, '.
+			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
+			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
@@ -1088,12 +1094,17 @@ class Notes extends Form
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+
+//			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
+//			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+
 			' WHERE C.curs_id='.$CursId;
 		if ($iSegonCurs>0)
 			$sRetorn .= ' OR C.curs_id='.$iSegonCurs;
-		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MPE.codi, UPE.codi ';	
 			
 		return $sRetorn;
 	}
@@ -1630,8 +1641,8 @@ class NotesModul extends Notes
 	{
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UF.unitat_formativa_id AS unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS Hores, UF.orientativa AS Orientativa, UF.nivell AS NivellUF, UF.es_fct AS FCT,'.
-			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.es_fct AS FCTMP, '.
+			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
+			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
@@ -1640,10 +1651,14 @@ class NotesModul extends Notes
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-			' WHERE C.curs_id='.$CursId.' AND MP.modul_professional_id='.$ModulId;
-		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MP.codi, UF.codi ';	
+
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+
+//			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
+//			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' WHERE C.curs_id='.$CursId.' AND MPE.modul_professional_id='.$ModulId;
+		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MPE.codi, UPE.codi ';	
 		return $sRetorn;
 	}
 	
@@ -1670,6 +1685,7 @@ class NotesModul extends Notes
 	public function CarregaRegistre($CursId, $ModulId, $Avaluacio = '') {
 		$SQL = $this->CreaSQL($CursId, $ModulId);
 		$ResultSet = $this->Connexio->query($SQL);
+//print $SQL;
 		if ($ResultSet->num_rows > 0) {
 			$i = -1; 
 			$j = 0;

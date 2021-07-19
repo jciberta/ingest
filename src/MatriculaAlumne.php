@@ -93,7 +93,6 @@ if ($Usuari->es_alumne || $Usuari->es_pare) {
 
 if ($ButlletiVisible) {
 	$SQL = Expedient::SQL($MatriculaId);
-//print_r($SQL);
 
 	$ResultSet = $conn->query($SQL);
 

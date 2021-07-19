@@ -77,7 +77,9 @@ class Avaluacio
 		return ' SELECT C.*, AA.nom AS AnyAcademic, AA.any_inici, AA.any_final '.
 			' FROM CURS C '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE curs_id='.$id;
 	}	
 	
@@ -93,7 +95,11 @@ class Avaluacio
 			'   CASE WHEN C.estat = "T" THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre '.
 			' FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers '.
 			" RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1 ".
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+
+//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE AA.actual=1 '.
 			' ORDER by C.curs_id, C.grups_tutoria ';
 		return $SQL;

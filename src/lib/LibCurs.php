@@ -83,7 +83,12 @@ class Curs
 	 * @param integer $Id Identificador del registre.
 	 */				
 	public function CarregaRegistre($Id) {
-		$SQL = "SELECT * FROM CURS WHERE curs_id=".$Id;
+		$SQL = "
+			SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
+			FROM CURS C 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
+			WHERE curs_id=$Id";
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$this->Registre = $ResultSet->fetch_object();
@@ -109,7 +114,8 @@ class Curs
 		if ($this->Registre === NULL) 
 			return -1;
 		else
-			return $this->Registre->cicle_formatiu_id;
+			return $this->Registre->CicleFormatiuId;
+//			return $this->Registre->cicle_formatiu_id;
 	}
 
 	/**
@@ -141,15 +147,16 @@ class Curs
 			'     WHEN C.avaluacio = "EXT" THEN NULL '.
 			' END AS trimestre '.
 			' FROM CURS C '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE (0=0) ';
 		if ($this->NomesProfessor)			
 			$SQL .= ' AND C.curs_id IN ( '.
 			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND UF.nivell=C.nivell) '.
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
 			' WHERE professor_id='.$this->Usuari->usuari_id.		
 			' ) ';
 		if ($CursId != -1)
@@ -174,7 +181,9 @@ class Curs
 			'     WHEN C.avaluacio = "EXT" THEN NULL '.
 			' END AS trimestre '.
 			' FROM CURS C '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE AA.actual=1 ';
 		return $SQL;
 	}
@@ -252,6 +261,7 @@ class Curs
 	 */
 	public function EscriuFormulariRecera() {
 		$SQL = $this->CreaSQL();
+//print '<br><br><br>'.$SQL;
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Cursos';
@@ -282,7 +292,7 @@ class Curs
 
 		// Filtre
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		$frm->EscriuHTML();
 	}
 

@@ -73,11 +73,12 @@ switch ($Accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
-		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, C.any_academic_id, '.
+		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, CPE.any_academic_id, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, '.
 			' TUT.tutor_id, TUT.grup_tutoria '.
 			' FROM CURS C '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' RIGHT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
 			' LEFT JOIN USUARI U ON (TUT.professor_id=U.usuari_id) ';
 //print '<BR><BR><BR>'.$SQL;
@@ -91,7 +92,7 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('C.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
@@ -135,10 +136,11 @@ switch ($Accio) {
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE es_alumne=1 '.$Where.' AND M.matricula_id IS NOT NULL '.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
-
+//print '<br><br><br>'.$SQL;
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
@@ -249,17 +251,17 @@ switch ($Accio) {
 		if ($NomesProfessor)			
 			$Where .= ' AND C.curs_id IN ( '.
 			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (PUF.uf_id=UF.unitat_formativa_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (UF.modul_professional_id=MP.modul_professional_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND UF.nivell=C.nivell) '.
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
 			' WHERE professor_id='.$Usuari->usuari_id.		
 			' ) ';
 		$SQL = ' SELECT '.
 			' 	U.usuari_id AS UsuariId, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS NomAlumne, U.username, '.
-			' 	Edat(U.data_naixement) AS edat, FormataData(U.data_ultim_login) AS UltimLoginAlumne, '.
-			' 	UP.username AS NIFPare, FormataCognom1Cognom2Nom(UP.nom, UP.cognom1, UP.cognom2) AS NomResp1, FormataData(UP.data_ultim_login) AS UltimLoginPare,'.
-			' 	UM.username AS NIFMare, FormataCognom1Cognom2Nom(UM.nom, UM.cognom1, UM.cognom2) AS NomResp2, FormataData(UM.data_ultim_login) AS UltimLoginMare,'.
+			' 	Edat(U.data_naixement) AS edat, U.data_ultim_login AS UltimLoginAlumne, '.
+			' 	UP.username AS NIFPare, FormataCognom1Cognom2Nom(UP.nom, UP.cognom1, UP.cognom2) AS NomResp1, UP.data_ultim_login AS UltimLoginPare,'.
+			' 	UM.username AS NIFMare, FormataCognom1Cognom2Nom(UM.nom, UM.cognom1, UM.cognom2) AS NomResp2, UM.data_ultim_login AS UltimLoginMare,'.
 			' 	M.matricula_id, M.grup, '.
 			' 	C.codi, C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa '.
 			' FROM USUARI U '.
@@ -267,7 +269,8 @@ switch ($Accio) {
 			' LEFT JOIN USUARI UM ON (UM.usuari_id=U.mare_id) '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE U.es_alumne=1 '.$Where.
 			' AND AA.actual=1 '.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';

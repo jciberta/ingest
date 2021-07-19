@@ -145,10 +145,10 @@ switch ($accio) {
 		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $Opcions);
 		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
-		$frm->AfegeixData('data_inici', 'Data inici');
-		$frm->AfegeixData('data_final', 'Data final');
+//		$frm->AfegeixData('data_inici', 'Data inici');
+//		$frm->AfegeixData('data_final', 'Data final');
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
-		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
+//		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->AfegeixCheckBox('activa', 'Activa');		
 		$frm->EscriuHTML();
         break;
@@ -156,11 +156,15 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		if (!$Usuari->es_admin)
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
+//print_h($Professor);
+//exit;
+		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		
 		$Opcions = [FormFitxa::offREQUERIT];
-		$NomesLectura = !($Usuari->es_admin); // No cal
+		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		if ($NomesLectura)
 			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
 

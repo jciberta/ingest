@@ -75,7 +75,7 @@ class Expedient extends Form
 	 * @return string Sentència SQL.
 	 */
 	public static function SQL($MatriculaId): string {
-		$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, UF.nivell AS NivellUF, '.
+		/*$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, UF.nivell AS NivellUF, '.
 			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
 			' CF.nom AS NomCF, CF.nom AS NomCF, '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
@@ -92,7 +92,27 @@ class Expedient extends Form
 			' LEFT JOIN MATRICULA M ON (M.curs_id=C.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.matricula_id='.$MatriculaId;
+			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.matricula_id='.$MatriculaId;*/
+		$SQL = '
+			SELECT 
+				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, 
+				MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
+				CPE.nom AS NomCF, CPE.nom AS NomCF, 
+				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
+				N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, 
+				CONCAT(CPE.codi, C.nivell, M.grup) AS Grup, CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, 
+				UPE.*, MPE.*, CPE.*, N.*, C.* 
+			FROM NOTES N
+			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+			LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id) 
+			LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id)
+			WHERE M.matricula_id='.$MatriculaId.' AND UPE.nivell<=C.nivell
+		';
+//print $SQL;
 		return $SQL;
     }
 
@@ -410,14 +430,16 @@ class ExpedientSaga extends Expedient
 	 * @return string Sentència SQL.
 	 */
 	public function SQLDadesAlumne($MatriculaId): string {
-		$SQL = ' SELECT CF.nom AS NomCF, CF.nom AS NomCF, '.
+		$SQL = ' SELECT CPE.nom AS NomCF, CPE.nom AS NomCF, '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
-			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, '.
-			' CF.*, C.*, M.* '.
+			' CONCAT(CPE.codi, C.nivell, M.grup) AS Grup, CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, '.
+			' CPE.*, C.*, M.* '.
 			' FROM MATRICULA M '.
 			' LEFT JOIN CURS C ON (M.curs_id=C.curs_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id) '.
+//			' LEFT JOIN CICLE_FORMATIU CF ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
+//			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' WHERE M.matricula_id='.$MatriculaId;
 		return $SQL;
@@ -460,9 +482,6 @@ class ExpedientSaga extends Expedient
 				$row = $ResultSet->fetch_assoc();
 			}
 		};		
-		
-		
-		
 //print_h($this->Registre);
 //exit;
 	}

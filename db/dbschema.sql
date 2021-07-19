@@ -112,19 +112,6 @@ CREATE TABLE USUARI
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 CREATE UNIQUE INDEX U_NifIX ON USUARI (document);
 
-CREATE TABLE PROFESSOR_UF
-(
-    /* PUF */
-    professor_uf_id INT NOT NULL AUTO_INCREMENT,
-    professor_id    INT NOT NULL,
-    uf_id           INT NOT NULL,
-    grups           VARCHAR(5),
-
-    CONSTRAINT ProfessorUFPK PRIMARY KEY (professor_uf_id),
-    CONSTRAINT PUF_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
-    CONSTRAINT PUF_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE ANY_ACADEMIC
 (
     /* AA */
@@ -204,7 +191,6 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     CONSTRAINT UPE_ModulPlaEstudiFK FOREIGN KEY (modul_pla_estudi_id) REFERENCES MODUL_PLA_ESTUDI(modul_pla_estudi_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 CREATE TABLE CURS
 (
     /* C */
@@ -222,7 +208,7 @@ CREATE TABLE CURS
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
     CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
-    CONSTRAINT MAT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
+    CONSTRAINT C_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_PLA_ESTUDI(cicle_pla_estudi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE MATRICULA
@@ -260,7 +246,20 @@ CREATE TABLE NOTES
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
-    CONSTRAINT N_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
+    CONSTRAINT N_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_PLA_ESTUDI(unitat_pla_estudi_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE PROFESSOR_UF
+(
+    /* PUF */
+    professor_uf_id INT NOT NULL AUTO_INCREMENT,
+    professor_id    INT NOT NULL,
+    uf_id           INT NOT NULL,
+    grups           VARCHAR(5),
+
+    CONSTRAINT ProfessorUFPK PRIMARY KEY (professor_uf_id),
+    CONSTRAINT PUF_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
+    CONSTRAINT PUF_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_PLA_ESTUDI(unitat_pla_estudi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE EQUIP
@@ -372,7 +371,7 @@ CREATE TABLE NOTES_MP
 
     CONSTRAINT NotesMPPK PRIMARY KEY (notes_mp_id),
     CONSTRAINT NMP_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
-    CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
+	CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PLA_ESTUDI(modul_pla_estudi_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE PROJECTE
@@ -404,7 +403,8 @@ CREATE TABLE PASSWORD_RESET_TEMP
 CREATE VIEW CURS_ACTUAL AS
 	SELECT C.* 
     FROM CURS C 
-    LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) 
+    LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+    LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
     WHERE AA.actual=1
 ;
 

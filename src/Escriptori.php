@@ -43,14 +43,24 @@ if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
 }
 else if ($Usuari->es_professor) {
 	CreaIniciHTML($Usuari, '');
-	$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF, C.curs_id, C.estat, C.grups_tutoria '.
+	/*$SQL = ' SELECT DISTINCT CF.cicle_formatiu_id, UF.nivell, CF.codi AS CodiCF, CF.nom AS NomCF, C.curs_id, C.estat, C.grups_tutoria '.
 		' FROM PROFESSOR_UF PUF '.
 		' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
 		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
 		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
 		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id AND C.nivell=UF.nivell) '.
 		' WHERE C.estat<>"T" AND professor_id='.$Usuari->usuari_id .
-		' ORDER BY CF.codi, UF.nivell ';
+		' ORDER BY CF.codi, UF.nivell ';*/
+
+	$SQL = ' SELECT DISTINCT CPE.cicle_formatiu_id, UPE.nivell, CPE.codi AS CodiCF, CPE.nom AS NomCF, C.curs_id, C.estat, C.grups_tutoria '.
+		' FROM PROFESSOR_UF PUF '.
+		' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+		' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+		' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
+		' WHERE C.estat<>"T" AND professor_id='.$Usuari->usuari_id .
+		' ORDER BY CPE.codi, UPE.nivell ';
+		
 //print $SQL;
 	echo '<div class="card-columns" style="column-count:6">';
 	$ResultSet = $conn->query($SQL);
@@ -106,7 +116,7 @@ else if ($Usuari->es_professor) {
 	}
 	
 	// Les meves UF
-	$URL = GeneraURL('FPRecerca.php?accio=UnitatsFormativesDates&ProfId='.$Usuari->usuari_id);
+	$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat&ProfId='.$Usuari->usuari_id);
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
 	echo '      <h5 class="card-title">Unitats formatives</h5>';
