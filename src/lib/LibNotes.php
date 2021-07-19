@@ -369,22 +369,25 @@ class Notes extends Form
 		$NivellCurs = $Curs->ObteNivell();
 		$IdCurs = ($NivellCurs == $Nivell) ? $row["IdCurs"] : $row["IdCurs"]+1;
 
-		// Mòdul
 		echo '<THEAD class="thead-dark">';
-		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
-		$index = 0;
-		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
-			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
-			$MPId = $aModulsId[$index];
-			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
-			else
-				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
-			echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
-			$index += $iOcurrencies;
+
+		if ($row['llei'] == 'LO') {
+			// Mòdul
+			echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
+			$index = 0;
+			for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
+				$iOcurrencies = $aOcurrenciesModuls[$i][1];
+				$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
+				$MPId = $aModulsId[$index];
+				if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
+					$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+				else
+					$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+				echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
+				$index += $iOcurrencies;
+			}
+			echo "<TD></TD></TR>";
 		}
-		echo "<TD></TD></TR>";
 	
 		// Unitat formativa
 		echo "<TR><TD width=".self::AMPLADA_NOM."></TD><TD width=20></TD width=25><TD width=25></TD><TD width=25></TD>";
@@ -1086,6 +1089,7 @@ class Notes extends Form
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
 			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
+			' CF.llei, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.

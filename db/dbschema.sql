@@ -21,6 +21,7 @@ CREATE TABLE CICLE_FORMATIU
     codi CHAR(3) NOT NULL,
     codi_xtec CHAR(4) NOT NULL,
     actiu BIT NOT NULL DEFAULT 1,
+    llei CHAR(2) NOT NULL DEFAULT 'LO', /* LoGse, LOe */
 
     CONSTRAINT CicleFormatiuPK PRIMARY KEY (cicle_formatiu_id),
     CONSTRAINT CF_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id) 

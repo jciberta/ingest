@@ -29,6 +29,12 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Estat = $_REQUEST['estat'];
 		// Canviem l'estat del curs
 		$SQL = 'UPDATE CURS SET estat="'.$Estat.'" WHERE curs_id='.$Id;
+		/* PENDENT !!!
+		if ($Estat == 'J') {
+			// Calculem les notes del mòduls que no estan calculades
+			$Avaluacio = new Avaluacio($conn, $Usuari);
+			$Avaluacio->CalculaNotesModul($Id);
+		}*/
 		$conn->query($SQL);
 		//print $SQL;
 	}
