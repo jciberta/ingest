@@ -516,8 +516,7 @@ class Notes extends Form
 
 			$TextMP = '<br>';
 			$IdMP = $row["IdMP"];
-			if ($IdMP != $IdMPAnt) {
-//				$TextMP = $row["CodiMP"].'<br>';
+			if (($IdMP != $IdMPAnt) && ($row['llei'] == 'LO')) {
 				$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$row["IdMP"]);
 				if ($Professor->TeMP($IdMP) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 					$TextModul = "<A target=_blank href=$Link>".$row["CodiMP"]."</A>";
@@ -1101,9 +1100,8 @@ class Notes extends Form
 
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id) '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
-
-//			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-//			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
 
 			' WHERE C.curs_id='.$CursId;
 		if ($iSegonCurs>0)
