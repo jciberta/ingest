@@ -28,10 +28,10 @@ call CreaPlaEstudis(3);
 -- Deshabilitem la integritat referencial 
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 UPDATE PROFESSOR_UF SET uf_id = (
-	SELECT unitat_pla_estudi_id FROM UNITAT_PLA_ESTUDI UPE
-	LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
-	LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-	WHERE any_academic_id=3 AND unitat_formativa_id=uf_id
+    SELECT unitat_pla_estudi_id FROM UNITAT_PLA_ESTUDI UPE
+    LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+    LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+    WHERE any_academic_id=3 AND unitat_formativa_id=uf_id
 );
 ALTER TABLE PROFESSOR_UF DROP FOREIGN KEY PUF_UnitatFormativaFK;
 ALTER TABLE PROFESSOR_UF ADD CONSTRAINT PUF_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_PLA_ESTUDI(unitat_pla_estudi_id);	
@@ -23072,3 +23072,31 @@ CREATE VIEW CURS_ACTUAL AS
     LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
     WHERE AA.actual=1
 ;
+
+/*
+ * PercentatgeAprovat
+ *
+ * Retorna el percentatge aprovat d'una matrícula.
+ *
+ * @param integer MatriculaId Id de la matrícula.
+ * @return real Percentatge aprovat.
+ */
+DELIMITER //
+CREATE FUNCTION PercentatgeAprovat(MatriculaId INT)
+RETURNS REAL
+BEGIN 
+    DECLARE Percentatge REAL;
+
+    SELECT SUM(CASE 
+	    WHEN IFNULL(nota5, IFNULL(nota4, IFNULL(nota3, IFNULL(nota2, IFNULL(nota1, -1))))) >=5 THEN hores
+        ELSE 0
+        END)/SUM(hores)*100 AS PercentatgeAprovat
+    INTO Percentatge
+    FROM NOTES N
+    LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
+    WHERE N.matricula_id=MatriculaId;
+    
+    RETURN Percentatge;  	
+	
+END //
+DELIMITER ;

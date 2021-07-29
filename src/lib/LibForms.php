@@ -1009,7 +1009,11 @@ class FormRecerca extends Form {
 					if (count($aData)>1) {
 						if ($aData[0] == 'bool') {
 							$sValor = ($row[$aData[1]]) ? '<input type="checkbox" checked disabled>' : '';
-						$sRetorn .= "<TD>".$sValor."</TD>";
+							$sRetorn .= "<TD>".$sValor."</TD>";
+						}
+						else if ($aData[0] == '%2') {
+							$sValor = number_format($row[$aData[1]], 2);
+							$sRetorn .= "<TD>".$sValor."</TD>";
 						}
 					}
 					else {

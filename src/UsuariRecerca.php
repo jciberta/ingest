@@ -13,6 +13,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -292,6 +293,18 @@ switch ($Accio) {
 		}
 		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D'), array('', 'A', 'B', 'C', 'D'));
 
+		$frm->EscriuHTML();
+        break;
+    case "AlumnesPromocio1r":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		$frm = new AlumnesPromocio1r($conn, $Usuari);
+		$frm->EscriuHTML();
+        break;
+    case "AlumnesGraduacio2n":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		$frm = new AlumnesGraduacio2n($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
 }

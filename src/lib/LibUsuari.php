@@ -288,11 +288,86 @@ class Usuari
 }
 
 /**
- * Classe que encapsula les utilitats per al maneig dels alumnes.
+ * Classe que encapsula el llistat dels alumnes que han promocionat 1r.
  */
-class Alumne extends Usuari
+class AlumnesPromocio1r extends Usuari
 {
-	
+	/**
+	 * Escriu el llistat dels alumnes que han promocionat de 1r.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->Titol = "Promoció d'alumnes de 1r";
+		$SQL = ' SELECT '.
+			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
+			' U.data_naixement, Edat(U.data_naixement) AS edat, U.municipi, U.telefon, U.email, U.usuari_bloquejat, '.
+			' M.matricula_id, M.grup, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa, PercentatgeAprovat(M.matricula_id) AS PercentatgeAprovat '.
+			' FROM USUARI U '.
+			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' WHERE es_alumne=1 AND M.matricula_id IS NOT NULL AND (M.baixa=0 or M.baixa is NULL) '.
+			' AND C.nivell=1 '.
+			' AND PercentatgeAprovat(M.matricula_id)>=60 '.
+			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
+			
+//print '<BR><BR><BR>'.$SQL;
+		$frm->SQL = $SQL;
+		
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'username, NomAlumne, Cognom1Alumne, Cognom2Alumne, data_naixement, edat, municipi, telefon, email, nivell, grup, %2:PercentatgeAprovat';
+		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Data naixement, Edat, Municipi, Telèfon, Correu, Nivell, Grup, Percentatge aprovat';
+		
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+
+		$frm->EscriuHTML();
+	}
 }
 
+/**
+ * Classe que encapsula el llistat dels alumnes que han graduat 2n.
+ */
+class AlumnesGraduacio2n extends Usuari
+{
+	/**
+	 * Escriu el llistat dels alumnes que han graduat de 2n.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->Titol = "Promoció d'alumnes de 1r";
+		$SQL = ' SELECT '.
+			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
+			' U.data_naixement, Edat(U.data_naixement) AS edat, U.municipi, U.telefon, U.email, U.usuari_bloquejat, '.
+			' M.matricula_id, M.grup, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa, PercentatgeAprovat(M.matricula_id) AS PercentatgeAprovat '.
+			' FROM USUARI U '.
+			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' WHERE es_alumne=1 AND M.matricula_id IS NOT NULL AND (M.baixa=0 or M.baixa is NULL) '.
+			' AND C.nivell=2 '.
+			' AND PercentatgeAprovat(M.matricula_id)>=100 '.
+			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
+			
+//print '<BR><BR><BR>'.$SQL;
+		$frm->SQL = $SQL;
+		
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Camps = 'username, NomAlumne, Cognom1Alumne, Cognom2Alumne, data_naixement, edat, municipi, telefon, email, nivell, grup, %2:PercentatgeAprovat';
+		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Data naixement, Edat, Municipi, Telèfon, Correu, Nivell, Grup, Percentatge aprovat';
+		
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+
+		$frm->EscriuHTML();
+	}
+}
 ?>

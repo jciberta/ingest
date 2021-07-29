@@ -445,6 +445,9 @@ class Menu
 			$Retorn .= Menu::Obre('Informes');
 			$Retorn .= Menu::Opcio('Darrers accessos', 'UsuariRecerca.php?accio=UltimLogin');
 			$Retorn .= Menu::Opcio('Estadístiques notes', 'Estadistiques.php?accio=EstadistiquesNotes');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Promoció alumnes 1r', 'UsuariRecerca.php?accio=AlumnesPromocio1r');
+			$Retorn .= Menu::Opcio('Graduació alumnes 2n', 'UsuariRecerca.php?accio=AlumnesGraduacio2n');
 			$Retorn .= Menu::Tanca();
 		}	
 		$Retorn .= '		</ul>';
