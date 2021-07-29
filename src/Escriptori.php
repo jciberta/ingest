@@ -62,6 +62,7 @@ else if ($Usuari->es_professor) {
 		' ORDER BY CPE.codi, UPE.nivell ';
 		
 //print $SQL;
+	echo '<h3>Cursos</h3>';
 	echo '<div class="card-columns" style="column-count:6">';
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows > 0) {
@@ -91,6 +92,10 @@ else if ($Usuari->es_professor) {
 		}
 	}
 	$ResultSet->close();
+
+	echo '</div>';
+	echo '<h3>Gestió</h3>';
+	echo '<div class="card-columns" style="column-count:6">';
 	
 	// Grups tutoria
 	$Professor = new Professor($conn, $Usuari);
@@ -125,12 +130,17 @@ else if ($Usuari->es_professor) {
 	echo '    </div>';
 	echo '  </div>';
 
+	echo '</div>';
+	echo '<h3>Informes</h3>';
+	echo '<div class="card-columns" style="column-count:6">';
+
 	// Històric
+	$URL = GeneraURL('Recerca.php?accio=HistoricCurs');
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
 	echo '      <h5 class="card-title">Històric</h5>';
 	echo '      <p class="card-text">Notes FP</p>';
-	echo '      <a href="Recerca.php?accio=HistoricCurs" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	echo '    </div>';
 	echo '  </div>';
 
@@ -138,8 +148,8 @@ else if ($Usuari->es_professor) {
 	$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
 	echo '  <div class="card">';
 	echo '    <div class="card-body">';
-	echo '      <h5 class="card-title">Informes</h5>';
-	echo '      <p class="card-text">Estadístiques FP</p>';
+	echo '      <h5 class="card-title">Estadístiques</h5>';
+	echo '      <p class="card-text">Aprovats per UF</p>';
 	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	echo '    </div>';
 	echo '  </div>';
