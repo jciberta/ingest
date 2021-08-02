@@ -194,6 +194,29 @@ class Professor extends Usuari
 		$ResultSet->close();
 		return $iRetorn;
 	}
+
+	/**
+	 * Obté el codi dels cicles que imparteix.
+	 * @returns array Codi dels cicles que imparteix.
+	 */
+	function ObteCodiCicles(): array {
+		$aRetorn = Array();
+		$SQL = ' 
+			SELECT DISTINCT CPE.codi 
+			FROM PROFESSOR_UF PUF
+			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+			WHERE PUF.professor_id='.$this->Usuari->usuari_id;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while ($obj = $ResultSet->fetch_object()) {
+				array_push($aRetorn, $obj->codi);
+			}
+		}
+		$ResultSet->close();
+		return $aRetorn;
+	}	
 	
 	/**
 	 * Comprova si és tutor d'un alumne.

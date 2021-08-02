@@ -144,6 +144,26 @@ else if ($Usuari->es_professor) {
 	echo '    </div>';
 	echo '  </div>';
 
+	// Promoció 1r
+	$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesPromocio1r');
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Promocions 1r</h5>';
+	echo "      <p class='card-text'>Alumnes amb 60% d'hores o més</p>";
+	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
+	
+	// Graduació 2n
+	$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesGraduacio2n');
+	echo '  <div class="card">';
+	echo '    <div class="card-body">';
+	echo '      <h5 class="card-title">Graduacions 2n</h5>';
+	echo "      <p class='card-text'>Alumnes amb 100% d'hores</p>";
+	echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	echo '    </div>';
+	echo '  </div>';
+
 	// Estadístiques FP
 	$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
 	echo '  <div class="card">';

@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibProfessor.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'usuari.
@@ -323,7 +324,13 @@ class AlumnesPromocio1r extends Usuari
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
-		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+		if ($this->Usuari->es_professor) {
+			$p = new Professor($this->Connexio, $this->Usuari);
+			$a = $p->ObteCodiCicles();
+			$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, $a, $a);
+		}
+		else
+			$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
 
 		$frm->EscriuHTML();
 	}
@@ -339,7 +346,7 @@ class AlumnesGraduacio2n extends Usuari
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
-		$frm->Titol = "Promoció d'alumnes de 1r";
+		$frm->Titol = "Graduació d'alumnes de 2n";
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
 			' U.data_naixement, Edat(U.data_naixement) AS edat, U.municipi, U.telefon, U.email, U.usuari_bloquejat, '.
@@ -365,7 +372,13 @@ class AlumnesGraduacio2n extends Usuari
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
-		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+			if ($this->Usuari->es_professor) {
+			$p = new Professor($this->Connexio, $this->Usuari);
+			$a = $p->ObteCodiCicles();
+			$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, $a, $a);
+		}
+		else
+			$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('APD', 'CAI', 'DAM', 'FIP', 'SMX'));
 
 		$frm->EscriuHTML();
 	}

@@ -99,6 +99,10 @@ switch ($accio) {
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, FCT, Especialitat, Cos, Codi, Cicle Formatiu, Família, Actiu';
 		$frm->PermetEditar = ($Usuari->es_admin);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ModulsProfessionals';
+		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
+			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU'), 
+			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU')
+		);
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormativesCF":
@@ -115,33 +119,13 @@ switch ($accio) {
 		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu, Activa';
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
-		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
+		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
+			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU'), 
+			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU')
+		);
 		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
         break;
-/*    case "UnitatsFormativesDates":
-		$frm = new FormRecerca($conn, $Usuari);
-		$frm->Modalitat = $Modalitat;
-		$frm->Titol = 'Unitats formatives';
-		$frm->SQL = "SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell, UF.activa, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, FormataData(data_inici) AS data_inici, FormataData(data_final) AS data_final ". 
-			' FROM UNITAT_FORMATIVA UF '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) ';
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			// És professor
-			if ($Usuari->es_professor)
-				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UF.unitat_formativa_id) '.
-					' WHERE PUF.professor_id='.$Usuari->usuari_id;
-		$frm->Taula = 'UNITAT_FORMATIVA';
-		$frm->ClauPrimaria = 'unitat_formativa_id';
-		$frm->Camps = 'CodiCF, nivell, CodiMP, NomMP, CodiUF, NomUF, HoresUF, data_inici, data_final, bool:activa';
-		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final, Activa';
-		$frm->PermetEditar = True;
-		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
-		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
-		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
-		$frm->EscriuHTML();
-        break;*/
     case "PlaEstudisAny":
 		$frm = new PlaEstudisAny($conn, $Usuari);
 		$frm->EscriuHTML();
@@ -155,34 +139,6 @@ switch ($accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->EscriuHTML();
         break;
-/*		$frm = new FormRecerca($conn, $Usuari);
-		$frm->Modalitat = $Modalitat;
-		$frm->Titol = 'Unitats formatives';
-		$frm->SQL = 'SELECT '.
-			' 	UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell, '.
-			' 	MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
-			'	CPE.codi AS CodiCF, FormataData(UPE.data_inici) AS data_inici, FormataData(UPE.data_final) AS data_final '. 
-			' FROM UNITAT_PLA_ESTUDI UPE '.
-			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
-			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			// És professor
-			if ($Usuari->es_professor)
-				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
-					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-					' WHERE PUF.professor_id='.$Usuari->usuari_id.
-					' AND AA.actual=1 ';
-//print '<br><br><br>'.$frm->SQL;
-		$frm->Taula = 'UNITAT_PLA_ESTUDI';
-		$frm->ClauPrimaria = 'unitat_pla_estudi_id';
-		$frm->Camps = 'CodiCF, nivell, CodiMP, NomMP, CodiUF, NomUF, HoresUF, data_inici, data_final';
-		$frm->Descripcions = 'Cicle, Nivell, Codi, Mòdul professional, Codi, Nom, Hores, Data inici, Data final';
-		$frm->PermetEditar = True;
-		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
-		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX'));
-		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
-		$frm->EscriuHTML();
-        break;*/
 }
 
 ?>

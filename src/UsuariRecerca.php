@@ -296,13 +296,13 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "AlumnesPromocio1r":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
 		$frm = new AlumnesPromocio1r($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
     case "AlumnesGraduacio2n":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
 		$frm = new AlumnesGraduacio2n($conn, $Usuari);
 		$frm->EscriuHTML();
