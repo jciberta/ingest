@@ -23100,3 +23100,86 @@ BEGIN
 	
 END //
 DELIMITER ;
+
+ALTER TABLE MODUL_PROFESSIONAL MODIFY especialitat VARCHAR(30);
+ALTER TABLE MODUL_PLA_ESTUDI MODIFY especialitat VARCHAR(30);
+
+DROP PROCEDURE CreaPlaEstudisCicle;
+
+/*
+ * CreaPlaEstudisCicle
+ * Crea el pla d'estudis per a un cicle (copiant mòduls i unitats actius).
+ * @param integer CiclePlaEstudiId Identificador del cicle.
+ */
+DELIMITER //
+CREATE PROCEDURE CreaPlaEstudisCicle(IN CiclePlaEstudiId INT)
+BEGIN
+    DECLARE _modul_professional_id INT;
+    DECLARE _nom VARCHAR(200);
+    DECLARE _codi VARCHAR(5);
+    DECLARE _hores INT;
+    DECLARE _hores_setmana INT;
+    DECLARE _especialitat VARCHAR(30);
+    DECLARE _cos CHAR(1);
+    DECLARE _es_fct BIT;
+    DECLARE done INT DEFAULT FALSE;
+
+    BEGIN
+        DECLARE cur CURSOR FOR 
+        SELECT modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, es_fct 
+            FROM MODUL_PROFESSIONAL 
+            WHERE cicle_formatiu_id in (SELECT cicle_formatiu_id FROM CICLE_PLA_ESTUDI WHERE cicle_pla_estudi_id=CiclePlaEstudiId)
+            AND actiu=1;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+        OPEN cur;
+        read_loop: LOOP
+            FETCH cur INTO _modul_professional_id, _nom, _codi, _hores, _hores_setmana, _especialitat, _cos, _es_fct;
+            IF done THEN
+                LEAVE read_loop;
+            END IF;
+            INSERT INTO MODUL_PLA_ESTUDI (modul_professional_id, cicle_pla_estudi_id, nom, codi, hores, hores_setmana, especialitat, cos, es_fct) 
+                VALUES (_modul_professional_id, CiclePlaEstudiId, _nom, _codi, _hores, _hores_setmana, _especialitat, _cos, _es_fct);
+            SET @ModulPlaEstudiId = LAST_INSERT_ID();
+            CALL CreaPlaEstudisModul(@ModulPlaEstudiId);
+        END LOOP;
+        CLOSE cur;
+    END;
+END //
+DELIMITER ;
+
+/*
+ * SuprimeixPlaEstudis
+ * Suprimeix el pla d'estudis d'un any acadèmic.
+ * @param integer AnyAcademicId Identificador de l'any acadèmic.
+ */
+DELIMITER //
+CREATE PROCEDURE SuprimeixPlaEstudis(IN AnyAcademicId INT)
+BEGIN
+    DELETE FROM PROFESSOR_UF WHERE uf_id IN (
+        SELECT unitat_pla_estudi_id
+        FROM UNITAT_PLA_ESTUDI UPE
+        LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM UNITAT_PLA_ESTUDI WHERE modul_pla_estudi_id IN (
+        SELECT modul_pla_estudi_id
+        FROM MODUL_PLA_ESTUDI MPE
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM MODUL_PLA_ESTUDI WHERE cicle_pla_estudi_id IN (
+        SELECT cicle_pla_estudi_id
+        FROM CICLE_PLA_ESTUDI CPE
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM CURS WHERE cicle_formatiu_id IN (
+        SELECT cicle_pla_estudi_id
+        FROM CICLE_PLA_ESTUDI CPE
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM CICLE_PLA_ESTUDI WHERE any_academic_id=AnyAcademicId;
+END //
+DELIMITER ;
+
+

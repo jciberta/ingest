@@ -326,8 +326,8 @@ INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES 
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Farmàcia i parafarmàcia (LOE) 2019-2020 2n', 'FIP2', 5, 2);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 1r', 'APD1', 6, 1);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Atenció a persones en situació de dependència (LOE) 2019-2020 2n', 'APD2', 6, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 1r', 'CAI1', 7, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOE) 2019-2020 2n', 'CAI2', 7, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOGSE) 2019-2020 1r', 'CAI1', 7, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (2, 'CPFM Cures auxiliars d''infermeria (LOGSE) 2019-2020 2n', 'CAI2', 7, 2);
 
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2020-2021 1r', 'SMX1', 1, 1);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Sistemes microinformàtics i xarxes (LOE) 2020-2021 2n', 'SMX2', 1, 2);
@@ -337,8 +337,8 @@ INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES 
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Farmàcia i parafarmàcia (LOE) 2020-2021 2n', 'FIP2', 5, 2);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Atenció a persones en situació de dependència (LOE) 2020-2021 1r', 'APD1', 6, 1);
 INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Atenció a persones en situació de dependència (LOE) 2020-2021 2n', 'APD2', 6, 2);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Cures auxiliars d''infermeria (LOE) 2020-2021 1r', 'CAI1', 7, 1);
-INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Cures auxiliars d''infermeria (LOE) 2020-2021 2n', 'CAI2', 7, 2);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Cures auxiliars d''infermeria (LOGSE) 2020-2021 1r', 'CAI1', 7, 1);
+INSERT INTO CURS (any_academic_id, nom, codi, cicle_formatiu_id, nivell) VALUES (3, 'CPFM Cures auxiliars d''infermeria (LOGSE) 2020-2021 2n', 'CAI2', 7, 2);
 
 /* Festius */
 INSERT INTO FESTIU (data, motiu) VALUES ('2018-09-11', '11 de setembre');
@@ -453,3 +453,110 @@ INSERT INTO BLOC_GUARDIA (dia, hora, hora_inici, hora_final) VALUES (5, 10, '16:
 INSERT INTO BLOC_GUARDIA (dia, hora, hora_inici, hora_final) VALUES (5, 11, '17:50:00', '18:45:00');
 INSERT INTO BLOC_GUARDIA (dia, hora, hora_inici, hora_final) VALUES (5, 12, '18:45:00', '19:40:00');
 INSERT INTO BLOC_GUARDIA (dia, hora, hora_inici, hora_final) VALUES (5, 13, '19:40:00', '20:35:00');
+
+
+/* 
+ * Curs 2021-2022 
+ */
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2021, 2022, 'Curs 2021-2022');
+UPDATE ANY_ACADEMIC SET actual=0;
+UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=4;
+
+INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (8, 'Informàtica d''oficina', 'GB', 'FPB', 'IC10', 17);
+INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (9, 'Higiene bucodental', 'GS', 'HBU', 'SAH0 ', 21);
+
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (80, 'Ciències aplicades I', 'MP01', 165, 5, 'MA, FQ, CN', 'A' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (81, 'Ciències aplicades II', 'MP02', 165, 5, 'MA, FQ, CN', 'A' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (82, 'Comunicació i societat I', 'MP03', 132, 4, 'LC, LE, AN, GE', 'A' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (83, 'Comunicació i societat II', 'MP04', 165, 5, 'LC, LE, AN, GE', 'A' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (84, 'Entorn laboral', 'MP05', 99, 3, '505, 501, 622, ECO, GE', '' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (85, 'Muntatge i manteniment de sistemes i components informàtics', 'MP06', 264, 8, '627, 622, Esp', 'B' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (86, 'Operacions auxiliars per a la configuració i l''explotació', 'MP07', 165, 5, '627, 622, Esp', 'B' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (87, 'Ofimàtica i arxiu de documents', 'MP08', 231, 7, '627, 622, Esp', 'B' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (88, 'Instal·lació i manteniment de xarxes per a transmissió de dades', 'MP09', 198, 6, '627, 622, Esp', 'B' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (89, 'Síntesi', 'MP10', 99, 3, '', '' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (90, 'Formació en centres de treball', 'MP11', 317, NULL, '', '' ,8);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (100, 'Recepció i logística a la clínica dental.', 'MP01', 66, 2, '518', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (101, 'Estudi de la cavitat oral.', 'MP02', 132, 4, '518', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (102, 'Exploració de la cavitat oral.', 'MP03', 165, 5, '620, Esp', 'B' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (103, 'Intervenció bucodental.', 'MP04', 198, 6, '620, Esp', 'B' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (104, 'Epidemiologia en salut oral.', 'MP05', 99, 3, '518', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (105, 'Educació per a la salut', 'MP06', 99, 3, '518', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (106, 'Conservadora, periodòncia, cirurgia i implants.', 'MP07', 132, 4, '620', 'B' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (107, 'Pròtesi i ortodòncia.', 'MP08', 99, 3, '620', 'B' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (108, 'Primers auxilis.', 'MP09', 66, 2, '619, 620, Esp', 'B' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (109, 'Fisiopatologia general.', 'MP10', 132, 4, '517,518', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (110, 'Formació i orientació laboral.', 'MP11', 66, 2, '505', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (111, 'Empresa i iniciativa emprenedora.', 'MP12', 66, 2, '505', 'A' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (112, 'Projecte de documentació i administració sanitàries', 'MP13', 231, 7, '518, 517, 620, Esp, 505', '' ,9);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (113, 'Formació en centres de treball.', 'MP14', 449, NULL, '', '' ,9);
+
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (200, 'UF1 Matemàtiques aplicades', 'UF1', 99, 1, 80);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (201, 'UF2 Ciències aplicades', 'UF2', 66, 1, 80);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (202, 'UF1 Matemàtiques aplicades II', 'UF1', 99, 2, 81);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (203, 'UF2 Ciències aplicades II', 'UF2', 66, 2, 81);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (204, 'UF1 Comunicació i societat aplicades a la professió', 'UF1', 132, 1, 82);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (205, 'UF1 Comunicació en català i castellà, i societat', 'UF1', 99, 2, 83);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (206, 'UF2 Anglès aplicat a la professió', 'UF2', 66, 2, 83);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (207, 'UF1 Incorporació al treball I', 'UF1', 33, 1, 84);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (208, 'UF2 Incorporació al treball II', 'UF2', 33, 2, 84);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (209, 'UF3 Prevenció de riscos en el lloc de treball', 'UF3', 33, 1, 84);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (210, 'UF1 Acoblat de components de sistemes microinformàtics ', 'UF1', 121, 1, 85);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (211, 'UF2 Instal·lació i verificació de sistemes operatius', 'UF2', 55, 1, 85);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (212, 'UF3 Manteniment i gestió logística dels elements microinformàtics', 'UF3', 55, 1, 85);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (213, 'UF1 Configuració d''equips informàtics ', 'UF1', 106, 2, 86);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (214, 'UF2 Paquets de programari ofimàtic', 'UF2', 26, 2, 86);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (215, 'UF3 Configuració i ús d’utilitats d’internet', 'UF3', 33, 2, 86);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (216, 'UF1. Comunicacions digitals bàsiques', 'UF1', 66, 1, 87);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (217, 'UF2. Processadors de text', 'UF2', 33, 1, 87);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (218, 'UF3. Ofimàtica bàsica', 'UF3', 66, 1, 87);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (219, 'UF4. Reprografia i enquadernació', 'UF4', 33, 1, 87);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (220, 'UF1 Instal·lació de canalitzacions de transmissió de dades', 'UF1', 99, 2, 88);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (221, 'UF2 Instal·lació d''elements de transmissió de dades', 'UF2', 99, 2, 88);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (222, 'UF1 Síntesi', 'UF1', 99, 2, 89);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (223, 'UF1. FCT', 'UF1', 317, 2, 90);
+
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (224, 'UF1 Recepció del pacient  i gestió informàtica.', 'UF1', 33, 1, 100);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (225, 'UF2 Manteniment dels equips i control del magatzem. ', 'UF2', 33, 1, 100);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (226, 'UF1 Anatomia i fisiologia de l’aparell estomatognàtic. ', 'UF1', 44, 1, 101);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (227, 'UF2 Patologia de l’aparell estomatognàtic. ', 'UF2', 55, 1, 101);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (228, 'UF3 Patologies sistèmiques amb repercussió en l’aparell estomatognàtic ', 'UF3', 33, 1, 101);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (229, 'UF1 Preparació de l’instrumental i material del gabinet bucodental. ', 'UF1', 44, 1, 102);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (230, 'UF2 L’atenció al pacient.', 'UF2', 88, 1, 102);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (231, 'UF1 Prevenció bucodental .', 'UF1', 66, 2, 103);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (232, 'UF2 Eliminació de dipòsits dentals.', 'UF2', 99, 2, 103);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (233, 'UF1 Estudis epidemiològics de salut bucodental. ', 'UF1', 66, 2, 104);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (234, 'UF2 Interpretació dels estudis epidemiològics de salut bucodental. ', 'UF2', 33, 2, 104);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (235, 'UF1 Accions educatives i promoció de la salut. ', 'UF1', 33, 1, 105);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (236, 'UF2 Programes d’educació i promoció de la salut bucodental. ', 'UF2', 66, 1, 105);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (237, 'UF1 Tècniques d’ajuda en odontologia conservadora. ', 'UF1', 50, 1, 106);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (238, 'UF2 Tècniques d’ajuda en odontologia quirúrgica. ', 'UF2', 49, 1, 106);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (239, 'UF1 Presa d’impressions dentals i registres d’ oclusió. ', 'UF1', 33, 2, 107);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (240, 'UF2 Pròtesis dentals. ', 'UF2', 33, 2, 107);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (241, 'UF3 Ortodòncia. ', 'UF3', 33, 2, 107);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (242, 'UF1 Recursos i trasllat d’accidentats. ', 'UF1', 22, 1, 108);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (243, 'UF2 Suport vital bàsic (SVB) i ús dels desfibril·ladors. ', 'UF2', 22, 1, 108);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (244, 'UF3 Atenció sanitària d’urgències. ', 'UF3', 22, 1, 108);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (245, 'UF1 Fisiopatologia de l’organisme humà. ', 'UF1', 88, 1, 109);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (246, 'UF2 Fisiopatologia del sistema immunitari, infeccions i neoplàsies. ', 'UF2', 44, 1, 109);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (247, 'UF1 Incorporació al treball', 'UF1', 33, 1, 110);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (248, 'UF2 Prevenció de riscos laborals', 'UF2', 33, 1, 110);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (249, 'UF1 Empresa i iniciativa emprenedora', 'UF1', 66, 2, 111);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (250, 'UF1 Projecte d’higiene bucodental', 'UF1', 231, 2, 112);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (251, 'UF1 Formació en centres de treball', 'UF1', 449, 2, 113);
+
+call CreaPlaEstudis(4);
+
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 1r', 'SMX1', 25, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 2n', 'SMX2', 25, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 1r', 'DAM1', 26, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 2n', 'DAM2', 26, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 1r', 'FIP1', 27, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 2n', 'FIP2', 27, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 1r', 'APD1', 28, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 2n', 'APD2', 28, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 1r', 'CAI1', 29, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 2n', 'CAI2', 29, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2021-2022 1r', 'FPB1', 30, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2021-2022 2n', 'HBU1', 31, 1);
+

@@ -567,7 +567,7 @@ BEGIN
     DECLARE _codi VARCHAR(5);
     DECLARE _hores INT;
     DECLARE _hores_setmana INT;
-    DECLARE _especialitat VARCHAR(20);
+    DECLARE _especialitat VARCHAR(30);
     DECLARE _cos CHAR(1);
     DECLARE _es_fct BIT;
     DECLARE done INT DEFAULT FALSE;
@@ -628,6 +628,41 @@ BEGIN
 		CLOSE cur;
 	END;
 
+END //
+DELIMITER ;
+
+/*
+ * SuprimeixPlaEstudis
+ * Suprimeix el pla d'estudis d'un any acadèmic.
+ * @param integer AnyAcademicId Identificador de l'any acadèmic.
+ */
+DELIMITER //
+CREATE PROCEDURE SuprimeixPlaEstudis(IN AnyAcademicId INT)
+BEGIN
+    DELETE FROM PROFESSOR_UF WHERE uf_id IN (
+        SELECT unitat_pla_estudi_id
+        FROM UNITAT_PLA_ESTUDI UPE
+        LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM UNITAT_PLA_ESTUDI WHERE modul_pla_estudi_id IN (
+        SELECT modul_pla_estudi_id
+        FROM MODUL_PLA_ESTUDI MPE
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM MODUL_PLA_ESTUDI WHERE cicle_pla_estudi_id IN (
+        SELECT cicle_pla_estudi_id
+        FROM CICLE_PLA_ESTUDI CPE
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM CURS WHERE cicle_formatiu_id IN (
+        SELECT cicle_pla_estudi_id
+        FROM CICLE_PLA_ESTUDI CPE
+        WHERE CPE.any_academic_id=AnyAcademicId
+    );
+    DELETE FROM CICLE_PLA_ESTUDI WHERE any_academic_id=AnyAcademicId;
 END //
 DELIMITER ;
 
