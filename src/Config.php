@@ -16,6 +16,7 @@ class Config {
 	const Usuari         = 'root';
 	const Password       = 'root';
 	const Debug          = True; // Si està activat mostrara més informació.
+	const Demo           = False;
 	const Manteniment    = False; 
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
 	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).

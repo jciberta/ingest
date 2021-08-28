@@ -100,7 +100,11 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
 	}
 	$Retorn .= '</HEAD>';
-	$Retorn .= '<BODY>';
+	if (Config::Demo)
+		$Retorn .= '<BODY STYLE="background-color:#ffa70570">';
+	else
+		$Retorn .= '<BODY BGCOLOR=yellow>';
+//		$Retorn .= '<BODY>';
 	if ($bMenu) {
 		$Retorn .= Menu::Crea($Usuari);
 	}
