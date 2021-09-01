@@ -23183,3 +23183,48 @@ END //
 DELIMITER ;
 
 
+-- Programació didàctica
+CREATE TABLE RESULTAT_APRENENTATGE
+(
+    /* RA */
+    resultat_aprenentatge_id INT NOT NULL,
+    unitat_formativa_id INT NOT NULL,
+    descripcio VARCHAR(500) NOT NULL,
+
+    CONSTRAINT ResultatAprenentatgePK PRIMARY KEY (resultat_aprenentatge_id),
+    CONSTRAINT RA_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE CRITERI_AVALUACIO
+(
+    /* CAV */
+    criteri_avaluacio_id INT NOT NULL,
+    resultat_aprenentatge_id INT NOT NULL,
+    descripcio VARCHAR(500) NOT NULL,
+
+    CONSTRAINT CriteriAvaluacioPK PRIMARY KEY (criteri_avaluacio_id),
+    CONSTRAINT CAV_ResultatAprenentatgeFK FOREIGN KEY (resultat_aprenentatge_id) REFERENCES RESULTAT_APRENENTATGE(resultat_aprenentatge_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE CONTINGUT_UF
+(
+    /* CUF */
+    contingut_uf_id INT NOT NULL,
+    unitat_formativa_id INT NOT NULL,
+    descripcio VARCHAR(500) NOT NULL,
+
+    CONSTRAINT ContingutUFPK PRIMARY KEY (contingut_uf_id),
+    CONSTRAINT CUF_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE SUBCONTINGUT_UF
+(
+    /* SCUF */
+    subcontingut_uf_id INT NOT NULL,
+    contingut_uf_id INT NOT NULL,
+    descripcio VARCHAR(500) NOT NULL,
+
+    CONSTRAINT SubContingutUFPK PRIMARY KEY (subcontingut_uf_id),
+    CONSTRAINT SCUF_ContingutUFFK FOREIGN KEY (contingut_uf_id) REFERENCES CONTINGUT_UF(contingut_uf_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
