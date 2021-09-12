@@ -573,8 +573,8 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		
 		$Retorn .= $this->CreaLlista('CPE.codi', 'Cicle', 100, 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX'), 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX'),
+			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
+			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'),
 			$this->CodiCiclePlaEstudi, 
 			'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		return $Retorn;
