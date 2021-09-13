@@ -331,7 +331,7 @@ class ProfessorsUF extends Form
 
 				$sRetorn .= '<TABLE class="table table-striped table-sm table-hover">';
 				$sRetorn .= '<thead class="thead-dark">';
-				$sRetorn .= "<TH>Modul</TH>";
+				$sRetorn .= "<TH>Mòdul</TH>";
 				$sRetorn .= "<TH>Unitat formativa</TH>"; 
 				$sRetorn .= "<TH>Professors</TH>"; 
 				$sRetorn .= '</thead>';

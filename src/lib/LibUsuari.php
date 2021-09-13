@@ -16,25 +16,25 @@ require_once(ROOT.'/lib/LibProfessor.php');
  * Classe que encapsula les utilitats per al maneig de l'usuari.
  * No es creen les subclasses Professor, Alumne... ja que un usuari pot ser diversos rols a la vegada.
  */
-class Usuari
+class Usuari extends Objecte
 {
 	/**
 	* Connexió a la base de dades.
 	* @var object
 	*/    
-	public $Connexio;
+//	public $Connexio;
 
 	/**
 	* Usuari autenticat.
 	* @var object
 	*/    
-	public $Usuari;
+//	public $Usuari;
 
 	/**
 	* Registre de la base de dades que conté les dades d'una matrícula.
 	* @var object
 	*/    
-    private $Registre = null;
+//    private $Registre = null;
 
 	/**
 	 * Constructor de l'objecte.

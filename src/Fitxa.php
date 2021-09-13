@@ -54,11 +54,14 @@ switch ($accio) {
 		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
 		
-		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT any_academic_id, nom FROM ANY_ACADEMIC", "any_academic_id", "nom");
-		echo $frm->AfegeixLlista('any_academic_id', 'Any acadèmic', 200, $aCurs[0], $aCurs[1]);
+		$aPE = ObteCodiValorDesDeSQL($conn, "SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI", "cicle_pla_estudi_id", "nom");
+		echo $frm->AfegeixLlista('cicle_formatiu_id', "Pla d'estudis", 200, $aPE[0], $aPE[1]);
+		
+//		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT any_academic_id, nom FROM ANY_ACADEMIC", "any_academic_id", "nom");
+//		echo $frm->AfegeixLlista('any_academic_id', 'Any acadèmic', 200, $aCurs[0], $aCurs[1]);
 
-		$aCF = ObteCodiValorDesDeSQL($conn, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU", "cicle_formatiu_id", "nom");
-		echo $frm->AfegeixLlista('cicle_formatiu_id', 'Cicle formatiu', 200, $aCF[0], $aCF[1]);
+//		$aCF = ObteCodiValorDesDeSQL($conn, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU", "cicle_formatiu_id", "nom");
+//		echo $frm->AfegeixLlista('cicle_formatiu_id', 'Cicle formatiu', 200, $aCF[0], $aCF[1]);
 		
 		$frm->AfegeixEspai();
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);

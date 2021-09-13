@@ -17,6 +17,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPlaEstudis.php');
+require_once(ROOT.'/lib/LibProgramacioDidactica.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -100,8 +101,8 @@ switch ($accio) {
 		$frm->PermetEditar = ($Usuari->es_admin);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ModulsProfessionals';
 		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
-			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU'), 
-			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU')
+			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
+			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD')
 		);
 		$frm->EscriuHTML();
         break;
@@ -120,8 +121,8 @@ switch ($accio) {
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
-			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU'), 
-			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBU')
+			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
+			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD')
 		);
 		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
@@ -137,6 +138,10 @@ switch ($accio) {
     case "PlaEstudisUnitat":
 		$frm = new PlaEstudisUnitatRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
+		$frm->EscriuHTML();
+        break;
+    case "ResultatsAprenentatge":
+		$frm = new ResultatsAprenentatge($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
 }

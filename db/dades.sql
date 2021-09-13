@@ -463,7 +463,7 @@ UPDATE ANY_ACADEMIC SET actual=0;
 UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=4;
 
 INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (8, 'Informàtica d''oficina', 'GB', 'FPB', 'IC10', 17);
-INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (9, 'Higiene bucodental', 'GS', 'HBU', 'SAH0 ', 21);
+INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (9, 'Higiene bucodental', 'GS', 'HBD', 'SAH0 ', 21);
 
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (80, 'Ciències aplicades I', 'MP01', 165, 5, 'MA, FQ, CN', 'A' ,8);
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (81, 'Ciències aplicades II', 'MP02', 165, 5, 'MA, FQ, CN', 'A' ,8);
@@ -547,16 +547,16 @@ INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, mod
 
 call CreaPlaEstudis(4);
 
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 1r', 'SMX1', 25, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 2n', 'SMX2', 25, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 1r', 'DAM1', 26, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 2n', 'DAM2', 26, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 1r', 'FIP1', 27, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 2n', 'FIP2', 27, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 1r', 'APD1', 28, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 2n', 'APD2', 28, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 1r', 'CAI1', 29, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 2n', 'CAI2', 29, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2021-2022 1r', 'FPB1', 30, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2021-2022 2n', 'HBU1', 31, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 1r', 'SMX1', 13, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2021-2022 2n', 'SMX2', 13, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 1r', 'DAM1', 14, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2021-2022 2n', 'DAM2', 14, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 1r', 'FIP1', 15, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2021-2022 2n', 'FIP2', 15, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 1r', 'APD1', 16, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2021-2022 2n', 'APD2', 16, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 1r', 'CAI1', 17, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 2n', 'CAI2', 17, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2021-2022 1r', 'FPB1', 18, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2021-2022 2n', 'HBD1', 19, 1);
 

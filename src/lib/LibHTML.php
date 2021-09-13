@@ -412,12 +412,6 @@ class Menu
 			$Retorn .= Menu::Opcio('Cicles formatius', 'FPRecerca.php?accio=CiclesFormatius');
 			$Retorn .= Menu::Opcio('Mòduls professionals', 'FPRecerca.php?accio=ModulsProfessionals');
 			$Retorn .= Menu::Opcio('Unitats formatives', 'FPRecerca.php?accio=UnitatsFormativesCF');
-//			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-//			$Retorn .= '	<button class="dropdown-item dropdown-toggle" type="button">Unitats formatives</button>';
-//			$Retorn .= '	<div class="dropdown-menu">';
-//			$Retorn .= '		<a class="dropdown-item" href="'.GeneraURL('FPRecerca.php?accio=UnitatsFormativesCF').'">Unitats formatives/MP/CF</a>';
-//			$Retorn .= '	</div>';
-//			$Retorn .= '</div>';
 			$Retorn .= Menu::Separador();
 			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
 			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Pla d'estudis</button>";
@@ -427,7 +421,13 @@ class Menu
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat')."'>Unitats formatives del pla d'estudis</a>";
 			$Retorn .= '	</div>';
 			$Retorn .= '</div>';
-	//			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
+			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
+			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Programació didàctica</button>";
+			$Retorn .= '	<div class="dropdown-menu">';
+			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ResultatsAprenentatge')."'>Resultats d'aprenentatge</a>";
+			$Retorn .= '	</div>';
+			$Retorn .= '</div>';
+			//$Retorn .= Menu::Opcio('Programació didàctica', 'FPRecerca.php?accio=UnitatsFormativesCF');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
 			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');

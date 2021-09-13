@@ -19,6 +19,32 @@ require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
+
+/**
+ * Classe Objecte.
+ *
+ * Classe base de la quals descendeixen els objectes.
+ */
+class Objecte {
+	/**
+	* Connexió a la base de dades.
+	* @var object
+	*/    
+	public $Connexio = null;
+
+	/**
+	* Usuari autenticat.
+	* @var object
+	*/    
+	public $Usuari = null;
+	
+	/**
+	* Registre per a emmagatzemar el resultat d'un DataSet.
+	* @var object
+	*/    
+    private $Registre = null;
+}
+
 /**
  * Classe Form.
  *
