@@ -41,10 +41,10 @@ console.log('-> ActualitzaTaula');
 //	var sDescripcions = $('input[name="edtDescripcions"]').val();	
 
 	var filtre = document.getElementById('filtre');
-console.log('Filtre');
-console.dir(filtre);
+//console.log('Filtre');
+//console.dir(filtre);
 	var sFiltre = CreaFiltreJSON(filtre);
-console.log('sFiltre: ' + sFiltre);
+//console.log('sFiltre: ' + sFiltre);
 	
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
@@ -66,6 +66,14 @@ console.log('sFiltre: ' + sFiltre);
 		},
         success: function(data) {
             $('#taula').html(data);
+			
+			// Actualitzem la variable amagada que emmagatzema la SQL per a la descàrrega 
+			// cada cop que es modifica el filtre.
+			var urlCSV = document.getElementById('urlCSV');
+			var URLDescarregaCSV = document.getElementById('DescarregaCSV');
+console.log('urlCSV: ' + urlCSV.value);
+//console.dir(DescarregaCSV);
+			URLDescarregaCSV.href = urlCSV.value;
             //$('#debug').html('<textarea disabled>'+data+'</textarea>');
         }, 
 		error: function(data) {

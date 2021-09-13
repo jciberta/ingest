@@ -963,7 +963,7 @@ class FormRecerca extends Form {
 		$sRetorn .= '      Descarrega';
 		$sRetorn .= '    </button>';
 		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
-		$sRetorn .= '      <a class="dropdown-item" href="'.$URL.'">CSV</a>';
+		$sRetorn .= '      <a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
 		$sRetorn .= '    </div>';
 		$sRetorn .= '  </div>';		
 		return $sRetorn;
@@ -1067,6 +1067,12 @@ class FormRecerca extends Form {
 			}
 			$sRetorn .= "</TABLE>";
 		}
+		
+		// Variable amagada que emmagatzema la SQL per a la descàrrega cada cop que es modifica el filtre.
+		$SQL = bin2hex(Encripta(TrimX($SQL)));
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+		$sRetorn .= "<input type=hidden id=urlCSV value='$URL'>";		
+		
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
 	}
@@ -1121,7 +1127,9 @@ class FormRecerca extends Form {
 //			$sRetorn .= '<TD style="align:right">';
 //			$sRetorn .= '<span style="float:right;">';
 
-			$SQL = bin2hex(Encripta(TrimX($this->CreaSQL())));
+			$SQL = $this->CreaSQL();	
+//print('<B>SQL</B>: '.$SQL.'<BR>');
+			$SQL = bin2hex(Encripta(TrimX($SQL)));
 //print('<B>SQL</B>: '.$SQL.'<BR>');
 			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
 //print('<B>URL</B>: '.$URL.'<BR>');
