@@ -611,7 +611,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$AnyAcademicId = $this->AnyAcademicId;
 		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
 		// Pedaç
-		if ($CodiCiclePlaEstudi == 'DAM')
+		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB'))
 			$CodiCiclePlaEstudi = 'SMX';
 		if ($CodiCiclePlaEstudi == 'FIP')
 			$CodiCiclePlaEstudi = 'CAI';
@@ -657,7 +657,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$AnyAcademicId = $this->AnyAcademicId;
 		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
 		// Pedaç
-		if ($CodiCiclePlaEstudi == 'DAM')
+		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB'))
 			$CodiCiclePlaEstudi = 'SMX';
 		if ($CodiCiclePlaEstudi == 'FIP')
 			$CodiCiclePlaEstudi = 'CAI';
