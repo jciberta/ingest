@@ -83,9 +83,10 @@ switch ($accio) {
     case "Tutor":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-	
+
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = !array_key_exists("Id", $_GET) ? -1 : $_GET['Id'];
+//		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
 		$frm = new FormFitxa($conn, $Usuari);
 		$frm->Titol = 'Tutor';
@@ -93,11 +94,14 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'tutor_id';
 		$frm->AutoIncrement = True;
 		$frm->Id = $Id;
-
-		$SQL = 'SELECT C.curs_id, C.nom '.
-			' FROM CURS C'.
-			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
-			' WHERE actual=1';
+		
+		$SQL = '
+			SELECT C.curs_id, C.nom 
+			FROM CURS C
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) 
+			WHERE actual=1
+			';
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 		$frm->AfegeixLlista('curs_id', 'Curs', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLookUp('professor_id', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
