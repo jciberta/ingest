@@ -105,7 +105,7 @@ switch ($accio) {
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 		$frm->AfegeixLlista('curs_id', 'Curs', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLookUp('professor_id', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
-		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, array("", "AB", "BC"), array("sense grup", "AB", "BC"));
+		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, array("", "AB", "BC", "CD"), array("sense grup", "AB", "BC", "CD"));
 		
 		$frm->EscriuHTML();
         break;
