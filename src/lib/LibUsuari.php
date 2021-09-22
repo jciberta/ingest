@@ -10,7 +10,7 @@
  */
 
 require_once(ROOT.'/lib/LibForms.php');
-require_once(ROOT.'/lib/LibProfessor.php');
+//require_once(ROOT.'/lib/LibProfessor.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'usuari.
