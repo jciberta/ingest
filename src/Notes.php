@@ -43,7 +43,8 @@ $ActivaAdministracio = (isset($_GET) && array_key_exists('ActivaAdministracio', 
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
 $Professor = new Professor($conn, $Usuari);
 $Professor->CarregaUFAssignades();
-if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+//if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+if (!$Professor->TeUFEnCicle($CicleId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
 $Professor->CarregaTutor($CursId);
 

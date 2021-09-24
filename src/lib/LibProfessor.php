@@ -73,6 +73,24 @@ class Professor extends Usuari
 	}
 
 	/**
+	 * Comprova si té alguna UF en un determinat cicle.
+	 * @param integer $Cicle Identificador del cicle.
+	 * @returns boolean Cert si té alguna UF en un determinat cicle.
+	 */
+	function TeUFEnCicle(int $Cicle): bool {
+//print('Cicle: '.$Cicle);
+//print('Nivell: '.$Nivell);
+//print_h($this->UFAssignades);
+//exit;
+		$bRetorn = False;
+		for($i = 0; $i < count($this->UFAssignades); $i++) {
+			if ($this->UFAssignades[$i]->cicle_formatiu_id == $Cicle)
+				$bRetorn = True;
+		}
+		return $bRetorn;
+	}
+
+	/**
 	 * Comprova si té alguna UF en un determinat cicle i nivell.
 	 * @param integer $Cicle Identificador del cicle.
 	 * @param integer $Nivell Nivell del cicle.

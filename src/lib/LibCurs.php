@@ -151,14 +151,21 @@ class Curs
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE (0=0) ';
 		if ($this->NomesProfessor)			
-			$SQL .= ' AND C.curs_id IN ( '.
-			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
-			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
-			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
-			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
-			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
-			' WHERE professor_id='.$this->Usuari->usuari_id.		
-			' ) ';
+			$SQL .= ' AND CPE.cicle_formatiu_id IN ( '.
+				' SELECT DISTINCT CPE.cicle_formatiu_id FROM PROFESSOR_UF PUF '.
+				' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+				' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+				' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+				' WHERE professor_id='.$this->Usuari->usuari_id.		
+				' ) ';
+//			$SQL .= ' AND C.curs_id IN ( '.
+//				' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
+//				' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+//				' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+//				' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+//				' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
+//				' WHERE professor_id='.$this->Usuari->usuari_id.		
+//				' ) ';
 		if ($CursId != -1)
 			$SQL .= ' AND C.curs_id='.$CursId;
 		return $SQL;
