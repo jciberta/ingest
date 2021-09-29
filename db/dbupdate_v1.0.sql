@@ -23259,10 +23259,16 @@ BEGIN
         LEFT JOIN CURS C ON (M.curs_id=C.curs_id)
         LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
         LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
-        WHERE alumne_id=AlumneId AND cicle_pla_estudi_id IN (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId)
+        WHERE alumne_id=AlumneId 
+        AND CPE.cicle_formatiu_id IN (
+            SELECT CPE.cicle_formatiu_id 
+            FROM CURS C
+            LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+            WHERE curs_id=CursId
+        )
         ORDER BY any_inici DESC
-		LIMIT 1;
-    
+        LIMIT 1;
+
     RETURN MatriculaId;    
 END //
 DELIMITER ;
