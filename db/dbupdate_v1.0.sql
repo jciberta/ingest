@@ -23228,3 +23228,136 @@ CREATE TABLE SUBCONTINGUT_UF
     CONSTRAINT SCUF_ContingutUFFK FOREIGN KEY (contingut_uf_id) REFERENCES CONTINGUT_UF(contingut_uf_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- Matriculació
+DROP PROCEDURE CreaMatriculaDNI;
+DROP PROCEDURE CreaMatricula;
+DROP FUNCTION UltimaMatriculaAlumne;
+
+/*
+ * UltimaMatriculaAlumne
+ *
+ * Retorna la última matrícula d'un alumne per a aquell curs que es vol matricular (comprova cicle).
+ *
+ * Ús:
+ *   SELECT UltimaMatriculaAlumne(AlumneId, CursId);
+ *
+ * @param integer AlumneId Identificador de l'alumne.
+ * @param integer CursId Identificador del curs.
+ * @return integer Identificador de la darrera matrícula.
+ */
+DELIMITER //
+CREATE FUNCTION UltimaMatriculaAlumne(AlumneId INT, CursId INT)
+RETURNS INT
+BEGIN 
+    DECLARE MatriculaId INT;
+    SET MatriculaId = -1;
+    
+    SELECT IFNULL(matricula_id, -1) AS matricula_id 
+        INTO MatriculaId
+        FROM MATRICULA M
+        LEFT JOIN CURS C ON (M.curs_id=C.curs_id)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+        LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+        WHERE alumne_id=AlumneId AND cicle_pla_estudi_id IN (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId)
+        ORDER BY any_inici DESC
+		LIMIT 1;
+    
+    RETURN MatriculaId;    
+END //
+DELIMITER ;
+
+
+/*
+ * CreaMatricula
+ *
+ * Crea la matrícula per a un alumne. Quan es crea la matrícula:
+ *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
+ *   2. Si l'alumne és a 2n, l'aplicació ha de buscar les que li han quedar de primer per afegir-les
+ *
+ * Ús:
+ *   CALL CreaMatricula(1, 1013, 'A', 'AB', @retorn);
+ *   SELECT @retorn; 
+ *
+ * @param integer CursId Id del curs.
+ * @param integer AlumneId Id de l'alumne.
+ * @param string Grup Grup (cap, A, B, C).
+ * @param string GrupTutoria Grup de tutoria.
+ * @return integer Retorn Valor de retorn: 0 Ok, -1 Alumne ja matriculat.
+ */
+DELIMITER //
+CREATE PROCEDURE CreaMatricula
+(
+    IN CursId INT, 
+    IN AlumneId INT, 
+    IN Grup CHAR(1), 
+    IN GrupTutoria VARCHAR(2), 
+    OUT Retorn INT
+)
+BEGIN
+    IF EXISTS (SELECT * FROM MATRICULA WHERE curs_id=CursId AND alumne_id=AlumneId) THEN
+    BEGIN
+        SELECT -1 INTO Retorn;
+    END;
+    ELSE
+    BEGIN
+		SET @MatriculaAnteriorId = (SELECT UltimaMatriculaAlumne(AlumneId, CursId));
+        INSERT INTO MATRICULA (curs_id, alumne_id, grup, grup_tutoria) 
+            VALUES (CursId, AlumneId, Grup, GrupTutoria);
+        SET @MatriculaId = LAST_INSERT_ID();
+		SET @CicleId = (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId);
+		SET @Nivell = (SELECT nivell FROM CURS WHERE curs_id=CursId);
+		SELECT 0 INTO Retorn;
+        INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
+            SELECT @MatriculaId, UPE.unitat_pla_estudi_id, 1 
+            FROM UNITAT_PLA_ESTUDI UPE
+            LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+            LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+            WHERE CPE.cicle_pla_estudi_id=@CicleId
+            AND UPE.nivell<=@Nivell;
+		CALL CopiaNotesAnteriorMatricula(AlumneId, @MatriculaId, @MatriculaAnteriorId);
+    END;
+    END IF;
+END //
+DELIMITER ;
+
+/*
+ * CreaMatriculaDNI
+ *
+ * Crea la matrícula per a un alumne a partir del DNI.
+ *
+ * Ús:
+ *   CALL CreaMatriculaDNI(1, '12345678A', 'A', 'AB', @retorn);
+ *   SELECT @retorn; 
+ *
+ * @param integer CursId Id del curs.
+ * @param string DNI DNI de l'alumne.
+ * @param string Grup Grup (cap, A, B, C).
+ * @param string GrupTutoria Grup de tutoria.
+ * @return integer Retorn Valor de retorn: 
+ *    0 Ok.
+ *   -1 Alumne ja matriculat.
+ *   -2 DNI inexistent.
+ */
+DELIMITER //
+CREATE PROCEDURE CreaMatriculaDNI
+(
+    IN CursId INT, 
+    IN DNI VARCHAR(15), 
+    IN Grup CHAR(1), 
+    IN GrupTutoria VARCHAR(2), 
+    OUT Retorn INT
+)
+BEGIN
+    IF NOT EXISTS (SELECT * FROM USUARI WHERE document=DNI AND es_alumne=1) THEN
+    BEGIN
+        SELECT -2 INTO Retorn;
+    END;
+    ELSE
+    BEGIN
+		SET @AlumneId = (SELECT usuari_id FROM USUARI WHERE document=DNI AND es_alumne=1);
+        CALL CreaMatricula(CursId, @AlumneId, Grup, GrupTutoria, Retorn);
+    END;
+    END IF;
+END //
+DELIMITER ;
