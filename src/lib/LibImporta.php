@@ -813,8 +813,8 @@ class ImportaMatricula extends Importa {
 		'CFPS ICB0 A' => 39, // DAM1
 		'CFPS ICB0 B' => 40, // DAM2
 		'CFPM SA20 A' => 41, // FIP1
-		'CFPM SA20 B' => 42, // FIP1
-		'CFPM SA20 C' => 42, // FIP1
+		'CFPM SA20 B' => 41, // FIP1
+		'CFPM SA20 C' => 42, // FIP2
 		'CFPM SC10 A' => 43, // APD1
 		'CFPM SC10 B' => 43, // APD1
 		'CFPM SC10 C' => 44, // APD2
