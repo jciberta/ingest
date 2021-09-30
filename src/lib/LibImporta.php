@@ -805,11 +805,11 @@ class ImportaMatricula extends Importa {
 	* @var array
 	*/    
 	private static $CURSOS = array(
-		'CFPM IC10 A' => 37, // SMX1 AB
-		'CFPM IC10 B' => 37, // SMX1 BC
-		'CFPM IC10 D' => 37, // SMX1 ?
-		'CFPM IC10 E' => 37, // SMX1 C?
-		'CFPM IC10 C' => 38, // SMX2
+		'CFPM IC10 A' => 38, // SMX2
+		'CFPM IC10 B' => 38, // SMX2
+		'CFPM IC10 C' => 37, // SMX1
+		'CFPM IC10 D' => 37, // SMX1
+		'CFPM IC10 E' => 37, // SMX1 
 		'CFPS ICB0 A' => 39, // DAM1
 		'CFPS ICB0 B' => 40, // DAM2
 		'CFPM SA20 A' => 41, // FIP1

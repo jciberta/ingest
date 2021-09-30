@@ -23231,8 +23231,45 @@ CREATE TABLE SUBCONTINGUT_UF
 
 -- Matriculació
 DROP PROCEDURE CreaMatriculaDNI;
+DROP PROCEDURE CopiaNotesAnteriorMatricula;
 DROP PROCEDURE CreaMatricula;
 DROP FUNCTION UltimaMatriculaAlumne;
+
+/*
+ * UFPlaEstudiActual
+ *
+ * Retorna l'identificador de la UF del pla d'estudis actual a partir de l'identificador d'una UF dels plans d'estudis anteriors.
+ *
+ * Ús:
+ *   SELECT UFPlaEstudiActual(UFId);
+ *
+ * @param integer UFId Identificador de la UF d'un pla d'estudis no actual.
+ * @return integer Identificador de la UF del pla d'estudis actual.
+ */
+DELIMITER //
+CREATE FUNCTION UFPlaEstudiActual(UFId INT)
+RETURNS INT
+BEGIN 
+    DECLARE UFIdActual INT;
+    SET UFIdActual = -1;
+
+    SELECT IFNULL(UPE.unitat_pla_estudi_id, -1) AS unitat_pla_estudi_id 
+        INTO UFIdActual
+        FROM UNITAT_PLA_ESTUDI UPE
+        LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+        WHERE AA.actual=1
+        AND UPE.unitat_formativa_id IN (
+            SELECT UPE.unitat_formativa_id
+            FROM UNITAT_PLA_ESTUDI UPE
+            LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=UPE.unitat_formativa_id)
+            WHERE unitat_pla_estudi_id=UFId
+        );
+
+    RETURN UFIdActual;    
+END //
+DELIMITER ;
 
 /*
  * UltimaMatriculaAlumne
@@ -23259,7 +23296,7 @@ BEGIN
         LEFT JOIN CURS C ON (M.curs_id=C.curs_id)
         LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
         LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
-        WHERE alumne_id=AlumneId 
+        WHERE alumne_id=AlumneId AND AA.actual<>1
         AND CPE.cicle_formatiu_id IN (
             SELECT CPE.cicle_formatiu_id 
             FROM CURS C
@@ -23273,6 +23310,51 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
+ * CopiaNotesAnteriorMatricula
+ *
+ * Copia les notes de l'anterior matrícula.
+ *
+ * @param integer AlumneId Identificador de l'alumne.
+ * @param integer MatriculaId Identificador de la matrícula actual.
+ * @param integer MatriculaAnteriorId Identificador de l'anterior matrícula.
+ */
+DELIMITER //
+CREATE PROCEDURE CopiaNotesAnteriorMatricula(IN AlumneId INT, MatriculaId INT, IN MatriculaAnteriorId INT)
+BEGIN
+    DECLARE _uf_id, _nota1, _nota2, _nota3, _nota4, _nota5, _convocatoria INT;
+    DECLARE _exempt, _convalidat, _junta BIT;
+    DECLARE done INT DEFAULT FALSE;
+
+    DROP TABLE IF EXISTS NotesTemp;
+    CREATE TEMPORARY TABLE NotesTemp AS (SELECT * FROM NOTES WHERE matricula_id=MatriculaAnteriorId);
+
+	BEGIN
+		DECLARE curNotes CURSOR FOR SELECT uf_id, nota1, nota2, nota3, nota4, nota5, exempt, convalidat, junta, convocatoria FROM NotesTemp;
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+		OPEN curNotes;
+
+		read_loop: LOOP
+			FETCH curNotes INTO _uf_id, _nota1, _nota2, _nota3, _nota4, _nota5, _exempt, _convalidat, _junta, _convocatoria;
+			IF done THEN
+				LEAVE read_loop;
+			END IF;
+			UPDATE NOTES SET nota1=_nota1, nota2=_nota2, nota3=_nota3, nota4=_nota4, nota5=_nota5, exempt=_exempt, convalidat=_convalidat, junta=_junta, convocatoria=_convocatoria 
+				WHERE matricula_id=MatriculaId AND uf_id=UFPlaEstudiActual(_uf_id);
+		END LOOP;
+
+		CLOSE curNotes;
+	END;
+    DROP TABLE NotesTemp;
+    
+    UPDATE NOTES SET convocatoria=0 
+        WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)>=5;
+
+    UPDATE NOTES SET convocatoria=convocatoria+1 
+        WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)<5 AND UltimaNota(notes_id)!=-1 AND nota1 IS NOT NULL;
+END //
+DELIMITER ;
 
 /*
  * CreaMatricula
