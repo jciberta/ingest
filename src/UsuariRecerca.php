@@ -163,13 +163,12 @@ switch ($Accio) {
 			$frm->AfegeixOpcioAJAX('[Elimina]', 'EliminaMatriculaAlumne', 'matricula_id');
 
 		// Filtre
-		
-		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-//print_h($aAnys);
-		$AnyAcademicId = $aAnys[0][0]; 
-		$frm->Filtre->AfegeixLlista('AnyAcademicId', 'Any', 30, $aAnys[0], $aAnys[1]);
-		
 		if ($CursId < 0) {
+			$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+//print_h($aAnys);
+			$AnyAcademicId = $aAnys[0][0]; 
+			$frm->Filtre->AfegeixLlista('AnyAcademicId', 'Any', 30, $aAnys[0], $aAnys[1]);
+
 //			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
 //			array_unshift($aCurs[0], '');
 //			array_unshift($aCurs[1], '');
@@ -179,8 +178,8 @@ switch ($Accio) {
 			array_unshift($aCurs[0], '');
 			array_unshift($aCurs[1], '');
 			$frm->Filtre->AfegeixLlista('CicleFormatiuId', 'Cicle', 100, $aCurs[0], $aCurs[1]);
+			$frm->Filtre->AfegeixLlista('nivell', 'Nivell', 30, array('', '1', '2'), array('', '1', '2'));
 		}
-		$frm->Filtre->AfegeixLlista('nivell', 'Nivell', 30, array('', '1', '2'), array('', '1', '2'));
 		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'));
 
 		$frm->EscriuHTML();
