@@ -12,6 +12,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 
 // En el cas que canviem la contrasenya a través d'un email, l'usuari no pot estar identificat
 if (!empty($_POST) && isset($_POST['contrasenya_actual'])) {
@@ -43,6 +44,8 @@ if (!empty($_POST))
 	//print_r($SQL);
 							$conn->query($SQL);	
 							PaginaHTMLMissatge("Informació", "La contrasenya s'ha desat correctament.");
+							$log = new Registre($conn, $Usuari);
+							$log->Escriu(Registre::AUTH, 'Canvi de contrasenya');
 						}
 						else {
 							PaginaHTMLMissatge("Error", "La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres.");
