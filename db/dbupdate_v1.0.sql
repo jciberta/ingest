@@ -23329,23 +23329,23 @@ BEGIN
     DROP TABLE IF EXISTS NotesTemp;
     CREATE TEMPORARY TABLE NotesTemp AS (SELECT * FROM NOTES WHERE matricula_id=MatriculaAnteriorId);
 
-	BEGIN
-		DECLARE curNotes CURSOR FOR SELECT uf_id, nota1, nota2, nota3, nota4, nota5, exempt, convalidat, junta, convocatoria FROM NotesTemp;
-		DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    BEGIN
+        DECLARE curNotes CURSOR FOR SELECT uf_id, nota1, nota2, nota3, nota4, nota5, exempt, convalidat, junta, convocatoria FROM NotesTemp;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-		OPEN curNotes;
+        OPEN curNotes;
 
-		read_loop: LOOP
-			FETCH curNotes INTO _uf_id, _nota1, _nota2, _nota3, _nota4, _nota5, _exempt, _convalidat, _junta, _convocatoria;
-			IF done THEN
-				LEAVE read_loop;
-			END IF;
-			UPDATE NOTES SET nota1=_nota1, nota2=_nota2, nota3=_nota3, nota4=_nota4, nota5=_nota5, exempt=_exempt, convalidat=_convalidat, junta=_junta, convocatoria=_convocatoria 
-				WHERE matricula_id=MatriculaId AND uf_id=UFPlaEstudiActual(_uf_id);
-		END LOOP;
+        read_loop: LOOP
+            FETCH curNotes INTO _uf_id, _nota1, _nota2, _nota3, _nota4, _nota5, _exempt, _convalidat, _junta, _convocatoria;
+            IF done THEN
+                LEAVE read_loop;
+            END IF;
+            UPDATE NOTES SET nota1=_nota1, nota2=_nota2, nota3=_nota3, nota4=_nota4, nota5=_nota5, exempt=_exempt, convalidat=_convalidat, junta=_junta, convocatoria=_convocatoria 
+                WHERE matricula_id=MatriculaId AND uf_id=UFPlaEstudiActual(_uf_id);
+        END LOOP;
 
-		CLOSE curNotes;
-	END;
+        CLOSE curNotes;
+    END;
     DROP TABLE NotesTemp;
     
     UPDATE NOTES SET convocatoria=0 
@@ -23389,13 +23389,13 @@ BEGIN
     END;
     ELSE
     BEGIN
-		SET @MatriculaAnteriorId = (SELECT UltimaMatriculaAlumne(AlumneId, CursId));
+        SET @MatriculaAnteriorId = (SELECT UltimaMatriculaAlumne(AlumneId, CursId));
         INSERT INTO MATRICULA (curs_id, alumne_id, grup, grup_tutoria) 
             VALUES (CursId, AlumneId, Grup, GrupTutoria);
         SET @MatriculaId = LAST_INSERT_ID();
-		SET @CicleId = (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId);
-		SET @Nivell = (SELECT nivell FROM CURS WHERE curs_id=CursId);
-		SELECT 0 INTO Retorn;
+        SET @CicleId = (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId);
+        SET @Nivell = (SELECT nivell FROM CURS WHERE curs_id=CursId);
+        SELECT 0 INTO Retorn;
         INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
             SELECT @MatriculaId, UPE.unitat_pla_estudi_id, 1 
             FROM UNITAT_PLA_ESTUDI UPE
@@ -23403,7 +23403,7 @@ BEGIN
             LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
             WHERE CPE.cicle_pla_estudi_id=@CicleId
             AND UPE.nivell<=@Nivell;
-		CALL CopiaNotesAnteriorMatricula(AlumneId, @MatriculaId, @MatriculaAnteriorId);
+        CALL CopiaNotesAnteriorMatricula(AlumneId, @MatriculaId, @MatriculaAnteriorId);
     END;
     END IF;
 END //
