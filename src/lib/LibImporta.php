@@ -424,7 +424,7 @@ class ImportaUsuaris extends Importa {
 				TextAMySQL($aCognom1).", ".
 				TextAMySQL($aCognom2).", ".
 				TextAMySQL($this->NomComplet($Linia)).", ".
-				$Linia[$this->CampsNom['ID']].", ".
+				TextAMySQL($Linia[$this->CampsNom['ID']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['SEXE']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['TP DNI']]).", ".
 				TextAMySQL($NIF).", ".
@@ -691,6 +691,7 @@ class ImportaUsuaris extends Importa {
 					print 'Actualitzat  [alumne] '.$this->NomComplet($Linia).' <br>';		
 				}
 				else {
+//print_h($Linia);					
 					$this->Inserta($Linia, $NIFPare, $NIFMare);
 					print 'Inserit      [alumne] '.$this->NomComplet($Linia).' <br>';		
 				}
@@ -824,6 +825,7 @@ class ImportaMatricula extends Importa {
 		'CFPM 1601 D' => 45, // CAI1 
 		'CFPM 1601 E' => 45, // CAI1 
 		'CFPM 1601 F' => 46, // CAI2 FCT
+		'CFPB IC10'   => 47, // FPB1
 		'CFPS SAH0 A' => 48, // HBD1
 		'CFPS SAH0 B' => 48  // HBD1
 	);
