@@ -177,7 +177,9 @@ class Usuari extends Objecte
 		if ($this->Registre->es_alumne) {
 			$frm->Pestanya('Pares');
 			$frm->AfegeixLookUp('pare_id', 'Pare', 100, 'UsuariRecerca.php?accio=Pares', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+			$frm->AfegeixEnllac('pare_id', 'Visualitza fitxa', 'UsuariFitxa.php?Id=', [FormFitxa::offAL_COSTAT]);
 			$frm->AfegeixLookUp('mare_id', 'Mare', 100, 'UsuariRecerca.php?accio=Pares', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+			$frm->AfegeixEnllac('mare_id', 'Visualitza fitxa', 'UsuariFitxa.php?Id=', [FormFitxa::offAL_COSTAT]);
 		}
 
 		if (!$this->Usuari->es_professor) {
@@ -259,19 +261,20 @@ class Usuari extends Objecte
 	 */
 	function MatriculesFills(int $progenitor): string {
 		$Retorn = '';
-		$SQL = " SELECT M.matricula_id, C.nom AS NomCurs, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2 FROM USUARI U ".
+		$SQL = " SELECT M.matricula_id, C.nom AS NomCurs, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, Edat(data_naixement) AS Edat ".
+			" FROM USUARI U ".
 			" LEFT JOIN MATRICULA M ON (U.usuari_id=M.alumne_id) ".
 			" LEFT JOIN CURS C ON (C.curs_id=M.curs_id) ".
 			" WHERE pare_id=$progenitor OR mare_id=$progenitor ".
-			" ORDER BY usuari_id, matricula_id ";
-//print_r($this);
+			" ORDER BY Edat DESC, usuari_id, matricula_id ";
+//print_r($SQL);
 //exit;
 		$NomCognom1Cognom2Anterior = '';
 		$ResultSet = $this->Connexio->query($SQL);
 		while ($rs = $ResultSet->fetch_object()) {
 			$NomCognom1Cognom2 = $rs->NomCognom1Cognom2;
 			if ($NomCognom1Cognom2 != $NomCognom1Cognom2Anterior) {
-				$Retorn .= $NomCognom1Cognom2."<br>";
+				$Retorn .= $NomCognom1Cognom2." (".$rs->Edat." anys)<br>";
 				$NomCognom1Cognom2Anterior = $NomCognom1Cognom2;
 			}
 			$URL = '';
