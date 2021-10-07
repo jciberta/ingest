@@ -57,8 +57,9 @@ else if ($Usuari->es_professor) {
 		' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
 		' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 		' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+		' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
-		' WHERE C.estat<>"T" AND professor_id='.$Usuari->usuari_id .
+		' WHERE C.estat<>"T" AND actual=1 AND professor_id='.$Usuari->usuari_id .
 		' ORDER BY CPE.codi, UPE.nivell ';
 		
 //print $SQL;

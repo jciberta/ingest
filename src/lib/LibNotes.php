@@ -774,7 +774,7 @@ class Notes extends Form
 		$Deshabilitat = '';
 		if ($Baixa)
 			$Deshabilitat = ' disabled ';
-		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
+		else if (!$Professor->TeUF($row["unitat_pla_estudi_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
 
 		$Nota = '';
