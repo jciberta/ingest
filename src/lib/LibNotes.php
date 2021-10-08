@@ -1647,7 +1647,7 @@ class NotesModul extends Notes
 	{
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
+			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
 			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
