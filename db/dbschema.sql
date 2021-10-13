@@ -528,11 +528,18 @@ BEGIN
         INTO MatriculaId
         FROM MATRICULA M
         LEFT JOIN CURS C ON (M.curs_id=C.curs_id)
-        LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id)
-        WHERE alumne_id=AlumneId AND cicle_formatiu_id IN (SELECT cicle_formatiu_id FROM CURS WHERE curs_id=CursId)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+        LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+        WHERE alumne_id=AlumneId AND AA.actual<>1
+        AND CPE.cicle_formatiu_id IN (
+            SELECT CPE.cicle_formatiu_id 
+            FROM CURS C
+            LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+            WHERE curs_id=CursId
+        )
         ORDER BY any_inici DESC
-		LIMIT 1;
-    
+        LIMIT 1;
+
     RETURN MatriculaId;    
 END //
 DELIMITER ;
@@ -711,6 +718,42 @@ END //
 DELIMITER ;
 
 /*
+ * UFPlaEstudiActual
+ *
+ * Retorna l'identificador de la UF del pla d'estudis actual a partir de l'identificador d'una UF dels plans d'estudis anteriors.
+ *
+ * Ús:
+ *   SELECT UFPlaEstudiActual(UFId);
+ *
+ * @param integer UFId Identificador de la UF d'un pla d'estudis no actual.
+ * @return integer Identificador de la UF del pla d'estudis actual.
+ */
+DELIMITER //
+CREATE FUNCTION UFPlaEstudiActual(UFId INT)
+RETURNS INT
+BEGIN 
+    DECLARE UFIdActual INT;
+    SET UFIdActual = -1;
+
+    SELECT IFNULL(UPE.unitat_pla_estudi_id, -1) AS unitat_pla_estudi_id 
+        INTO UFIdActual
+        FROM UNITAT_PLA_ESTUDI UPE
+        LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+        LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+        LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+        WHERE AA.actual=1
+        AND UPE.unitat_formativa_id IN (
+            SELECT UPE.unitat_formativa_id
+            FROM UNITAT_PLA_ESTUDI UPE
+            LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=UPE.unitat_formativa_id)
+            WHERE unitat_pla_estudi_id=UFId
+        );
+
+    RETURN UFIdActual;    
+END //
+DELIMITER ;
+
+/*
  * CopiaNotesAnteriorMatricula
  *
  * Copia les notes de l'anterior matrícula.
@@ -741,7 +784,7 @@ BEGIN
 				LEAVE read_loop;
 			END IF;
 			UPDATE NOTES SET nota1=_nota1, nota2=_nota2, nota3=_nota3, nota4=_nota4, nota5=_nota5, exempt=_exempt, convalidat=_convalidat, junta=_junta, convocatoria=_convocatoria 
-				WHERE matricula_id=MatriculaId AND uf_id=_uf_id;
+				WHERE matricula_id=MatriculaId AND uf_id=UFPlaEstudiActual(_uf_id);
 		END LOOP;
 
 		CLOSE curNotes;
@@ -797,12 +840,12 @@ BEGIN
 		SET @Nivell = (SELECT nivell FROM CURS WHERE curs_id=CursId);
 		SELECT 0 INTO Retorn;
         INSERT INTO NOTES (matricula_id, uf_id, convocatoria)
-            SELECT @MatriculaId, UF.unitat_formativa_id, 1 
-            FROM UNITAT_FORMATIVA UF
-            LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
-            LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
-            WHERE CF.cicle_formatiu_id=@CicleId
-            AND UF.nivell<=@Nivell;
+            SELECT @MatriculaId, UPE.unitat_pla_estudi_id, 1 
+            FROM UNITAT_PLA_ESTUDI UPE
+            LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+            LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+            WHERE CPE.cicle_pla_estudi_id=@CicleId
+            AND UPE.nivell<=@Nivell;
 		CALL CopiaNotesAnteriorMatricula(AlumneId, @MatriculaId, @MatriculaAnteriorId);
     END;
     END IF;

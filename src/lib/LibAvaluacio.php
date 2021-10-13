@@ -280,10 +280,10 @@ class Avaluacio
 		}
 		else {
 			$sRetorn .= "<TABLE>";
+
 			$sRetorn .= "<TR>";
 			$sRetorn .= "<TD>";
 			$sRetorn .= "<P>Passa al següent estat:</P>";
-			
 			$sRetorn .= $this->CreaBotoEstat(Curs::Actiu, $this->Curs->curs_id, $aDisabled[Curs::Actiu]);
 			$sRetorn .= $this->CreaBotoEstat(Curs::Junta, $this->Curs->curs_id, $aDisabled[Curs::Junta]);
 			$sRetorn .= $this->CreaBotoEstat(Curs::Inactiu, $this->Curs->curs_id, $aDisabled[Curs::Inactiu]);
@@ -292,17 +292,22 @@ class Avaluacio
 			$sRetorn .= "<TD ROWSPAN=2><DIV STYLE='margin-left:100px'>";
 			$sRetorn .= Curs::LlegendaEstat();
 			$sRetorn .= "</DIV></TD>";
-
 			$sRetorn .= "</TR>";
+
 			$sRetorn .= "<TR>";
-			$sRetorn .= "<TD>";
-
-			$sRetorn .= "<BR><P>Tria el trimestre:</P>";
-			$sRetorn .= $this->CreaBotoTrimestre(1, $this->Curs->curs_id, $aTrimestre[1]);
-			$sRetorn .= $this->CreaBotoTrimestre(2, $this->Curs->curs_id, $aTrimestre[2]);
-			$sRetorn .= $this->CreaBotoTrimestre(3, $this->Curs->curs_id, $aTrimestre[3]);
-			$sRetorn .= "</TD>";
+			$sRetorn .= "<TD><DIV id=div_BotonsTrimestre>";
+			if (($this->Curs->avaluacio == 'ORD')) {
+				$sRetorn .= "<BR><P>Tria el trimestre:</P>";
+				$sRetorn .= $this->CreaBotoTrimestre(1, $this->Curs->curs_id, $aTrimestre[1]);
+				$sRetorn .= $this->CreaBotoTrimestre(2, $this->Curs->curs_id, $aTrimestre[2]);
+				$sRetorn .= $this->CreaBotoTrimestre(3, $this->Curs->curs_id, $aTrimestre[3]);
+			}
+			else {
+				$sRetorn .= "<BR><BR>";
+			}
+			$sRetorn .= "<DIV></TD>";
 			$sRetorn .= "</TR>";
+
 			$sRetorn .= "</TABLE>";
 
 			$sRetorn .= "<BR><P>La següent acció no es pot desfer:</P>";

@@ -194,6 +194,7 @@ console.log('TancaAvaluacio');
 					success: function(data) {
 						$('#MissatgeCorrecte').html("L'avaluació s'ha tancat correctament.");
 						$('#MissatgeCorrecte').show();
+						$('#div_BotonsTrimestre').hide();
 						$('#div_TancaAvaluacio').hide();
 						$('#div_TancaCurs').show();
 						$('#taula').html(data);

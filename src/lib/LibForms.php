@@ -66,6 +66,7 @@ class Form {
 	const tcFOTOGRAFIA = 11;
 	const tcTEXT_RIC = 12;
 	const tcHTML = 13;
+	const tcLINK = 14;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -445,6 +446,24 @@ class Form {
 		$sRetorn .= "<TD>$Text</TD>";
 		return $sRetorn;
 	}	
+
+	/**
+	 * Crea un enllaç a una altra pàgina.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del control.
+	 * @param string $Link Enllaç.
+	 * @param mixed $Contingut Identificador que forma part de la URL.
+	 * @param array $off Opcions del formulari.
+	 * @return string Codi HTML per a l'enllaç.
+	 */
+	public function CreaEnllac(string $Nom, string $Titol, string $Link, string $Contingut = '', array $off = []) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+		$sNom = 'lnk__' . $Nom;
+		$sRetorn = '<TD>&nbsp;</TD>';
+		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$Link.$Contingut.'">'.$Titol.'</a></TD>';
+		return $sRetorn;
+	}
 	
 	/**
 	 * Genera els missatges de succés i error per quan es desen les dades.
@@ -1664,6 +1683,25 @@ class FormFitxa extends Form {
 	}
 
 	/**
+	 * Afegeix un enllaç a una altra pàgina.
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Titol Títol del control.
+	 * @param string $Link Enllaç.
+	 * @param array $off Opcions del formulari.
+	 * @return string Codi HTML per a l'enllaç.
+	 */
+	public function AfegeixEnllac(string $Camp, string $Titol, string $Link, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcLINK;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Link = $Link;
+		$this->Camps[$i]->Opcions = $off;
+	}
+	
+	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
 	 */
@@ -1879,6 +1917,10 @@ class FormFitxa extends Form {
 				case self::tcHTML:
 					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
+					break;
+				case self::tcLINK:
+					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, $this->Registre[$Valor->Camp], $Valor->Opcions);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;

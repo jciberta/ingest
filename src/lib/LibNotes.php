@@ -395,8 +395,10 @@ class Notes extends Form
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			
-			$UFId = $row["unitat_formativa_id"];
-			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
+			//$UFId = $row["unitat_formativa_id"];
+			//$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
+			$UFId = $row["unitat_pla_estudi_id"];
+			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
 			else
@@ -527,8 +529,10 @@ class Notes extends Form
 				$IdMPAnt = $IdMP;
 			}
 			
-			$UFId = $row["unitat_formativa_id"];
-			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
+			//$UFId = $row["unitat_formativa_id"];
+			//$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
+			$UFId = $row["unitat_pla_estudi_id"];
+			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
 				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.$TextMP.'<a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a><br>'.$row["Hores"].'</TH>';
 			else
@@ -770,7 +774,7 @@ class Notes extends Form
 		$Deshabilitat = '';
 		if ($Baixa)
 			$Deshabilitat = ' disabled ';
-		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
+		else if (!$Professor->TeUF($row["unitat_pla_estudi_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
 
 		$Nota = '';
@@ -1086,7 +1090,7 @@ class Notes extends Form
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
+			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
 			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
 			' CF.llei, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
@@ -1643,7 +1647,7 @@ class NotesModul extends Notes
 	{
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
+			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
 			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
