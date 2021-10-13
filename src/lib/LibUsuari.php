@@ -383,4 +383,138 @@ class AlumnesGraduacio2n extends Usuari
 		$frm->EscriuHTML();
 	}
 }
+
+/**
+ * Classe que encapsula la orla d'alumnes.
+ */
+class Orla extends Form
+{
+	/**
+	* Identificador de l'any acadèmic.
+	* @var integer
+	*/    
+    public $AnyAcademicId = -1; 
+
+	/**
+	* Identificador del cicle.
+	* @var integer
+	*/    
+    public $CicleFormatiuId = -1; 
+	
+	/**
+	* Nivell: 1 o 2.
+	* @var integer
+	*/    
+    public $Nivell = 1; 
+
+	/**
+	* Grup classe.
+	* @var string
+	*/    
+    public $Grup = ''; 	
+	
+	/**
+	 * Escriu la orla d'alumnes.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Orla");
+		echo '<script language="javascript" src="js/Usuari.js?v1.1" type="text/javascript"></script>';
+
+		echo $this->GeneraFiltre();
+		echo '<BR><P>';
+		echo $this->GeneraTaula();
+		//echo $this->GeneraTaula2();
+		CreaFinalHTML();
+	}
+	
+	/**
+	 * Genera el filtre del formulari.
+	 */
+	protected function GeneraFiltre() {
+		$Retorn = '';
+
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$this->AnyAcademicId = $aAnys[0][0];
+		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaOrla(this);"');		
+		
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$this->CicleFormatiuId = $aCicles[0][0]; 
+		$Retorn .= $this->CreaLlista('cicle_formatiu_id', 'Cicle', 500, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaOrla(this);"');
+			
+		$Retorn .= $this->CreaLlista('nivell', 'Nivell', 75, array('1', '2'), array('1', '2'), '1', 'onchange="ActualitzaTaulaOrla(this);"');
+		$Retorn .= $this->CreaLlista('grup', 'Grup', 75, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'), '', 'onchange="ActualitzaTaulaOrla(this);"');
+		
+		return $Retorn;
+	}
+
+	/**
+	 * Genera la taula amb l'orla per a un any i cicle concret.
+     * @return string Taula amb les dades.
+	 */
+	public function GeneraTaula() {
+		$Retorn = '<DIV id=taula>';
+		$SQL = $this->CreaSQL();
+		//$Retorn .= $SQL;
+
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$Retorn .= '<TABLE>';
+			$Retorn .= '<TR>';
+			$i = 1;
+			while($row = $ResultSet->fetch_object()) {
+//print_h($row);
+				if ($i > 10) {
+					$Retorn .= '</TR><TR>';
+					$i = 1;
+				}
+				$Nom = utf8_encode(trim($row->nom.'<br>'.$row->cognom1.' '.$row->cognom2));
+				
+				//$Retorn .= $Nom.'<BR>';
+				
+				//$Fitxer = 'img/pix/'.$Valor.$Sufix;
+				//if (!file_exists($Fitxer))
+					$Fitxer = 'img/nobody.png';
+		
+				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
+				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
+				$Retorn .= '<BR>';
+				$Retorn .= $Nom;
+				$Retorn .= '</TD>';
+				$i++;
+			}
+			$Retorn .= '</TR>';
+			$Retorn .= '</TABLE>';
+		}
+		else
+			$Retorn .= 'No hi ha dades.';
+		
+		$Retorn .= '</DIV>';
+		return $Retorn;
+	}
+
+	/**
+	 * Crea la sentència SQL.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQL(): string {
+		$AnyAcademicId = $this->AnyAcademicId;
+		$CicleFormatiuId = $this->CicleFormatiuId;
+		$Nivell = $this->Nivell;
+		$Grup = $this->Grup;
+		$SQL = "
+			SELECT U.*
+			FROM MATRICULA M
+			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			WHERE any_academic_id=$AnyAcademicId 
+			AND CPE.cicle_formatiu_id=$CicleFormatiuId
+			AND nivell=$Nivell
+		";		
+		if ($Grup <> '')
+			$SQL .= " AND grup='$Grup' ";
+		return $SQL;
+	}	
+}
+
 ?>

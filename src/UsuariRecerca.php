@@ -256,8 +256,6 @@ switch ($Accio) {
         break;
     case "UltimLogin":
 		$NomesProfessor = ($Usuari->es_professor && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis);			
-	
-	
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
@@ -305,7 +303,7 @@ switch ($Accio) {
 				$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
 			}
 		}
-		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D'), array('', 'A', 'B', 'C', 'D'));
+		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'));
 
 		$frm->EscriuHTML();
         break;
@@ -319,6 +317,12 @@ switch ($Accio) {
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
 		$frm = new AlumnesGraduacio2n($conn, $Usuari);
+		$frm->EscriuHTML();
+        break;
+	case "Orla":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+			header("Location: Surt.php");
+		$frm = new Orla($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
 }

@@ -394,6 +394,8 @@ class Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Matrícules', 'UsuariRecerca.php?accio=Matricules');
 			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Orla', 'UsuariRecerca.php?accio=Orla');
 			$Retorn .= Menu::Tanca();
 
 			// Menú Professors

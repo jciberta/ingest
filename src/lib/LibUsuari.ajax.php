@@ -17,6 +17,7 @@ require_once(ROOT.'/lib/LibUsuari.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -78,6 +79,21 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = "UPDATE USUARI SET password='".password_hash($Password, PASSWORD_DEFAULT)."', imposa_canvi_password=1 WHERE usuari_id=". $UsuariId;
 		$conn->query($SQL);
 		print 'Contrasenya canviada correctament.';
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaOrla') {
+		
+		$AnyAcademicId = $_REQUEST['any_academic_id'];
+		$CicleFormatiuId = $_REQUEST['cicle_formatiu_id'];
+		$Nivell = $_REQUEST['nivell'];
+		$Grup = $_REQUEST['grup'];
+
+		$frm = new Orla($conn, $Usuari);
+		$frm->AnyAcademicId = $AnyAcademicId;
+		$frm->CicleFormatiuId = $CicleFormatiuId;
+		$frm->Nivell = $Nivell;
+		$frm->Grup = $Grup;
+		//print $AnyAcademicId.', '.$CicleFormatiuId.', '.$Nivell.', '.$Grup;
+		print $frm->GeneraTaula();
 	}
 	else {
 		if ($CFG->Debug)
