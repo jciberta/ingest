@@ -460,6 +460,11 @@ class Form {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 		$sNom = 'lnk__' . $Nom;
+		
+		$URL = $Link.$Contingut;
+		if (Config::EncriptaURL)
+			$URL = GeneraURL($URL);
+		
 		$sRetorn = '<TD>&nbsp;</TD>';
 		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$Link.$Contingut.'">'.$Titol.'</a></TD>';
 		return $sRetorn;
@@ -1911,16 +1916,16 @@ class FormFitxa extends Form {
 //print_r($sRetorn);					
 //					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
 					break;
-					
-					
-					
 				case self::tcHTML:
 					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
 					break;
 				case self::tcLINK:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, $this->Registre[$Valor->Camp], $Valor->Opcions);
+//print "Valor->Camp: ".$Valor->Camp.'<br>';					
+//print "this->Registre[Valor->Camp]: ".$this->Registre[$Valor->Camp].'<br>';					
+					if ($this->Registre[$Valor->Camp] != '')
+						$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, $this->Registre[$Valor->Camp], $Valor->Opcions);
 					break;
 				case self::tcPESTANYA:
 					$Titol = $Valor->Titol;

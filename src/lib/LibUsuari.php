@@ -465,19 +465,14 @@ class Orla extends Form
 			$Retorn .= '<TR>';
 			$i = 1;
 			while($row = $ResultSet->fetch_object()) {
-//print_h($row);
 				if ($i > 10) {
 					$Retorn .= '</TR><TR>';
 					$i = 1;
 				}
 				$Nom = utf8_encode(trim($row->nom.'<br>'.$row->cognom1.' '.$row->cognom2));
-				
-				//$Retorn .= $Nom.'<BR>';
-				
-				//$Fitxer = 'img/pix/'.$Valor.$Sufix;
-				//if (!file_exists($Fitxer))
+				$Fitxer = '../img/pix/'.$row->document.'.jpg';
+				if (!file_exists($Fitxer))
 					$Fitxer = 'img/nobody.png';
-		
 				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
 				$Retorn .= '<BR>';
@@ -490,7 +485,6 @@ class Orla extends Form
 		}
 		else
 			$Retorn .= 'No hi ha dades.';
-		
 		$Retorn .= '</DIV>';
 		return $Retorn;
 	}
