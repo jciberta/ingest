@@ -93,19 +93,21 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		else
 			print "Valor no vàlid: ".$valor;
 	}
-	else if ($_REQUEST['accio'] == 'Convalida') {
-		// Convalida una UF: Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
+	else if ($_REQUEST['accio'] == 'ActualitzaConvalidacio') {
+		// Convalida una UF: Posa el camp convalidat de NOTES a cert, posa la nota i el camp convocatòria a 0.
 		$nom = $_REQUEST['nom'];
-		$data = explode("_", $nom); // Nom_Id_Convocatòria
-		$SQL = 'UPDATE NOTES SET convalidat=1, convocatoria=0, nota'.$data[2].'=5 WHERE notes_id='.$data[1];	
-		try {
-			if (!$conn->query($SQL))
-				throw new Exception($conn->error.'. SQL: '.$SQL);
+//print $nom;
+		$data = explode("_", $nom);
+		$valor = $_REQUEST['valor'];
+		if (EsNotaValida($valor)) {
+			$NotaNumerica = NotaANumero($valor);
+			$SQL = 'UPDATE NOTES SET convalidat=1, convocatoria=0, nota'.$data[2].'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			//$SQL = 'UPDATE NOTES SET nota'.($data[2]+1).'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
+			$conn->query($SQL);
 			print $SQL;
 		} 
-		catch (Exception $e) {
-			print "ERROR Convalida. Causa: ".$e->getMessage();
-		}	
+		else
+			print "Valor no vàlid: ".$valor;
 	}
 	else if ($_REQUEST['accio'] == 'AugmentaConvocatoria') {
 		$NotaId = $_REQUEST['id'];

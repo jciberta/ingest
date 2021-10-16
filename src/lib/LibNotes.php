@@ -996,13 +996,12 @@ class Notes extends Form
 		echo '    <li><a class="dropdown-item" id="ddi_IntrodueixRecuperacio" href="#">Introdueix recuperació</a></li>';
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
 			echo '    <li><a class="dropdown-item" id="ddi_NotaAnterior" href="#">Marca com a nota anterior (convocatòria a 0)</a></li>';
-			echo '    <li><a class="dropdown-item" id="ddi_Convalida" href="#">Convalida</a></li>';
+			echo '    <li><a class="dropdown-item" id="ddi_IntrodueixConvalidacio" href="#">Convalida</a></li>';
 		}
 		echo '</ul>';
 
-
 		echo '<script>';
-		echo '$("#TaulaNotes input").contextMenu({';
+		echo '$("#TaulaNotes1 input").contextMenu({';
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
 //echo 'console.dir(selectedMenu);';
@@ -1010,8 +1009,8 @@ class Notes extends Form
 		echo '            IntrodueixRecuperacio(invokedOn);';
 		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
 		echo '            MarcaComNotaAnterior(invokedOn);';
-		echo '        else if (selectedMenu[0].id == "ddi_Convalida")';
-		echo '            Convalida(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_IntrodueixConvalidacio")';
+		echo '            IntrodueixConvalidacio(invokedOn);';
 		echo '    }';
 		echo '});';
 		echo '</script>';

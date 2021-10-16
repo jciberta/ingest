@@ -179,29 +179,23 @@ console.log('->MarcaComNotaAnterior');
 }
 
 /**
- * Convalida aquella UF. Posa la nota a 5.
+ * Introdueix una nota de IntrodueixConvalidacio
  * @param obj Objecte que ha provocat la crida (INPUT).
  */
-function Convalida(obj) {
-console.log('->Convalida');
-	element = obj[0];
-	$.ajax( {
-		type: 'POST',
-		url: 'lib/LibNotes.ajax.php',
-		data:{
-			'accio': 'Convalida',
-			'nom': element.name
-			},
-		success: function(data) {
-			element.value = 5;
-			element.style.backgroundColor = 'blue';
-			element.style.color = 'white';
-			$('#debug').html(data);
-		}, 
-		error: function (data) {
-			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+function IntrodueixConvalidacio(obj) {
+console.dir(obj[0]);
+//alert(obj[0].value);
+	bootbox.prompt({
+		title: "Introdueix la nota de convalidació",
+		inputType: 'number',
+		callback: function (result) {
+			console.log(result);
+			if (result>0 && result <=10) {
+				ActualitzaConvalidacio(obj[0], result);
+			}
+			
 		}
-	} );
+	});
 }
 
 /**
@@ -804,6 +798,37 @@ console.dir(element);
 	} );
 }
 
+/**
+ * ActualitzaConvalidacio
+ * Actualitza la nota de convalidació d'un input.
+ * @param element Input que ha fet la crida.
+ * @param nota Nota de convalidació.
+ */
+function ActualitzaConvalidacio(element, nota) { 
+	sText = 'Executant ActualitzaConvalidacio... ';
+	$('#debug').html(sText);
+console.dir(element);
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibNotes.ajax.php',
+		data:{
+			'accio': 'ActualitzaConvalidacio',
+			'nom': element.name,
+			'valor': nota
+			},
+		success: function(data) {
+			element.value = nota;
+			element.style.backgroundColor = 'blue';
+			element.style.color = 'white';
+			$('#debug').html(data);			
+			element.disabled = true;
+			$('#debug').html(data);
+		}, 
+		error: function (data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+	} );
+}
 /**
  * NumeroANota
  * Transforma una nota numèrica al seu valor de text. Valors numèrics:
