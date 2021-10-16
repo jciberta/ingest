@@ -1,5 +1,5 @@
 
-/* Correcttió text dels telèfons importats del SAGA */
+/* Correcció text dels telèfons importats del SAGA */
 
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l\'alumne)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l)', '');
@@ -12,6 +12,7 @@ UPDATE USUARI SET telefon = REPLACE(telefon, '+34-', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, 'T ', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, ' ,', ',');
 UPDATE USUARI SET telefon = TRIM(telefon);
+
 
 /* Comprovació correus ben posats */
 select * from USUARI where email like '%@inspalamos.cat';
