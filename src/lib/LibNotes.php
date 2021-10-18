@@ -465,18 +465,12 @@ class Notes extends Form
 		$this->IdGraella = $IdGraella;
 		
 		// Formulari amb les notes
-//		echo '<DIV id=notes'.$IdGraella.' style="height:600px;">'; *** Com es redimensiona in DIV en runtime?
 		echo '<DIV id=notes'.$IdGraella.'>';
 		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
 		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
 		
-		
-//		echo '<TABLE id="TaulaNotes" class="table table-striped table-hover table-sm" border=0>';
-//		echo '<TABLE id="TaulaNotes" class="table table-striped table-hover" border=0 style="width:100%">';
-//		echo '<TABLE id="TaulaNotes" class="table table-striped table-hover" style="width:400px">';
-//		echo '<TABLE id="TaulaNotes" class="table table-striped table-hover" display compact style="width:100%">';
 		echo '<TABLE id="TaulaNotes'.$IdGraella.'" class="display compact stripe hover" style="width:100%">';
 		
 		// Capçalera de la taula
@@ -567,82 +561,6 @@ class Notes extends Form
 		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
 		echo "</FORM>";
 		echo "</DIV>";
-		
-//exit;		
-		
-/*		
-		// Mòdul
-		echo '<THEAD>';
-		echo "<TR>";
-		echo "<TH>Alumne</TH>";
-//		echo "<TH></TH><TH></TH><TH></TH><TH></TH>";
-		$index = 0;
-		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
-			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
-			$MPId = $aModulsId[$index];
-			if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
-			else
-				$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
-			echo '<TH colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TH>';
-			$index += $iOcurrencies;
-		}
-		echo "<TH></TH></TR>";
-
-
-
-	
-		// Unitat formativa
-		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
-//		echo "<TR><TD></TD><TD></TD><TD></TD><TD></TD>";
-		for($j = 0; $j < count($Notes->UF[0]); $j++) {
-			$row = $Notes->UF[0][$j];
-			
-			$UFId = $row["unitat_formativa_id"];
-			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormatives&Id=$UFId");
-			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
-			else
-				echo '<TD id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
-		}
-		echo "<TD style='text-align:center' colspan=2>Hores</TD>";
-		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
-			echo "<TD style='text-align:center;color:grey;'>UF</TD>";
-			echo "<TD style='text-align:center;color:grey;'>Nota</TD>";
-		}
-		echo "<TD></TD>";
-		echo "</TR>";
-
-		// Hores
-		echo "<TR><TD></TD><TD width=20></TD>";
-		echo "<TD style='text-align:center'>G</TD>";
-		echo "<TD style='text-align:center'>T</TD>";
-		$TotalHores = 0;
-		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
-		for($j = 0; $j < count($Notes->UF[0]); $j++) {
-			$row = $Notes->UF[0][$j];
-			$TotalHores += $row["Hores"];
-			echo "<TD align=center>".$row["Hores"]."</TD>";
-			array_push($aHores, $row["Hores"]);
-		}
-		echo "<TD style='text-align:center'>".$TotalHores."</TD>";
-		echo "<TD style='text-align:center'>&percnt;</TD>";
-		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
-			echo "<TD style='text-align:center;color:grey;'>susp.</TD>";
-			echo "<TD style='text-align:center;color:grey;'>mitjana</TD>";
-		}
-		echo "<TD></TD>";
-		echo "</TR>";
-		echo "</THEAD>";
-
-		for($i = 0; $i < count($Notes->Alumne); $i++) {
-			$row = $Notes->Alumne[$i];
-			if ($row["NivellMAT"] == $Nivell) {
-//				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $Avaluacio);
-			}
-		}
-		echo $this->CreaEstadistiquesUF($Notes, $Nivell);	*/	
 	}
 
 	/**
@@ -872,7 +790,7 @@ class Notes extends Form
 
 		// Alumnes aprovats convocatòries anteriors
 		$Retorn .= '<TR style="color:grey;">';
-		$Retorn .= $this->CreaTitolEstadistiquesUF('Alumnes aprovats convocatòries anteriors');
+		$Retorn .= $this->CreaTitolEstadistiquesUF('Aprovats convocatòries anteriors');
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			$Retorn .= '<TD width='.self::AMPLADA_UF.' style="text-align:center;">'.$euf->AlumnesAprovatsConvocatoriaAnterior.'</TD>';
@@ -1005,6 +923,17 @@ class Notes extends Form
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
 //echo 'console.dir(selectedMenu);';
+		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
+		echo '            IntrodueixRecuperacio(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
+		echo '            MarcaComNotaAnterior(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_IntrodueixConvalidacio")';
+		echo '            IntrodueixConvalidacio(invokedOn);';
+		echo '    }';
+		echo '});';
+		echo '$("#TaulaNotes2 input").contextMenu({';
+		echo '    menuSelector: "#contextMenu",';
+		echo '    menuSelected: function (invokedOn, selectedMenu) {';
 		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
 		echo '            IntrodueixRecuperacio(invokedOn);';
 		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
