@@ -14,7 +14,7 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
-require_once(ROOT.'/lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 
