@@ -50,6 +50,10 @@ git config core.fileMode false
 
 Per fer les fotos quadrades i amb resolució 100x100:
 ```
+# Linux
 for fitxer in *.jpg; do convert -define jpeg:size=200x200 $fitxer -thumbnail 100x100^ -gravity center -extent 100x100 $fitxer; done
+
+# Windows (no acaba d'anar)
+for %i in (dir *.jpg) do magick -define jpeg:size=200x200 %i -thumbnail 100x100^ -gravity center -extent 100x100 %i
 ```
 
