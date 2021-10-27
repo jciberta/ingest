@@ -1013,6 +1013,17 @@ class Notes extends Form
 		echo '            IntrodueixConvalidacio(invokedOn);';
 		echo '    }';
 		echo '});';
+		echo '$("#TaulaNotes2 input").contextMenu({';
+		echo '    menuSelector: "#contextMenu",';
+		echo '    menuSelected: function (invokedOn, selectedMenu) {';
+		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
+		echo '            IntrodueixRecuperacio(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
+		echo '            MarcaComNotaAnterior(invokedOn);';
+		echo '        else if (selectedMenu[0].id == "ddi_IntrodueixConvalidacio")';
+		echo '            IntrodueixConvalidacio(invokedOn);';
+		echo '    }';
+		echo '});';
 		echo '</script>';
 	}
 
