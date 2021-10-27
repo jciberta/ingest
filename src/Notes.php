@@ -17,7 +17,7 @@ require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibFP.php');
 require_once(ROOT.'/lib/LibCurs.php');
-require_once(ROOT.'/lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 

@@ -19,7 +19,7 @@ require_once(ROOT.'/lib/LibArray.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
-require_once(ROOT.'/lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibCurs.php');
 
