@@ -118,6 +118,10 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, nivell, HoresUF, bool:FCT, CodiMP, NomMP, CodiCF, NomCF, bool:activa';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu, Activa';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'unitat_formativa_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 

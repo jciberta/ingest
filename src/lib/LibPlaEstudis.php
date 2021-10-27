@@ -75,7 +75,8 @@ abstract class PlaEstudis extends Form
 				$NomUF = $Unitat->Registre->NomUF;
 				$sRetorn .= "<TR>";
 				if ($bPrimer) {
-					$sRetorn .= "<TD>".utf8_encode($CodiMP.'. '.$NomMP)."</TD>";
+					$Id = ($this->Usuari->es_admin	) ? "[".$Modul->Registre->modul_pla_estudi_id."]" : "";
+					$sRetorn .= "<TD>".utf8_encode($CodiMP.'. '.$NomMP)." $Id</TD>";
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMP."</TD>";
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMPSetmana."</TD>";
 					if ($this->Usuari->es_admin) {
@@ -89,7 +90,8 @@ abstract class PlaEstudis extends Form
 				else {
 					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD>";
 				}
-				$sRetorn .= "<TD>".utf8_encode($NomUF)."</TD>";
+				$Id = ($this->Usuari->es_admin	) ? "[".$Modul->Registre->unitat_pla_estudi_id."]" : "";
+				$sRetorn .= "<TD>".utf8_encode($NomUF)." $Id</TD>";
 				$sRetorn .= "<TD>".$Unitat->Registre->HoresUF."</TD>";
 				if ($this->Usuari->es_admin) {
 					$URL = "FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=".$Unitat->Registre->unitat_pla_estudi_id;
@@ -160,7 +162,7 @@ class PlaEstudisAny extends PlaEstudis
 		return "
 			SELECT 
 				UPE.nom AS NomUF, UPE.codi AS CodiUF, UPE.hores AS HoresUF,
-				MPE.nom AS NomMP, MPE.codi AS CodiMP, MPE.hores AS HoresMP, MPE.hores_setmana AS HoresMPSetmana, 
+				MPE.modul_pla_estudi_id, MPE.nom AS NomMP, MPE.codi AS CodiMP, MPE.hores AS HoresMP, MPE.hores_setmana AS HoresMPSetmana, 
 				CPE.nom AS NomCF, CPE.codi AS CodiCF, 
 				CPE.*, MPE.*, UPE.*
 			FROM UNITAT_PLA_ESTUDI UPE
