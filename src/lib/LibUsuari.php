@@ -470,8 +470,8 @@ class Orla extends Form
 					$i = 1;
 				}
 				$Nom = utf8_encode(trim($row->nom.'<br>'.$row->cognom1.' '.$row->cognom2));
-				$Fitxer = '../img/pix/'.$row->document.'.jpg';
-				if (!file_exists($Fitxer))
+				$Fitxer = 'img/pix/'.$row->document.'.jpg';
+				if (!file_exists(ROOT.'/'.$Fitxer))
 					$Fitxer = 'img/nobody.png';
 				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
