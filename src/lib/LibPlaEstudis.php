@@ -90,7 +90,7 @@ abstract class PlaEstudis extends Form
 				else {
 					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD>";
 				}
-				$Id = ($this->Usuari->es_admin	) ? "[".$Modul->Registre->unitat_pla_estudi_id."]" : "";
+				$Id = ($this->Usuari->es_admin	) ? "[".$Unitat->Registre->unitat_pla_estudi_id."]" : "";
 				$sRetorn .= "<TD>".utf8_encode($NomUF)." $Id</TD>";
 				$sRetorn .= "<TD>".$Unitat->Registre->HoresUF."</TD>";
 				if ($this->Usuari->es_admin) {
