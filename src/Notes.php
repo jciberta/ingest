@@ -17,7 +17,7 @@ require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibFP.php');
 require_once(ROOT.'/lib/LibCurs.php');
-require_once(ROOT.'/lib/LibProfessor.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -128,14 +128,14 @@ $TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades tot
 echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 if ($Nivell == 2) {
-	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
-	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
+//	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
+//	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
 	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
 	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 }
 else {
-	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
+//	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
 	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
 	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
@@ -164,18 +164,40 @@ echo '<br/>';
 
 // Graelles de notes
 if ($Nivell == 2) {
+	echo '<nav>';
+	echo '  <div class="nav nav-tabs" id="nav-tab" role="tablist">';
+	echo '    <a class="nav-item nav-link active" id="nav1-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Matèries de 1r</a>';
+	echo '    <a class="nav-item nav-link" id="nav2-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Matèries de 2n</a>';
+	echo '  </div>';
+	echo '</nav>';
+	echo '<div class="tab-content" id="nav-tabContent">';
+	echo '  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav1-tab">';
 	// Notes de 2n 
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre2, 2, $Professor, $Avaluacio);
-
+	echo '  </div>';
+	echo '  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav2-tab">';
 	// Notes de 1r d'alumnes de 2n
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 1, $Professor, $Avaluacio);
+	echo '  </div>';
+	echo '</div>';
 }
 else {
+	echo '<nav>';
+	echo '  <div class="nav nav-tabs" id="nav-tab" role="tablist">';
+	echo '    <a class="nav-item nav-link active" id="nav1-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Alumnes de 1r</a>';
+	echo '    <a class="nav-item nav-link" id="nav2-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Alumnes de 2n</a>';
+	echo '  </div>';
+	echo '</nav>';
+	echo '<div class="tab-content" id="nav-tabContent">';
+	echo '  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav1-tab">';
 	// Notes de 1r d'alumnes de 1r
 	$Notes->EscriuFormulari($CicleId, 1, $Notes->Registre1, 1, $Professor, $Avaluacio);
-
+	echo '  </div>';
+	echo '  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav2-tab">';
 	// Notes de 1r d'alumnes de 2n
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 2, $Professor, $Avaluacio);
+	echo '  </div>';
+	echo '</div>';
 }
 
 if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)

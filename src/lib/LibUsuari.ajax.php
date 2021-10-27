@@ -57,7 +57,45 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}
-	else if ($_REQUEST['accio'] == 'AssignaGrup') {
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaProfessorsUF') {
+		$AnyAcademicId = $_REQUEST['any_academic_id'];
+		$frm = new ProfessorsUF($conn, $Usuari);
+		$frm->AnyAcademicId = $AnyAcademicId;
+		print $frm->GeneraAcordio();
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaProfessorsAssignacioUF') {
+		$ProfessorId = $_REQUEST['professor_id'];
+		$AnyAcademicId = $_REQUEST['any_academic_id'];
+		$frm = new ProfessorsAssignacioUF($conn, $Usuari);
+		$frm->ProfessorId = $ProfessorId;
+		$frm->AnyAcademicId = $AnyAcademicId;
+		print $frm->GeneraAcordio();
+	}
+	else if ($_REQUEST['accio'] == 'ActualitzaTaulaGrupProfessorsAssignacioUF') {
+		$sCodiCiclePlaEstudi = $_REQUEST['codi_cicle_pla_estudi'];
+		$AnyAcademicId = $_REQUEST['any_academic_id'];
+		$frm = new GrupProfessorsAssignacioUF($conn, $Usuari);
+		$frm->CodiCiclePlaEstudi = $sCodiCiclePlaEstudi;
+		$frm->AnyAcademicId = $AnyAcademicId;
+		print $frm->GeneraAcordio();
+	}
+	else if ($_REQUEST['accio'] == 'AssignaUF') {
+		$nom = $_REQUEST['nom'];
+		$check = ($_REQUEST['check']=='true');
+		$data = explode("_", $nom);
+		if ($check) {
+			// Assignem UF
+			$SQL = 'INSERT INTO PROFESSOR_UF (professor_id, uf_id) VALUES ('.$data[2].', '.$data[1].')';	
+			$conn->query($SQL);
+			print $SQL;
+		}
+		else {
+			// Desassignem UF
+			$SQL = 'DELETE FROM PROFESSOR_UF WHERE professor_id='.$data[2].' AND uf_id='.$data[1];	
+			$conn->query($SQL);
+			print $SQL;
+		}
+	}	else if ($_REQUEST['accio'] == 'AssignaGrup') {
 		$CursId = $_REQUEST['curs'];
 		$AlumneId = $_REQUEST['alumne'];
 		$Grup = $_REQUEST['grup'];
