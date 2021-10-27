@@ -19,7 +19,7 @@
 function AssignaUF(element) { 
     $.ajax( {
         type: 'POST',
-        url: 'lib/LibProfessor.ajax.php',
+        url: 'lib/LibUsuari.ajax.php',
         data:{
 			'accio': 'AssignaUF',
             'nom': element.name,
@@ -45,7 +45,7 @@ console.log('sAnyAcademicId: ' + sAnyAcademicId);
 
 	$.ajax( {
 		type: 'POST',
-		url: 'lib/LibProfessor.ajax.php',
+		url: 'lib/LibUsuari.ajax.php',
 		data:{
 			'accio': 'ActualitzaTaulaProfessorsUF',
 			'any_academic_id': sAnyAcademicId
@@ -72,7 +72,7 @@ console.log('sAnyAcademicId: ' + sAnyAcademicId);
 
 	$.ajax( {
 		type: 'POST',
-		url: 'lib/LibProfessor.ajax.php',
+		url: 'lib/LibUsuari.ajax.php',
 		data:{
 			'accio': 'ActualitzaTaulaProfessorsAssignacioUF',
 			'professor_id': sProfessorId,
@@ -101,7 +101,7 @@ console.log('sCodiCiclePlaEstudi: ' + sCodiCiclePlaEstudi);
 
 	$.ajax( {
 		type: 'POST',
-		url: 'lib/LibProfessor.ajax.php',
+		url: 'lib/LibUsuari.ajax.php',
 		data:{
 			'accio': 'ActualitzaTaulaGrupProfessorsAssignacioUF',
 			'codi_cicle_pla_estudi': sCodiCiclePlaEstudi,
