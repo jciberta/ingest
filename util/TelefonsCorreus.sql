@@ -1,6 +1,7 @@
 
 /* Correcció text dels telèfons importats del SAGA */
 
+UPDATE USUARI SET telefon = REPLACE(telefon, 'Ã¨', 'è');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l\'alumne)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon)', '');
