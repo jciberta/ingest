@@ -470,9 +470,10 @@ class Notes extends Form
 		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-		
-		echo '<TABLE id="TaulaNotes'.$IdGraella.'" class="display compact stripe hover" style="width:100%">';
-		
+
+//		echo '<TABLE id="TaulaNotes'.$IdGraella.'" class="display compact stripe hover" style="width:100%">';
+		echo '<TABLE id="TaulaNotes" class="display compact stripe hover" style="width:100%">';
+
 		// Capçalera de la taula
 		$aModuls = [];
 		$aModulsNom = [];
@@ -500,7 +501,7 @@ class Notes extends Form
 
 		// Mòdul, initat formativa i hores
 		echo "<TR>";
-		echo "<TH width=300><BR><BR>Alumne</TH><TH></TH>";
+		echo "<TH style='width:300px'><BR><BR>Alumne</TH><TH></TH>";
 		echo "<TH style='text-align:center'><BR><BR>G</TH>";
 		echo "<TH style='text-align:center'><BR><BR>T</TH>";
 		$TotalHores = 0;

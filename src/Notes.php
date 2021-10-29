@@ -65,7 +65,7 @@ if (Config::UsaDataTables) {
 	echo "<script>";
 	//echo "alert('Hi!');";
 	echo "$(document).ready(function() {";
-	echo "    var table = $('#TaulaNotes1').DataTable( {";
+	echo "    var table = $('#TaulaNotes').DataTable( {";
 	echo "        scrollY: '500px',";
 	echo "        scrollX: true,";
 	echo "        scrollCollapse: true,";
@@ -78,7 +78,7 @@ if (Config::UsaDataTables) {
 //	echo "            rightColumns: $Columnes";
 	echo "        }";
 	echo "	  } );";
-	echo "    var table = $('#TaulaNotes2').DataTable( {";
+/*	echo "    var table = $('#TaulaNotes2').DataTable( {";
 	echo "        scrollY: '500px',";
 	echo "        scrollX: true,";
 	echo "        scrollCollapse: true,";
@@ -90,7 +90,7 @@ if (Config::UsaDataTables) {
 	echo "            leftColumns: 1,";
 //	echo "            rightColumns: $Columnes";
 	echo "        }";
-	echo "	  } );";
+	echo "	  } );";*/
 	echo "} );";
 	echo "</script>";
 }
@@ -166,8 +166,8 @@ echo '<br/>';
 if ($Nivell == 2) {
 	echo '<nav>';
 	echo '  <div class="nav nav-tabs" id="nav-tab" role="tablist">';
-	echo '    <a class="nav-item nav-link active" id="nav1-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Matèries de 1r</a>';
-	echo '    <a class="nav-item nav-link" id="nav2-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Matèries de 2n</a>';
+	echo '    <a class="nav-item nav-link active" id="nav1-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Matèries de 2n</a>';
+	echo '    <a class="nav-item nav-link" id="nav2-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Matèries de 1r</a>';
 	echo '  </div>';
 	echo '</nav>';
 	echo '<div class="tab-content" id="nav-tabContent">';
