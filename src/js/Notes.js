@@ -25,10 +25,17 @@ function EnEntrarCellaNota(element) {
  * @param element Cel·la que ha fet la crida.
  */
 function EnSortirCellaNota(element) { 
-	if (element.value!='' && element.value>=0 && element.value<5)
-		element.style.color = 'red';
-	else
-		element.style.color = 'black';
+console.log('->EnSortirCellaNotaModul');
+var convocatoria = (element.name).split('_')[2];
+console.log('Convocatòria: '+convocatoria);
+
+//console.dir(element);
+	if (convocatoria!=5) {
+		if (element.value!='' && element.value>=0 && element.value<5)
+			element.style.color = 'red';
+		else
+			element.style.color = 'black';
+	}
 	ActualitzaNota(element);
 	if ($('input#Formulari').val() != 'ExpedientSaga') {
 		ResaltaFila(element, '#A9A9A9', 'black');

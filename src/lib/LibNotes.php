@@ -700,11 +700,13 @@ class Notes extends Form
 		$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
 		if (!$Baixa) {
 			if ($Convalidat) {
+				// Nota convalidada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
 				$style .= ";background-color:blue;color:white";
 			}
 			else if ($row["Convocatoria"] == 0) {
+				// Nota aprovada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
 				$style .= ";background-color:black;color:white";
@@ -718,7 +720,12 @@ class Notes extends Form
 			}
 			else {
 				$Nota = $row["nota".$row["Convocatoria"]];
-				if ($row["Orientativa"] && !$Baixa) {
+				if ($row["Convocatoria"] == 5) {
+					// Nota en 5a convocatòria
+					$style .= ";background-color:red;color:white";
+				}				
+				else if ($row["Orientativa"] && !$Baixa) {
+					// Nota orientativa
 					$style .= ";background-color:yellow";
 				}
 			}
@@ -728,7 +735,7 @@ class Notes extends Form
 			$style .= ";background-color:grey";
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
-		else if ($Nota!='' && $Nota>=0 && $Nota<5)
+		else if ($Nota!='' && $Nota>=0 && $Nota<5 && $row["Convocatoria"]!=5)
 			$style .= ";color:red";
 		
 		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
