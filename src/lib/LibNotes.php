@@ -927,7 +927,7 @@ class Notes extends Form
 		echo '</ul>';
 
 		echo '<script>';
-		echo '$("#TaulaNotes1 input").contextMenu({';
+		echo '$("#TaulaNotes input").contextMenu({';
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
 //echo 'console.dir(selectedMenu);';
@@ -939,7 +939,7 @@ class Notes extends Form
 		echo '            IntrodueixConvalidacio(invokedOn);';
 		echo '    }';
 		echo '});';
-		echo '$("#TaulaNotes2 input").contextMenu({';
+/*		echo '$("#TaulaNotes2 input").contextMenu({';
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
 		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
@@ -949,7 +949,7 @@ class Notes extends Form
 		echo '        else if (selectedMenu[0].id == "ddi_IntrodueixConvalidacio")';
 		echo '            IntrodueixConvalidacio(invokedOn);';
 		echo '    }';
-		echo '});';
+		echo '});';*/
 		echo '</script>';
 	}
 
