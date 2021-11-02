@@ -93,7 +93,7 @@ if ($Usuari->es_alumne || $Usuari->es_pare) {
 
 if ($ButlletiVisible) {
 	$SQL = Expedient::SQL($MatriculaId);
-
+//print_r($SQL.'<BR>');
 	$ResultSet = $conn->query($SQL);
 
 	// PROVES
@@ -107,8 +107,10 @@ if ($ButlletiVisible) {
 		
 		$row = $ResultSet->fetch_assoc();
 		$NomComplet = trim(utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
-		if ($CFG->Debug)
-			$NomComplet .= " (".$row["usuari_id"].")";
+		if ($Usuari->es_admin) {
+			$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+			echo "Matrícula: <B>[$MatriculaId]</B>&nbsp;&nbsp;&nbsp;";
+		}
 		echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
 		echo 'Cicle: <B>'.utf8_encode($row["NomCF"]).'</B>';
 			
