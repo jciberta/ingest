@@ -696,6 +696,9 @@ class Notes extends Form
 		else if (!$Professor->TeUF($row["unitat_pla_estudi_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
 
+		$BackgroundColor = $Deshabilitat ? 'background-color:lightgrey;' : 'background-color:white;';
+		$Color = 'color:black;';
+
 		$Nota = '';
 		$ToolTip = ''; // L'usarem per indicar la nota anterior quan s'ha recuperat
 		if (!$Baixa) {
@@ -703,40 +706,52 @@ class Notes extends Form
 				// Nota convalidada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
-				$style .= ";background-color:blue;color:white";
+				$BackgroundColor = 'background-color:blue;';
+				$Color = 'color:white;';
+				//$style .= ";background-color:blue;color:white";
 			}
 			else if ($row["Convocatoria"] == 0) {
 				// Nota aprovada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
-				$style .= ";background-color:black;color:white";
+				$BackgroundColor = 'background-color:black;';
+				$Color = 'color:white;';
+				//$style .= ";background-color:black;color:white";
 			}
 			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
 				// Nota recuperada
 				$Nota = UltimaNota($row);
 				$Deshabilitat = " disabled ";
-				$style .= ";background-color:lime";
+				$BackgroundColor = 'background-color:lime;';
+				//$style .= ";background-color:lime";
 				$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
 			}
 			else {
 				$Nota = $row["nota".$row["Convocatoria"]];
 				if ($row["Convocatoria"] == 5) {
 					// Nota en 5a convocatòria
-					$style .= ";background-color:red;color:white";
+					$BackgroundColor = 'background-color:red;';
+					$Color = 'color:white;';
+					//$style .= ";background-color:red;color:white";
 				}				
 				else if ($row["Orientativa"] && !$Baixa) {
 					// Nota orientativa
-					$style .= ";background-color:yellow";
+					$BackgroundColor = 'background-color:yellow;';
+					//$style .= ";background-color:yellow";
 				}
 			}
 		}
 		else
-			// Sense nota
-			$style .= ";background-color:grey";
+			// Baixa UF. Sense nota
+			$BackgroundColor = 'background-color:grey;';
+			//$style .= "background-color:darkgrey;";
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
 		else if ($Nota!='' && $Nota>=0 && $Nota<5 && $row["Convocatoria"]!=5)
-			$style .= ";color:red";
+			$Color = 'color:red;';
+			//$style .= ";color:red";
+		
+		$style .= $BackgroundColor.$Color;
 		
 		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
 		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
