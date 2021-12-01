@@ -131,9 +131,9 @@ switch ($Accio) {
 		
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
-			' Edat(U.data_naixement) AS edat, U.usuari_bloquejat, '.
+			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.usuari_bloquejat, '.
 			' M.matricula_id, M.grup, '.
-			' C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi, C.nivell, M.baixa, '.
 			' CF.cicle_formatiu_id AS CicleFormatiuId, '.
 			' AA.any_academic_id AS AnyAcademicId '.
 			' FROM USUARI U '.
@@ -148,13 +148,12 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, edat, NomCurs, nivell, grup';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Edat, Curs, Nivell, Grup';
+		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, telefon, codi, grup';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Curs, Grup';
 		//$frm->PermetEditar = True;
 		//$frm->URLEdicio = 'UsuariFitxa.php';
 		//$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
-//		$frm->AfegeixOpcioAJAX('Suprimeix', 'SuprimeixMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK]);
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');

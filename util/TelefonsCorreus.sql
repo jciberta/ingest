@@ -6,6 +6,7 @@ UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l\'alumne)', '
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon de l)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Primer telèfon)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Telèfon principal)', '');
+UPDATE USUARI SET telefon = REPLACE(telefon, '(Correu electrònic principal)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '(Mòbil)', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, '()', '');
 UPDATE USUARI SET telefon = REPLACE(telefon, 'T +34-', '');
