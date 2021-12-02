@@ -75,7 +75,7 @@ switch ($Accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
 		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, CPE.any_academic_id, '.
-			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, '.
+			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, U.email, '.
 			' TUT.tutor_id, TUT.grup_tutoria '.
 			' FROM CURS C '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
@@ -86,8 +86,8 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'TUTOR';
 		$frm->ClauPrimaria = 'tutor_id';
-		$frm->Camps = 'CodiCurs, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, grup_tutoria';
-		$frm->Descripcions = 'Codi, Nom, Nivell, Nom, 1r cognom, 2n cognom, Grup tutoria';
+		$frm->Camps = 'CodiCurs, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, email, grup_tutoria';
+		$frm->Descripcions = 'Codi, Nom, Nivell, Nom, 1r cognom, 2n cognom, Correu, Grup tutoria';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Tutor';
 		$frm->PermetSuprimir = True;
