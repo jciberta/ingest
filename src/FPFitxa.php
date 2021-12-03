@@ -17,6 +17,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibPlaEstudis.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -164,25 +165,8 @@ switch ($accio) {
 		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		
-		$Opcions = [FormFitxa::offREQUERIT];
-		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
-		if ($NomesLectura)
-			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
-
-		$frm = new FormFitxa($conn, $Usuari);
-		$frm->Titol = "Edició UF Pla d'estudis";
-		$frm->Taula = 'UNITAT_PLA_ESTUDI';
-		$frm->ClauPrimaria = 'unitat_pla_estudi_id';
+		$frm = new PlaEstudisUnitatFitxa($conn, $Usuari);
 		$frm->Id = $Id;
-		$frm->AfegeixText('codi', 'Codi', 20, $Opcions);
-		$frm->AfegeixText('nom', 'Nom', 200, $Opcions);
-		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
-//		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $Opcions);
-		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
-		$frm->AfegeixData('data_inici', 'Data inici');
-		$frm->AfegeixData('data_final', 'Data final');
-		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
-		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->EscriuHTML();
         break;
 }

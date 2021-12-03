@@ -409,4 +409,54 @@ class PlaEstudisUnitatRecerca extends FormRecerca
 	}
 }
 
+/**
+ * Classe que encapsula la fitxa de les UF del pla d'estudis.
+ */
+class PlaEstudisUnitatFitxa extends FormFitxa
+{
+	/**
+	 * Comprova si la unitat formativa és LOGSE, és a dir, un crèdit.
+	 */
+	private function EsLOGSE() {
+		$Retorn = False;
+		$SQL = '
+			SELECT CF.llei
+			FROM UNITAT_PLA_ESTUDI UPE 
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 			
+			LEFT JOIN CICLE_FORMATIU CF ON (CPE.cicle_formatiu_id=CF.cicle_formatiu_id)
+			WHERE unitat_pla_estudi_id='.$this->Id;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_object();
+			$Retorn = ($row->llei == 'LG');
+		}
+		return $Retorn;
+	}
+	
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$Opcions = [FormFitxa::offREQUERIT];
+		$NomesLectura = !($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+		if ($NomesLectura)
+			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
+
+		$this->Titol = "Edició UF Pla d'estudis";
+		$this->Taula = 'UNITAT_PLA_ESTUDI';
+		$this->ClauPrimaria = 'unitat_pla_estudi_id';
+		$this->AfegeixText('codi', 'Codi', 20, $Opcions);
+		$this->AfegeixText('nom', 'Nom', 200, $Opcions);
+		$this->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
+		$this->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
+		$this->AfegeixData('data_inici', 'Data inici');
+		$this->AfegeixData('data_final', 'Data final');
+		$this->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
+		if (!$this->EsLOGSE())
+			$this->AfegeixCheckBox('orientativa', 'És orientativa?');
+		parent::EscriuHTML();		
+	}
+}
+
 ?>
