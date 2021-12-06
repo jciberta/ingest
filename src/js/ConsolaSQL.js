@@ -24,7 +24,7 @@ console.log('  SQL: ' + AreaText.value);
             'sql': AreaText.value
             },
         success: function(data) {
-			$('#taula').html(data);
+			$('#resultat').html(data);
         }, 
 		error: function (data) {
 			$('#taula').html('Hi ha hagut un error.');

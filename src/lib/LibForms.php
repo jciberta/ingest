@@ -13,7 +13,6 @@
 
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibURL.php');
-require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');

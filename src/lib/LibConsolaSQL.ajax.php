@@ -10,11 +10,14 @@
  */
 
 require_once('../Config.php');
+require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
+require_once(ROOT.'/lib/LibConsolaSQL.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -22,43 +25,9 @@ if ($conn->connect_error)
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ExecutaSQL') {
+		$frm = new ConsolaSQL($conn, $Usuari);
 		$SQL = $_REQUEST['sql'];
-		$Ordre = strtoupper(PrimeraParaula($SQL));
-		if ($Ordre == 'SELECT' or $Ordre =='DESCRIBE' or $Ordre =='SHOW') {
-			$ResultSet = $conn->query($SQL);
-			if ($ResultSet->num_rows > 0) {
-				$Taula = "<BR><TABLE>";
-				$PrimerCop = True;
-				while($row = $ResultSet->fetch_assoc()) {
-					$keys = array_keys($row);
-					if ($PrimerCop) {
-						// Capçalera de la taula
-						$Taula .= "<THEAD>";
-						for ($i=0; $i<count($keys); $i++) 
-							$Taula .= "<TH>".$keys[$i]."</TH>";
-						$Taula .= "</THEAD>";
-						$PrimerCop = False;
-					}
-					$Taula .= "<TR>";
-					for ($i=0; $i<count($keys); $i++)
-						$Taula .= "<TD>".utf8_encode($row[$keys[$i]])."</TD>";
-					$Taula .= "</TR>";
-				}
-				$Taula .= "</TABLE>";
-			}
-			$ResultSet->close();
-			print $Taula;
-		}
-		else {	
-			$Taula = '<BR>SQL executada amb èxit.';
-			try {
-				if (!$conn->query($SQL))
-					throw new Exception($conn->error.'.<br>SQL: '.$SQL);
-			} catch (Exception $e) {
-				$Taula = "<BR><b>ERROR ExecutaSQL</b>. Causa: ".$e->getMessage();
-			}	
-			print $Taula;
-		}
+		print $frm->GeneraResultat($SQL);
 	}
 	else {
 		if ($CFG->Debug)
