@@ -20,6 +20,12 @@ require_once(ROOT.'/lib/LibHTML.php');
 class ConsolaSQL extends Form
 {
 	/**
+	* Indica que el resultat de la SQL té dades i per tant, es pot descarregar.
+	* @var boolean
+	*/    
+	private $TeResultSet = False;
+
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
@@ -48,7 +54,7 @@ class ConsolaSQL extends Form
 		$Retorn .= '</td>';
 		$Retorn .= '<td align=right>';
 
-		$Disabled = ($SQL == '') ? 'disabled' : '';
+		$Disabled = (!$this->TeResultSet) ? 'disabled' : '';
 		$SQL = bin2hex(Encripta(TrimX($SQL)));
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
 		
@@ -75,6 +81,10 @@ class ConsolaSQL extends Form
 	 */
 	 public function GeneraResultat($SQL): string {
 		$Retorn = '<div id=resultat>';
+		
+		$Ordre = strtoupper(PrimeraParaula($SQL));
+		$this->TeResultSet = ($Ordre == 'SELECT' or $Ordre =='DESCRIBE' or $Ordre =='SHOW');
+		
 		$Retorn .= $this->CreaBotons($SQL);
 		$Retorn .= $this->GeneraTaula($SQL);
 		$Retorn .= "<div id=debug></div>";		
@@ -90,8 +100,7 @@ class ConsolaSQL extends Form
 	 private function GeneraTaula($SQL): string {
 		$Retorn = '<div id=taula></div>';
 		if ($SQL != '') {
-			$Ordre = strtoupper(PrimeraParaula($SQL));
-			if ($Ordre == 'SELECT' or $Ordre =='DESCRIBE' or $Ordre =='SHOW') {
+			if ($this->TeResultSet) {
 				$ResultSet = $this->Connexio->query($SQL);
 				if ($ResultSet->num_rows > 0) {
 					$Taula = "<BR><TABLE>";
@@ -118,8 +127,8 @@ class ConsolaSQL extends Form
 			else {	
 				$Taula = '<BR>SQL executada amb èxit.';
 				try {
-					if (!$conn->query($SQL))
-						throw new Exception($conn->error.'.<br>SQL: '.$SQL);
+					if (!$this->Connexio->query($SQL))
+						throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 				} catch (Exception $e) {
 					$Taula = "<BR><b>ERROR ExecutaSQL</b>. Causa: ".$e->getMessage();
 				}	
