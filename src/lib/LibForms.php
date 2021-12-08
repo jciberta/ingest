@@ -4,6 +4,7 @@
  * LibForms.php
  *
  * Llibreria de formularis:
+ *  - {@link Form}
  *  - {@link FormRecerca}
  *  - {@link FormFitxa} 
  *
@@ -17,6 +18,7 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
 require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/vendor/htmlpurifier/library/HTMLPurifier.auto.php');
 
 
 /**
@@ -2030,6 +2032,12 @@ class FormFitxa extends Form {
 	 * @return string Missatge informatiu.
 	 */
 	public function Desa(string $jsonForm): string {
+		
+		// Iniciem el supressor de XSS
+		$config = HTMLPurifier_Config::createDefault();
+		$purifier = new HTMLPurifier($config);
+//		$clean_html = $purifier->purify($dirty_html);		
+		
 		$Retorn = '';
 
 		// https://stackoverflow.com/questions/24312715/json-encode-returns-null-json-last-error-msg-gives-control-character-error-po
@@ -2102,15 +2110,12 @@ class FormFitxa extends Form {
 						break;
 					case 'red':
 						// Camp text ric
-						
-						// FALTA prevenir XSS !
-						// https://stackoverflow.com/questions/16749414/how-to-prevent-against-xss-and-sql-injection
-						// https://stackoverflow.com/questions/129677/how-can-i-sanitize-user-input-with-php
-						// https://stackoverflow.com/questions/3126072/what-are-the-best-php-input-sanitizing-functions
-						// http://htmlpurifier.org
-						
 						$sCamps .= substr($Valor->name, 4).", ";
-						$sValues .= TextAMySQL(utf8_encode(DesescapaDobleCometa($Valor->value))).', ';
+						
+						// Prevenció XSS amb htmlpurifier
+						$dirty_html = $Valor->value;
+						$clean_html = $purifier->purify($dirty_html);	
+						$sValues .= TextAMySQL(utf8_encode(DesescapaDobleCometa($clean_html))).', ';
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //exit;
 						break;

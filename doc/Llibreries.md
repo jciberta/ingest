@@ -11,3 +11,4 @@
 - PHPMailer 6.1 (https://github.com/PHPMailer/PHPMailer). Llicència GNU LGPL 2.1
 - Chart.js 3.3.2 (https://www.chartjs.org/). Llicència MIT
 - Summernote 0.8.18 (https://summernote.org). Llicència MIT
+- HTML Purifier  4.13.0 (http://htmlpurifier.org/). Llicència GNU LGPL v2.1 
