@@ -7,6 +7,24 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+ 
+function escapeHTML(html) {
+    return html.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+} 
+
+// https://stackoverflow.com/questions/15637429/how-to-escape-double-quotes-in-json
+function escapeDoubleQuotes(html) {
+    return html.replace(/"/g, '\"');
+} 
+
+function EscapaDobleCometa(html) {
+    return html.replace(/"/g, '~');
+} 
+
+function DesescapaDobleCometa(html) {
+    return html.replace(/~/g, '"');
+} 
+ 
 /**
  * Comprova que els camps INPUT required tinguin dades
  * @param string FormId Id del formulari.
@@ -207,8 +225,8 @@ function FormFitxaKeyDown(obj, event, tipus) {
  * @return string Elements del formulari en format JSON.
  */
 function GetFormDataJSON(oForm) {
-console.dir('oForm: ' + oForm);
-console.dir('elements: ' + oForm.elements);
+//console.dir('oForm: ' + oForm);
+//console.dir('elements: ' + oForm.elements);
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
@@ -218,7 +236,7 @@ console.dir(controls[i]);
 				msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
 			}
 			else 
-				msg += '{"name":"' + controls[i].name + '","value":"' + controls[i].value + '"},';
+				msg += '{"name":"' + controls[i].name + '","value":"' + EscapaDobleCometa(controls[i].value) + '"},';
 		}
     }
 	msg = msg.slice(0, -1); // Treiem la darrera coma
@@ -305,7 +323,12 @@ console.dir('jsonForm: ' + jsonForm);
 			else {
 				$('#MissatgeCorrecte').show();
 				$('#MissatgeTorna').show();
-				$('#debug').html('Dades rebudes: '+ JSON.stringify(data));
+				$('#debug').html('Dades rebudes:<br><pre>' + escapeHTML(JSON.stringify(data)) + '</pre>');
+
+//				$('#debug').html('Dades rebudes:<br><pre>'+ JSON.stringify(data))+'</pre>';
+//var text = document.createTextNode(JSON.stringify(data));
+//console.dir(text);
+				//$('#debug').html(text.data);
 			}
         }, 
 		error: function(data) {

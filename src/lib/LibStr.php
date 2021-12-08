@@ -242,4 +242,12 @@ function PrimeraParaula($Text) {
     return $Retorn;
 }
 
+function EscapaDobleCometa($Text) {
+	return str_replace('"', '~', $Text);
+} 
+
+function DesescapaDobleCometa($Text) {
+	return str_replace('~', '"', $Text);
+}
+
 ?>

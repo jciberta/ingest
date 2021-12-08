@@ -121,6 +121,9 @@ switch ($accio) {
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?');
 		$frm->AfegeixText('especialitat', 'Especialitat', 40);
 		$frm->AfegeixText('cos', 'Cos', 20);
+		$frm->AfegeixTextRic('metodologia', 'Metodologia', 200, 100);
+		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
+		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormatives":

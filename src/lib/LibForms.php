@@ -421,13 +421,14 @@ class Form {
 	 * @param mixed $Contingut Valor del text per defecte.
 	 * @return string Codi HTML del text enriquit.
 	 */
-	public function CreaTextRic(string $Nom, string $Titol, int $Longitud, int $Altura, string $Contingut = '', array $off = []) {
+	public function CreaTextRic(string $Nom, string $Titol, int $Longitud, int $Altura, $Contingut = '', array $off = []) {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
-		$sNom = 'red__' . $Nom;
+		$sNom = 'red_' . $Nom;
 		$sRetorn = '<TD valign=top><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
-		$sRetorn .= "<span class='summernote'>$Contingut</span>";
+		$sRetorn .= "<textarea class='summernote' name='$sNom'>$Contingut</textarea>";
+//		$sRetorn .= "<span class='summernote' name='$sNom'>$Contingut</span>";
 		$sRetorn .= '</TD>';
 		return $sRetorn;
 	}
@@ -1206,7 +1207,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.14" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -2030,7 +2031,17 @@ class FormFitxa extends Form {
 	 */
 	public function Desa(string $jsonForm): string {
 		$Retorn = '';
+
+		// https://stackoverflow.com/questions/24312715/json-encode-returns-null-json-last-error-msg-gives-control-character-error-po
+		$jsonForm = preg_replace('/[[:cntrl:]]/', '', $jsonForm);
+		
+//print('$jsonForm:');
+//print_r($jsonForm);
 		$data = json_decode($jsonForm);
+//print('$data:');
+//print_r($data);
+//echo 'Últim error: ', json_last_error_msg(), PHP_EOL, PHP_EOL;
+//exit;
 		$sCamps = '';
 		$sValues = '';
 		foreach($data as $Valor) {
@@ -2089,13 +2100,27 @@ class FormFitxa extends Form {
 //print_r($Valor);
 						}
 						break;
+					case 'red':
+						// Camp text ric
+						
+						// FALTA prevenir XSS !
+						// https://stackoverflow.com/questions/16749414/how-to-prevent-against-xss-and-sql-injection
+						// https://stackoverflow.com/questions/129677/how-can-i-sanitize-user-input-with-php
+						// https://stackoverflow.com/questions/3126072/what-are-the-best-php-input-sanitizing-functions
+						// http://htmlpurifier.org
+						
+						$sCamps .= substr($Valor->name, 4).", ";
+						$sValues .= TextAMySQL(utf8_encode(DesescapaDobleCometa($Valor->value))).', ';
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//exit;
+						break;
 				}
 			}
 		}
 		$sCamps = substr($sCamps, 0, -2);
 		$sValues = substr($sValues, 0, -2);
 //print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
-
+//exit;
 		if ($Id > 0) {
 			// UPDATE
 			$SQL = "UPDATE ".$Taula." SET ";
