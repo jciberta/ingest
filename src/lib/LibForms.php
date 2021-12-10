@@ -2058,7 +2058,9 @@ class FormFitxa extends Form {
 				switch ($Tipus) {
 					case 'edt':
 						// Camp text
+						// XSS: no es permet cap etiqueta HTML
 						$sCamps .= substr($Valor->name, 4).", ";
+						$Valor->value = strip_tags($Valor->value);
 						$sValues .= TextAMySQL($Valor->value).', ';
 //						if ($Valor->value == '')
 //							$sValues .= "NULL, ";
@@ -2121,6 +2123,7 @@ class FormFitxa extends Form {
 		$sValues = substr($sValues, 0, -2);
 //print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
 //exit;
+
 		if ($Id > 0) {
 			// UPDATE
 			$SQL = "UPDATE ".$Taula." SET ";
