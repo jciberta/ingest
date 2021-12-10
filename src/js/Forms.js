@@ -323,6 +323,8 @@ console.dir('jsonForm: ' + jsonForm);
 			else {
 				$('#MissatgeCorrecte').show();
 				$('#MissatgeTorna').show();
+console.log('data:');
+console.dir(data);
 				$('#debug').html('Dades rebudes:<br><pre>' + escapeHTML(JSON.stringify(data)) + '</pre>');
 
 //				$('#debug').html('Dades rebudes:<br><pre>'+ JSON.stringify(data))+'</pre>';
