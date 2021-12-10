@@ -442,6 +442,30 @@ class GrupClasse
 	}
 	
 	/**
+	 * Genera un array amb els grups de l'any actual.
+	 * @return array Grups de l'any actual.
+	 */
+	public function ObteGrupsAnyActual(): array {
+		$SQL = " 
+			SELECT DISTINCT(grups_classe)
+			FROM CURS C
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) 
+			WHERE AA.actual=1 AND grups_tutoria IS NOT NULL
+			";
+		$Grups = '';
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($obj = $ResultSet->fetch_object()) {
+			$Grups .= $obj->grups_classe.',';
+		}			
+		$ResultSet->close();
+		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
+		$aGrups = explode(',', $Grups);
+		asort($aGrups, SORT_STRING);
+		return $aGrups;
+	}
+	
+	/**
 	 * Genera els checkboxs per filtrar per grup.
      * @param int $CursId Identificador del curs.
 	 * @return string Codi HTML del filtre.
@@ -510,6 +534,30 @@ class GrupTutoria
 	public function ObteGrups(int $CursId): array {
 		$this->Carrega($CursId);
 		return explode(',', $this->Registre->grups_tutoria);
+	}
+
+	/**
+	 * Genera un array amb els grups de l'any actual.
+	 * @return array Grups de l'any actual.
+	 */
+	public function ObteGrupsAnyActual(): array {
+		$SQL = " 
+			SELECT DISTINCT(grups_tutoria)
+			FROM CURS C
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) 
+			WHERE AA.actual=1 AND grups_tutoria IS NOT NULL
+			";
+		$Grups = '';
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($obj = $ResultSet->fetch_object()) {
+			$Grups .= $obj->grups_tutoria.',';
+		}			
+		$ResultSet->close();
+		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
+		$aGrups = explode(',', $Grups);
+		asort($aGrups, SORT_STRING);
+		return $aGrups;
 	}
 
 	/**

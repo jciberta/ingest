@@ -19,6 +19,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibExpedient.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -105,7 +106,10 @@ switch ($accio) {
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 		$frm->AfegeixLlista('curs_id', 'Curs', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLookUp('professor_id', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
-		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, array("", "AB", "BC", "CD"), array("sense grup", "AB", "BC", "CD"));
+		$gt = new GrupTutoria($conn, $Usuari);
+		$aGrups = $gt->ObteGrupsAnyActual();
+		array_unshift($aGrups, ""); // afegim al principi
+		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, $aGrups, $aGrups);
 		
 		$frm->EscriuHTML();
         break;
