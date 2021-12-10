@@ -163,7 +163,6 @@ switch ($accio) {
 
 		// Comprovem que l'usuari té accés a aquesta pàgina
 		$Professor = new Professor($conn, $Usuari);
-		$Professor->CarregaUFAssignades();
 		if (!$Professor->TeUFEnMatricula($MatriculaId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 
@@ -181,7 +180,6 @@ switch ($accio) {
 //echo "CursId: $CursId<br>";
 		// Comprovem que l'usuari té accés a aquesta pàgina
 		$Professor = new Professor($conn, $Usuari);
-		$Professor->CarregaUFAssignades();
 		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 		

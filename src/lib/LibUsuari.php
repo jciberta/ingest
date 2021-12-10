@@ -331,17 +331,6 @@ class Professor extends Usuari
 			' WHERE professor_id='.$this->Usuari->usuari_id.
 			' AND AA.actual=1 '.
 			' ORDER BY CPE.codi, UPE.nivell ';
-			
-		/*$SQL = ' SELECT '.
-			' CF.cicle_formatiu_id, CF.codi AS CodiCF, CF.nom AS NomCF, '.
-			' MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP, '.
-			' UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell '.
-			' FROM PROFESSOR_UF PUF '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PUF.uf_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-			' WHERE professor_id='.$this->Usuari->usuari_id .
-			' ORDER BY CF.codi, UF.nivell ';*/
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$i = 0;
@@ -351,6 +340,8 @@ class Professor extends Usuari
 			}
 		}
 		$ResultSet->close();
+//print_h($this->UFAssignades);
+//exit;
 	}
 
 	/**
@@ -398,10 +389,10 @@ class Professor extends Usuari
 	function TeUFEnCurs(int $CursId): bool {
 		$SQL = ' SELECT COUNT(*) AS UF '.
 			' FROM CURS C '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id) '.
-			' LEFT JOIN PROFESSOR_UF PUF ON (UF.unitat_formativa_id=PUF.uf_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
 			' WHERE professor_id='.$this->Usuari->usuari_id.
 			' AND curs_id='.$CursId;
 		$ResultSet = $this->Connexio->query($SQL);
@@ -418,10 +409,10 @@ class Professor extends Usuari
 		$SQL = ' SELECT COUNT(*) AS UF '.
 			' FROM MATRICULA M '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id) '.
-			' LEFT JOIN PROFESSOR_UF PUF ON (UF.unitat_formativa_id=PUF.uf_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
 			' WHERE professor_id='.$this->Usuari->usuari_id.
 			' AND matricula_id='.$MatriculaId;
 		$ResultSet = $this->Connexio->query($SQL);

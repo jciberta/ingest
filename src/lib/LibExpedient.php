@@ -751,7 +751,7 @@ class ExpedientSaga extends Expedient
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaAnterior");
 			$Retorn .= '<div class="boto" style="width:70px">';
-			$Retorn .= '<a href="Fitxa.php?accio=ExpedientSaga&Id='.$MatriculaAnterior.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
+			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
 			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td><td>';
@@ -762,7 +762,7 @@ class ExpedientSaga extends Expedient
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaPosterior");
 			$Retorn .= '<div class="boto" style="width:70px">';
-			$Retorn .= '<a href="Fitxa.php?accio=ExpedientSaga&Id='.$MatriculaPosterior.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
+			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
 			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td></tr></table>';
