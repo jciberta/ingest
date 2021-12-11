@@ -462,6 +462,7 @@ class GrupClasse
 		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
 		$aGrups = explode(',', $Grups);
 		asort($aGrups, SORT_STRING);
+		$aGrups = array_unique($aGrups, SORT_STRING); // Removes duplicate values from an array (https://www.php.net/array_unique)
 		return $aGrups;
 	}
 	
@@ -557,6 +558,7 @@ class GrupTutoria
 		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
 		$aGrups = explode(',', $Grups);
 		asort($aGrups, SORT_STRING);
+		$aGrups = array_unique($aGrups, SORT_STRING);
 		return $aGrups;
 	}
 

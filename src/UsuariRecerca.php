@@ -93,7 +93,7 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 100, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		$frm->EscriuHTML();
         break;
     case "Alumnes":

@@ -322,7 +322,7 @@ class Professor extends Usuari
 		$SQL = ' SELECT '.
 			' CPE.cicle_formatiu_id, CPE.codi AS CodiCF, CPE.nom AS NomCF, '.
 			' MPE.modul_professional_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
-			' UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.nivell '.
+			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.nivell '.
 			' FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
@@ -431,7 +431,7 @@ class Professor extends Usuari
 //exit;
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
-			if ($this->UFAssignades[$i]->unitat_pla_estudi_id == $UF) 
+			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
 				$bRetorn = True;
 		}
 		return $bRetorn;

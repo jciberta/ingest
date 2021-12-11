@@ -98,6 +98,7 @@ class Expedient extends Form
 				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, 
 				MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
 				CPE.nom AS NomCF, CPE.nom AS NomCF, 
+				CF.llei,
 				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
 				N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, 
 				CONCAT(CPE.codi, C.nivell, M.grup) AS Grup, CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, 
@@ -106,6 +107,7 @@ class Expedient extends Form
 			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
 			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
 			LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
 			LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id) 
@@ -805,7 +807,7 @@ class ExpedientSaga extends Expedient
 
 		$ModulAnterior = '';
 		foreach ($this->Registre as $row) {
-			if ($row["CodiMP"] != $ModulAnterior) {
+			if (($row["CodiMP"] != $ModulAnterior) && ($row["llei"])!='LG') {
 				// Fila corresponent al mòdul
 				$sRetorn .= '<TR class="tdContingut_001">';
 				$sRetorn .= '<TD class="llistat3">'.utf8_encode($row["CodiMP"]).'</TD>';
