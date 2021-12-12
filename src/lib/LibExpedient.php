@@ -75,28 +75,10 @@ class Expedient extends Form
 	 * @return string Sentència SQL.
 	 */
 	public static function SQL($MatriculaId): string {
-		/*$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, UF.orientativa, UF.nivell AS NivellUF, '.
-			' MP.modul_professional_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP, '.
-			' CF.nom AS NomCF, CF.nom AS NomCF, '.
-			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
-			' N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, '.
-			' N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, '.
-			' CONCAT(CF.codi, C.nivell, M.grup) AS Grup, '.
-			' CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, '.
-			' UF.*, MP.*, CF.*, N.*, C.* '.
-			' FROM UNITAT_FORMATIVA UF '.
-			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-			' LEFT JOIN CURS C ON (CF.cicle_formatiu_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
-			' LEFT JOIN MATRICULA M ON (M.curs_id=C.curs_id) '.
-			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-			' LEFT JOIN NOTES N ON (UF.unitat_formativa_id=N.uf_id AND N.matricula_id=M.matricula_id) '.
-			' WHERE CF.cicle_formatiu_id=C.cicle_formatiu_id AND UF.nivell<=C.nivell AND M.matricula_id='.$MatriculaId;*/
 		$SQL = '
 			SELECT 
 				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, 
-				MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
+				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
 				CPE.nom AS NomCF, CPE.nom AS NomCF, 
 				CF.llei,
 				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
@@ -178,7 +160,7 @@ class Expedient extends Form
 		$pdf->SetSubject('Expedient');
 
 		$SQL = self::SQL($MatriculaId);
-		//print_r($SQL);
+//print_r($SQL);
 
 		$ResultSet = $this->Connexio->query($SQL);
 
@@ -210,8 +192,7 @@ class Expedient extends Form
 					$Qualificacions[$i]->Nom = utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
 					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
-						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_professional_id"]]);
-//                                              $Qualificacions[$i]->Qualf = $this->NotesMP[$row["modul_professional_id"]];
+						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_pla_estudi_id"]]);
 					else
 						$Qualificacions[$i]->Qualf = '';
 					$Qualificacions[$i]->Conv = 'Ord.';
@@ -581,7 +562,7 @@ class ExpedientSaga extends Expedient
 			$Convocatoria = $row['convocatoria'];
 
 			$Deshabilitat = '';
-			if (!$this->Professor->TeUF($row["unitat_formativa_id"]) && !$this->Professor->EsAdmin() && !$this->Professor->EsDireccio() && !$this->Professor->EsCapEstudis())
+			if (!$this->Professor->TeUF($row["unitat_pla_estudi_id"]) && !$this->Professor->EsAdmin() && !$this->Professor->EsDireccio() && !$this->Professor->EsCapEstudis())
 				$Deshabilitat = ' disabled ';
 
 			$style = "width:50px;text-align:center;";
@@ -922,7 +903,7 @@ class QualificacionsPDF extends DocumentPDF
 		$this->SetXY(30, 15);
         $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
 		$this->SetXY(30, 20);
-        $this->Cell(0, 15, "Departament d'Ensenyament", 0, false, 'L', 0, '', 0, false, 'M', 'M');
+        $this->Cell(0, 15, "Departament d'Educació", 0, false, 'L', 0, '', 0, false, 'M', 'M');
 
 		$this->SetXY(30, 30);
 		$this->Titol1('Informe de qualificacions del curs escolar '.$this->AnyAcademic);

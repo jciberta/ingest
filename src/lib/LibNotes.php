@@ -693,6 +693,7 @@ class Notes extends Form
 		$Deshabilitat = '';
 		if ($Baixa)
 			$Deshabilitat = ' disabled ';
+//NO!		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 		else if (!$Professor->TeUF($row["unitat_pla_estudi_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
 
@@ -1042,7 +1043,7 @@ class Notes extends Form
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
-			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
+			' MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
 			' CF.llei, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
@@ -1594,12 +1595,11 @@ class NotesModul extends Notes
 	 * @param string $ModulId Identificador del mòdul.
 	 * @return string Sentència SQL.
 	 */
-	public function CreaSQL($CursId, $ModulId)
-	{
+	public function CreaSQL($CursId, $ModulId){
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
 			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT,'.
-			' MPE.modul_professional_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.es_fct AS FCTMP, '.
+			' MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.es_fct AS FCTMP, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
 			' M.matricula_id, M.grup AS Grup, M.grup_tutoria AS GrupTutoria, M.baixa AS BaixaMatricula, '.
 			' C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, '.
@@ -1608,13 +1608,9 @@ class NotesModul extends Notes
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id) '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
-
-//			' LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=N.uf_id) '.
-//			' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-			' WHERE C.curs_id='.$CursId.' AND MPE.modul_professional_id='.$ModulId;
+			' WHERE C.curs_id='.$CursId.' AND MPE.modul_pla_estudi_id='.$ModulId;
 		$sRetorn .= ' ORDER BY C.nivell, U.cognom1, U.cognom2, U.nom, MPE.codi, UPE.codi ';	
 		return $sRetorn;
 	}
@@ -1625,8 +1621,7 @@ class NotesModul extends Notes
 	 * @param string $ModulId Identificador del mòdul.
 	 * @return string Sentència SQL.
 	 */
-	public function CreaSQLMitjanes($CursId, $ModulId)
-	{
+	public function CreaSQLMitjanes($CursId, $ModulId) {
 		$sRetorn = ' SELECT NMP.notes_mp_id, NMP.matricula_id, NMP.modul_professional_id, NMP.nota '.
 			' FROM NOTES_MP NMP '.
 			' LEFT JOIN MATRICULA M ON (M.matricula_id=NMP.matricula_id) '.
@@ -1724,24 +1719,23 @@ class NotesModul extends Notes
 //print_r($aOcurrenciesModuls);
 //print_r($aOcurrenciesModuls[0][1]);
 //print_r($aModulsNom);
+//exit;
 
 		$this->IdMP = $aModulsId[0];
-//		echo '<input type=hidden id=ModulId value='.$this->IdMP.'>';
-
-//		$iNumeroUF = $aOcurrenciesModuls[0][1];
 
 		// Mòdul
 		echo "<TR><TD></TD>";
 		$index = 0;
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
-			//$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
 			$TextModul = 'Qualificació de les unitats formatives del mòdul professional';
 			$TextModul .= '<br>'.utf8_encode($aOcurrenciesModuls[$i][0]);
 			echo '<TH class="contingut" width='.($iOcurrencies*25).' colspan='.($iOcurrencies*2).' style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TH>';
 			$index += $iOcurrencies;
 		}
-		echo '<TH class="contingut" colspan=2 rowspan=2 style="text-align:center">Qualificació final del mòdul</TH></TR>';
+		echo '<TH class="contingut" colspan=2 rowspan=2 style="text-align:center">Qualificació final del mòdul</TH>';
+		echo '<TH class="contingut" rowspan=3></TH>';
+		echo '</TR>';
 	
 		// Unitat formativa
 		echo "<TR><TD></TD>";
@@ -1780,7 +1774,7 @@ class NotesModul extends Notes
 		echo "<input type=hidden id='TotalX' value=".count($Notes->UF[0]).">";
 		echo "<input type=hidden id='TotalY' value=".(count($Notes->Alumne)-1).">";
 
-	echo '</div>';
+		echo '</div>';
 	
 		echo "</FORM>";
 		echo "</DIV>";
@@ -1826,8 +1820,16 @@ class NotesModul extends Notes
 		$EstilNotaModul = ($bConvocatoriesAnteriors) ? "background-color:black;color:white;" : "";
 		$Retorn .= '<td '.$Class.' style="text-align:center">'.$TotalHores.'</td>';			
 		$Retorn .= $this->CreaCellaNotaModul($IdGraella, $i, $j, $row, $Professor, $Hores, $Avaluacio, '', $EstilNotaModul);
+
+		// Accions
+		$Retorn .= "<TD $Class style='vertical-align:middle;'>";
+		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
+		$Retorn .= "<A target=_blank href=$URL><IMG src=img/grades-sm.svg>&nbsp</A>";
+		//$URL = GeneraURL("ExpedientPDF.php?MatriculaId=".$row["matricula_id"]);
+		//$Retorn .= "<A target=_blank href=$URL><IMG src=img/pdf.png></A>";
+		$Retorn .= "</TD>";
 		
-		$Retorn .= "<TD></TD></TR>";
+		$Retorn .= "</tr>";
 
 		$class = ($row["BaixaMatricula"] != 1) ? 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"] : '';
 		//$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];

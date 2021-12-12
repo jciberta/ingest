@@ -321,7 +321,7 @@ class Professor extends Usuari
 		$UFAssignades = [];
 		$SQL = ' SELECT '.
 			' CPE.cicle_formatiu_id, CPE.codi AS CodiCF, CPE.nom AS NomCF, '.
-			' MPE.modul_professional_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
+			' MPE.modul_pla_estudi_id, MPE.modul_professional_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
 			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.nivell '.
 			' FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
@@ -422,7 +422,7 @@ class Professor extends Usuari
 	
 	/**
 	 * Comprova si té assignada una UF.
-	 * @param integer $UF Identificador de la UF.
+	 * @param integer $UF Identificador de la UF del pla d'estudis.
 	 * @returns boolean Cert si té assignada la UF.
 	 */
 	function TeUF(int $UF): bool {
@@ -431,7 +431,8 @@ class Professor extends Usuari
 //exit;
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
-			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
+//			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
+			if ($this->UFAssignades[$i]->unitat_pla_estudi_id == $UF) 
 				$bRetorn = True;
 		}
 		return $bRetorn;
@@ -445,7 +446,8 @@ class Professor extends Usuari
 	function TeMP(int $MP): bool {
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades) && !$bRetorn; $i++) {
-			if ($this->UFAssignades[$i]->modul_professional_id == $MP) 
+//			if ($this->UFAssignades[$i]->modul_professional_id == $MP) 
+			if ($this->UFAssignades[$i]->modul_pla_estudi_id == $MP) 
 				$bRetorn = True;
 		}
 		return $bRetorn;
