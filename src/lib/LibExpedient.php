@@ -177,12 +177,14 @@ class Expedient extends Form
 			$NomAlumne = $row["NomAlumne"];
 			$Cognom1Alumne = $row["Cognom1Alumne"];
 			$Cognom2Alumne = $row["Cognom2Alumne"];
+			$Llei = $row["llei"];
 			$pdf->AnyAcademic = $row["AnyAcademic"];
 			$pdf->NomComplet = trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne;
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
 			$pdf->Avaluacio = $this->TextAvaluacio($row["avaluacio"], $row["trimestre"]);
+			$pdf->Llei = $Llei;
 			$pdf->AddPage(); // Crida al mètode Header
 			$ModulAnterior = '';
 			while($row) {
@@ -219,41 +221,69 @@ class Expedient extends Form
 		$ResultSet->close();
 
 		// Realitzem el layout
-		for($i = 0; $i < count($Qualificacions); $i++) {
-			$HTML = '<TABLE>';
-			$HTML .= "<TR>";
-			$HTML .= '<TD style="width:50%">';
-
-			// Mòdul professional
-			$HTML .= "<TABLE>";
-			$HTML .= "<TR>";
-			$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->Nom."</TD>";
-			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Hores."</TD>";
-			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Qualf."</TD>";
-			$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Conv."</TD>";
-			$HTML .= "</TR>";
-			$HTML .= "</TABLE>";
-
-			$HTML .= "</TD>";
-			$HTML .= '<TD style="width:50%">';
-
-			// Unitats formatives
-			$HTML .= "<TABLE>";
-			for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+		if ($Llei == 'LO') {
+			// LOE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
 				$HTML .= "<TR>";
-				$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
-				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
-				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
-				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
-				$HTML .= "</TR>";
-			}
-			$HTML .= "</TABLE>";
+				$HTML .= '<TD style="width:50%">';
 
-			$HTML .= "</TD>";
-			$HTML .= "</TR>";
-			$HTML .= "</TABLE>";
-			$HTML .= "<HR>";
-			$pdf->writeHTML($HTML, True);
+				// Mòdul professional
+				$HTML .= "<TABLE>";
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->Nom."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Hores."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Qualf."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Conv."</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= '<TD style="width:50%">';
+
+				// Unitats formatives
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);
+			}
+		} else {
+			// LOGSE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:100%">';
+
+				// Crèdits
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);		
+			}
 		}
 
 		$pdf->Titol2(utf8_decode("Comentaris de l'avaluació"));
@@ -261,7 +291,8 @@ class Expedient extends Form
 
 		$pdf->Titol2("Llegenda");
 		$pdf->Escriu(utf8_decode("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
-		$pdf->Escriu(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
+		if ($Llei == 'LO')
+			$pdf->Escriu(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
 
 		// Close and output PDF document
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
@@ -893,6 +924,12 @@ class QualificacionsPDF extends DocumentPDF
 	*/
 	public $Avaluacio = '';
 
+	/**
+	* Llei.
+	* @var string
+	*/
+	public $Llei = 'LO'; // Per defecte, LOE
+	
     // Capçalera
     public function Header() {
         // Logo
@@ -924,31 +961,43 @@ class QualificacionsPDF extends DocumentPDF
 
 		$HTML = '<TABLE>';
 		$HTML .= "<TR>";
+		if ($this->Llei == 'LO') {
+			// Mòdul professional
+			$HTML .= '<TD style="width:50%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";
 
-		// Mòdul professional
-		$HTML .= '<TD style="width:50%">';
-		$HTML .= "<TABLE>";
-		$HTML .= "<TR>";
-		$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
-		$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
-		$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
-		$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
-		$HTML .= "</TR>";
-		$HTML .= "</TABLE>";
-		$HTML .= "</TD>";
-
-		// Unitats formatives
-		$HTML .= '<TD style="width:50%">';
-		$HTML .= "<TABLE>";
-		$HTML .= "<TR>";
-		$HTML .= '<TD style="width:55%">Unitat formativa</TD>';
-		$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
-		$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
-		$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
-		$HTML .= "</TR>";
-		$HTML .= "</TABLE>";
-		$HTML .= "</TD>";
-
+			// Unitats formatives
+			$HTML .= '<TD style="width:50%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:55%">Unitat formativa</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";
+		} else {
+			// Crèdits
+			$HTML .= '<TD style="width:100%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= utf8_decode('<TD style="width:55%">Crèdit</TD>');
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";			
+		}
 		$HTML .= "</TR>";
 		$HTML .= "</TABLE>";
 		$HTML .= "<HR>";
