@@ -7,6 +7,14 @@ SELECT distinct(matricula_id) FROM NOTES WHERE nota3 is null AND convocatoria>3;
 SELECT distinct(matricula_id) FROM NOTES WHERE nota4 is null AND convocatoria>4;
 SELECT distinct(matricula_id) FROM NOTES WHERE nota5 is null AND convocatoria>5;
 
+/* Detecció buits entre notes (s'ha d'arreglar a mà) */
+
+select * from NOTES where nota1 is NULL and (nota2 is not null or nota3 is not null or nota4 is not null or nota5 is not null);
+select * from NOTES where nota2 is NULL and (nota3 is not null or nota4 is not null or nota5 is not null);
+select * from NOTES where nota3 is NULL and (nota4 is not null or nota5 is not null);
+select * from NOTES where nota4 is NULL and (nota5 is not null);
+
+
 /*
 	MySQL WorkBench:
     You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode, 
