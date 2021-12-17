@@ -17,14 +17,37 @@ require_once(ROOT.'/lib/LibForms.php');
 
 
 /**
- * Classe que encapsula les utilitats per al maneig del professor.
+ * Classe que encapsula el formulari de la programació didàctica.
  */
-class ProgramacioDidactica extends Objecte
+class ProgramacioDidactica extends Form
 {
+	/**
+	* Identificador del modul del pla d'estudi.
+	* @var integer
+	*/    
+    public $Id = -1; 
+	
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Programació didàctica");
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/ProgramacioDidactica.js?v1.1" type="text/javascript"></script>';
+
+		// Inicialització de l'ajuda
+		// https://getbootstrap.com/docs/4.0/components/popovers/
+//		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
+//		echo $this->GeneraFiltre();
+		echo '<BR><BR>';
+//		echo $this->GeneraTaula();
+		CreaFinalHTML();
+	}		
 }
 
 /**
- * Formulari que mostra l'assignacio de professors per UF.
+ * Formulari que encapsula els resultats d'aprenentatge.
  */
 class ResultatsAprenentatge extends Form
 {

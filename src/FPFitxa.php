@@ -8,6 +8,7 @@
  *  - Cicles formatius
  *  - Mòduls professionals
  *  - Unitats formatives
+ *  - Programació didàctica
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -18,6 +19,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibPlaEstudis.php');
+require_once(ROOT.'/lib/LibProgramacioDidactica.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -169,6 +171,21 @@ switch ($accio) {
 			header("Location: Surt.php");
 		
 		$frm = new PlaEstudisUnitatFitxa($conn, $Usuari);
+		$frm->Id = $Id;
+		$frm->EscriuHTML();
+        break;
+    case "ProgramacioDidactica":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
+//print_h($Professor);
+//exit;
+		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		
+		$frm = new ProgramacioDidactica($conn, $Usuari);
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;

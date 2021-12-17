@@ -210,6 +210,11 @@ class Usuari extends Objecte
 			$frm->Pestanya('Fills');
 			$frm->AfegeixHTML($this->MatriculesFills($UsuariId), 'Matrícules');
 		}
+		if ($this->Usuari->es_admin) {
+			$frm->Pestanya('Registre');
+			$frm->AfegeixHTML($this->RegistreIP($UsuariId), 'IP');
+			//$frm->AfegeixHTML($this->MatriculesFills($UsuariId), 'Matrícules');
+		}
 		$frm->EscriuHTML();
 	}
 	
@@ -256,7 +261,7 @@ class Usuari extends Objecte
 			else
 				$Retorn .= utf8_encode($rsMatricula->nom).'<br>';
 		}		
-		return $Retorn;
+		return $Retorn.'<br>';;
 	}	
 
 	/**
@@ -292,7 +297,24 @@ class Usuari extends Objecte
 			else
 				$Retorn .= utf8_encode($rs->NomCurs).'<br>';
 		}		
-		return $Retorn;
+		return $Retorn.'<br>';;
+	}	
+
+	/**
+	 * Llista les IP des de les que s'ha connectat l'usuari.
+	 * @param $UsuariId Identificador de l'usuari.
+	 * @return string Codi HTML de les IP des de les que s'ha connectat.
+	 */
+	function RegistreIP(int $UsuariId): string {
+		$Retorn = '';
+		$SQL = " SELECT DISTINCT(ip) FROM REGISTRE WHERE usuari_id=$UsuariId ORDER BY INET_ATON(ip) ";
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($rs = $ResultSet->fetch_object()) {
+			$Retorn .= $rs->ip.'<br>';
+		}	
+		if ($Retorn == '')	
+			$Retorn = 'No hi ha dades.<br>';			
+		return $Retorn.'<br>';
 	}	
 }
 

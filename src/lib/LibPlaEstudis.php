@@ -59,7 +59,7 @@ abstract class PlaEstudis extends Form
 		$sRetorn .= "<TH>Modul</TH>";
 		$sRetorn .= "<TH>Hores</TH>";
 		$sRetorn .= "<TH>Hores setmana</TH>";
-		$sRetorn .= "<TH></TH>";
+		$sRetorn .= "<TH></TH><TH></TH>";
 		$sRetorn .= "<TH>Unitat formativa</TH>"; 
 		$sRetorn .= "<TH>Hores</TH>";
 		$sRetorn .= "<TH></TH>";
@@ -82,13 +82,15 @@ abstract class PlaEstudis extends Form
 					if ($this->Usuari->es_admin) {
 						$URL = "FPFitxa.php?accio=ModulsProfessionalsPlaEstudis&Id=".$Modul->Registre->modul_pla_estudi_id;
 						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A></TD>";
+						$URL = "FPFitxa.php?accio=ProgramacioDidactica&Id=".$Modul->Registre->modul_pla_estudi_id;
+						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'>P</A></TD>";
 					}
 					else 
-						$sRetorn .= "<TD></TD>";
+						$sRetorn .= "<TD></TD><TD></TD>";
 					$bPrimer = False;
 				}
 				else {
-					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD>";
+					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD><TD></TD>";
 				}
 				$Id = ($this->Usuari->es_admin	) ? "[".$Unitat->Registre->unitat_pla_estudi_id."]" : "";
 				$sRetorn .= "<TD>".utf8_encode($NomUF)." $Id</TD>";
