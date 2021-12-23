@@ -56,6 +56,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'usuari_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -88,6 +92,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'tutor_id';
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, NomProfessor, Cognom1Professor, Cognom2Professor, email, grup_tutoria';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Nom, 1r cognom, 2n cognom, Correu, Grup tutoria';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'usuari_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Tutor';
 		$frm->PermetSuprimir = True;
@@ -110,6 +118,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, telefon, email, email_ins, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Correu INS, IDALU';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'usuari_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -128,7 +140,6 @@ switch ($Accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Matrícules";
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
-		
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
 			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.usuari_bloquejat, '.
@@ -150,6 +161,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, telefon, codi, grup';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Curs, Grup';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'matricula_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		//$frm->PermetEditar = True;
 		//$frm->URLEdicio = 'UsuariFitxa.php';
 		//$frm->PermetSuprimir = True;
@@ -201,6 +216,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'NIFAlumne, NomAlumne, Cognom1Alumne, Cognom2Alumne, NIFPare, NomPare, Cognom1Pare, Cognom2Pare, NIFMare, NomMare, Cognom1Mare, Cognom2Mare';
 		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, NIF resp1, Nom resp1, 1r cognom resp1, 2n cognom resp1, NIF resp2, Nom resp2, 1r cognom resp2, 2n cognom resp2';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'usuari_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		//$frm->PermetEditar = True;
 		//$frm->URLEdicio = 'UsuariFitxa.php';
 		//$frm->PermetSuprimir = True;
@@ -217,6 +236,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'usuari_id, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
@@ -239,8 +262,8 @@ switch ($Accio) {
 		$frm->Camps = 'nom, cognom1, cognom2, username';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari';
 		if ($Usuari->es_admin) {
-			$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, Edat, telefon, email, poblacio ';
-			$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Població ';
+			$frm->Camps = 'usuari_id, nom, cognom1, cognom2, username, data_naixement, Edat, telefon, email, poblacio ';
+			$frm->Descripcions = 'Id, Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Població ';
 		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
@@ -292,6 +315,10 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'UsuariId';
 		$frm->Camps = 'NomAlumne, UltimLoginAlumne, edat, codi, nivell, grup, NomResp1, UltimLoginPare, NomResp2, UltimLoginMare';
 		$frm->Descripcions = 'Alumne, Últim login, Edat, Curs, Nivell, Grup, Nom resp1, Últim login, Nom resp2, Últim login';
+		if ($Usuari->es_admin) {
+			$frm->Camps = 'UsuariId, '.$frm->Camps;
+			$frm->Descripcions = 'Id, '.$frm->Descripcions;
+		}
 
 		// Filtre
 		if (!$NomesProfessor) {

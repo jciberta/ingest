@@ -83,7 +83,7 @@ abstract class PlaEstudis extends Form
 						$URL = "FPFitxa.php?accio=ModulsProfessionalsPlaEstudis&Id=".$Modul->Registre->modul_pla_estudi_id;
 						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A></TD>";
 						$URL = "FPFitxa.php?accio=ProgramacioDidactica&Id=".$Modul->Registre->modul_pla_estudi_id;
-						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'>P</A></TD>";
+						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'><IMG src=img/report.svg></A></TD>";
 					}
 					else 
 						$sRetorn .= "<TD></TD><TD></TD>";
