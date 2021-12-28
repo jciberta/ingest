@@ -245,6 +245,74 @@ class ProgramacioDidactica extends Form
 }
 
 /**
+ * Classe que encapsula el formulari de recerca de les programacions didàctiques.
+ */
+class ProgramacioDidacticaRecerca extends FormRecerca
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$Usuari = $this->Usuari;
+		$frm->Modalitat = $this->Modalitat;
+		$frm->Titol = 'Programacions didàctiques';
+		$frm->SQL = 'SELECT '.
+			' 	MPE.modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, '.
+			'	CPE.codi AS CodiCF '. 
+			' FROM MODUL_PLA_ESTUDI MPE '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
+		$frm->Taula = 'UNITAT_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'modul_pla_estudi_id';
+		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
+		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
+		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
+
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$AnyAcademicId = $aAnys[0][0]; 
+			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		}
+		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'));
+		$frm->EscriuHTML();
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de fitxa de les programacions didàctiques.
+ */
+class ProgramacioDidacticaFitxa extends FormRecerca
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		
+/*		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php"); */
+
+		$frm = new FormFitxa($this->Connexio, $this->Usuari);
+		$frm->Titol = "Programació didàctica";
+		$frm->Taula = 'MODUL_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'modul_pla_estudi_id';
+		$frm->Id = $this->Id;
+		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixTextRic('metodologia', 'Metodologia', 200, 100);
+		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
+		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
+		$frm->EscriuHTML();		
+		
+	}
+}
+
+/**
  * Formulari que encapsula els resultats d'aprenentatge.
  */
 class ResultatsAprenentatge extends Form

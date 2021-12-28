@@ -416,7 +416,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Unitats formatives', 'FPRecerca.php?accio=UnitatsFormativesCF');
 			$Retorn .= Menu::Separador();
 			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Pla d'estudis</button>";
+			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Plans d'estudis</button>";
 			$Retorn .= '	<div class="dropdown-menu">';
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisAny')."'>Pla d'estudis per any</a>";
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisCicle')."'>Pla d'estudis per cicle</a>";
@@ -424,8 +424,9 @@ class Menu
 			$Retorn .= '	</div>';
 			$Retorn .= '</div>';
 			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Programació didàctica</button>";
+			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Programacions</button>";
 			$Retorn .= '	<div class="dropdown-menu">';
+			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ProgramacionsDidactiques')."'>Programacions didàctiques</a>";
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ResultatsAprenentatge')."'>Resultats d'aprenentatge</a>";
 			$Retorn .= '	</div>';
 			$Retorn .= '</div>';

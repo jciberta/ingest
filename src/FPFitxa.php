@@ -180,6 +180,19 @@ switch ($accio) {
 
 		$Professor = new Professor($conn, $Usuari);
 		$Professor->CarregaUFAssignades();
+		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		
+		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari);
+		$frm->Id = $Id;
+		$frm->EscriuHTML();
+        break;
+    case "ProgramacioDidacticaLectura":
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$Professor = new Professor($conn, $Usuari);
+		$Professor->CarregaUFAssignades();
 //print_h($Professor);
 //exit;
 		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
