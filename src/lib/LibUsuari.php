@@ -9,13 +9,10 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-//require_once(ROOT.'/lib/LibForms.php');
-//require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
-//require_once(ROOT.'/lib/LibProfessor.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'usuari.
@@ -79,8 +76,8 @@ class Usuari extends Objecte
 	}	
 
 	/**
-	 * Comprova si l'usuari és alumne.
-	 * @returns boolean Cert si l'usuari és alumne.
+	 * Comprova si l'usuari és professor.
+	 * @returns boolean Cert si l'usuari és professor.
 	 */
 	function EsProfessor(): bool {
 		return $this->Usuari->es_professor == '1';
@@ -227,7 +224,8 @@ class Usuari extends Objecte
 		$Retorn = -1;
 		$SQL = ' SELECT matricula_id FROM MATRICULA M '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.			
 			' WHERE alumne_id='.$AlumneId.' AND actual=1 ';
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
@@ -551,6 +549,137 @@ class Professor extends Usuari
 		$bRetorn = ($ResultSet->num_rows > 0);
 		$ResultSet->close();
 		return $bRetorn;
+	}
+	
+	/**
+	 * Genera i escriu l'escriptori del professor.
+	 */
+	public function Escriptori() {
+		CreaIniciHTML($this->Usuari, '');
+
+		$SQL = ' SELECT DISTINCT CPE.cicle_formatiu_id, UPE.nivell, CPE.codi AS CodiCF, CPE.nom AS NomCF, C.curs_id, C.estat, C.grups_tutoria '.
+			' FROM PROFESSOR_UF PUF '.
+			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
+			' WHERE C.estat<>"T" AND actual=1 AND professor_id='.$this->Usuari->usuari_id .
+			' ORDER BY CPE.codi, UPE.nivell ';
+			
+//print $SQL;
+		echo '<h3>Cursos</h3>';
+		echo '<div class="card-columns" style="column-count:6">';
+		$ResultSet = $this->Connexio->query($SQL);
+//var_dump($ResultSet);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				if ($row['estat'] == Curs::Junta) {
+					$GrupsTutoria = $row['grups_tutoria'];
+					if ($GrupsTutoria == '') {
+						// Una sola línia
+						$URL = GeneraURL('Fitxa.php?accio=ExpedientSagaAvaluacio&Id='.$row['curs_id']);
+						echo CreaTargeta($row['CodiCF'].$row['nivell'], $row['NomCF'], $URL);
+					}
+					else {
+						// Vàries línies
+						$aGrupsTutoria = explode(',', $GrupsTutoria);
+						foreach($aGrupsTutoria as $Grup) {
+							$URL = GeneraURL('Fitxa.php?accio=ExpedientSagaAvaluacio&Id='.$row['curs_id'].','.$Grup);
+							echo CreaTargeta($row['CodiCF'].$row['nivell'].' '.$Grup, $row['NomCF'], $URL);
+						}
+					}
+				}
+				else {
+					$URL = GeneraURL('Notes.php?CursId='.$row['curs_id']);
+					echo CreaTargeta($row['CodiCF'].$row['nivell'], $row['NomCF'], $URL);
+				}
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		$ResultSet->close();
+
+		echo '</div>';
+		echo '<h3>Gestió</h3>';
+		echo '<div class="card-columns" style="column-count:6">';
+		
+		// Grups tutoria
+		$Professor = new Professor($this->Connexio, $this->Usuari);
+		$CursId = $this->ObteCursTutorId();
+		if ($CursId > 0) {
+			$URL1 = GeneraURL('Grups.php?CursId='.$CursId);
+			$URL2 = GeneraURL('UsuariRecerca.php?accio=UltimLogin');
+			echo '  <div class="card">';
+			echo '    <div class="card-body">';
+			echo '      <h5 class="card-title">Tutoria</h5>';
+			echo '<table style="border-collapse: separate;border-spacing: 0px 6px ">';
+			echo '<tr>';
+			echo '      <td width=100><p class="card-text">Grups</p></td>';
+			echo '      <td><p class="card-text">Darrers accessos</p></td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '      <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+			echo '      <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+			echo '</tr>';
+			echo '</table>';
+			echo '    </div>';
+			echo '  </div>';
+		}
+		
+		// Les meves UF
+		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat&ProfId='.$this->Usuari->usuari_id);
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Unitats formatives</h5>';
+		echo '      <p class="card-text">Les meves UF</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+
+		echo '</div>';
+		echo '<h3>Informes</h3>';
+		echo '<div class="card-columns" style="column-count:6">';
+
+		// Històric
+		$URL = GeneraURL('Recerca.php?accio=HistoricCurs');
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Històric</h5>';
+		echo '      <p class="card-text">Notes FP</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+
+		// Promoció 1r
+		$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesPromocio1r');
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Promocions 1r</h5>';
+		echo "      <p class='card-text'>Alumnes amb 60% d'hores o més</p>";
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+		
+		// Graduació 2n
+		$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesGraduacio2n');
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Graduacions 2n</h5>';
+		echo "      <p class='card-text'>Alumnes amb 100% d'hores</p>";
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+
+		// Estadístiques FP
+		$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Estadístiques</h5>';
+		echo '      <p class="card-text">Aprovats per UF</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';		
 	}
 }
 
@@ -1087,9 +1216,48 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 }
 
 /**
+ * Classe que encapsula les utilitats per al maneig de l'alumne.
+ */
+class Alumne extends Usuari
+{
+	/**
+	 * Genera i escriu l'escriptori del professor.
+	 */
+	public function Escriptori() {
+		CreaIniciHTML($this->Usuari, '');
+
+		//$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
+		$URL = '';
+		echo '<div class="card-columns" style="column-count:6">';
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Pla de treball</h5>';
+		echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+
+		//$Alumne	= new Alumne($this->Connexio, $this->Usuari);
+		$MatriculaId = $this->ObteMatriculaActiva($this->Usuari->usuari_id);
+		if ($MatriculaId > 0) {
+			$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
+			//echo '<div class="card-columns" style="column-count:6">';
+			echo '  <div class="card">';
+			echo '    <div class="card-body">';
+			echo '      <h5 class="card-title">Expedient</h5>';
+			echo '      <p class="card-text">Visualitza el teu expedient.</p>';
+			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '    </div>';
+			echo '  </div>';
+		}
+		echo '</div>';
+	}
+}
+
+/**
  * Classe que encapsula el llistat dels alumnes que han promocionat 1r.
  */
-class AlumnesPromocio1r extends Usuari
+class AlumnesPromocio1r extends Alumne
 {
 	/**
 	 * Escriu el llistat dels alumnes que han promocionat de 1r.
@@ -1307,6 +1475,51 @@ class Orla extends Form
 			$SQL .= " AND grup='$Grup' ";
 		return $SQL;
 	}	
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig dels pares.
+ */
+class Progenitor extends Usuari
+{
+	/**
+	 * Genera i escriu l'escriptori del professor.
+	 */
+	public function Escriptori() {
+		// Els pares només poden veure el PDF de les notes dels seus fills
+		CreaIniciHTML($this->Usuari, '');
+		$SQL = ' SELECT '.
+			' 	U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
+			'   M.matricula_id AS MatriculaId'.
+			' FROM USUARI U '.
+			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
+			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' WHERE (U.pare_id='.$this->Usuari->usuari_id.' OR U.mare_id='.$this->Usuari->usuari_id.') '.
+			' AND (Edat(U.data_naixement)<18 OR U.permet_tutor=1) AND AA.actual=1 ';
+//print $SQL;
+		echo '<div class="card-columns" style="column-count:6">';
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				$URL = GeneraURL('ExpedientPDF.php?MatriculaId='.$row['MatriculaId']);
+				echo '  <div class="card">';
+				echo '    <div class="card-body">';
+				echo '      <h5 class="card-title">Expedient</h5>';
+				$NomComplet = trim(trim($row['NomAlumne']).' '.trim($row['Cognom1Alumne']).' '.trim($row['Cognom2Alumne']));
+				echo '      <p class="card-text">'.utf8_encode($NomComplet).'</p>';
+				echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+				echo '    </div>';
+				echo '  </div>';
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		else
+			echo 'No hi ha dades a mostrar.';
+		$ResultSet->close();
+	}
 }
 
 ?>
