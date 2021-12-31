@@ -1,6 +1,6 @@
 /*
  * InGest.css
- */
+*/
 
 
 /* 
@@ -36,3 +36,24 @@ https://jsfiddle.net/bootstrapious/dmp7tr4g
 	display: inline-table;
 	table-layout: fixed; 
 }
+
+/* 
+ * Pàgina format A4
+*/
+
+article {
+	margin: 68px auto 40px;
+	padding: 30px 30px 30px;
+	width: 50%;
+	min-width: 300px;
+	text-align: left;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.sheet {
+	-webkit-box-shadow: 2px 2px 5px #000;
+	-moz-box-shadow: 2px 2px 5px #000;
+	box-shadow: 2px 2px 5px #000;
+}	

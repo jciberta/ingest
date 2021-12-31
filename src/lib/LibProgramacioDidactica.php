@@ -50,12 +50,15 @@ class ProgramacioDidactica extends Form
 //		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
 
 		$this->Carrega();
+//		echo '<ARTICLE class="sheet text-normal text-left medium" style="padding-bottom: 170px;" lang="ca">';
 		echo $this->GeneraTitol();
+		echo '<ARTICLE class="sheet" lang="ca">';
 		echo $this->GeneraSeccio(self::pdESTRATEGIES);
 		echo $this->GeneraSeccio(self::pdCRITERIS);
 		echo $this->GeneraSeccio(self::pdRECURSOS);
 		echo $this->GeneraSeccio(self::pdSEQUENCIACIO);
 		echo $this->GeneraSeccio(self::pdUNITATS);
+		echo '</ARTICLE>';
 		CreaFinalHTML();
 	}	
 
@@ -121,23 +124,23 @@ class ProgramacioDidactica extends Form
 			$sRetorn .= '  </TR>';
 		}
 		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD>Nom del Cicle Formatiu:</TD>';
+		$sRetorn .= '    <TD style="padding-right:10px;">Nom del Cicle Formatiu:</TD>';
 		$sRetorn .= '    <TD><B>'.utf8_encode($this->Registre->NomCF).'</B></TD>';
 		$sRetorn .= '  </TR>';
 		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD>Curs:</TD>';
+		$sRetorn .= '    <TD style="padding-right:10px;">Curs:</TD>';
 		$sRetorn .= '    <TD><B>'.$this->Registre->any_inici.'-'.$this->Registre->any_final.'</B></TD>';
 		$sRetorn .= '  </TR>';
 		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD>Codi del Mòdul Professional:</TD>';
+		$sRetorn .= '    <TD style="padding-right:10px;">Codi del Mòdul Professional:</TD>';
 		$sRetorn .= '    <TD><B>'.$this->Registre->CodiMP.'</B></TD>';
 		$sRetorn .= '  </TR>';
 		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD>Títol del Mòdul Professional:</TD>';
+		$sRetorn .= '    <TD style="padding-right:10px;">Títol del Mòdul Professional:</TD>';
 		$sRetorn .= '    <TD><B>'.$this->Registre->NomMP.'</B></TD>';
 		$sRetorn .= '  </TR>';
 		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD>Professors:</TD>';
+		$sRetorn .= '    <TD style="padding-right:10px;">Professors:</TD>';
 		$sRetorn .= '    <TD><B>'.$this->ObteProfessorsModul($this->Id).'</B></TD>';
 		$sRetorn .= '  </TR>';
 		$sRetorn .= '</TABLE>';
