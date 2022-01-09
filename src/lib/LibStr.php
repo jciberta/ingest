@@ -100,7 +100,7 @@ function Ocurrencies($array)
 function print_h($Variable)
 {
 	echo '<pre>';
-	print_r($Variable);
+	print_r(EscapaHTML($Variable));
 	echo '</pre>';
 }
  
@@ -249,5 +249,12 @@ function EscapaDobleCometa($Text) {
 function DesescapaDobleCometa($Text) {
 	return str_replace('~', '"', $Text);
 }
+
+function EscapaHTML($Text) {
+	$Text = str_replace('&', '&amp;', $Text);
+	$Text = str_replace('<', '&lt;', $Text);
+	$Text = str_replace('>', '&gt;', $Text);
+    return $Text;
+} 
 
 ?>
