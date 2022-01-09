@@ -15,6 +15,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
@@ -69,7 +70,7 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
-		$SQL = ' SELECT EQ.equip_id, AA.nom AS AnyAcademic, '.
+		$SQL = ' SELECT EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, '.
 			' CASE EQ.tipus '.
 			'     WHEN "DP" THEN "Departament" '.
 			'     WHEN "ED" THEN "Equip docent" '.
@@ -81,6 +82,7 @@ switch ($accio) {
 			' LEFT JOIN ANY_ACADEMIC AA ON (EQ.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id) ';
 		$frm->SQL = $SQL;
+//print('<br><br><br>'.$SQL);		
 		$frm->Taula = 'EQUIP';
 		$frm->ClauPrimaria = 'equip_id';
 		$frm->Camps = 'AnyAcademic, Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor';
@@ -89,6 +91,12 @@ switch ($accio) {
 		$frm->URLEdicio = 'Fitxa.php?accio=Equip';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+
+		$frm->AfegeixOpcio('Membres', 'Fitxa.php?accio=EquipProfessors&Id=', '', 'enrolusers.svg');		
+		
+		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		
 		$frm->EscriuHTML();
         break;
     case "HistoricCurs":

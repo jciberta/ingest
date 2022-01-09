@@ -381,6 +381,48 @@ console.log('-> OrdenaColumna');
     } );
 }
 
+
+/**
+ * AfegeixDetall
+ * Afegeix un registre a una taula que és detall d'una altra.
+ * @param element Element que ha fet la crida.
+ * @param Taula Taula a la que es vol afegir el registre.
+ * @param ClauPrimaria Clau primària de la taula. Res si és autoincrementable.
+ * @param CampMestre
+ * @param ValorMestre
+ * @param CampDetall
+ * @param ValorDetall
+ */
+function AfegeixDetall(element, Taula, ClauPrimaria, CampMestre, ValorMestre, CampDetall) { 
+console.log('-> AfegeixDetall');
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;
+
+	var ValorDetall = element.value;
+console.log('    ValorDetall: ' + ValorDetall);
+
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibForms.ajax.php',
+		data:{
+			'accio': 'AfegeixDetall',
+			'taula': Taula,
+			'clau_primaria': ClauPrimaria,
+			'camp_mestre': CampMestre, 
+			'valor_mestre': ValorMestre, 
+			'camp_detall': CampDetall, 
+			'valor_detall': ValorDetall,
+			'frm': sFrm
+		},
+        success: function(data) {
+            $('#taula').html(data);
+        }, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}
+
 // http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
 function encode_utf8(s) {
   return unescape(encodeURIComponent(s));
@@ -400,12 +442,14 @@ function decode_utf8(s) {
  */
 function CercaLookup(codi, valor, url, camps) { 
 console.log('-> CercaLookup');
+//console.log('    codi: ' + codi);
+//console.log('    valor: ' + valor);
 	targetFieldCodi = document.getElementsByName(codi)[0];
 	targetFieldValor = document.getElementsByName(valor)[0];
 	targetCamps = camps;
-console.log('targetFieldCodi: ' + targetFieldCodi.name);
-console.dir(targetFieldCodi);
-console.log('targetFieldValor: ' + targetFieldValor.name);
+//console.log('targetFieldCodi: ' + targetFieldCodi.name);
+//console.dir(targetFieldCodi);
+//console.log('targetFieldValor: ' + targetFieldValor.name);
 
 	w = screen.width - 100;
 	h = screen.height - 100;

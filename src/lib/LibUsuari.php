@@ -16,28 +16,9 @@ require_once(ROOT.'/lib/LibHTML.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig de l'usuari.
- * No es creen les subclasses Professor, Alumne... ja que un usuari pot ser diversos rols a la vegada.
  */
 class Usuari extends Objecte
 {
-	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-//	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-//	public $Usuari;
-
-	/**
-	* Registre de la base de dades que conté les dades d'una matrícula.
-	* @var object
-	*/    
-//    private $Registre = null;
-
 	/**
 	 * Constructor de l'objecte.
 	 * El registre queda carregat inicialment amb l'usuari de l'aplicació.
@@ -709,6 +690,7 @@ class ProfessorsUF extends Form
 
 	/**
 	 * Genera el filtre del formulari si n'hi ha.
+     * @return string Codi HTML del filtre.
 	 */
 	protected function GeneraFiltre() {
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
@@ -1212,6 +1194,126 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			$sRetorn .= '</DIV>';	
 		};	
 		return $sRetorn;
+	}
+}
+
+/**
+ * Formulari que mostra els professors per equip.
+ */
+//class ProfessorsEquip extends Form
+class ProfessorsEquip extends Objecte
+{
+	/**
+	* Identificador de l'equip.
+	* @var array
+	*/    
+    private $Professors = []; 
+
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormDetall($this->Connexio, $this->Usuari);
+		$Usuari = $this->Usuari;
+		$frm->Titol = 'Professors per equip';
+		$frm->SubTitol = $this->GeneraSubTitol();
+		$frm->SQL = $this->CreaSQLProfessors($this->Id);
+		$frm->Taula = 'PROFESSOR_EQUIP';
+		$frm->ClauPrimaria = 'professor_equip_id';
+		
+		$frm->Camps = 'username, NomProfessor, codi';
+		$frm->Descripcions = 'Usuari, Professor, Codi';
+		$frm->PermetSuprimir = True;
+		$frm->PermetAfegir = True;
+
+		$frm->CampMestre = 'equip_id';
+		$frm->ValorMestre = $this->Id;
+		$frm->CampDetall = 'professor_id';
+
+		$frm->LookUp->URL = 'UsuariRecerca.php?accio=Professors';
+		$frm->LookUp->Taula = 'USUARI';
+		$frm->LookUp->Id = 'usuari_id';
+		$frm->LookUp->Camps = 'nom, cognom1, cognom2';
+
+		$frm->EscriuHTML();		
+	}	
+	
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $EquipId Identificador de l'equip.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQL(int $EquipId): string {
+		return "
+			SELECT EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, 
+			CASE EQ.tipus 
+			    WHEN 'DP' THEN 'Departament' 
+			    WHEN 'ED' THEN 'Equip docent'
+			    WHEN 'CM' THEN 'Comissió' 
+			END AS Tipus, 
+			EQ.nom AS NomEquip, 
+			U.usuari_id, 
+			FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor,
+			U.username 
+			FROM EQUIP EQ 
+			LEFT JOIN ANY_ACADEMIC AA ON (EQ.any_academic_id=AA.any_academic_id) 
+			LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id)
+			WHERE equip_id=$EquipId
+		";
+	}
+
+	/**
+	 * Crea la sentència SQL que conté els professors de l'equip.
+	 * @param integer $EquipId Identificador de l'equip.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQLProfessors(int $EquipId): string {
+		return "
+			SELECT PEQ.professor_equip_id, U.codi, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor, U.username 
+			FROM PROFESSOR_EQUIP PEQ
+			LEFT JOIN USUARI U ON (PEQ.professor_id=U.usuari_id)
+			WHERE equip_id=$EquipId
+			ORDER BY U.codi
+		";
+	}
+	
+	/**
+	 * Carrega les dades d'un usuari i les emmagatzema en l'atribut Registre.
+     * @param int $EquipId Identificador de l'equip.
+	 */
+	private function Carrega(int $EquipId) {
+		$SQL = $this->CreaSQL($this->Id);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$rs = $ResultSet->fetch_object();
+			$this->Registre = $rs;
+		}
+	}
+
+	/**
+	 * Carrega els professors d'un equip i els emmagatzema en l'atribut Professors.
+     * @param int $EquipId Identificador de l'equip.
+	 */
+	private function CarregaProfessors(int $EquipId) {
+		$SQL = $this->CreaSQLProfessors($this->Id);
+		$ResultSet = $this->Connexio->query($SQL);
+		while($row = $ResultSet->fetch_object()) 
+			array_push($this->Professor, $row);
+	}
+
+	/**
+	 * Genera el subtítol del formulari.
+     * @return string Codi HTML del subtítol.
+	 */
+	private function GeneraSubTitol() {
+		$this->Carrega($this->Id);
+		$Dades = array(
+			'Any' => $this->Registre->AnyAcademic,
+			'Tipus' => $this->Registre->Tipus,
+			'Equip' => $this->Registre->NomEquip,
+			'Responsable' => $this->Registre->NomProfessor
+		);
+		return CreaTaula1($Dades);
 	}
 }
 
