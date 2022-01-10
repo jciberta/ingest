@@ -103,6 +103,7 @@ echo '</span>';
 	 * Carrega els registres especificat a la SQL i els posa en un objecte.
 	 * @return void.
 	 */				
+	private function Carrega() {
 		$SQL = $this->CreaSQL($this->Id);
 //print_r($SQL);		
 		$ResultSet = $this->Connexio->query($SQL);
@@ -184,28 +185,31 @@ echo '</span>';
 		$sRetorn .= "</DIV>";
 		return $sRetorn;
 	}
-	
+
 	/**
 	 * Genera la secció d'estratègies de la programació didàctica.
-	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
+	protected function GeneraSeccioEstrategies() {
+		$sRetorn = $this->Registre->metodologia;
 		return $sRetorn;		
 	}
 
 	/**
 	 * Genera la secció de criteris de la programació didàctica.
-	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
+	protected function GeneraSeccioCriteris() {
+		$sRetorn = $this->Registre->criteris_avaluacio;
 		return $sRetorn;		
 	}
 
 	/**
 	 * Genera la secció de recursos de la programació didàctica.
-	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
+	protected function GeneraSeccioRecursos() {
+		$sRetorn = $this->Registre->recursos;
 		return $sRetorn;		
 	}
 
@@ -214,6 +218,7 @@ echo '</span>';
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
+	protected function GeneraSeccioSequenciacio() {
 		$ModulPlaEstudiId = $this->Id;
 		
 		$sRetorn = "<BR>";
@@ -256,6 +261,7 @@ echo '</span>';
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
+	protected function GeneraSeccioUnitats() {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$sRetorn = $RA->GeneraTaulaModul($ModulId);
