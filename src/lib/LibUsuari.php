@@ -1541,7 +1541,9 @@ class Orla extends Form
 				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
 				$Retorn .= '<BR>';
-				$Retorn .= $Nom;
+				$AlumneId = $row->usuari_id;
+				$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
+				$Retorn .= "<A target=_blank href='$URL'>$Nom</A>";
 				$Retorn .= '</TD>';
 				$i++;
 			}
