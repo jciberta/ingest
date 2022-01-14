@@ -26,3 +26,7 @@ update USUARI set email=NULL where email like '%@inspalamos.cat';
 
 select * from USUARI where email_ins not like '%@inspalamos.cat';
 update USUARI set email=email_ins where email is not null and email_ins not like '%@inspalamos.cat';
+
+
+/* Actualització correus inspalamos.cat des de xtec.cat */
+update USUARI set email_ins=replace(email, 'xtec.cat', 'inspalamos.cat') WHERE email like '%xtec.cat';

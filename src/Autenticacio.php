@@ -60,7 +60,7 @@ if (!empty($_POST))
 						// ToDo: Seguretat a la sessió
 						// https://stackoverflow.com/questions/1442177/storing-objects-in-php-session
 						// https://stackoverflow.com/questions/12233406/preventing-session-hijacking
-						// https://meta.stackexchange.com/questions/69171/why-doesnt-the-stack-overflow-team-fix-the-firesheep-style-cookie-theft
+						// https://codebutler.com/2010/10/24/firesheep/
 						$_SESSION['USUARI'] = serialize($user);
 						$_SESSION['SISTEMA'] = serialize($sistema);
 						$_SESSION['FESTIU'] = serialize($festiu);
