@@ -15,7 +15,6 @@ require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibForms.php');
 //require_once(ROOT.'/lib/LibHTML.php');
 
-//require_once(ROOT.'/vendor/htmlpurifier/library/HTMLPurifier.auto.php');
 require_once(ROOT.'/vendor/autoload.php');
 
 use PhpOffice\PhpWord\Shared\Converter;
@@ -60,16 +59,14 @@ class ProgramacioDidactica extends Form
 		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
 		echo '<script language="javascript" src="js/ProgramacioDidactica.js?v1.1" type="text/javascript"></script>';
 
-		// Inicialització de l'ajuda
-		// https://getbootstrap.com/docs/4.0/components/popovers/
-//		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
-
-echo '<span style="float:right;">';
-echo $this->CreaBotoDescarrega($this->Id);
-echo '</span>';
+		// Botons
+		echo '<span style="float:right;">';
+		if ($this->Usuari->es_admin)
+			echo $this->CreaBotoEdita($this->Id).'&nbsp';
+		echo $this->CreaBotoDescarrega($this->Id);
+		echo '</span>';
 
 		$this->Carrega();
-//		echo '<ARTICLE class="sheet text-normal text-left medium" style="padding-bottom: 170px;" lang="ca">';
 		echo $this->GeneraTitol();
 		echo '<ARTICLE class="sheet" lang="ca">';
 		echo $this->GeneraSeccio(self::pdESTRATEGIES);
@@ -206,17 +203,16 @@ echo '</span>';
 		return $sRetorn;		
 	}
 
-	protected function GeneraSeccioSequenciacio() {
+	private function GeneraSeccioSequenciacio() {
 		$ModulPlaEstudiId = $this->Id;
-		
+			
 		$sRetorn = "<BR>";
 
-		$sRetorn .= "<TABLE STYLE='border:solid 1px black;'>";
-//		$sRetorn .= "<TABLE>";
+		$sRetorn .= "<TABLE BORDER=1'>";
 		$sRetorn .= "<thead>";
 		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
-		$sRetorn .= "<TH>Unitat formativa</TH>";
-		$sRetorn .= "<TH>Hores</TH>";
+		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
+		$sRetorn .= "<TH STYLE='text-align:center'>Hores</TH>";
 		$sRetorn .= "<TH>Data inici</TH>";
 		$sRetorn .= "<TH>Data fi</TH>";
 		$sRetorn .= "</TR>";
@@ -232,7 +228,7 @@ echo '</span>';
 		while($row = $ResultSet->fetch_object()) {
 			$sRetorn .= "<TR>";
 			$sRetorn .= "<TD>".utf8_encode($row->nom)."</TD>";
-			$sRetorn .= "<TD>".$row->hores."</TD>";
+			$sRetorn .= "<TD STYLE='text-align:center'>".$row->hores."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
 			$sRetorn .= "</TR>";
@@ -244,12 +240,22 @@ echo '</span>';
 		return $sRetorn;		
 	}
 
-	protected function GeneraSeccioUnitats() {
+	private function GeneraSeccioUnitats() {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$sRetorn = $RA->GeneraTaulaModul($ModulId);
 		return $sRetorn;		
 	}
+	
+	/**
+	 * Crea el botó per a la edició.
+	 * @param string $ModulId Identificador del mòdul del cicle formatiu.
+	 * @return string Codi HTML del botó.
+	 */
+	public function CreaBotoEdita(string $ModulId): string {
+		$URL = GeneraURL("FPFitxa.php?accio=ProgramacioDidactica&Id=$ModulId");
+		return $this->CreaBoto('btnEdita', 'Edita', $URL);
+ 	}
 	
 	/**
 	 * Crea el botó per a la descàrrega en DOCX i ODT.
@@ -351,6 +357,8 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 
 /**
  * Classe que encapsula l'exportació de la programació didàctica en DOCX.
+ * https://github.com/PHPOffice/PHPWord
+ * https://phpword.readthedocs.io/en/latest/
  */
 class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 {
@@ -365,55 +373,59 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$phpWord = new \PhpOffice\PhpWord\PhpWord();
 		$phpWord->getSettings()->setUpdateFields(true);
 
+		$phpWord->setDefaultParagraphStyle(
+			array(
+				'alignment'  => \PhpOffice\PhpWord\SimpleType\Jc::BOTH,
+				'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(12),
+			)
+		);
+
+		$phpWord->addFontStyle('Negreta', array('bold' => true));
+
+		$phpWord->addParagraphStyle('Centrat', array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER));
+		$phpWord->addParagraphStyle('Dreta', array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT));
+		$phpWord->addParagraphStyle('Esquerra', array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT));
+		$phpWord->addParagraphStyle('Justificat', array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::BOTH));
+		$phpWord->addParagraphStyle('Interliniat0', array('spaceAfter' => 0));
+
+		$Prova = array('spaceAfter' => 0);
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
+		$phpWord->addTableStyle('TaulaSimple', $Estil, $Estil);
+
 		$section = $phpWord->addSection();
 
 		$this->GeneraCapcalera($section);
 		$this->GeneraPeu($section);
-		$this->GeneraPortada($section);
+		$this->GeneraPortada($phpWord, $section);
 		$this->GeneraIndex($phpWord, $section);
 
 		$section->addPageBreak();
-		$section->addTextBreak(2);
-		$section->addTitle(self::pdESTRATEGIES.'. Estratègies metodològiques', 1);
-		$section->addTextBreak(2);
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdESTRATEGIES.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
 		$html = $this->GeneraSeccioEstrategies();
-		$html = $this->TractaEtiquetes($html);
-		\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
-
+		$this->AfegeixHTML($section, $html);
 
 		$section->addPageBreak();
-		$section->addTextBreak(2);
-		$section->addTitle(self::pdCRITERIS.'. Criteris d’avaluació, qualificació i recuperació', 1);
-		$section->addTextBreak(2);
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdCRITERIS.'. '.self::SECCIO[self::pdCRITERIS], 1);
 		$html = $this->GeneraSeccioCriteris();
-		$html = $this->TractaEtiquetes($html);
-//print_h($html);
-//exit;
-		\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+		$this->AfegeixHTML($section, $html);
 
 		$section->addPageBreak();
-		$section->addTextBreak(2);
-		$section->addTitle(self::pdRECURSOS.'. Recursos i material utilitzat', 1);
-		$section->addTextBreak(2);
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdRECURSOS.'. '.self::SECCIO[self::pdRECURSOS], 1);
 		$html = $this->GeneraSeccioRecursos();
-		$html = $this->TractaEtiquetes($html);
-		\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+		$this->AfegeixHTML($section, $html);
 
 		$section->addPageBreak();
-		$section->addTextBreak(2);
-		$section->addTitle(self::pdSEQUENCIACIO.'. Seqüenciació i temporitzador de les unitats formatives', 1);
-		$section->addTextBreak(2);
-		$html = $this->GeneraSeccioSequenciacio();
-		$html = $this->TractaEtiquetes($html);
-		\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdSEQUENCIACIO.'. '.self::SECCIO[self::pdSEQUENCIACIO], 1);
+		$this->GeneraSeccioSequenciacio($section);
 
 		$section->addPageBreak();
-		$section->addTextBreak(2);
-		$section->addTitle(self::pdUNITATS.'. Unitats formatives', 1);
-		$section->addTextBreak(2);
-		$html = $this->GeneraSeccioUnitats();
-		$html = $this->TractaEtiquetes($html);
-		\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdUNITATS.'. '.self::SECCIO[self::pdUNITATS], 1);
+		$this->GeneraSeccioUnitats($section);
 
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment;filename="test.docx"');		
@@ -428,7 +440,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 	 * Elimina les etiquetes no suportades per PHPWord a la secció HTML.
 	 * https://stackoverflow.com/questions/17622350/recognize-html-tags-with-phpword
 	 */
-	private function TractaEtiquetes($Text) {
+	private function TractaEtiquetes(string $Text): string {
 		$Text = str_replace('<BR>', '', $Text);
 		$Text = str_replace('<br>', '', $Text);
 		$Text = str_replace('"""', '"', $Text);
@@ -436,16 +448,141 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$Text = str_replace('</colgroup>', '', $Text);
 		$Text = str_replace('<col />', '', $Text);
 
-		$Text = str_replace('<table>', '<table style="border:100%">', $Text);
-		$Text = str_replace('<TABLE>', '<table style="border:100%">', $Text);
+		//$Text = str_replace('<table>', '<table style="border:100%">', $Text);
+		//$Text = str_replace('<TABLE>', '<table style="border:100%">', $Text);
 
-		
 //		$Text = str_replace('<BR />', '', $Text);
-//		$Text = str_replace('<br />', '', $Text);
+		$Text = str_replace('<br /><br />', '<br />', $Text);
 		
 //print_h($Text);
 //exit;
 		return $Text;
+	}
+
+	/**
+	 * El mètode \PhpOffice\PhpWord\Shared\Html::addHtml no funciona gaire bé quan hi ha taules.
+	 * Idea: separa les taules HTML i fer-les amb els mètodes natius.
+	 * @param object $section Secció del document de PHPWord.
+	 * @param string $html Fragment HTML per tractar.
+	 */
+	private function AfegeixHTML(&$section, $html) {
+		$aHTML = [];
+		$aTable = [];
+		$i = 0;
+		$HTML = strtoupper($html);
+		$j = strpos($HTML, '<TABLE', $i);
+
+		if ($j === false) {
+			$html = $this->TractaEtiquetes($html);
+//print_h($html);
+//exit;			
+			\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+		}
+		else
+		{
+			while ($j > 0) {
+				array_push($aHTML, substr($html, $i, $j-$i));
+				$i = $j + 1;
+				
+				$j1 = strpos($HTML, '<TABLE', $i);
+				$j2 = strpos($HTML, '</TABLE>', $i);
+				
+				//if ($j1 < $j2)
+	//				throw new Exception("No es permeten taules aniuades (taules dins de taules).");
+				
+				array_push($aTable, substr($html, $i-1, $j2-$i+9));
+				$i = $j2 + 1;
+				
+				$j = strpos($HTML, '<TABLE', $i);
+			}
+			array_push($aHTML, substr($html, $i+7, strlen($html)-$i-7));
+			
+			for($i=0; $i<count($aHTML); $i++) {
+				// HTML
+				$html = $this->TractaEtiquetes($aHTML[$i]);
+				\PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+				// Taula
+				if ($i < count($aTable))
+					$this->AfegeixTaulaHTML($section, $aTable[$i]);
+			}
+		}
+	}
+	
+	/**
+	 * Afegeix una taula HTML a la forma nativa (i no amb el mètode addHtml).
+	 * https://www.tutorialspoint.com/php/php_dom_parser_example.htm   
+	 * @param object $section Secció del document de PHPWord.
+	 * @param string $html Fragment HTML per tractar.
+	 */
+	private function AfegeixTaulaHTML(&$section, $taula) {
+		$dom = new domDocument; 
+		$dom->loadHTML($taula); 
+		$dom->preserveWhiteSpace = false; 
+   
+		$tables = $dom->getElementsByTagName('table'); 
+
+		// Es suposa una única taula
+		$rows = $tables->item(0)->getElementsByTagName('tr'); 
+
+		// Posem la taula en un array 2D
+		$aFiles = [];
+		foreach ($rows as $row) {
+			$aColumnes = [];
+			$cols = $row->getElementsByTagName('td'); 
+			for($i=0; $i<count($cols); $i++) {
+				$Valor = utf8_decode($cols->item($i)->nodeValue);
+				array_push($aColumnes, $Valor);
+			}
+			array_push($aFiles, $aColumnes);
+		}
+//print_h($aFiles);
+
+		// sudo apt-get install msttcorefonts
+		$font_filename = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf';
+
+		$Max = 0;
+		// https://www.php.net/manual/en/function.imagettfbbox.php
+		// Hi ha també imageftbbox
+		foreach ($aUF as $row) {
+			$NomUF = utf8_encode($row->nom);
+			$bbox = imagettfbbox(16, 0, $font_filename, $NomUF);
+			$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
+			$Max = max($Max, $width);
+		}
+
+		// Calculem les mides màximes
+		$aMax = [];
+		for($j=0; $j<count($aFiles[0]); $j++) {
+			$Max = 0;
+			for($i=0; $i<count($aFiles); $i++) {
+				$bbox = imagettfbbox(16, 0, $font_filename, $aFiles[$i][$j]);
+				$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
+				$Max = max($Max, $width);				
+			}
+			array_push($aMax, $Max);
+		}
+//print_h($aMax);
+//exit;
+
+		$UnCm = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1); // 1 cm 
+		//$Negreta = array('bold' => true);
+//		$Centrat = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000', 'spaceAfter' => 0);
+		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000', 'spaceAfter' => 0);
+
+		//$table = $section->addTable('TaulaHTML', 'TaulaSimple');
+		$table = $section->addTable('TaulaHTML', $Estil);
+		for($j=0; $j<count($aFiles); $j++) {
+			$table->addRow();
+			for($i=0; $i<count($aFiles[$j]); $i++) {
+				$Valor = $aFiles[$j][$i];
+				//$cell = $table->addCell(15*$aMax[$i])->addText($Valor);
+				if ($j == 0)
+					$cell = $table->addCell(15*$aMax[$i], $EstilGrisClar)->addText($Valor, 'Negreta', 'Interliniat0');
+				else 
+					$cell = $table->addCell(15*$aMax[$i], $Estil)->addText($Valor, null, 'Interliniat0');
+			}
+		}
 	}
 	
 	private function GeneraCapcalera(&$section) {
@@ -460,10 +597,10 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$textrun->addImage(ROOT.'/img/logo-gencat.jpg', array('width' => 35, 'height' => 35, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT));
 
 		$cell = $table->addCell(3000);
-		$textrun = $cell->addTextRun();
-		$textrun->addText("Generalitat de Catalunya\n", array('bold' => true));
-		$textrun->addText("Departament d'Educació\n");
-		$textrun->addText("Institut de Palamós", array('bold' => true));
+		$textrun = $cell->addTextRun('Esquerra');
+		$textrun->addText("Generalitat de Catalunya\n", 'Negreta');
+		$textrun->addText("Departament d'Educació\n", 'Negreta');
+		$textrun->addText("Institut de Palamós", 'Negreta');
 
 		$table->addCell(1250)->addText("");
 		$table->addCell(3250)->addImage(ROOT.'/img/logo-inspalamos.png', array('width' => 150, 'height' => 35));
@@ -475,78 +612,156 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$footer->addPreserveText('Pàgina {PAGE} de {NUMPAGES}', null, array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT));
 	}
 	
-	private function GeneraPortada(&$section) {
+	private function GeneraPortada(&$phpWord, &$section) {
+		$tableStyle = array(
+			'borderColor' => 'black',
+			'borderSize' => 1,
+			'cellMargin' => 50
+		);
+//		$firstRowStyle = array('bgColor' => '66BBFF');
+//		$phpWord->addTableStyle('TaulaPortada', $tableStyle, $firstRowStyle);
+		$phpWord->addTableStyle('TaulaPortada', $tableStyle);
+
+
 		$fontPrimeraPagina = array('name' => 'Arial', 'size' => 13, 'bold' => true);
+		$fontPrimeraPaginaEsquerra = array('name' => 'Arial', 'size' => 13, 'bold' => true, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT);
 		$fontPrimeraPaginaDreta = array('name' => 'Arial', 'size' => 13, 'bold' => true, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT);
 		$fontPrimeraPaginaCentre = array('name' => 'Arial', 'size' => 13, 'bold' => true, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+		$EsquerraInterliniat0 = array('spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT);
+		$DretaInterliniat0 = array('spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT);
 
-		$section->addTextBreak(15);
+		$section->addTextBreak(7);
 		$section->addTextRun($fontPrimeraPaginaCentre)->addText("PROGRAMACIONS DE CICLES FORMATIUS", $fontPrimeraPagina);
-		$section->addTextBreak(2);
+		$section->addTextBreak(1);
+
+		$Cm1 = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1); // 1 cm 
 
 		$table = $section->addTable('TaulaPortada');
 
 		$table->addRow();
-		$cell = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8));
-		$cell->addTextRun($fontPrimeraPaginaDreta)->addText("Nom del Cicle Formatiu:", $fontPrimeraPagina);
-		$table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8))->addText(utf8_encode($this->Registre->NomCF), $fontPrimeraPagina);
+		$table->addCell(8*$Cm1)->addText("Nom del Cicle Formatiu:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
+		$table->addCell(8*$Cm1)->addText(utf8_encode($this->Registre->NomCF), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
-		$cell = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8));
-		$cell->addTextRun($fontPrimeraPaginaDreta)->addText("Curs:", $fontPrimeraPagina);
-		$table->addCell()->addText(utf8_encode($this->Registre->NomAA), $fontPrimeraPagina);
+		$table->addCell()->addText("Curs:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
+		$table->addCell()->addText(utf8_encode($this->Registre->NomAA), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
-		$cell = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8));
-		$cell->addTextRun($fontPrimeraPaginaDreta)->addText("Codi del Mòdul Professional:", $fontPrimeraPagina);
-		$table->addCell()->addText(utf8_encode($this->Registre->CodiMP), $fontPrimeraPagina);
+		$table->addCell()->addText("Codi del Mòdul Professional:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
+		$table->addCell()->addText(utf8_encode($this->Registre->CodiMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
-		$cell = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8));
-		$cell->addTextRun($fontPrimeraPaginaDreta)->addText("Títol del Mòdul Professional:", $fontPrimeraPagina);
-		$table->addCell()->addText(utf8_encode($this->Registre->NomMP), $fontPrimeraPagina);
+		$table->addCell()->addText("Títol del Mòdul Professional:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
+		$table->addCell()->addText(utf8_encode($this->Registre->NomMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
-		$cell = $table->addCell(\PhpOffice\PhpWord\Shared\Converter::cmToTwip(8));
-		$cell->addTextRun($fontPrimeraPaginaDreta)->addText("Professors:", $fontPrimeraPagina);
-		$table->addCell()->addText($this->ObteProfessorsModul($this->Id), $fontPrimeraPagina);
+		$table->addCell()->addText("Professors:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
+		$table->addCell()->addText($this->ObteProfessorsModul($this->Id), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 	}
 	
 	private function GeneraIndex(&$phpWord, &$section) {
+		// Definició d'estils
+		$fontStyle12 = array('spaceAfter' => 60, 'size' => 12);
+		$fontStyle10 = array('size' => 10);
+		$phpWord->addTitleStyle(null, array('size' => 22, 'bold' => true));
+		$phpWord->addTitleStyle(1, array('size' => 18, 'bold' => true));
+		$phpWord->addTitleStyle(2, array('size' => 16, 'bold' => true));
+		$phpWord->addTitleStyle(3, array('size' => 14, 'bold' => true));
+
+		$section->addPageBreak();
+//		$section->addTextBreak(1);
+
+		// Índex de continguts
+		$section->addTitle('Índex de continguts', 0);
+		$section->addTextBreak(1);
+		$toc = $section->addTOC($fontStyle12, 'Interliniat0');
+	}
+
+	private function GeneraSeccioSequenciacio(&$section) {
+		$ModulPlaEstudiId = $this->Id;
+		$aUF = [];
+		$SQL = "
+			SELECT UPE.* 
+			FROM UNITAT_PLA_ESTUDI UPE
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId	
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		while($row = $ResultSet->fetch_object())
+			array_push($aUF, $row);
 		
-
-
-// Definició d'estils
-$fontStyle12 = array('spaceAfter' => 60, 'size' => 12);
-$fontStyle10 = array('size' => 10);
-$phpWord->addTitleStyle(null, array('size' => 22, 'bold' => true));
-$phpWord->addTitleStyle(1, array('size' => 18, 'bold' => true));
-$phpWord->addTitleStyle(2, array('size' => 16, 'bold' => true));
-$phpWord->addTitleStyle(3, array('size' => 14, 'bold' => true));
-
-
-$tableStyle = array(
-	'borderColor' => 'black',
-	'borderSize' => 1,
-	'cellMargin' => 50
-);
-$firstRowStyle = array('bgColor' => '66BBFF');
-$phpWord->addTableStyle('TaulaPortada', $tableStyle, $firstRowStyle);
-
-
-
-
-
-$section->addPageBreak();
-
-$section->addTextBreak(2);
-
-// Índex de continguts
-$section->addTitle('Índex de continguts', 0);
-$section->addTextBreak(2);
-$toc = $section->addTOC($fontStyle12);
-
+		// sudo apt-get install msttcorefonts
+		$font_filename = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf';
+		$Max = 0;
+		// https://www.php.net/manual/en/function.imagettfbbox.php
+		// Hi ha també imageftbbox
+		foreach ($aUF as $row) {
+			$NomUF = utf8_encode($row->nom);
+			$bbox = imagettfbbox(16, 0, $font_filename, $NomUF);
+			$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
+			$Max = max($Max, $width);
+		}
 		
+		$UnCm = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(1); // 1 cm 
+		//$Negreta = array('bold' => true);
+		//$Centrat = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
+		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000');
+		$CentratInterliniat0 = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0 );
+
+//		$table = $section->addTable('TaulaSeccioSequenciacio');
+		$table = $section->addTable('TaulaSeccioSequenciacio', 'TaulaSimple');
+		$table->addRow();
+		$cell = $table->addCell(10*$Max, $EstilGrisClar)->addText('Unitat formativa', 'Negreta', 'Interliniat0');
+		$cell = $table->addCell(2*$UnCm, $EstilGrisClar)->addText('Hores', 'Negreta', $CentratInterliniat0);
+		$cell = $table->addCell(2*$UnCm, $EstilGrisClar)->addText('Data inici', 'Negreta', 'Interliniat0');
+		$cell = $table->addCell(2*$UnCm, $EstilGrisClar)->addText('Data fi', 'Negreta', 'Interliniat0');
+		foreach ($aUF as $row) {
+			$table->addRow();
+			$cell = $table->addCell(10*$Max, $Estil)->addText(utf8_encode($row->nom), null, 'Interliniat0');
+			$cell = $table->addCell(2*$UnCm, $Estil)->addText($row->hores, null, $CentratInterliniat0);
+			$cell = $table->addCell(2*$UnCm, $Estil)->addText(MySQLAData($row->data_inici), null, 'Interliniat0');
+			$cell = $table->addCell(2*$UnCm, $Estil)->addText(MySQLAData($row->data_final), null, 'Interliniat0');
+		}
+	}
+
+	private function GeneraSeccioUnitats(&$section) {
+		$ModulId = $this->Registre->modul_professional_id;
+		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
+		$RA->CreaRegistreModul($ModulId);
+//print_h($RA->Registre);
+		
+		$width = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(17); // 17 cm 
+		//$Negreta = array('bold' => true);
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
+		$EstilGris = array('bgColor' => '808080', 'borderSize' => 1, 'borderColor' => '000000');
+		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000');
+		//$CentratInterliniat0 = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0 );
+
+		foreach ($RA->Registre as $UF) {
+			$table = $section->addTable('TaulaSeccioUnitats'.$UF->Id);
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGris)->addText($UF->Nom, 'Negreta', 'Interliniat0');
+			foreach ($UF->Dades as $Dades) {
+				if ($Dades->Tipus == 'R') {
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGris)->addText('RA'.$Dades->Nom, 'Negreta', 'Interliniat0');
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGrisClar)->addText('Resultats d’aprenentatge i criteris d’avaluació', 'Negreta', 'Interliniat0');
+				}
+				else if ($Dades->Tipus == 'C') {
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGrisClar)->addText('Continguts', 'Negreta', 'Interliniat0');
+					$table->addRow();
+					$cell = $table->addCell($width, $Estil)->addText($Dades->Nom, null, 'Interliniat0');
+				}
+				foreach ($Dades->Dades as $Dades2) {
+					$table->addRow();
+					$cell = $table->addCell($width, $Estil)->addText($Dades2, null, 'Interliniat0');
+				}
+			}
+			$section->addTextBreak(2);
+		}
 	}
 }
 
