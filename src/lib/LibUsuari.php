@@ -1538,12 +1538,15 @@ class Orla extends Form
 				$Fitxer = 'img/pix/'.$row->document.'.jpg';
 				if (!file_exists(ROOT.'/'.$Fitxer))
 					$Fitxer = 'img/nobody.png';
-				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
+				$Difuminat = ($row->baixa == 1) ? 'opacity:0.3;' : '';
+				$Retorn .= '<TD style="'.$Difuminat.'vertical-align:top;text-align:center;">';
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
 				$Retorn .= '<BR>';
 				$AlumneId = $row->usuari_id;
 				$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
 				$Retorn .= "<A target=_blank href='$URL'>$Nom</A>";
+				if ($this->Usuari->es_admin)
+					$Retorn .= "<BR>".$row->document;
 				$Retorn .= '</TD>';
 				$i++;
 			}
@@ -1566,7 +1569,7 @@ class Orla extends Form
 		$Nivell = $this->Nivell;
 		$Grup = $this->Grup;
 		$SQL = "
-			SELECT U.*
+			SELECT U.*, M.baixa
 			FROM MATRICULA M
 			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
