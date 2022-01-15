@@ -100,7 +100,7 @@ class ProgramacioDidactica extends Form
 	 * Carrega els registres especificat a la SQL i els posa en un objecte.
 	 * @return void.
 	 */				
-	private function Carrega() {
+	protected function Carrega() {
 		$SQL = $this->CreaSQL($this->Id);
 //print_r($SQL);		
 		$ResultSet = $this->Connexio->query($SQL);
@@ -694,7 +694,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$toc = $section->addTOC($fontStyle12, 'Interliniat0');
 	}
 
-	private function GeneraSeccioSequenciacio(&$section) {
+	protected function GeneraSeccioSequenciacio(&$section) {
 		$ModulPlaEstudiId = $this->Id;
 		$aUF = [];
 		$SQL = "
@@ -742,7 +742,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		}
 	}
 
-	private function GeneraSeccioUnitats(&$section) {
+	protected function GeneraSeccioUnitats(&$section) {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$RA->CreaRegistreModul($ModulId);
