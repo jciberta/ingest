@@ -160,7 +160,24 @@ switch ($accio) {
 	
 		$frm->EscriuHTML();
         break;
-    case "ExpedientSaga":
+    case "EquipProfessors":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+	
+		// Obtenció de l'identificador.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		if ($Id == -1)
+			header("Location: Surt.php");
+
+		// Comprovem que l'usuari té accés a aquesta pàgina
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");		
+
+		$frm = new ProfessorsEquip($conn, $Usuari);
+		$frm->Id = $Id;
+		$frm->EscriuHTML();
+        break;
+	case "ExpedientSaga":
 		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
 		if ($MatriculaId == -1)
 			header("Location: Surt.php");

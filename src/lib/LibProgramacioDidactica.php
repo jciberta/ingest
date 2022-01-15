@@ -96,7 +96,11 @@ class ProgramacioDidactica extends Form
 		";
 	}
 
-	protected function Carrega() {
+	/**
+	 * Carrega els registres especificat a la SQL i els posa en un objecte.
+	 * @return void.
+	 */				
+	private function Carrega() {
 		$SQL = $this->CreaSQL($this->Id);
 //print_r($SQL);		
 		$ResultSet = $this->Connexio->query($SQL);
@@ -127,43 +131,34 @@ class ProgramacioDidactica extends Form
 			$sRetorn .= $row->Nom.', ';
 		}
 		$sRetorn = substr($sRetorn, 0, -2); // Treiem la darrera coma
-		return utf8_encode($sRetorn);
+		return $sRetorn;
 	}		
 	
+	/**
+	 * Genera el títol de la programació didàctica.
+	 * @return string Codi HTML amb el títol de la programació didàctica.
+	 */
 	private function GeneraTitol() {
 		$sRetorn = '<DIV id=titol>';
-		$sRetorn .= '<TABLE border=0>';
-		if ($this->Usuari->es_admin) {
-			$sRetorn .= '  <TR>';
-			$sRetorn .= '    <TD>Id:</TD>';
-			$sRetorn .= '    <TD><B>'.$this->Id.'</B></TD>';
-			$sRetorn .= '  </TR>';
-		}
-		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD style="padding-right:10px;">Nom del Cicle Formatiu:</TD>';
-		$sRetorn .= '    <TD><B>'.utf8_encode($this->Registre->NomCF).'</B></TD>';
-		$sRetorn .= '  </TR>';
-		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD style="padding-right:10px;">Curs:</TD>';
-		$sRetorn .= '    <TD><B>'.$this->Registre->any_inici.'-'.$this->Registre->any_final.'</B></TD>';
-		$sRetorn .= '  </TR>';
-		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD style="padding-right:10px;">Codi del Mòdul Professional:</TD>';
-		$sRetorn .= '    <TD><B>'.$this->Registre->CodiMP.'</B></TD>';
-		$sRetorn .= '  </TR>';
-		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD style="padding-right:10px;">Títol del Mòdul Professional:</TD>';
-		$sRetorn .= '    <TD><B>'.$this->Registre->NomMP.'</B></TD>';
-		$sRetorn .= '  </TR>';
-		$sRetorn .= '  <TR>';
-		$sRetorn .= '    <TD style="padding-right:10px;">Professors:</TD>';
-		$sRetorn .= '    <TD><B>'.$this->ObteProfessorsModul($this->Id).'</B></TD>';
-		$sRetorn .= '  </TR>';
-		$sRetorn .= '</TABLE>';
+		$Dades = array(
+			'Nom del Cicle Formatiu' => $this->Registre->NomCF,
+			'Curs' => $this->Registre->any_inici.'-'.$this->Registre->any_final,
+			'Codi del Mòdul Professional' => $this->Registre->CodiMP,
+			'Títol del Mòdul Professional' => $this->Registre->NomMP,
+			'Professors' => $this->ObteProfessorsModul($this->Id)
+		);
+		if ($this->Usuari->es_admin)
+			$Dades = array("Id" => $this->Id) + $Dades;
+		$sRetorn .= CreaTaula1($Dades);		
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
 	}	
 	
+	/**
+	 * Genera la secció especificada de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
 	private function GeneraSeccio($SeccioId) {
 		$sRetorn = "<DIV id=seccio$SeccioId>";
 		$sRetorn .= "<H2>".$SeccioId.". ".self::SECCIO[$SeccioId]."</H2>";
@@ -187,23 +182,40 @@ class ProgramacioDidactica extends Form
 		$sRetorn .= "</DIV>";
 		return $sRetorn;
 	}
-	
+
+	/**
+	 * Genera la secció d'estratègies de la programació didàctica.
+	 * @return string Codi HTML amb la secció.
+	 */
 	protected function GeneraSeccioEstrategies() {
 		$sRetorn = $this->Registre->metodologia;
 		return $sRetorn;		
 	}
 
+	/**
+	 * Genera la secció de criteris de la programació didàctica.
+	 * @return string Codi HTML amb la secció.
+	 */
 	protected function GeneraSeccioCriteris() {
 		$sRetorn = $this->Registre->criteris_avaluacio;
 		return $sRetorn;		
 	}
 
+	/**
+	 * Genera la secció de recursos de la programació didàctica.
+	 * @return string Codi HTML amb la secció.
+	 */
 	protected function GeneraSeccioRecursos() {
 		$sRetorn = $this->Registre->recursos;
 		return $sRetorn;		
 	}
 
-	private function GeneraSeccioSequenciacio() {
+	/**
+	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioSequenciacio() {
 		$ModulPlaEstudiId = $this->Id;
 			
 		$sRetorn = "<BR>";
@@ -228,7 +240,7 @@ class ProgramacioDidactica extends Form
 		while($row = $ResultSet->fetch_object()) {
 			$sRetorn .= "<TR>";
 			$sRetorn .= "<TD>".utf8_encode($row->nom)."</TD>";
-			$sRetorn .= "<TD STYLE='text-align:center'>".$row->hores."</TD>";
+			$sRetorn .= "<TD style='text-align:center;'>".$row->hores."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
 			$sRetorn .= "</TR>";
@@ -240,7 +252,12 @@ class ProgramacioDidactica extends Form
 		return $sRetorn;		
 	}
 
-	private function GeneraSeccioUnitats() {
+	/**
+	 * Genera la secció d'unitats formatives de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioUnitats() {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$sRetorn = $RA->GeneraTaulaModul($ModulId);

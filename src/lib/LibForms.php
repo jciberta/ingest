@@ -44,6 +44,16 @@ class Objecte {
 	* @var object
 	*/    
     private $Registre = null;
+	
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
+	 */
+	function __construct($con = NULL, $user = NULL) {
+		$this->Connexio = $con;
+		$this->Usuari = $user;
+	}	
 }
 
 /**
@@ -101,6 +111,12 @@ class Form {
     public $Titol = '';
 
 	/**
+	* Subtítol del formulari.
+	* @var string
+	*/    
+    public $SubTitol = '';
+
+	/**
 	* Taula principal.
 	* @var string
 	*/    
@@ -138,7 +154,7 @@ class Form {
 	function __construct($con = NULL, $user = NULL) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
-	}	
+	}
 
 	/**
 	 * Afegeix un fitxer JavaScript.
@@ -474,6 +490,7 @@ class Form {
 	
 	/**
 	 * Genera els missatges de succés i error per quan es desen les dades.
+	 * @return string Codi HTML dels missatges.
 	 */
 	protected function GeneraMissatges() {
 		$sRetorn = '<div class="alert alert-success collapse" id="MissatgeCorrecte" role="alert">';
@@ -482,6 +499,17 @@ class Form {
 		$sRetorn .= '<div class="alert alert-danger collapse" id="MissatgeError" role="alert">';
 		$sRetorn .= "Hi ha hagut un error en realitzar l'acció.";
 		$sRetorn .= '</div>';
+		return $sRetorn;
+	}
+
+	/**
+	 * Genera el subtítol si n'hi ha.
+	 * @return string Subtítol.
+	 */
+	protected function GeneraSubTitol() {
+		$sRetorn = '';
+		if ($this->SubTitol <> '')
+			$sRetorn = $this->SubTitol;
 		return $sRetorn;
 	}
 } 
@@ -766,90 +794,83 @@ class FormRecerca extends Form {
 	* Modalitat del formulari.
 	*  - mfLLISTA: Formulari de recerca on es poden visualitzar cada registre individualment (amb FormFitxa).
 	*  - mfBUSCA: Formulari de recerca que serveix d'ajuda per a les seleccions de registres. 
-	* @access public
 	*/    
     public $Modalitat = self::mfLLISTA;
 	
 	/**
 	* Sentència SQL per obtenir els registres a mostrar.
-	* @access public
 	* @var string
 	*/    
     public $SQL = '';
 	
 	/**
 	* Camps a visualitzar separats per comes.
-	* @access public
 	* @var string
 	*/    
     public $Camps = '';
 	
 	/**
 	* Títols de columnes separats per comes.
-	* @access public
 	* @var string
 	*/    
     public $Descripcions = ''; 
 	
 	/**
 	* Paraules a filtrar separades per espai (formaran part del WHERE).
-	* @access public
 	* @var string
 	*/    
     public $FiltreText = ''; 
 
 	/**
 	* Llista de components (dates, combos) que permeten filtrar de forma específica.
-	* @access public
 	* @var array
 	*/    
     public $Filtre = []; 
 	
 	/**
 	* Camp per realitzar l'ordenació.
-	* @access public
 	* @var string
 	*/    
     public $Ordre = ''; 
+
+	/**
+	* Permet cercar.
+	* @var boolean
+	*/    
+    public $PermetCercar = True; 
 	
 	/**
 	* Permet ordenar la recerca.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetOrdenar = True; 
 	
 	/**
 	* Permet editar un registre.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
 	
 	/**
 	* URL per a l'edició d'un registre.
-	* @access public
 	* @var string
 	*/    
     public $URLEdicio = ''; 
 	
 	/**
 	* Permet afegir un registre. Usa la URLEdicio per indicar la fitxa.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetAfegir = False; 
 	
 	/**
 	* Permet suprimir un registre.
-	* @access public
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
 	
 	/**
 	* Opcions per a cada registre. Estan incloses les opcions AJAX.
-	* @access private
 	* @var array
 	*/    
     private $Opcions = [];	
@@ -1133,55 +1154,60 @@ class FormRecerca extends Form {
      * @return string Codi HTML amb el formulari per fer recerques.
 	 */
 	private function GeneraCerca() {
-		$sRetorn = '<DIV id=Recerca style="padding:10px">';
-		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
-		$sRetorn .= '    <TABLE style="width:100%">';
-		$sRetorn .= '    <TR>';
-		$sRetorn .= '    <TD>';
-		$sRetorn .= '    <input class="form-control mr-sm-2" type="text" style="width:500px" name="edtRecerca" placeholder="Text a cercar" aria-label="Search" autofocus onkeypress="RecercaKeyPress(event);">';
+		if ($this->PermetCercar) {
+			$sRetorn = '<DIV id=Recerca style="padding:10px">';
+			$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
+			$sRetorn .= '    <TABLE style="width:100%">';
+			$sRetorn .= '    <TR>';
+			$sRetorn .= '    <TD>';
+			$sRetorn .= '    <input class="form-control mr-sm-2" type="text" style="width:500px" name="edtRecerca" placeholder="Text a cercar" aria-label="Search" autofocus onkeypress="RecercaKeyPress(event);">';
 
-		// *** No pot ser un botó, ja que el submit del form fa recarregar la pàgina! (multitud d'hores perdudes!) ***
-		//$sRetorn .= '    <button class="btn btn-outline-primary my-2 my-sm-0" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</button>';
-		$sRetorn .= '    <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnRecerca" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</a>';
+			// *** No pot ser un botó, ja que el submit del form fa recarregar la pàgina! (multitud d'hores perdudes!) ***
+			//$sRetorn .= '    <button class="btn btn-outline-primary my-2 my-sm-0" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</button>';
+			$sRetorn .= '    <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnRecerca" name="btnRecerca" onclick="ActualitzaTaula(this);">Cerca</a>';
 
-		$sRetorn .= '    </TD>';
-		
-		$sRetorn .= '<TD style="align:right">';
-		$sRetorn .= '<span style="float:right;">';
-		// De moment només admin
-		if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
-//			$sRetorn .= '<TD style="align:right">';
-//			$sRetorn .= '<span style="float:right;">';
-
-			$SQL = $this->CreaSQL();	
-//print('<B>SQL</B>: '.$SQL.'<BR>');
-			$SQL = bin2hex(Encripta(TrimX($SQL)));
-//print('<B>SQL</B>: '.$SQL.'<BR>');
-			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
-//print('<B>URL</B>: '.$URL.'<BR>');
-
-			$sRetorn .= $this->CreaBotoDescarrega($URL).'&nbsp';
-//			$sRetorn .= '</span>';
-//			$sRetorn .= '</TD>';		
+			$sRetorn .= '    </TD>';
 			
+			$sRetorn .= '<TD style="align:right">';
+			$sRetorn .= '<span style="float:right;">';
+			// De moment només admin
+			if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
+	//			$sRetorn .= '<TD style="align:right">';
+	//			$sRetorn .= '<span style="float:right;">';
+
+				$SQL = $this->CreaSQL();	
+	//print('<B>SQL</B>: '.$SQL.'<BR>');
+				$SQL = bin2hex(Encripta(TrimX($SQL)));
+	//print('<B>SQL</B>: '.$SQL.'<BR>');
+				$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+	//print('<B>URL</B>: '.$URL.'<BR>');
+
+				$sRetorn .= $this->CreaBotoDescarrega($URL).'&nbsp';
+	//			$sRetorn .= '</span>';
+	//			$sRetorn .= '</TD>';		
+				
+			}
+			
+			if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
+	//			$sRetorn .= '<TD style="align:right">';
+	//			$sRetorn .= '<span style="float:right;">';
+				$URL = GeneraURL($this->URLEdicio);
+				$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
+	//			$sRetorn .= '</span>';
+	//			$sRetorn .= '</TD>';
+			}
+			$sRetorn .= '</span>';
+			$sRetorn .= '</TD>';		
+			
+			$sRetorn .= '    </TR>';
+			$sRetorn .= '    </TABLE>';
+			$sRetorn .= $this->GeneraPartOculta();
+			$sRetorn .= '  </FORM>';
+			$sRetorn .= '</DIV>';
 		}
-		
-		if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
-//			$sRetorn .= '<TD style="align:right">';
-//			$sRetorn .= '<span style="float:right;">';
-			$URL = GeneraURL($this->URLEdicio);
-			$sRetorn .= '  <a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnNou" name="btnNou">Nou</a>';
-//			$sRetorn .= '</span>';
-//			$sRetorn .= '</TD>';
-		}
-		$sRetorn .= '</span>';
-		$sRetorn .= '</TD>';		
-		
-		$sRetorn .= '    </TR>';
-		$sRetorn .= '    </TABLE>';
-		$sRetorn .= $this->GeneraPartOculta();
-		$sRetorn .= '  </FORM>';
-		$sRetorn .= '</DIV>';
+		else
+			$sRetorn = $this->GeneraPartOculta();
+			
 		return $sRetorn;
 	}
 
@@ -1203,7 +1229,7 @@ class FormRecerca extends Form {
 		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
 		return $sRetorn;
 	}
-	
+
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
@@ -1217,7 +1243,9 @@ class FormRecerca extends Form {
 		// https://getbootstrap.com/docs/4.0/components/popovers/
 		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
 
+		echo $this->GeneraSubTitol();
 		echo $this->GeneraMissatges();
+		
 		echo $this->GeneraCerca();
 		echo $this->GeneraFiltre();
 		echo $this->GeneraTaula();
@@ -2167,5 +2195,103 @@ class FormFitxa extends Form {
 		return $Retorn;
 	}	
 } 
+
+/**
+ * Classe FormDetall.
+ *
+ * Classe per als formularis amb un mestre fix i un detall (variable).
+ */
+class FormDetall extends FormRecerca {
+	/**
+	* Objecte qur conté les dades per fer el lookup per al botó afegeix.
+	* @var object
+	*/    
+    public $LookUp = null;	
+	
+	/**
+	* Camp de la taula detall que identifica a la taula mestre.
+	* @var string
+	*/    
+    public $CampMestre = ''; 	
+
+	/**
+	* Valor que conté el camp identificat per $CampMestre.
+	* @var int
+	*/    
+    public $ValorMestre = -1; 	
+
+	/**
+	* Camp de la taula detall que identifica el registre que s'afegirà.
+	* @var string
+	*/    
+    public $CampDetall = ''; 	
+	
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 */
+	function __construct($con, $user) {
+		parent::__construct($con, $user);
+		$this->PermetCercar = False;
+		$this->LookUp = new StdClass();
+	}	
+	
+	/**
+	 * Genera el subtítol si n'hi ha.
+	 * @return string Subtítol.
+	 */
+	protected function GeneraSubTitol() {
+		$sRetorn = '';
+		if (!$this->PermetCercar && $this->PermetAfegir) {
+			// Hem d'afegir el botó aquí
+			$sRetorn .= '<span style="float:right;">';
+			
+			$URL = $this->LookUp->URL;
+			$Taula = $this->LookUp->Taula;
+			$Id = $this->LookUp->Id;
+			$Camps = $this->LookUp->Camps;
+
+			$sRetorn .= $this->CreaBotoAfegeix('afegeix', 'Afegeix', $URL, $Camps);
+
+			$sRetorn .= '</span>';	
+		}
+		$sRetorn .= parent::GeneraSubTitol();
+		return $sRetorn;
+	}	
+
+	/**
+	 * Botó lookup per afegir un detall.
+	 * @param string $Nom Nom del lookup.
+	 * @param string $Titol Títol del botó.
+	 * @param string $URL Pàgina web de recerca.
+	 * @param string $Camps Camps a mostrar al lookup separats per comes.
+	 */
+	public function CreaBotoAfegeix(string $Nom, string $Titol, string $URL, string $Camps) {
+		$Connector = (strpos($URL, '?') === False) ? '?' : '&';
+		$URL .= $Connector . 'Modalitat=mfBusca';
+
+		if (Config::EncriptaURL)
+			$URL = GeneraURL($URL);
+		
+		$sRetorn = '';
+		
+		$Taula = $this->Taula;
+		$ClauPrimaria = $this->ClauPrimaria;
+		$CampMestre = $this->CampMestre;
+		$ValorMestre = $this->ValorMestre;
+		$CampDetall = $this->CampDetall;
+		
+		$Parametres = "this, '$Taula', '$ClauPrimaria', '$CampMestre', '$ValorMestre', '$CampDetall'";
+		$onChange = 'onchange="AfegeixDetall('.$Parametres.');"';
+		$sRetorn .= "<input type=hidden name=lkh_".$Nom." value='' $onChange>";
+		$sRetorn .= "<input type=hidden name=lkh_".$Nom."_camps value='".$Camps."'>";
+		$sRetorn .= "<input type=hidden name=lkp_".$Nom.">";
+		$onClick = " onclick=".'"'."CercaLookup('lkh_".$Nom."', 'lkp_".$Nom."', '".$URL."', '".$Camps."');".'"';
+		$sRetorn .= "<a href=# class='btn btn-primary active' role='button' aria-pressed='true' ".
+			" name='$Nom' $onClick >$Titol</a>&nbsp;";
+		
+		return $sRetorn;
+	}
+}
 
 ?>

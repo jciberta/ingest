@@ -23,7 +23,13 @@ class Config {
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;
+	const AutenticacioGoogle = False;
 }
+
+// Credencials Google
+define('GOOGLE_CLIENT_ID', '***');
+define('GOOGLE_CLIENT_SECRET', '***');
+define('GOOGLE_REDIRECT_URI', 'http://'.$_SERVER['HTTP_HOST'].'/AutenticacioOath2Google.php');
 
 unset($CFG);
 global $CFG;

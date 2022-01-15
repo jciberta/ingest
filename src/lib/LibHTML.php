@@ -295,6 +295,30 @@ function CreaTargeta($Titol, $Text, $URL): string
 	$Retorn .= '  </div>';
 	return $Retorn;			
 }
+
+/**
+ * Crea la taula 1. Layout:
+ * +--------+-------------+
+ * | Titol1 | Descripció1 |
+ * +--------+-------------+
+ * | Titol2 | Descripció2 |
+ * +--------+-------------+
+ * | ...    | ...         |
+ * @param array $Dades Array associatiu.
+ * @return string Codi HTML de la taula.
+ */
+function CreaTaula1(array $Dades): string
+{
+	$Retorn = '<table border=0>';
+	foreach ($Dades as $key => $value) {
+		$Retorn .= "<tr>";
+		$Retorn .= "<td style='padding-right:10px;'>$key:<td>";
+		$Retorn .= "<td><b>".utf8_encode($value)."</b><td>";
+		$Retorn .= "</tr>";
+	}
+	$Retorn .= '</table>';
+	return $Retorn;
+}
  
  
 /**

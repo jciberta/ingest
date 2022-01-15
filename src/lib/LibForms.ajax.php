@@ -69,6 +69,34 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}
+	else if ($_REQUEST['accio'] == 'AfegeixDetall') {
+		
+		$Taula = $_REQUEST['taula'];
+		$ClauPrimaria = $_REQUEST['clau_primaria'];
+		
+		$CampMestre = $_REQUEST['camp_mestre'];
+		$ValorMestre = $_REQUEST['valor_mestre'];
+		$CampDetall = $_REQUEST['camp_detall'];
+		$ValorDetal = $_REQUEST['valor_detall'];
+		
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		
+		// Afegim el registre
+		// ! Falta: si la clau no és autoincrement
+		$SQL = "INSERT INTO $Taula ($CampMestre, $CampDetall) VALUES ($ValorMestre, $ValorDetal)";
+		$frm->Connexio->query($SQL);
+		
+/*
+		// Esborrem el registre
+		$SQL = 'DELETE FROM '.$Taula.' WHERE '.$ClauPrimaria.'='.$Valor;
+		$frm->Connexio->query($SQL);*/
+		
+		
+		print $frm->GeneraTaula();
+	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
 //print $jsonForm;		
