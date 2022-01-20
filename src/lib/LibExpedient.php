@@ -568,7 +568,7 @@ class ExpedientSaga extends Expedient
 		}
 		else if ($row['Baixa'] == True) {
 			// Baixa UF
-			$style = "width:50px;text-align:center;";
+			$style = "background-color:grey;width:50px;text-align:center;";
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
 			$sRetorn .= "<input type='text' class='micro numero no-editable' style='$style' id='$Id' disabled value=''>";
 			$sRetorn .= '</td>';
@@ -595,10 +595,19 @@ class ExpedientSaga extends Expedient
 			$Deshabilitat = '';
 			if (!$this->Professor->TeUF($row["unitat_pla_estudi_id"]) && !$this->Professor->EsAdmin() && !$this->Professor->EsDireccio() && !$this->Professor->EsCapEstudis())
 				$Deshabilitat = ' disabled ';
+			$BackgroundColor = $Deshabilitat ? 'background-color:lightgrey;' : 'background-color:white;';
 
 			$style = "width:50px;text-align:center;";
+			
+			if ($row["orientativa"] && !$row['Baixa']) 
+				// Nota orientativa
+				$BackgroundColor .= 'background-color:yellow;';
+			
+			$style .= $BackgroundColor;
+			$ClassInput = 'nota';
+			//$ClassInput = 'micro numero';
 			$sRetorn .= '<td class="llistat1" style="text-align:center;">';
-			$sRetorn .= "<input type=text class='micro numero' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
+			$sRetorn .= "<input type=text class='$ClassInput' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
 				" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);' >";
 			$sRetorn .= '</td>';
 			$sRetorn .= "<td class='llistat1' style='text-align:center;' width=50>".$Convocatoria."</td>";
@@ -632,6 +641,7 @@ class ExpedientSaga extends Expedient
 		$Deshabilitat = '';
 		if (!$this->Professor->TeMP($IdMP) && !$this->Professor->EsAdmin() && !$this->Professor->EsDireccio() && !$this->Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
+		$BackgroundColor = $Deshabilitat ? 'background-color:lightgrey;' : 'background-color:white;';
 
 		$sRetorn = '';
 
@@ -642,11 +652,11 @@ class ExpedientSaga extends Expedient
 		$Name = "txtNotaModulId_".$NotaId."_".$this->MatriculaId."_".$IdMP;
 
 		$style = "width:50px;text-align:center;text-transform:uppercase;";
+		$style .= $BackgroundColor;
+		
 		$sRetorn .= '<td class="llistat3" style="text-align:center;">';
-
-		$sRetorn .= "<input type=text class='micro numero' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
+		$sRetorn .= "<input type=text class='nota' style='$style' name='$Name' id='$Id' $Deshabilitat value='$Nota' ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);' >";
-
 		$sRetorn .= '</td>';
 		$sRetorn .= "<td class='llistat3' width=50></td>";
 		$sRetorn .= "<td class='llistat3' width=50></td>";
