@@ -33,6 +33,8 @@ echo '				</div>';
 echo '				<button type="submit" class="btn btn-primary">Inicia sessió</button>';
 echo '			</form>';
 echo '		</div>';
+if (Config::AutenticacioGoogle)
+	echo '		<a href="AutenticacioOath2Google.php"><img align="right" src="img/google_signin.png"></a>';
 echo '	</div>';
 $Portal->EscriuPeu();
 

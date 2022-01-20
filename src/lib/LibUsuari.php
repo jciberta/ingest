@@ -1327,23 +1327,25 @@ class Alumne extends Usuari
 	 */
 	public function Escriptori() {
 		CreaIniciHTML($this->Usuari, '');
-
-		//$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
-		$URL = '';
 		echo '<div class="card-columns" style="column-count:6">';
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Pla de treball</h5>';
-		echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
 
-		//$Alumne	= new Alumne($this->Connexio, $this->Usuari);
 		$MatriculaId = $this->ObteMatriculaActiva($this->Usuari->usuari_id);
+
+		// Pla de treball. Només es veu a l'avaluació ordinària
+		if ($this->EsAvaluacioOrdinariaCursActual($this->Usuari->usuari_id)) {
+			$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
+			echo '  <div class="card">';
+			echo '    <div class="card-body">';
+			echo '      <h5 class="card-title">Pla de treball</h5>';
+			echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
+			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '    </div>';
+			echo '  </div>';
+		}
+
+		// Expedient. Només es veu quan els butlletins estan oberts
 		if ($MatriculaId > 0) {
 			$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
-			//echo '<div class="card-columns" style="column-count:6">';
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Expedient</h5>';
@@ -1354,6 +1356,30 @@ class Alumne extends Usuari
 		}
 		echo '</div>';
 	}
+	
+	/**
+	 * Indica si la avaluació del curs actual de l'alumne és ordinària.
+	 * @param $AlumneId Identificador de l'alumne.
+	 * @returns boolean Cert si la avaluació del curs actual de l'alumne és ordinària.
+	 */
+	private function EsAvaluacioOrdinariaCursActual($AlumneId) {
+		$bRetorn = false;
+		$SQL = " 
+			SELECT *
+			FROM MATRICULA M
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
+			WHERE AA.actual=1 AND M.alumne_id=$AlumneId;		
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$rsMatricula = $ResultSet->fetch_object();
+			$bRetorn = (($rsMatricula->estat != 'T') && ($rsMatricula->avaluacio == 'ORD'));
+		}		
+		return $bRetorn;
+	}
+	
 }
 
 /**

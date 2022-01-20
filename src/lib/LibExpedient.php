@@ -422,6 +422,7 @@ class ExpedientSaga extends Expedient
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param int $MatriculaId Identificador de la matrícula.
 	 */
 	function __construct($conn, $user, $MatriculaId) {
 		parent::__construct($conn);
@@ -724,7 +725,7 @@ class ExpedientSaga extends Expedient
 
 	/**
 	 * Genera la capçalera de l'expedient.
-	 * @return string HTML amb la capçalera l'expedient.
+	 * @return string HTML amb la capçalera de l'expedient.
 	 */
 	private function GeneraTitol(): string {
 		$Retorn = '<BR>';
@@ -1027,6 +1028,206 @@ class QualificacionsPDF extends DocumentPDF
 //        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
         $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig del pla de treball.
+ */
+class PlaTreball extends Objecte
+{
+	/**
+	* Identificador de la matrícula.
+	* @var integer
+	*/
+	private $MatriculaId = -1;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
+	 * @param int $MatriculaId Identificador de la matrícula.
+	 */
+	function __construct($conn, $user, $MatriculaId) {
+		parent::__construct($conn);
+
+		$this->Connexio = $conn;
+		$this->Usuari = $user;
+		$this->MatriculaId = $MatriculaId;
+	}
+	
+	/**
+	 * Escriu el pla de treball.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Pla de treball");
+		$this->Carrega();
+		echo $this->GeneraTitol();
+		echo $this->GeneraTaula();
+		echo $this->GeneraModal();
+		CreaFinalHTML();
+	}
+
+	/**
+	 * Carrega les dades d'una matrícula i les emmagatzema en l'atribut Registre.
+	 */
+	private function Carrega() {
+		$SQL = Expedient::SQL($this->MatriculaId);
+//print($SQL);
+		$RecordSet = [];
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($row = $ResultSet->fetch_array())
+			array_push($RecordSet, $row);
+//print_h($this->RecordSet);
+		$ResultSet->close();
+		
+		// Passem el RecordSet a un objecte estructurat: mòduls/UF
+		$ModulAnterior = '';
+		$this->Registre = [];
+		
+		foreach($RecordSet as $row) {
+			if ($row['CodiMP'] != $ModulAnterior) {
+				$MP = new stdClass();
+				$MP->IdMP = $row['IdMP'];
+				$MP->CodiMP = $row['CodiMP'];
+				$MP->NomMP = utf8_encode($row['NomMP']);
+				$MP->CriterisAvaluacio = $row['criteris_avaluacio'];
+				$MP->UF = [];
+				array_push($this->Registre, $MP);
+				
+				$ModulAnterior = $row['CodiMP'];
+			}
+			$UF = new stdClass();
+			$UF->NomUF = utf8_encode($row['NomUF']);
+			$UF->HoresUF = $row['HoresUF'];
+			$UF->Orientativa = $row['orientativa'];
+			$UF->NivellUF = $row['NivellUF'];
+			$UF->DataInici = MySQLAData($row['data_inici']);
+			$UF->DataFinal = MySQLAData($row['data_final']);
+			$UF->UltimaNota = UltimaNota($row);
+			
+			array_push($MP->UF, $UF);
+		}
+
+		// Repassem totes les UF per indicar els MP superats
+		foreach($this->Registre as &$MP) {
+			$MP->aprovat = true;
+			foreach($MP->UF as $UF) {
+				if ($UF->UltimaNota < 5)
+					$MP->aprovat = false;
+			}
+		}
+//print_h($this->Registre);
+//exit;
+	}
+
+	/**
+	 * Crea la sentència SQL per recuperar les dades de la capçalera.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQLTitol() {
+		return '
+			SELECT 
+				CPE.nom AS NomCF, CPE.nom AS NomCF, 
+				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
+				CPE.*, C.*, AA.* 
+			FROM MATRICULA M
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
+			LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+			LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id)
+			WHERE M.matricula_id='.$this->MatriculaId;
+	}
+
+	/**
+	 * Genera la capçalera del pla de treball.
+	 * @return string HTML amb la capçalera del pla de treball.
+	 */
+	private function GeneraTitol(): string {
+		$SQL = $this->CreaSQLTitol();
+		try {
+			$ResultSet = $this->Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		} catch (Exception $e) {
+			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
+		}
+		$Retorn = '';
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+			if ($Usuari->es_admin) {
+				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+			}
+			$Dades = array(
+				'Alumne' => utf8_encode($NomComplet),
+				'Cicle Formatiu' => utf8_encode($row["NomCF"]),
+				'Curs' => $row["any_inici"].'-'.$row["any_final"]
+			);
+			if ($this->Usuari->es_admin)
+				$Dades = array("Id" => $row["matricula_id"]) + $Dades;
+			$Retorn .= CreaTaula1($Dades);		
+			$Retorn .= '<BR>';
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Genera el pla de treball.
+	 * @return string Taula amb el pla de treball.
+	 */
+	private function GeneraTaula(): string {
+		$ModalCriterisAvaluacio = '';
+		$Retorn = '<TABLE>';
+		foreach($this->Registre as $MP) {
+			$color = ($MP->aprovat) ? 'color:grey;' : '';
+			$Retorn .= "<TR STYLE='$color'>";
+			$Retorn .= "<TD>".$MP->CodiMP.'. '.$MP->NomMP."</TD>";
+			if (!$MP->aprovat) {
+				$Retorn .= "<TD></TD><TD STYLE='text-align:center' width=200><a role='button' href='#' data-toggle='modal' data-target='#Modal".$MP->IdMP."'>Criteris d'avaluació</a></TD>";
+				$ModalCriterisAvaluacio .= $this->GeneraModal($MP->IdMP, $MP->CodiMP, $MP->CriterisAvaluacio);
+			}
+			else
+				$Retorn .= "<TD></TD><TD width=200></TD>";
+			$Retorn .= '</TR>';
+			foreach($MP->UF as $UF) {
+				$color = ($UF->UltimaNota >= 5) ? 'color:grey;' : '';
+				$Retorn .= "<TR STYLE='$color'>";
+				$Retorn .= "<TD STYLE='padding-left:2cm;padding-right:1cm'>".$UF->NomUF."</TD>";
+				if ($UF->UltimaNota >= 5)
+					$Retorn .= "<TD STYLE='text-align:center'>Aprovada (".$UF->UltimaNota.")</TD>";
+				else
+					$Retorn .= "<TD STYLE='text-align:center'>".$UF->DataInici."-".$UF->DataFinal."</TD>";
+				$Retorn .= "<TD></TD>";
+				
+				$Retorn .= '</TR>';
+			}
+		}
+		$Retorn .= '</TABLE>';
+		$Retorn .= $ModalCriterisAvaluacio;
+		return $Retorn;
+	}		
+	
+	private function GeneraModal(int $Id, string $Nom, $Text): string {
+		return '
+			<div class="modal fade" id="Modal'.$Id.'" tabindex="-1" role="dialog" aria-labelledby="Modal'.$Id.'Label" aria-hidden="true">
+			  <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="Modal'.$Id.'Label">Criteris d'."'".'avaluació</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					'.$Text.'
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Tanca</button>
+				  </div>
+				</div>
+			  </div>
+			</div>	';	
+	}
 }
 
 ?>

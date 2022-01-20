@@ -18,6 +18,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibCurs.php');
 
@@ -214,7 +215,22 @@ switch ($accio) {
 			$frm->EscriuHTML();
 		}
         break;
-    case "Altre":
+    case "PlaTreball":
+		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
+		if ($MatriculaId == -1)
+			header("Location: Surt.php");
+
+		$mat = new Matricula($conn, $Usuari);
+		$mat->Carrega($MatriculaId);
+		$AlumneId = $mat->ObteAlumne();
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+			$frm = new PlaTreball($conn, $Usuari, $MatriculaId);
+			$frm->EscriuHTML();
+		}
+		else
+			header("Location: Surt.php");		
+        break;
+	case "Altre":
         break;
 }
 
