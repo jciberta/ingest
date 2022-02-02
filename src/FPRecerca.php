@@ -151,6 +151,10 @@ switch ($accio) {
 		$frm = new PlaEstudisCicle($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
+    case "PlaEstudisUnitat":
+		$frm = new PlaEstudisUnitatRecerca($conn, $Usuari);
+		$frm->EscriuHTML();
+        break;
     case "ProgramacionsDidactiques":
 		$frm = new ProgramacioDidacticaRecerca($conn, $Usuari);
 		$frm->Modalitat = $Modalitat;

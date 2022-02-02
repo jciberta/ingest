@@ -1063,7 +1063,7 @@ class PlaTreball extends Objecte
 		$this->Carrega();
 		echo $this->GeneraTitol();
 		echo $this->GeneraTaula();
-		echo $this->GeneraModal();
+		//echo $this->GeneraModal();
 		CreaFinalHTML();
 	}
 
@@ -1155,7 +1155,7 @@ class PlaTreball extends Objecte
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
-			if ($Usuari->es_admin) {
+			if ($this->Usuari->es_admin) {
 				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
 			}
 			$Dades = array(
