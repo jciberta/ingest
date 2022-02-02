@@ -215,7 +215,7 @@ class ProgramacioDidactica extends Form
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	protected function GeneraSeccioSequenciacio() {
+	protected function GeneraSeccioSequenciacio(&$section = null) {
 		$ModulPlaEstudiId = $this->Id;
 			
 		$sRetorn = "<BR>";
@@ -257,7 +257,7 @@ class ProgramacioDidactica extends Form
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	protected function GeneraSeccioUnitats() {
+	protected function GeneraSeccioUnitats(&$section = null) {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$sRetorn = $RA->GeneraTaulaModul($ModulId);
@@ -694,7 +694,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$toc = $section->addTOC($fontStyle12, 'Interliniat0');
 	}
 
-	protected function GeneraSeccioSequenciacio(&$section) {
+	protected function GeneraSeccioSequenciacio(&$section = null) {
 		$ModulPlaEstudiId = $this->Id;
 		$aUF = [];
 		$SQL = "
@@ -742,7 +742,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		}
 	}
 
-	protected function GeneraSeccioUnitats(&$section) {
+	protected function GeneraSeccioUnitats(&$section = null) {
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$RA->CreaRegistreModul($ModulId);
