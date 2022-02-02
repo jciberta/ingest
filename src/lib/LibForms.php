@@ -909,11 +909,17 @@ class FormRecerca extends Form {
 		if ($this->FiltreText != '') {
 			$obj = new SQL($sRetorn);
 //print_r('CampAlies: ');
-//print_r($obj->CampAlies);
+//print_h($obj->CampAlies);
 //print_r('<hr>');
 			$sWhere = '';
 			$aFiltreText = explode(" ", TrimX($this->FiltreText));
+//print_r('aFiltreText: ');
+//print_h($aFiltreText);
+//print_r('<hr>');
 			$aCamps = explode(",", TrimXX($this->Camps));
+//print_r('aCamps: ');
+//print_h($aCamps);
+//print_r('<hr>');
 			foreach ($aFiltreText as $sValor) {
 				$sWhere .= '(';
 				foreach ($aCamps as $sCamp) {
