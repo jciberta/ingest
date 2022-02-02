@@ -223,7 +223,8 @@ class ProgramacioDidactica extends Form
 		$sRetorn .= "<TABLE BORDER=1'>";
 		$sRetorn .= "<thead>";
 		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
-		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
+//		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
+		$sRetorn .= "<TH>Unitat formativa</TH>";
 		$sRetorn .= "<TH STYLE='text-align:center'>Hores</TH>";
 		$sRetorn .= "<TH>Data inici</TH>";
 		$sRetorn .= "<TH>Data fi</TH>";
@@ -532,7 +533,16 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 	 * @param string $html Fragment HTML per tractar.
 	 */
 	private function AfegeixTaulaHTML(&$section, $taula) {
-		$dom = new domDocument; 
+		$dom = new domDocument;
+
+		// Some versions of the DOMDocument parser that PHP uses are super-strict about HTML compliance, and will whine 
+		// and regularly do wrong things when confronted with spec violations.
+		// This completely depends on whether the version of libxml2 you are using has support for this part of HTML5. 
+		// https://bugs.php.net/bug.php?id=63477
+		// https://stackoverflow.com/questions/5645536/issue-with-using-domnode-attributes-with-attributes-that-have-multiple-words-in
+		$taula = str_replace('class=""""', '', $taula);
+//print htmlspecialchars($taula);
+//exit;		
 		$dom->loadHTML($taula); 
 		$dom->preserveWhiteSpace = false; 
    
@@ -553,26 +563,14 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 			array_push($aFiles, $aColumnes);
 		}
 //print_h($aFiles);
-
-		// sudo apt-get install msttcorefonts
-		$font_filename = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf';
-
-		$Max = 0;
-		// https://www.php.net/manual/en/function.imagettfbbox.php
-		// Hi ha també imageftbbox
-		foreach ($aUF as $row) {
-			$NomUF = utf8_encode($row->nom);
-			$bbox = imagettfbbox(16, 0, $font_filename, $NomUF);
-			$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
-			$Max = max($Max, $width);
-		}
+//exit;
 
 		// Calculem les mides màximes
 		$aMax = [];
 		for($j=0; $j<count($aFiles[0]); $j++) {
 			$Max = 0;
 			for($i=0; $i<count($aFiles); $i++) {
-				$bbox = imagettfbbox(16, 0, $font_filename, $aFiles[$i][$j]);
+				$bbox = imagettfbbox(16, 0, FONT_FILENAME_ARIAL, $aFiles[$i][$j]);
 				$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
 				$Max = max($Max, $width);				
 			}
@@ -707,14 +705,12 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		while($row = $ResultSet->fetch_object())
 			array_push($aUF, $row);
 		
-		// sudo apt-get install msttcorefonts
-		$font_filename = '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf';
 		$Max = 0;
 		// https://www.php.net/manual/en/function.imagettfbbox.php
 		// Hi ha també imageftbbox
 		foreach ($aUF as $row) {
 			$NomUF = utf8_encode($row->nom);
-			$bbox = imagettfbbox(16, 0, $font_filename, $NomUF);
+			$bbox = imagettfbbox(16, 0, FONT_FILENAME_ARIAL, $NomUF);
 			$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
 			$Max = max($Max, $width);
 		}

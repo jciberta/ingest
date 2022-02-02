@@ -65,12 +65,18 @@ else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+		// Windows
 		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
 		define('UNITAT_XAMPP', 'D');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		define('FONT_FILENAME_ARIAL', 'C:\Windows\Fonts\arial.ttf');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+		// Linux
 		define('INGEST_DATA', '/var/www/ingest-data');
+		// Cals instal·lar les fonts
+		// sudo apt-get install msttcorefonts
+		define('FONT_FILENAME_ARIAL', '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf');
 	}	
 }
 
