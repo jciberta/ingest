@@ -128,7 +128,7 @@ if ($ResultSet->num_rows > 0) {
 }
 else 
 {
-	PaginaHTMLMissatge("Error", "L'usuari no existeix o no es pot identificar amb aquest mitjà.");
+	PaginaHTMLMissatge("Error", "L'usuari no existeix o no es pot identificar amb aquest mitjà.<br>Només està disponible per al professorat.");
 }
 
 ?>
