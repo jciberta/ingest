@@ -145,7 +145,7 @@ switch ($Accio) {
 			' FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS Alumne, '.
 			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.municipi, U.usuari_bloquejat, '.
 			' M.matricula_id, M.grup, '.
-			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi, C.nivell, M.baixa, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi AS CodiCurs, C.nivell, M.baixa, '.
 			' CF.cicle_formatiu_id AS CicleFormatiuId, '.
 			' AA.any_academic_id AS AnyAcademicId '.
 			' FROM USUARI U '.
@@ -162,7 +162,7 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 //		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, telefon, municipi, codi, grup';
 //		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup';
-		$frm->Camps = 'Alumne, username, data_naixement, edat, telefon, municipi, codi, grup';
+		$frm->Camps = 'Alumne, username, data_naixement, edat, telefon, municipi, CodiCurs, grup';
 		$frm->Descripcions = 'Nom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup';
 		if ($Usuari->es_admin) {
 			$frm->Camps = 'matricula_id, '.$frm->Camps;

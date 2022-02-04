@@ -56,7 +56,7 @@ abstract class PlaEstudis extends Form
 	protected function GeneraTaula($Nivell1): string {
 		$sRetorn = '<TABLE class="table table-striped table-sm table-hover">';
 		$sRetorn .= '<thead class="thead-dark">';
-		$sRetorn .= "<TH>Modul</TH>";
+		$sRetorn .= "<TH>Mòdul</TH>";
 		$sRetorn .= "<TH>Hores</TH>";
 		$sRetorn .= "<TH>Hores setmana</TH>";
 		$sRetorn .= "<TH></TH><TH></TH>";

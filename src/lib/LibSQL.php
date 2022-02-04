@@ -134,7 +134,36 @@ class SQL {
 	 */
 	private function CreaCampAlies() {
 		$this->CampAlies = array();
-		$aCamps = explode(',', $this->Select);
+//print($this->Select);
+
+		// $aCamps = explode(',', $this->Select); -> No funciona com a parser, separa també les comes de dins les funcions
+		$Select = $this->Select;
+		$aCamps = [];
+		$s = '';
+		$i = 0;
+		while  ($i < strlen($Select)) {
+			if ($Select[$i] == '(') {
+				// Incrementem el punter fins al següent )
+				// FALTA: aniuament de parèntesi
+				$s .= $Select[$i];
+				$i++;
+				while ($i < strlen($Select) && $Select[$i] != ')') {
+					$s .= $Select[$i];
+					$i++;
+				}
+			}
+			if ($Select[$i] == ',') {
+				array_push($aCamps, $s);
+				$s = '';
+			}
+			else
+				$s .= $Select[$i];
+			$i++;
+		}
+		array_push($aCamps, $s);
+
+//print_h($aCamps);
+//print('hr');
 		foreach ($aCamps as $data) {
 			$i = strpos(strtoupper($data), ' AS ');
 			if ($i != 0)

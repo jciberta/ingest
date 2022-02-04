@@ -135,7 +135,7 @@ class Curs
      * @return string Sentència SQL.
 	 */
 	private function CreaSQL(int $CursId = -1) {
-		$SQL = ' SELECT C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.estat, C.nivell, '.
+		$SQL = ' SELECT C.cicle_formatiu_id, C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.estat, C.nivell, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
 			'     WHEN C.estat = "T" THEN "Tancada" '.
@@ -275,7 +275,7 @@ class Curs
 		$frm->SQL = utf8_decode($SQL);
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
-		$frm->Camps = 'codi, NomCurs, nivell, Any, avaluacio, trimestre';
+		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', Curs::LlegendaEstat());
 		if (!$this->NomesProfessor) {
