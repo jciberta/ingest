@@ -114,3 +114,4 @@ update NOTES set nota3=truncate(1+3*rand(),0) where notes_id>0 and nota3<5;
 update NOTES set nota4=truncate(1+3*rand(),0) where notes_id>0 and nota4<5;
 update NOTES set nota5=truncate(1+3*rand(),0) where notes_id>0 and nota5<5;
 
+delete from REGISTRE;
