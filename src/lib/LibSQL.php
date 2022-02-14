@@ -7,7 +7,6 @@
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
- * @version 1.0
  */
 
 require_once(ROOT.'/lib/LibStr.php');

@@ -18,8 +18,12 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
 require_once(ROOT.'/lib/LibHTML.php');
-require_once(ROOT.'/vendor/htmlpurifier/library/HTMLPurifier.auto.php');
+//require_once(ROOT.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
 
+require_once(ROOT.'/vendor/autoload.php');
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Classe Objecte.
@@ -1006,17 +1010,24 @@ class FormRecerca extends Form {
 	
 	/**
 	 * Crea el botó per a la descàrrega en CSV.
-	 * @param string $URL URL que realitza l'acció de la descàrrega.
+	 * @param string $SQL Sentència SQL que conté les dades a descarregar.
 	 * @return string Codi HTML del botó.
 	 */
-	private function CreaBotoDescarrega(string $URL): string {
+	private function CreaBotoDescarrega(string $SQL): string {
 		$sRetorn = '<div class="btn-group" role="group">';
 		$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
 		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
 		$sRetorn .= '      Descarrega';
 		$sRetorn .= '    </button>';
 		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
 		$sRetorn .= '      <a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
+
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
+		$sRetorn .= '      <a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
+
+
 		$sRetorn .= '    </div>';
 		$sRetorn .= '  </div>';		
 		return $sRetorn;
@@ -1180,18 +1191,15 @@ class FormRecerca extends Form {
 			if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
 	//			$sRetorn .= '<TD style="align:right">';
 	//			$sRetorn .= '<span style="float:right;">';
-
 				$SQL = $this->CreaSQL();	
 	//print('<B>SQL</B>: '.$SQL.'<BR>');
 				$SQL = bin2hex(Encripta(TrimX($SQL)));
 	//print('<B>SQL</B>: '.$SQL.'<BR>');
-				$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+	//			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
 	//print('<B>URL</B>: '.$URL.'<BR>');
-
-				$sRetorn .= $this->CreaBotoDescarrega($URL).'&nbsp';
+				$sRetorn .= $this->CreaBotoDescarrega($SQL).'&nbsp';
 	//			$sRetorn .= '</span>';
 	//			$sRetorn .= '</TD>';		
-				
 			}
 			
 			if ($this->Modalitat == self::mfLLISTA && $this->PermetAfegir) { 
@@ -1388,7 +1396,7 @@ class FormRecerca extends Form {
 		return $Retorn;
 	}
 	
-		/**
+	/**
 	 * Exporta el contingut d'una SQL a un fitxer CSV.
  	 * @param string $SQL Sentència SQL a exportar.
 	 * @param string $filename Nom del fitxer.
@@ -1429,6 +1437,68 @@ class FormRecerca extends Form {
 		// Use exit to get rid of unexpected output afterward
 		exit();		
 	}	
+	
+	/**
+	 * Exporta el contingut d'una SQL a un fitxer CSV.
+ 	 * @param string $SQL Sentència SQL a exportar.
+	 * @param string $filename Nom del fitxer.
+	 */
+	 public function ExportaXLSX(string $SQL, string $filename="export.xlsx") {
+//print($SQL);
+//exit;
+		$spreadsheet = new Spreadsheet();
+		$spreadsheet->getProperties()->setCreator('InGest')->setLastModifiedBy('InGest');
+		$sheet = $spreadsheet->setActiveSheetIndex(0);
+
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$bPrimerRegistre = True;
+			$y = 1;
+			while ($row = $ResultSet->fetch_assoc()) {
+				if ($bPrimerRegistre) {
+					$x = 1;
+					foreach ($row as $key => $value) {
+						$sheet->setCellValueByColumnAndRow($x, $y, utf8_encode($key));
+						$x++;
+					}
+					$bPrimerRegistre = False;
+					$y++;
+				}	
+				$x = 1;
+				foreach ($row as $key => $value) {
+					$sheet->setCellValueByColumnAndRow($x, $y, utf8_encode($value));
+					$x++;
+				}
+				$y++;
+			}
+		}
+
+		// Primera línia en negreta
+		$spreadsheet->getActiveSheet()->getStyle('1:1')->getFont()->setBold(true);
+
+		// Rename worksheet
+		$spreadsheet->getActiveSheet()->setTitle('Dades');
+
+		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+		$spreadsheet->setActiveSheetIndex(0);
+
+		// Redirect output to a client’s web browser (Xlsx)
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="'.$filename.'"');
+		header('Cache-Control: max-age=0');
+		// If you're serving to IE 9, then the following may be needed
+		header('Cache-Control: max-age=1');
+
+		// If you're serving to IE over SSL, then the following may be needed
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+		header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		header('Pragma: public'); // HTTP/1.0
+
+		$writer = new XLSX($spreadsheet);
+		$writer->save('php://output');
+		exit;
+	 }
 } 
 
 /**
@@ -2066,11 +2136,9 @@ class FormFitxa extends Form {
 	 * @return string Missatge informatiu.
 	 */
 	public function Desa(string $jsonForm): string {
-		
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
 		$purifier = new HTMLPurifier($config);
-//		$clean_html = $purifier->purify($dirty_html);		
 		
 		$Retorn = '';
 
@@ -2151,6 +2219,7 @@ class FormFitxa extends Form {
 						// Prevenció XSS amb htmlpurifier
 						$dirty_html = $Valor->value;
 						$clean_html = $purifier->purify($dirty_html);	
+						//$clean_html = $dirty_html;
 						$sValues .= TextAMySQL(utf8_encode(DesescapaDobleCometa($clean_html))).', ';
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //exit;

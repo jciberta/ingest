@@ -70,6 +70,13 @@ switch ($Accio) {
 		$frm = new FormRecerca($conn, $Usuari);
 		$frm->ExportaCSV($SQL);
 		break;
+	case "ExportaXLSX":
+		$SQL = $_GET['SQL'];
+		$SQL = Desencripta($SQL);
+//print('<B>SQL</B>: '.$SQL.'<BR>');		
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->ExportaXLSX($SQL);
+		break;
 	case "ExportaNotesCSV":
 		$CursId = $_GET['CursId'];
 		$Notes = new Notes($conn, $Usuari);
