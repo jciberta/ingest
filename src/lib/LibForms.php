@@ -1249,7 +1249,7 @@ class FormRecerca extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) {
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		}
@@ -2138,6 +2138,8 @@ class FormFitxa extends Form {
 	public function Desa(string $jsonForm): string {
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
+		// Configuracions http://htmlpurifier.org/demo.php
+		$config->set('HTML.Allowed', 'a[href|title],img[title|src|alt],em,strong,cite,blockquote,code,ul,ol,li,dl,dt,dd,p,br,h1,h2,h3,h4,h5,h6,span,font[color],*[style]');
 		$purifier = new HTMLPurifier($config);
 		
 		$Retorn = '';
@@ -2217,11 +2219,10 @@ class FormFitxa extends Form {
 						$sCamps .= substr($Valor->name, 4).", ";
 						
 						// Prevenció XSS amb htmlpurifier
-						$dirty_html = $Valor->value;
+						$dirty_html = DesescapaDobleCometa($Valor->value);
 						$clean_html = $purifier->purify($dirty_html);	
-						//$clean_html = $dirty_html;
-						$sValues .= TextAMySQL(utf8_encode(DesescapaDobleCometa($clean_html))).', ';
-//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+						$sValues .= TextAMySQL(utf8_encode($clean_html)).', ';
+//print '<HR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //exit;
 						break;
 				}
