@@ -1015,21 +1015,21 @@ class FormRecerca extends Form {
 	 */
 	private function CreaBotoDescarrega(string $SQL): string {
 		$sRetorn = '<div class="btn-group" role="group">';
-		$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+		$sRetorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
 		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-		$sRetorn .= '      Descarrega';
-		$sRetorn .= '    </button>';
-		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		$sRetorn .= 'Descarrega';
+		$sRetorn .= '</button>';
+		$sRetorn .= '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 		
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
-		$sRetorn .= '      <a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
+		$sRetorn .= '<a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
 
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
-		$sRetorn .= '      <a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
+		$sRetorn .= '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
 
 
-		$sRetorn .= '    </div>';
-		$sRetorn .= '  </div>';		
+		$sRetorn .= '</div>';
+		$sRetorn .= '</div>';		
 		return $sRetorn;
  	}
 
@@ -1250,19 +1250,20 @@ class FormRecerca extends Form {
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
 		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
-		for($i = 1; $i <= count($this->FitxerJS); $i++) {
+		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
-		}
 		// Inicialització de l'ajuda
 		// https://getbootstrap.com/docs/4.0/components/popovers/
 		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
-
 		echo $this->GeneraSubTitol();
 		echo $this->GeneraMissatges();
-		
-		echo $this->GeneraCerca();
-		echo $this->GeneraFiltre();
-		echo $this->GeneraTaula();
+		// Generem primers els diferents blocs (l'ordre és important per a la SQL)
+		$Filtre = $this->GeneraFiltre();
+		$Cerca = $this->GeneraCerca();
+		$Taula = $this->GeneraTaula();
+		echo $Cerca;
+		echo $Filtre;
+		echo $Taula;
 		CreaFinalHTML();
 	}
 	
