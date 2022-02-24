@@ -1099,6 +1099,7 @@ class PlaTreball extends Objecte
 			$UF = new stdClass();
 			$UF->NomUF = utf8_encode($row['NomUF']);
 			$UF->HoresUF = $row['HoresUF'];
+			$UF->Convocatoria = $row['convocatoria'];
 			$UF->Orientativa = $row['orientativa'];
 			$UF->NivellUF = $row['NivellUF'];
 			$UF->DataInici = MySQLAData($row['data_inici']);
@@ -1127,6 +1128,7 @@ class PlaTreball extends Objecte
 	private function CreaSQLTitol() {
 		return '
 			SELECT 
+				M.matricula_id,
 				CPE.nom AS NomCF, CPE.nom AS NomCF, 
 				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
 				CPE.*, C.*, AA.* 
@@ -1168,6 +1170,12 @@ class PlaTreball extends Objecte
 			$Retorn .= CreaTaula1($Dades);		
 			$Retorn .= '<BR>';
 		}
+		
+		// Botó d'impressió
+		echo '<span style="float:right;">';
+		echo '<a href="#" onclick="print();" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Imprimeix</a>';
+		echo '</span>';
+		
 		return $Retorn;
 	}
 
@@ -1177,28 +1185,26 @@ class PlaTreball extends Objecte
 	 */
 	private function GeneraTaula(): string {
 		$ModalCriterisAvaluacio = '';
-		$Retorn = '<TABLE>';
+		$Retorn = '<TABLE border=1>';
 		foreach($this->Registre as $MP) {
-			$color = ($MP->aprovat) ? 'color:grey;' : '';
-			$Retorn .= "<TR STYLE='$color'>";
-			$Retorn .= "<TD>".$MP->CodiMP.'. '.$MP->NomMP."</TD>";
+			$color = ($MP->aprovat) ? 'color:grey' : '';
+			$Retorn .= "<TR STYLE='$color;background-color:lightgrey;'>";
+			$Retorn .= "<TD><B>".$MP->CodiMP.'. '.$MP->NomMP."</B></TD>";
 			if (!$MP->aprovat) {
-				$Retorn .= "<TD></TD><TD STYLE='text-align:center' width=200><a role='button' href='#' data-toggle='modal' data-target='#Modal".$MP->IdMP."'>Criteris d'avaluació</a></TD>";
+				$Retorn .= "<TD width=250 STYLE='text-align:center' width=200><a role='button' href='#' data-toggle='modal' data-target='#Modal".$MP->IdMP."'>Criteris d'avaluació</a></TD>";
 				$ModalCriterisAvaluacio .= $this->GeneraModal($MP->IdMP, $MP->CodiMP, $MP->CriterisAvaluacio);
 			}
 			else
-				$Retorn .= "<TD></TD><TD width=200></TD>";
+				$Retorn .= "<TD width=250></TD>";
 			$Retorn .= '</TR>';
 			foreach($MP->UF as $UF) {
-				$color = ($UF->UltimaNota >= 5) ? 'color:grey;' : '';
+				$color = ($UF->Convocatoria == 0) ? 'color:grey' : '';
 				$Retorn .= "<TR STYLE='$color'>";
-				$Retorn .= "<TD STYLE='padding-left:2cm;padding-right:1cm'>".$UF->NomUF."</TD>";
-				if ($UF->UltimaNota >= 5)
+				$Retorn .= "<TD STYLE='padding-left:1cm;padding-right:1cm'>".$UF->NomUF."</TD>";
+				if ($UF->Convocatoria == 0)
 					$Retorn .= "<TD STYLE='text-align:center'>Aprovada (".$UF->UltimaNota.")</TD>";
 				else
-					$Retorn .= "<TD STYLE='text-align:center'>".$UF->DataInici."-".$UF->DataFinal."</TD>";
-				$Retorn .= "<TD></TD>";
-				
+					$Retorn .= "<TD STYLE='padding-left:1cm;padding-right:1cm;text-align:center'>".$UF->DataInici."-".$UF->DataFinal."</TD>";
 				$Retorn .= '</TR>';
 			}
 		}
