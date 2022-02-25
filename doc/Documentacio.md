@@ -2,23 +2,28 @@
 
 ## Documentació
 
-###Classes
+### Classes
 
+```
 /**
  * Descripció de la classe.
  */
+ ```
 
-###Propietats
+### Propietats
 
+```
 /**
  * Descripció de la propietat.
  * @var tipus
  */
+ ```
 
-###Mètodes
+### Mètodes
 
 Cal documentar les línies que s'escauen.
 
+```
 /**
  * Descripció del mètode.
  * @param tipus $param1 Descripció del paràmetre 1.
@@ -26,7 +31,8 @@ Cal documentar les línies que s'escauen.
  * @return tipus Descripció del retorn.
  * @throws Excepció
  */
+ ```
 
-###Codi
+### Codi
 
 Si s'escau, cal documentar el que ha de fer el codi, no el que fa.
