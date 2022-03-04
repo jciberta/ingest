@@ -2622,12 +2622,23 @@ class FormFitxaDetall extends FormFitxa {
 	 * @return string Missatge informatiu.
 	 */
 	public function Desa(string $jsonForm, string $jsonDetalls): string {
-		$Retorn = parent::Desa($jsonForm);
-		if (!str_contains($Retorn, 'ERROR DesaFitxa')) {
-			$jsonDetalls = preg_replace('/[[:cntrl:]]/', '', $jsonDetalls);
-			$Detalls = json_decode($jsonDetalls);
-			foreach($Detalls as $Detall)
-				$Retorn .= $this->DesaDetall($Detall);
+		$this->Connexio->begin_transaction();
+		try {
+			$Retorn = parent::Desa($jsonForm);
+			if (!str_contains($Retorn, 'ERROR DesaFitxa')) {
+				$jsonDetalls = preg_replace('/[[:cntrl:]]/', '', $jsonDetalls);
+				$Detalls = json_decode($jsonDetalls);
+				foreach($Detalls as $Detall)
+					$Retorn .= $this->DesaDetall($Detall);
+				$this->Connexio->commit();
+			}
+			else
+				// Error al DesaFitxa
+				$this->Connexio->rollback();
+		} catch (Exception $e) {
+			// Error al DesaDetall
+			$this->Connexio->rollback();
+			$Retorn .= "<BR><b>ERROR DesaDetall</b>. Causa: ".$e->getMessage();
 		}
 		return $Retorn;
 	}
@@ -2673,12 +2684,7 @@ class FormFitxaDetall extends FormFitxa {
 				if ($Taula != '' && $ClauPrimaria != '') {
 					$SQL = "UPDATE $Taula SET $Camp=$Value WHERE $ClauPrimaria=$Id";
 //print '<hr>SQL: '.$SQL;
-					try {
-						if (!$this->Connexio->query($SQL))
-							throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
-					} catch (Exception $e) {
-						$Retorn .= "<BR><b>ERROR DesaDetall</b>. Causa: ".$e->getMessage();
-					}		
+					$this->Connexio->query($SQL);
 					$Retorn .= "<br>$SQL";
 				}
 			}
