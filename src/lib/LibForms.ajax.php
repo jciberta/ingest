@@ -106,6 +106,14 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 //exit;
 		print $frm->Desa($jsonForm);
 	}
+	else if ($_REQUEST['accio'] == 'DesaFitxaDetall') {
+		$jsonForm = $_REQUEST['form'];
+		$jsonDetalls = $_REQUEST['detalls'];
+//print $jsonDetalls;		
+//exit;
+		$frm = new FormFitxaDetall($conn, $Usuari);
+		print $frm->Desa($jsonForm, $jsonDetalls);
+	}
 	else {
 		if ($CFG->Debug)
 			print "Acció no suportada. Valor de $_POST: ".json_encode($_POST);

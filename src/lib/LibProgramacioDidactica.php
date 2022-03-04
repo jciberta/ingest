@@ -288,8 +288,8 @@ class ProgramacioDidactica extends Form
 		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaDOCX&ModulId=$ModulId");
 		$sRetorn .= '      <a id="btnDescarregaDOCX" class="dropdown-item" href="'.$URL.'">DOCX</a>';
-		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaODT&ModulId=$ModulId");
-		$sRetorn .= '      <a id="btnDescarregaDOCX" class="dropdown-item" href="'.$URL.'">ODT</a>';
+//		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaODT&ModulId=$ModulId");
+//		$sRetorn .= '      <a id="btnDescarregaDOCX" class="dropdown-item" href="'.$URL.'">ODT</a>';
 		$sRetorn .= '    </div>';
 		$sRetorn .= '  </div>';				
 		return $sRetorn;
@@ -347,17 +347,24 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 class ProgramacioDidacticaFitxa extends FormRecerca
 {
 	/**
+	* Registre de l'any acadèmic de la programació didàctica.
+	* @var object
+	*/    
+    private $AnyAcademic = null;
+
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
-		
 /*		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 		
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php"); */
+		
+		$this->CarregaAnyAcademic($this->Id);
 
-		$frm = new FormFitxa($this->Connexio, $this->Usuari);
+		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari);
 		$frm->Titol = "Programació didàctica";
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
@@ -368,8 +375,28 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixTextRic('metodologia', 'Metodologia', 200, 100);
 		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
 		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
-		$frm->EscriuHTML();		
 		
+		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
+			nom:Nom:text:400:r, 
+			hores:Hores:int:60:w,
+			nivell:Nivell:int:60:r,
+			data_inici:Data inici:date:0:w,
+			data_final:Data final:date:0:w
+		');
+		$frm->EscriuHTML();		
+	}
+	
+	private function CarregaAnyAcademic(string $ModulPlaEstudiId) {
+		$SQL = "
+			SELECT AA.*
+			FROM MODUL_PLA_ESTUDI MPE
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
+			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) 
+			$this->AnyAcademic = $ResultSet->fetch_object();
 	}
 }
 
@@ -458,22 +485,26 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 	 * Elimina les etiquetes no suportades per PHPWord a la secció HTML.
 	 * https://stackoverflow.com/questions/17622350/recognize-html-tags-with-phpword
 	 */
-	private function TractaEtiquetes(string $Text): string {
-		$Text = str_replace('<BR>', '', $Text);
-		$Text = str_replace('<br>', '', $Text);
-		$Text = str_replace('"""', '"', $Text);
-		$Text = str_replace('<colgroup>', '', $Text);
-		$Text = str_replace('</colgroup>', '', $Text);
-		$Text = str_replace('<col />', '', $Text);
+	private function TractaEtiquetes($Text): string {
+		if ($Text !== null) {
+			$Text = str_replace('<BR>', '', $Text);
+			$Text = str_replace('<br>', '', $Text);
+			$Text = str_replace('"""', '"', $Text);
+			$Text = str_replace('<colgroup>', '', $Text);
+			$Text = str_replace('</colgroup>', '', $Text);
+			$Text = str_replace('<col />', '', $Text);
 
-		//$Text = str_replace('<table>', '<table style="border:100%">', $Text);
-		//$Text = str_replace('<TABLE>', '<table style="border:100%">', $Text);
+			//$Text = str_replace('<table>', '<table style="border:100%">', $Text);
+			//$Text = str_replace('<TABLE>', '<table style="border:100%">', $Text);
 
-//		$Text = str_replace('<BR />', '', $Text);
-		$Text = str_replace('<br /><br />', '<br />', $Text);
+	//		$Text = str_replace('<BR />', '', $Text);
+			$Text = str_replace('<br /><br />', '<br />', $Text);
 		
 //print_h($Text);
 //exit;
+		}
+		else
+			$Text = '';
 		return $Text;
 	}
 

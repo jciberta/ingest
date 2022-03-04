@@ -18,8 +18,6 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
 require_once(ROOT.'/lib/LibHTML.php');
-//require_once(ROOT.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
-
 require_once(ROOT.'/vendor/autoload.php');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -27,7 +25,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Classe Objecte.
- *
  * Classe base de la quals descendeixen els objectes.
  */
 class Objecte {
@@ -62,7 +59,6 @@ class Objecte {
 
 /**
  * Classe Form.
- *
  * Classe base de la quals descendeixen els formularis.
  * Conté els mètodes per crear els components bàsics.
  */
@@ -95,6 +91,7 @@ class Form {
 	const offNOMES_LECTURA = 1; // Indica si el camp és pot escriure o no.
 	const offREQUERIT = 2; 		// Indica si el camp és obligatori.
 	const offAL_COSTAT = 3;     // Indica si el camp es posiciona al costat de l'anterior (per defecte a sota).
+	const offNO_TITOL = 4;      // Indica que no es vol la 1a columna.
 
 	/**
 	* Connexió a la base de dades.
@@ -245,7 +242,67 @@ class Form {
 			" name='$Nom'".
 			" onClick='$Funcio'>$Titol</a>&nbsp;";
 		return $sRetorn;
+	}
+
+	/**
+	 * Crea un camp de tipus text.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Valor Valor de l'enter per defecte de l'element.
+	 * @return string Codi HTML.
+	 */
+	public function CreaText(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+
+		$sRetorn = '';
+		if (!in_array(self::offNO_TITOL, $off))
+			$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.'></TD>';
+		return $sRetorn;
 	}	
+	
+	/**
+	 * Crea un camp de tipus enter.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Valor Valor de l'enter per defecte de l'element.
+	 * @return string Codi HTML.
+	 */
+	public function CreaEnter(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+
+		$sRetorn = '';
+		if (!in_array(self::offNO_TITOL, $off))
+			$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+		return $sRetorn;
+	}
+
+	/**
+	 * Crea un camp de tipus real.
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del camp.
+	 * @param integer $Longitud Longitud màxima.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Valor Valor de l'enter per defecte de l'element.
+	 * @return string Codi HTML.
+	 */
+	public function CreaReal(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+
+		$sRetorn = '';
+		if (!in_array(self::offNO_TITOL, $off))
+			$sRetorn .= '<TD><label for="edr_'.$sNom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
+		return $sRetorn;
+	}
 	
 	/**
 	 * Crea un camp de tipus checkbox.
@@ -285,7 +342,8 @@ class Form {
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 
 		$sNom = 'edd_' . $Nom;
-		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		if (!in_array(self::offNO_TITOL, $off))
+			$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
 		$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$DataSeleccionada.$Requerit.$NomesLectura.'>';
@@ -520,7 +578,6 @@ class Form {
 
 /**
  * Classe FormRecerca.
- *
  * Classe per als formularis de recerca.
  */
 class Filtre {
@@ -776,7 +833,6 @@ exit;*/
 
 /**
  * Classe FormRecerca.
- *
  * Classe per als formularis de recerca.
  */
 class FormRecerca extends Form {
@@ -1504,7 +1560,6 @@ class FormRecerca extends Form {
 
 /**
  * Classe FormFitxa.
- *
  * Classe per als formularis de fitxa.
  */
 class FormFitxa extends Form {
@@ -1866,7 +1921,7 @@ class FormFitxa extends Form {
 	 * @return string Valor que conté.
 	 */
 	private function ValorCampText(string $camp) {
-		if ($this->Registre == NULL)
+		if ($this->Registre == null)
 			$Retorn = '';
 		else 
 			$Retorn = ' value="'.utf8_encode($this->Registre[$camp]).'" ';
@@ -1930,10 +1985,9 @@ class FormFitxa extends Form {
 	/**
 	 * Genera la fitxa per l'edició.
 	 */
-	private function GeneraFitxa() {
+	protected function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>';
 		$sRetorn .= '<FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">';
-//		$sRetorn .= '<FORM class="form-horizontal" id="frmFitxa" method="post" action="LibForms.ajax.php">';
 		$sRetorn .= "<input type=hidden name=hid_Taula value='".$this->Taula."'>";
 		$sRetorn .= "<input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>";
 		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";
@@ -1952,18 +2006,25 @@ class FormFitxa extends Form {
 					break;
 				case self::tcTEXT:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
+					//$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
+					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
 					break;
 				case self::tcENTER:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= '<TD><label for="ede_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+//					$sRetorn .= $this->CreaEnter($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $Valor->Camp);
+
+					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
+
+					$sRetorn .= $this->CreaEnter($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
+
+
 					break;
 				case self::tcREAL:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
-					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
+					//$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
+					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
+					$sRetorn .= $this->CreaReal($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
 					break;
 				case self::tcPASSWORD:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
@@ -2079,10 +2140,21 @@ class FormFitxa extends Form {
 		if ($this->HiHaPestanyes)
 			$sRetorn .= '</TD></TR></TABLE></DIV></DIV></DIV></DIV>';
 		$sRetorn .= '</TR>';
-		if (!$this->NomesLectura)
-			$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
+//		if (!$this->NomesLectura)
+//			$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
 		$sRetorn .= '</TABLE>';
 		$sRetorn .= '</FORM>';
+		$sRetorn .= '</DIV>';
+		return $sRetorn;
+	}
+	
+	/**
+	 * Genera el botó de desar.
+	 */	
+	private function GeneraDesa() {
+		$sRetorn = '<DIV>';
+		if (!$this->NomesLectura)
+			$sRetorn .= '<br><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a>';
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
 	}
@@ -2090,7 +2162,7 @@ class FormFitxa extends Form {
 	/**
 	 * Carrega les dades de la base de dades en el cas s'editi un registre existent.
 	 */
-	private function CarregaDades() {
+	protected function CarregaDades() {
 		if ($this->Id > 0) {
 			$aClauPrimaria = explode(',', $this->ClauPrimaria);
 			$aId = explode(',', $this->Id);
@@ -2126,6 +2198,7 @@ class FormFitxa extends Form {
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();
+		echo $this->GeneraDesa();
 		echo $this->GeneraMissatges();
 		echo $this->GeneraTorna();
 		CreaFinalHTML();
@@ -2275,8 +2348,7 @@ class FormFitxa extends Form {
 
 /**
  * Classe FormDetall.
- *
- * Classe per als formularis amb un mestre fix i un detall (variable).
+ * Classe per als formularis amb un mestre fix (subtítol) i un detall (variable).
  */
 class FormDetall extends FormRecerca {
 	/**
@@ -2368,6 +2440,250 @@ class FormDetall extends FormRecerca {
 			" name='$Nom' $onClick >$Titol</a>&nbsp;";
 		
 		return $sRetorn;
+	}
+}
+
+/**
+ * Classe FormFitxaDetall.
+ * Classe per als formularis mestre/detall. Poden haver múltiples detalls.
+ */
+class FormFitxaDetall extends FormFitxa {
+	/**
+	* Llista dels diferents detalls de la fitxa.
+	* @var array
+	*/    
+    private $Detalls = [];
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
+	 */
+	function __construct($con = NULL, $user = NULL) {
+		parent::__construct($con, $user);
+		$this->Detalls = [];
+	}
+	
+	/**
+	 * Afegeix un detall, és a dir, una taula relacionada.
+	 * @param string 
+	 */
+//	public function AfegeixDetall($Taula, $ClauPrimaria, $ClauForana, $Camps, $NomCamps, $TipusCamps) {
+	public function AfegeixDetall($Titol, $Taula, $ClauPrimaria, $ClauForana, $Camps) {
+		$Detall = new stdClass();
+		$Detall->Titol = $Titol; 
+		$Detall->Taula = $Taula; 
+		$Detall->ClauPrimaria = $ClauPrimaria; 
+		$Detall->ClauForana = $ClauForana; 
+
+		$Detall->Camps = '';
+		$Detall->NomCamps = ''; 
+		$Detall->TipusCamps = ''; 
+		$Detall->LongitudCamps = ''; 
+		$Detall->PermisCamps = ''; 
+		
+		$aCamps = explode(',',$Camps);
+		foreach($aCamps as $Camp) {
+			$aCamp = explode(':',trim($Camp));
+			$Detall->Camps .= $aCamp[0].',';
+			$Detall->NomCamps .= $aCamp[1].','; 
+			$Detall->TipusCamps .= $aCamp[2].','; 
+			$Detall->LongitudCamps .= $aCamp[3].','; 
+			$Detall->PermisCamps .= $aCamp[4].','; 			
+		}
+		
+		$Detall->Camps = rtrim($Detall->Camps, ',');
+		$Detall->NomCamps = rtrim($Detall->NomCamps, ',');
+		$Detall->TipusCamps = rtrim($Detall->TipusCamps, ',');
+		$Detall->LongitudCamps = rtrim($Detall->LongitudCamps, ',');
+		$Detall->PermisCamps = rtrim($Detall->PermisCamps, ',');
+		
+		array_push($this->Detalls, $Detall);
+	}
+
+	/**
+	 * Genera la fitxa per l'edició.
+	 */
+	protected function GeneraFitxa() {
+		$Retorn = parent::GeneraFitxa();
+//echo "<hr>";
+//print_h($this->Detalls);
+		foreach($this->Detalls as $Detall)
+			$Retorn .= $this->GeneraDetall($Detall);
+		return $Retorn;
+	}	
+	
+	/**
+	 * Genera un detall de la fitxa.
+	 */
+	private function GeneraDetall($Detall) {
+		$Retorn = '<BR>';
+		$Retorn .= '<H2>'.$Detall->Titol.'</H2>';
+		$Retorn .= '<FORM class="Detalls">';
+
+		$Retorn .= "<input type=hidden name=hid_Taula value='".$Detall->Taula."'>";
+		$Retorn .= "<input type=hidden name=hid_ClauPrimaria value='".$Detall->ClauPrimaria."'>";
+		$Retorn .= "<input type=hidden name=hid_ClauForana value='".$Detall->ClauForana."'>";
+		
+		$Retorn .= '<TABLE border=0>';
+//echo "<hr>";
+//var_dump($Detall);
+		$Retorn .= '<THEAD>';
+		$aCamps = explode(",", TrimXX($Detall->Camps));
+		$aNomCamps = explode(",", $Detall->NomCamps);
+		$aTipusCamps = explode(",", $Detall->TipusCamps);
+		$aLongitudCamps = explode(",", $Detall->LongitudCamps);
+		$aPermisCamps = explode(",", $Detall->PermisCamps);
+//echo "<hr>";
+//print_h($aCamps);
+//print_h($aNomCamps);
+//print_h($aTipusCamps);
+//print_h($aLongitudCamps);
+//print_h($aPermisCamps);
+		for($i=0; $i < count($aCamps); $i++) {
+			$Retorn .= '<TH>'.trim($aNomCamps[$i]).'</TH>';
+		}
+		$Retorn .= '</THEAD>';
+		
+		foreach($Detall->Registre as $row) {
+			$Retorn .= '<TR>';
+			for($i=0; $i < count($aCamps); $i++) {
+				switch (trim($aTipusCamps[$i])) {
+					case 'text':
+						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
+						$Valor = 'value="'.utf8_encode($row[$aCamps[$i]]).'" ';
+						$off = [self::offNO_TITOL];
+						if ($aPermisCamps[$i] == 'r')
+							array_push($off, self::offNOMES_LECTURA);
+						$Retorn .= $this->CreaText($Camp, '', $aLongitudCamps[$i], $off, $Valor);
+						break;
+					case 'int':
+						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
+						$Valor = 'value="'.$row[$aCamps[$i]].'" ';
+						$off = [self::offNO_TITOL];
+						if ($aPermisCamps[$i] == 'r')
+							array_push($off, self::offNOMES_LECTURA);
+						$Retorn .= $this->CreaEnter($Camp, '', $aLongitudCamps[$i], $off, $Valor);
+						break;						
+					case 'date':
+						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
+						$Valor = 'value="'.MySQLAData($row[$aCamps[$i]]).'" ';
+						$off = [self::offNO_TITOL];
+						if ($aPermisCamps[$i] == 'r')
+							array_push($off, self::offNOMES_LECTURA);
+						$Retorn .= $this->CreaData($Camp, '', $off, $Valor);
+						break;	
+					default:
+						break;
+				}				
+			}
+			$Retorn .= '</TR>';
+		}
+		$Retorn .= '<TABLE>';
+		$Retorn .= '</FORM>';
+		return $Retorn;
+	}
+
+	/**
+	 * Carrega les dades dels detalls.
+	 */
+	protected function CarregaDades() {
+		parent::CarregaDades();
+		foreach($this->Detalls as &$Detall)
+			$this->CarregaDadesDetall($Detall);
+	}	
+	
+	/**
+	 * Carrega les dades d'un detall.
+	 */
+	private function CarregaDadesDetall(&$Detall) {
+		$Detall->Registre = [];
+		if ($this->Id > 0) {
+			$aClauForana = explode(',', $Detall->ClauForana);
+			$aId = explode(',', $this->Id);
+			for ($i=0; $i<count($aClauForana); $i++) 
+				$aClauForana[$i] .= '='.$aId[$i];
+			$Where = implode(' AND ', $aClauForana);
+//echo '<br>'.$Where.'<br>';			
+			$SQL = 'SELECT * FROM '.$Detall->Taula.' WHERE '.$Where;
+//echo '<br>'.$SQL.'<br>';			
+			$ResultSet = $this->Connexio->query($SQL);
+			if ($ResultSet->num_rows > 0) {
+				while($row = $ResultSet->fetch_assoc()) 
+					array_push($Detall->Registre, $row);
+			}
+		}		
+	}
+	
+	/**
+	 * Desa la fitxa i els detalls a la base de dades.
+	 * @param string $jsonForm Fitxa a desar en format JSON.
+	 * @param string $jsonDetalls Array de Detalls a desar en format JSON.
+	 * @return string Missatge informatiu.
+	 */
+	public function Desa(string $jsonForm, string $jsonDetalls): string {
+		$Retorn = parent::Desa($jsonForm);
+		if (!str_contains($Retorn, 'ERROR DesaFitxa')) {
+			$jsonDetalls = preg_replace('/[[:cntrl:]]/', '', $jsonDetalls);
+			$Detalls = json_decode($jsonDetalls);
+			foreach($Detalls as $Detall)
+				$Retorn .= $this->DesaDetall($Detall);
+		}
+		return $Retorn;
+	}
+	
+	/**
+	 * Desa un detall a la base de dades.
+	 * @param string $Detall Detall a desar.
+	 * @return string Missatge informatiu.
+	 */
+	public function DesaDetall($Detall): string {
+		$Retorn = '';
+		
+		$Taula = '';
+		$ClauPrimaria = '';
+		$ClauForana = '';
+
+		foreach($Detall as $Valor) {
+			if ($Valor->name == 'hid_Taula') 
+				$Taula = $Valor->value;
+			else if ($Valor->name == 'hid_ClauPrimaria') 
+				$ClauPrimaria = $Valor->value;
+			else if ($Valor->name == 'hid_ClauForana') 
+				$ClauForana = $Valor->value;
+			else {
+				// $Valor té el format tipus_camp-Id
+				$Tipus = substr($Valor->name, 0, 3);
+				$Resta = substr($Valor->name, 4);
+				$aResta = explode('-', $Resta);
+				$Camp = $aResta[0];
+				$Id = $aResta[1];
+				switch ($Tipus) {
+					case 'edt':
+						// Camp text
+						// XSS: no es permet cap etiqueta HTML
+						$Valor->value = strip_tags($Valor->value);
+						$Value = TextAMySQL($Valor->value);
+						break;
+					case 'edd':
+						// Camp data
+						$Value = DataAMySQL($Valor->value);
+						break;
+				}
+				if ($Taula != '' && $ClauPrimaria != '') {
+					$SQL = "UPDATE $Taula SET $Camp=$Value WHERE $ClauPrimaria=$Id";
+//print '<hr>SQL: '.$SQL;
+					try {
+						if (!$this->Connexio->query($SQL))
+							throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+					} catch (Exception $e) {
+						$Retorn .= "<BR><b>ERROR DesaDetall</b>. Causa: ".$e->getMessage();
+					}		
+					$Retorn .= "<br>$SQL";
+				}
+			}
+		}
+		return $Retorn;
 	}
 }
 
