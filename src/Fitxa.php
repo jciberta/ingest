@@ -215,6 +215,30 @@ switch ($accio) {
 			$frm->EscriuHTML();
 		}
         break;
+    case "Acta":
+		$CursIdGrup = empty($_GET) ? -1 : $_GET['Id'];
+		if ($CursIdGrup == -1)
+			header("Location: Surt.php");
+
+		$aCursId = explode(',', $CursIdGrup);
+		$CursId = $aCursId[0];
+		$Grup = (count($aCursId)>1) ? $aCursId[1] : '';
+
+		// Comprovem que l'usuari té accés a aquesta pàgina
+//		$Professor = new Professor($conn, $Usuari);
+//		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+//			header("Location: Surt.php");		
+		
+		$acta = new Acta($conn, $Usuari);
+		$acta = $acta->GeneraPDF($CursId, $Grup);
+//print_h($aMatricules);
+//exit;
+/*		if (count($aMatricules) > 0) {
+			$frm = new ExpedientSaga($conn, $Usuari, $aMatricules[0]);
+			$frm->Titol = "Avaluació d'alumnes";
+			$frm->EscriuHTML();
+		}*/
+        break;
     case "PlaTreball":
 		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
 		if ($MatriculaId == -1)

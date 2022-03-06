@@ -359,6 +359,7 @@ class Avaluacio
 		$frm->Descripcions = 'Codi, Nom, Grup, Nivell, Any, Avaluació, Trimestre';
 		
 		$frm->AfegeixOpcio('Avaluació', 'Fitxa.php?accio=ExpedientSagaAvaluacio&Id=');
+		$frm->AfegeixOpcio('Acta', 'Fitxa.php?accio=Acta&Id=');
 		$frm->EscriuHTML();
 	}
 	

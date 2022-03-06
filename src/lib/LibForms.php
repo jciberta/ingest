@@ -2209,7 +2209,7 @@ class FormFitxa extends Form {
 	 * @param string $jsonForm Fitxa a desar en format JSON.
 	 * @return string Missatge informatiu.
 	 */
-	public function Desa(string $jsonForm): string {
+	public function Desa(string $jsonForm, string $jsonDetalls = ''): string {
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
 		// Configuracions http://htmlpurifier.org/demo.php
@@ -2621,7 +2621,7 @@ class FormFitxaDetall extends FormFitxa {
 	 * @param string $jsonDetalls Array de Detalls a desar en format JSON.
 	 * @return string Missatge informatiu.
 	 */
-	public function Desa(string $jsonForm, string $jsonDetalls): string {
+	public function Desa(string $jsonForm, string $jsonDetalls = ''): string {
 		$this->Connexio->begin_transaction();
 		try {
 			$Retorn = parent::Desa($jsonForm);
