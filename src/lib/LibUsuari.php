@@ -165,6 +165,12 @@ class Usuari extends Objecte
 			$frm->AfegeixEnllac('mare_id', 'Visualitza fitxa', 'UsuariFitxa.php?Id=', [FormFitxa::offAL_COSTAT]);
 		}
 
+		if ($this->Registre->es_professor) {
+			$frm->Pestanya('Perfil');
+			$frm->AfegeixText('titol_angles', 'Títol anglès ', 25);
+			$frm->AfegeixCheckBox('perfil_aicle', "Perfil AICLE");
+		}
+
 		if (!$this->Usuari->es_professor) {
 			$frm->Pestanya('Rols');
 			//$frm->IniciaColumnes();

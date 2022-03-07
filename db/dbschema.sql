@@ -98,6 +98,8 @@ CREATE TABLE USUARI
     es_alumne          BIT NOT NULL DEFAULT 0,
     es_pare            BIT NOT NULL DEFAULT 0,
     permet_tutor       BIT NOT NULL DEFAULT 0,
+    titol_angles       VARCHAR(5),
+    perfil_aicle       BIT DEFAULT 0,
     imposa_canvi_password BIT,
     usuari_bloquejat BIT,
     pare_id INT,
