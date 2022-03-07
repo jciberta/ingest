@@ -167,7 +167,7 @@ class Usuari extends Objecte
 
 		if ($this->Registre->es_professor) {
 			$frm->Pestanya('Perfil');
-			$frm->AfegeixText('titol_angles', 'Títol anglès ', 25);
+			$frm->AfegeixText('titol_angles', 'Títol anglès ', 25, [], 5);
 			$frm->AfegeixCheckBox('perfil_aicle', "Perfil AICLE");
 		}
 
