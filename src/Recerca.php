@@ -111,14 +111,18 @@ switch ($accio) {
 		if (!$Usuari->es_admin)
 				header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari);
+		$frm->AfegeixJavaScript('Inet.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Registres';
-		$SQL = ' SELECT usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ';
+		$SQL = ' SELECT registre_id, usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ';
 		$frm->SQL = $SQL;
 		$frm->Taula = 'REGISTRE';		
+		$frm->ClauPrimaria = 'registre_id';
 		$frm->Camps = 'usuari_id, nom_usuari, data, ip, seccio, missatge';
 		$frm->Descripcions = 'usuari_id, Usuari, Data, IP, Secció, Missatge';
-//		$frm->Filtre->AfegeixLookup('usuari_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
+
+		$frm->AfegeixOpcioAJAX('Mostra dades IP', 'MostraDadesIP', 'ip', [], '', 'help.svg');
+
 		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
 		$frm->EscriuHTML();
         break;		

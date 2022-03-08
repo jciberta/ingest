@@ -25,6 +25,10 @@ class Config {
 	const UsaDataTables  = True;
 }
 
+
+// API api.ipdata.co
+define('IPDATA_API_KEY', '***');
+
 unset($CFG);
 global $CFG;
 
