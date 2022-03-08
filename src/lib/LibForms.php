@@ -259,7 +259,7 @@ class Form {
 
 		$sRetorn = '';
 		if (!in_array(self::offNO_TITOL, $off))
-			$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+			$sRetorn .= '<TD><label for="ede_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.'></TD>';
 		return $sRetorn;
 	}	
