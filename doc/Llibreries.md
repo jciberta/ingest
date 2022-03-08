@@ -6,6 +6,7 @@
 - TCPDF (https://tcpdf.org/). Llicència GNU LGPL v3
 - PHPMailer 6.1 (https://github.com/PHPMailer/PHPMailer). Llicència GNU LGPL 2.1
 - HTML Purifier  4.13.0 (http://htmlpurifier.org/). Llicència GNU LGPL v2.1 
+- Google APIs Client Library for PHP (https://github.com/googleapis/google-api-php-client). Llicència Apache 2.0
 
 ### JavaScript
 

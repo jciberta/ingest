@@ -165,6 +165,12 @@ class Usuari extends Objecte
 			$frm->AfegeixEnllac('mare_id', 'Visualitza fitxa', 'UsuariFitxa.php?Id=', [FormFitxa::offAL_COSTAT]);
 		}
 
+		if ($this->Registre->es_professor) {
+			$frm->Pestanya('Perfil');
+			$frm->AfegeixText('titol_angles', 'Títol anglès ', 25);
+			$frm->AfegeixCheckBox('perfil_aicle', "Perfil AICLE");
+		}
+
 		if (!$this->Usuari->es_professor) {
 			$frm->Pestanya('Rols');
 			//$frm->IniciaColumnes();
@@ -1327,23 +1333,25 @@ class Alumne extends Usuari
 	 */
 	public function Escriptori() {
 		CreaIniciHTML($this->Usuari, '');
-
-		//$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
-		$URL = '';
 		echo '<div class="card-columns" style="column-count:6">';
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Pla de treball</h5>';
-		echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
 
-		//$Alumne	= new Alumne($this->Connexio, $this->Usuari);
 		$MatriculaId = $this->ObteMatriculaActiva($this->Usuari->usuari_id);
+
+		// Pla de treball. Només es veu a l'avaluació ordinària
+/*		if ($this->EsAvaluacioOrdinariaCursActual($this->Usuari->usuari_id)) {
+			$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
+			echo '  <div class="card">';
+			echo '    <div class="card-body">';
+			echo '      <h5 class="card-title">Pla de treball</h5>';
+			echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
+			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+			echo '    </div>';
+			echo '  </div>';
+		}*/
+
+		// Expedient. Només es veu quan els butlletins estan oberts
 		if ($MatriculaId > 0) {
 			$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
-			//echo '<div class="card-columns" style="column-count:6">';
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Expedient</h5>';
@@ -1354,6 +1362,30 @@ class Alumne extends Usuari
 		}
 		echo '</div>';
 	}
+	
+	/**
+	 * Indica si la avaluació del curs actual de l'alumne és ordinària.
+	 * @param $AlumneId Identificador de l'alumne.
+	 * @returns boolean Cert si la avaluació del curs actual de l'alumne és ordinària.
+	 */
+	private function EsAvaluacioOrdinariaCursActual($AlumneId) {
+		$bRetorn = false;
+		$SQL = " 
+			SELECT *
+			FROM MATRICULA M
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
+			WHERE AA.actual=1 AND M.alumne_id=$AlumneId;		
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {		
+			$rsMatricula = $ResultSet->fetch_object();
+			$bRetorn = (($rsMatricula->estat != 'T') && ($rsMatricula->avaluacio == 'ORD'));
+		}		
+		return $bRetorn;
+	}
+	
 }
 
 /**
@@ -1538,10 +1570,15 @@ class Orla extends Form
 				$Fitxer = 'img/pix/'.$row->document.'.jpg';
 				if (!file_exists(ROOT.'/'.$Fitxer))
 					$Fitxer = 'img/nobody.png';
-				$Retorn .= '<TD style="vertical-align:top;text-align:center;">';
+				$Difuminat = ($row->baixa == 1) ? 'opacity:0.3;' : '';
+				$Retorn .= '<TD style="'.$Difuminat.'vertical-align:top;text-align:center;">';
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
 				$Retorn .= '<BR>';
-				$Retorn .= $Nom;
+				$AlumneId = $row->usuari_id;
+				$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
+				$Retorn .= "<A target=_blank href='$URL'>$Nom</A>";
+				if ($this->Usuari->es_admin)
+					$Retorn .= "<BR>".$row->document;
 				$Retorn .= '</TD>';
 				$i++;
 			}
@@ -1564,7 +1601,7 @@ class Orla extends Form
 		$Nivell = $this->Nivell;
 		$Grup = $this->Grup;
 		$SQL = "
-			SELECT U.*
+			SELECT U.*, M.baixa
 			FROM MATRICULA M
 			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)

@@ -230,7 +230,7 @@ function GetFormDataJSON(oForm) {
 	var controls = oForm.elements;
 	var msg = "[";
 	for (var i=0, iLen=controls.length; i<iLen; i++) {
-console.dir(controls[i]);		
+//console.dir(controls[i]);		
 		if (controls[i].name != '' && !controls[i].readOnly) {
 			if (controls[i].type && controls[i].type === 'checkbox') {
 				msg += '{"name":"' + controls[i].name + '","value":"' + (controls[i].checked ? 1 : 0) + '"},';
@@ -296,22 +296,49 @@ function SuprimeixRegistre(Taula, ClauPrimaria, Valor) {
  * @param element Botó que desa la fitxa.
  */
 function DesaFitxa(element) { 
+
+	// Formulari principal
 //console.dir('element: ' + element);
 	var frm = document.getElementById('frmFitxa');
 //console.dir('frm: ' + frm);
 	var jsonForm = GetFormDataJSON(frm);
 console.dir('jsonForm: ' + jsonForm);
+
+
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());
 //console.dir('jsonForm2: ' + jsonForm2);
 
+
+	// Els detalls s'emmagatzemen en un array de detalls en JSON
+	var jsonDetalls = '';
+//	var Detalls = Array.from(document.getElementsByClassName("Detalls"));
+	var Detalls = document.getElementsByClassName("Detalls");
+//console.log(Detalls);		
+	for(i=0;i<Detalls.length;i++) {
+console.log(Detalls[i]);	
+		jsonDetall = GetFormDataJSON(Detalls[i]);
+console.log(jsonDetall);
+		jsonDetalls += jsonDetall + ',';
+	}
+	if (jsonDetalls.length >0 )
+		jsonDetalls = '[' + jsonDetalls.slice(0, -1) + ']';
+console.log(jsonDetalls);
+
+	// Acció corresponent a FormFitxa o FormFitxaDetall
+	var accio = 'DesaFitxa';
+	if (Detalls.length > 0)
+		accio = 'DesaFitxaDetall';
+
+	// Crida AJAX
 	$('#MissatgeCorrecte').hide();
 	$('#MissatgeError').hide();
 	$.ajax( {
 		type: 'POST',
 		url: 'lib/LibForms.ajax.php',
 		data:{
-			'accio': 'DesaFitxa',
-			'form': jsonForm
+			'accio': accio,
+			'form': jsonForm,
+			'detalls': jsonDetalls
 		},
         success: function(data) {
 			$('#btnDesa').hide();
@@ -325,9 +352,8 @@ console.dir('jsonForm: ' + jsonForm);
 				$('#MissatgeTorna').show();
 console.log('data:');
 console.dir(data);
-				$('#debug').html('Dades rebudes:<br><pre>' + escapeHTML(JSON.stringify(data)) + '</pre>');
-
-//				$('#debug').html('Dades rebudes:<br><pre>'+ JSON.stringify(data))+'</pre>';
+//				$('#debug').html('Dades rebudes:<br><pre>' + escapeHTML(JSON.stringify(data)) + '</pre>');
+				$('#debug').html('Dades rebudes:<br><pre>'+ JSON.stringify(data))+'</pre>';
 //var text = document.createTextNode(JSON.stringify(data));
 //console.dir(text);
 				//$('#debug').html(text.data);

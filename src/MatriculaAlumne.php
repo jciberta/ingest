@@ -124,6 +124,11 @@ if ($ButlletiVisible) {
 			$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$MatriculaId");
 			echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
 			if ($Usuari->es_admin) {
+				// Pla de treball
+				echo '&nbsp';
+				$URL = GeneraURL("Fitxa.php?accio=PlaTreball&Id=$MatriculaId");
+				echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnPlaTreball">Pla de treball</a>';
+				
 				// Edició de l'expedient
 				echo '&nbsp';
 				if ($ActivaEdicio==1) { 

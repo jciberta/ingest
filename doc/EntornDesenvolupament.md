@@ -41,15 +41,36 @@ mysql -u root -p
 mysql -u root -p -h 127.0.0.1 -P 3306
 ```
 
-Còpia de seguretat
+Còpia de seguretat:
 ```
-mysqldump -u root -p InGest > InGest.sql
-mysqldump -u root -p InGest > "InGest_$(date +%F_%R).sql"
+mysqldump -u root -p --routines InGest > InGest.sql
+mysqldump -u root -p --routines InGest > "InGest_$(date +%F_%R).sql"
 ```
 
-Càrrega de dades
+Càrrega de dades:
 ```
 mysql -u root -p InGest < InGest.sql
+```
+
+#### Composer
+
+Instal·lació:
+```
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+mv composer.phar /usr/local/bin/composer
+```
+
+#### PHPDocumentator
+
+Instal·lació:
+```
+wget http://phpdoc.org/phpDocumentor.phar
+chmod +x phpDocumentor.phar
+mv phpDocumentor.phar /usr/local/bin/phpdoc
+phpdoc --version
 ```
 
 ### Windows

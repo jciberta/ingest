@@ -10,7 +10,7 @@
  */
 
 class Config {
-	const Versio         = '1.3';
+	const Versio         = '1.4';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
@@ -23,8 +23,13 @@ class Config {
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;
+	const AutenticacioGoogle = False;
 }
 
+// Credencials Google
+define('GOOGLE_CLIENT_ID', '***');
+define('GOOGLE_CLIENT_SECRET', '***');
+define('GOOGLE_REDIRECT_URI', 'http://'.$_SERVER['HTTP_HOST'].'/AutenticacioOath2Google.php');
 
 // API api.ipdata.co
 define('IPDATA_API_KEY', '***');
@@ -63,12 +68,18 @@ else {
 	// Execució de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+		// Windows
 		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
 		define('UNITAT_XAMPP', 'D');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
+		define('FONT_FILENAME_ARIAL', 'C:\Windows\Fonts\arial.ttf');
 	}
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+		// Linux
 		define('INGEST_DATA', '/var/www/ingest-data');
+		// Cals instal·lar les fonts
+		// sudo apt-get install msttcorefonts
+		define('FONT_FILENAME_ARIAL', '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf');
 	}	
 }
 

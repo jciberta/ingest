@@ -18,6 +18,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibCurs.php');
 
@@ -214,7 +215,46 @@ switch ($accio) {
 			$frm->EscriuHTML();
 		}
         break;
-    case "Altre":
+    case "Acta":
+		$CursIdGrup = empty($_GET) ? -1 : $_GET['Id'];
+		if ($CursIdGrup == -1)
+			header("Location: Surt.php");
+
+		$aCursId = explode(',', $CursIdGrup);
+		$CursId = $aCursId[0];
+		$Grup = (count($aCursId)>1) ? $aCursId[1] : '';
+
+		// Comprovem que l'usuari té accés a aquesta pàgina
+//		$Professor = new Professor($conn, $Usuari);
+//		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+//			header("Location: Surt.php");		
+		
+		$acta = new Acta($conn, $Usuari);
+		$acta = $acta->GeneraPDF($CursId, $Grup);
+//print_h($aMatricules);
+//exit;
+/*		if (count($aMatricules) > 0) {
+			$frm = new ExpedientSaga($conn, $Usuari, $aMatricules[0]);
+			$frm->Titol = "Avaluació d'alumnes";
+			$frm->EscriuHTML();
+		}*/
+        break;
+    case "PlaTreball":
+		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
+		if ($MatriculaId == -1)
+			header("Location: Surt.php");
+
+		$mat = new Matricula($conn, $Usuari);
+		$mat->Carrega($MatriculaId);
+		$AlumneId = $mat->ObteAlumne();
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+			$frm = new PlaTreball($conn, $Usuari, $MatriculaId);
+			$frm->EscriuHTML();
+		}
+		else
+			header("Location: Surt.php");		
+        break;
+	case "Altre":
         break;
 }
 

@@ -142,9 +142,10 @@ switch ($Accio) {
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
 		$SQL = ' SELECT '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
-			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.usuari_bloquejat, '.
+			' FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS Alumne, '.
+			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.municipi, U.usuari_bloquejat, '.
 			' M.matricula_id, M.grup, '.
-			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi, C.nivell, M.baixa, '.
+			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi AS CodiCurs, C.nivell, M.baixa, '.
 			' CF.cicle_formatiu_id AS CicleFormatiuId, '.
 			' AA.any_academic_id AS AnyAcademicId '.
 			' FROM USUARI U '.
@@ -159,8 +160,10 @@ switch ($Accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, telefon, codi, grup';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Curs, Grup';
+//		$frm->Camps = 'NomAlumne, Cognom1Alumne, Cognom2Alumne, username, data_naixement, edat, telefon, municipi, codi, grup';
+//		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup';
+		$frm->Camps = 'Alumne, username, data_naixement, edat, telefon, municipi, CodiCurs, grup';
+		$frm->Descripcions = 'Nom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup';
 		if ($Usuari->es_admin) {
 			$frm->Camps = 'matricula_id, '.$frm->Camps;
 			$frm->Descripcions = 'Id, '.$frm->Descripcions;
@@ -171,7 +174,7 @@ switch ($Accio) {
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
-		$frm->AfegeixOpcio('Expedient PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id');
+		$frm->AfegeixOpcio('Butlletí PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id', 'pdf.png');
 		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 		if ($Usuari->es_admin)
 			$frm->AfegeixOpcioAJAX('[Elimina]', 'EliminaMatriculaAlumne', 'matricula_id');
