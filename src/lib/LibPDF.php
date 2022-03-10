@@ -100,11 +100,12 @@ class DocumentPDF extends TCPDF
 	/**
 	 * Títol 1 per als expedients de notes.
 	 * @param string $Titol Títol a mostrar.
+	 * @param int $Mida Mida de la font.
 	 */
-	public function Titol1($Titol) {
+	public function Titol1(string $Titol, int $Mida = 14) {
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
-        $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
+        $this->SetFont('helvetica', 'B', $Mida); // Bold
 //		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
@@ -115,11 +116,12 @@ class DocumentPDF extends TCPDF
 	/**
 	 * Títol 2 per als expedients de notes.
 	 * @param string $Titol Títol a mostrar.
+	 * @param int $Mida Mida de la font.
 	 */
-	public function Titol2($Titol) {
+	public function Titol2($Titol, int $Mida = 12) {
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
-        $this->SetFont('helvetica', 'B', 12); // Helvetica, Bold, 12
+        $this->SetFont('helvetica', 'B', $Mida);
 //		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom

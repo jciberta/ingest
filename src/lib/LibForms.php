@@ -252,16 +252,17 @@ class Form {
 	 * @param integer $Longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
 	 * @param mixed $Valor Valor de l'enter per defecte de l'element.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return string Codi HTML.
 	 */
-	public function CreaText(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null) {
+	public function CreaText(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null, int $MaximCaracters = 0) {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
-
+		$MaximCaracters = ($MaximCaracters != 0) ? ' maxlength='.$MaximCaracters : '';
 		$sRetorn = '';
 		if (!in_array(self::offNO_TITOL, $off))
-			$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
-		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.'></TD>';
+		$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.$MaximCaracters.'></TD>';
 		return $sRetorn;
 	}	
 	
@@ -854,7 +855,7 @@ class FormRecerca extends Form {
 	// Tipus d'opcions
 	const toURL = 1;
 	const toAJAX = 2;
-	const toImatge = 3;
+	const toImatge = 3; // Mostra una imatge sense cap tipus d'acció.
 	
 	// Opcions del FormRecerca.
 	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
@@ -1312,6 +1313,31 @@ class FormRecerca extends Form {
 	}
 
 	/**
+	 * Genera la part del modal per a informacions vàries.
+	 */
+	private function GeneraModalInformatiu() {
+		return '
+			<div class="modal fade" id="ModalInformatiu" tabindex="-1" role="dialog" aria-labelledby="ModalInformatiu" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="ModalInformatiuTitol"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				  </div>
+				  <div class="modal-body" id="ModalInformatiuText">
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Tanca</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		';
+	}
+	
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
@@ -1324,6 +1350,8 @@ class FormRecerca extends Form {
 		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
 		echo $this->GeneraSubTitol();
 		echo $this->GeneraMissatges();
+		echo $this->GeneraModalInformatiu();
+
 		// Generem primers els diferents blocs (l'ordre és important per a la SQL)
 		$Filtre = $this->GeneraFiltre();
 		$Cerca = $this->GeneraCerca();
@@ -1361,9 +1389,10 @@ class FormRecerca extends Form {
 	 * @param string $CampClau Camp del registre que serveix com a identificador. 
 	 * 		Si no s'especifica, com a paràmetre es passarà l'identificador del registre. 
 	 * @param array $ofr Opcions. 
-	 * @param string $CampValor Camp del registre que analitzem el seu valor (opció ofrBOOLEA ). 
+	 * @param string $CampValor Camp del registre que analitzem el seu valor (opció ofrBOOLEA). 
+	 * @param string $Imatge Imatge a posar en comptes del títol. 
 	 */
-	public function AfegeixOpcioAJAX(string $Titol, string $Funcio, string $CampClau = '', array $ofr = [], string $CampValor = '') {
+	public function AfegeixOpcioAJAX(string $Titol, string $Funcio, string $CampClau = '', array $ofr = [], string $CampValor = '', string $Imatge = '') {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
@@ -1371,6 +1400,7 @@ class FormRecerca extends Form {
 		$this->Opcions[$i]->Titol = $Titol;
 		$this->Opcions[$i]->Funcio = $Funcio;
 		$this->Opcions[$i]->Camp = $CampClau;
+		$this->Opcions[$i]->Imatge = $Imatge;
 		$this->Opcions[$i]->Opcions = $ofr;
 		$this->Opcions[$i]->CampValor = $CampValor;
 	}
@@ -1409,22 +1439,16 @@ class FormRecerca extends Form {
 			
 			if ($obj->Tipus == self::toURL) {
 				// AfegeixOpcio
-//				if ($obj->Camp == '')
-//					$Retorn .= '<TD><A HREF="'.$obj->URL.$Id.'">'.$obj->Titol.'<A>';
-//				else 
-//					$Retorn .= '<TD><A HREF="'.$obj->URL.$row[$obj->Camp].'">'.$obj->Titol.'<A>';
 				$URL = ($obj->Camp == '') ? $obj->URL.$Id : $obj->URL.$row[$obj->Camp];
-//				$Retorn .= '<TD><A HREF="'.$URL.'">'.$obj->Titol.'<A>';
 				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
 				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
 				$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
-				
 			}
 			else if ($obj->Tipus == self::toAJAX) {
 				// AfegeixOpcioAJAX
+				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
+				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
 				if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
-//print_r($row['usuari_bloquejat']);
-//print_r($row);
 					$NoMostrisCheckBox = False;
 					$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
 					if ($obj->Camp == '')
@@ -1447,9 +1471,18 @@ class FormRecerca extends Form {
 				}
 				else {
 					if ($obj->Camp == '')
-						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
-					else 
-						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$row[$obj->Camp].')";>'.$obj->Titol.'<A>';
+//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$Text.'<A>';
+					else {
+
+						// Cal posar cometes si no és un número
+						$Valor = $row[$obj->Camp];
+						if (!is_numeric($Valor)) 
+							$Valor = "'$Valor'";
+						
+//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$obj->Titol.'<A>';
+						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$Text.'<A>';
+					}					
 //				$Retorn .= 'AJAX';
 //				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 //				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
@@ -1624,9 +1657,10 @@ class FormFitxa extends Form {
 	 * @param string $titol Títol del camp.
 	 * @param integer $longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return void
 	 */
-	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = []) {
+	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = [], int $MaximCaracters = 0) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -1635,6 +1669,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Longitud = 5*$longitud;
 		$this->Camps[$i]->Opcions = $off;
+		$this->Camps[$i]->MaximCaracters = $MaximCaracters;
 	}
 
 	/**
@@ -1644,10 +1679,11 @@ class FormFitxa extends Form {
 	 * @param string $titol Títol del camp.
 	 * @param integer $longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return void
 	 */
-	public function AfegeixText(string $camp, string $titol, int $longitud, array $off = []) {
-		$this->Afegeix(self::tcTEXT, $camp, $titol, $longitud, $off);
+	public function AfegeixText(string $camp, string $titol, int $longitud, array $off = [], int $MaximCaracters = 0) {
+		$this->Afegeix(self::tcTEXT, $camp, $titol, $longitud, $off, $MaximCaracters);
 	}
 
 	/**
@@ -2040,7 +2076,7 @@ class FormFitxa extends Form {
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					//$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
-					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
+					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp), $Valor->MaximCaracters);
 					break;
 				case self::tcENTER:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
@@ -2198,12 +2234,16 @@ class FormFitxa extends Form {
 		if ($this->Id > 0) {
 			$aClauPrimaria = explode(',', $this->ClauPrimaria);
 			$aId = explode(',', $this->Id);
-			for ($i=0; $i<count($aClauPrimaria); $i++) 
-				$aClauPrimaria[$i] .= '='.$aId[$i];
+			for ($i=0; $i<count($aClauPrimaria); $i++) { 
+				if (is_numeric($aId[$i]))
+					$aClauPrimaria[$i] .= '='.$aId[$i];
+				else
+					$aClauPrimaria[$i] .= "='".$aId[$i]."'";
+			}
 			$Where = implode(' AND ', $aClauPrimaria);
 //echo '<br>'.$Where.'<br>';			
 			$SQL = 'SELECT * FROM '.$this->Taula.' WHERE '.$Where;
-//echo '<br>'.$SQL.'<br>';			
+//echo '<br>'.$SQL.'<br>';
 			$ResultSet = $this->Connexio->query($SQL);
 			if ($ResultSet->num_rows > 0) {
 				$this->Registre = $ResultSet->fetch_assoc();
@@ -2243,7 +2283,7 @@ class FormFitxa extends Form {
 	 * @param string $jsonForm Fitxa a desar en format JSON.
 	 * @return string Missatge informatiu.
 	 */
-	public function Desa(string $jsonForm): string {
+	public function Desa(string $jsonForm, string $jsonDetalls = ''): string {
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
 		// Configuracions http://htmlpurifier.org/demo.php
@@ -2352,7 +2392,10 @@ class FormFitxa extends Form {
 				$SQL .= $aCamps[$i].'='.trim($aValues[$i]).', ';
 			}
 			$SQL = substr($SQL, 0, -2);
-			$SQL .= ' WHERE '.$ClauPrimaria.'='.$Id;
+			if (is_numeric($Id))
+				$SQL .= ' WHERE '.$ClauPrimaria.'='.$Id;
+			else
+				$SQL .= " WHERE $ClauPrimaria='$Id'";
 		}
 		else {
 			// INSERT
@@ -2676,7 +2719,7 @@ class FormFitxaDetall extends FormFitxa {
 	 * @param string $jsonDetalls Array de Detalls a desar en format JSON.
 	 * @return string Missatge informatiu.
 	 */
-	public function Desa(string $jsonForm, string $jsonDetalls): string {
+	public function Desa(string $jsonForm, string $jsonDetalls = ''): string {
 		$this->Connexio->begin_transaction();
 		try {
 			$Retorn = parent::Desa($jsonForm);

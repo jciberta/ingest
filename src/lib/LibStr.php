@@ -150,15 +150,30 @@ function CodificaUTF8(string $text): string
  * @param string $text data a preparar.
  * @return string Text preparat.
  */
-function TextAMySQL(string $text)
+function TextAMySQL($text)
 {
-	if ($text == '')
+	if ($text == '' || $text === null)
 		$Retorn = 'NULL';
 	else {
-		$text = CodificaUTF8($text);
+		if (is_string($text))
+			$text = CodificaUTF8($text);
 //print $text." -> CodificaUTF8(text): ".$text.'<BR>';
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
+	return $Retorn;
+}
+
+/**
+ * Prepara un camp booleà per a formar part d'una SQL.
+ * @param string $valor data a preparar.
+ * @return string Text preparat.
+ */
+function BooleaAMySQL($valor)
+{
+	if ($valor == '' || $valor === null)
+		$Retorn = 'NULL';
+	else
+		$Retorn = ($valor == 1 || $valor == true) ? '1' : '0';
 	return $Retorn;
 }
 
@@ -256,6 +271,13 @@ function EscapaHTML($Text) {
 	$Text = str_replace('>', '&gt;', $Text);
     return $Text;
 } 
+
+// https://www.php.net/manual/en/function.str-starts-with.php
+if (!function_exists('str_starts_with')) {
+  function str_starts_with($str, $start) {
+    return (@substr_compare($str, $start, 0, strlen($start))==0);
+  }
+}
 
 // https://www.php.net/manual/en/function.str-contains.php
 if (!function_exists('str_contains')) {

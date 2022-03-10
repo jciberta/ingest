@@ -2,3 +2,6 @@
 *.zip
 *.orig
 src/img/pix
+*.BASE
+*.LOCAL
+*.REMOTE

@@ -98,6 +98,8 @@ CREATE TABLE USUARI
     es_alumne          BIT NOT NULL DEFAULT 0,
     es_pare            BIT NOT NULL DEFAULT 0,
     permet_tutor       BIT NOT NULL DEFAULT 0,
+    titol_angles       VARCHAR(5),
+    perfil_aicle       BIT DEFAULT 0,
     imposa_canvi_password BIT,
     usuari_bloquejat BIT,
     pare_id INT,
@@ -341,12 +343,15 @@ CREATE TABLE PROFESSOR_GUARDIA
 CREATE TABLE REGISTRE
 (
     /* R */
+    registre_id INT NOT NULL AUTO_INCREMENT,
     usuari_id INT NOT NULL,
     nom_usuari VARCHAR(100) NOT NULL, 
     data DATETIME NOT NULL,
     ip VARCHAR(15) NOT NULL,
     seccio VARCHAR(20) NOT NULL, 
-    missatge VARCHAR(255) NOT NULL
+    missatge VARCHAR(255) NOT NULL,
+	
+    CONSTRAINT RegistrePK PRIMARY KEY (registre_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE TUTOR
