@@ -9,12 +9,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-//require_once(ROOT.'/lib/LibUsuari.php');
-//require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibForms.php');
-//require_once(ROOT.'/lib/LibHTML.php');
-
 require_once(ROOT.'/vendor/autoload.php');
 
 use PhpOffice\PhpWord\Shared\Converter;
@@ -365,6 +361,7 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$this->CarregaAnyAcademic($this->Id);
 
 		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.0');
 		$frm->Titol = "Programació didàctica";
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
@@ -376,6 +373,9 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
 		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
 		
+		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
+		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
+		
 		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
 			nom:Nom:text:400:r, 
 			hores:Hores:int:60:w,
@@ -383,6 +383,9 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 			data_inici:Data inici:date:0:w,
 			data_final:Data final:date:0:w
 		');
+		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF');
+		$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
+		
 		$frm->EscriuHTML();		
 	}
 	
