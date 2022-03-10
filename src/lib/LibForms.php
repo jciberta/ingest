@@ -251,16 +251,17 @@ class Form {
 	 * @param integer $Longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
 	 * @param mixed $Valor Valor de l'enter per defecte de l'element.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return string Codi HTML.
 	 */
-	public function CreaText(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null) {
+	public function CreaText(string $Nom, string $Titol, int $Longitud, array $off = [], $Valor = null, int $MaximCaracters = 0) {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
-
+		$MaximCaracters = ($MaximCaracters != 0) ? ' maxlength='.$MaximCaracters : '';
 		$sRetorn = '';
 		if (!in_array(self::offNO_TITOL, $off))
-			$sRetorn .= '<TD><label for="ede_'.$Nom.'">'.$Titol.'</label></TD>';
-		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.'></TD>';
+		$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.$MaximCaracters.'></TD>';
 		return $sRetorn;
 	}	
 	
@@ -1645,9 +1646,10 @@ class FormFitxa extends Form {
 	 * @param string $titol Títol del camp.
 	 * @param integer $longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return void
 	 */
-	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = []) {
+	private function Afegeix(string $tipus, string $camp, string $titol, int $longitud, array $off = [], int $MaximCaracters = 0) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -1656,6 +1658,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Titol = $titol;
 		$this->Camps[$i]->Longitud = 5*$longitud;
 		$this->Camps[$i]->Opcions = $off;
+		$this->Camps[$i]->MaximCaracters = $MaximCaracters;
 	}
 
 	/**
@@ -1665,10 +1668,11 @@ class FormFitxa extends Form {
 	 * @param string $titol Títol del camp.
 	 * @param integer $longitud Longitud màxima.
 	 * @param array $off Opcions del formulari.
+	 * @param integer $MaximCaracters Màxim de caràcters.
 	 * @return void
 	 */
-	public function AfegeixText(string $camp, string $titol, int $longitud, array $off = []) {
-		$this->Afegeix(self::tcTEXT, $camp, $titol, $longitud, $off);
+	public function AfegeixText(string $camp, string $titol, int $longitud, array $off = [], int $MaximCaracters = 0) {
+		$this->Afegeix(self::tcTEXT, $camp, $titol, $longitud, $off, $MaximCaracters);
 	}
 
 	/**
@@ -2040,7 +2044,7 @@ class FormFitxa extends Form {
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 					//$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
-					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
+					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp), $Valor->MaximCaracters);
 					break;
 				case self::tcENTER:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
