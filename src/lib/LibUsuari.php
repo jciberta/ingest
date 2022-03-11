@@ -818,6 +818,71 @@ class ProfessorsUF extends Form
 }
 
 /**
+ *  * Classe que encapsula les utilitats per al maneig dels professors per mòdul.
+ */
+class ProfessorsMP extends Objecte
+{
+	/**
+	* Identificador del curs.
+	* @var integer
+	*/    
+    public $CursId = -1; 
+
+	/**
+	* Array .
+	* @var array de mòduls i professors d'un curs.
+	*/    
+    public $Moduls = []; 
+	
+	/**
+	 * Obté els mòduls i professors d'un curs.
+	 * @param integer $CursId Identificador del curs.
+	 * @return array Array de mòduls i professors d'un curs.
+	 */
+	public function ObteProfessorsMP(int $CursId) {
+		$this->Carrega($CursId);
+		return $this->Moduls;
+	}
+	
+	/**
+	 * Carrega els mòduls i professors d'un curs en un array.
+	 * @param integer $CursId Identificador del curs.
+	 */
+	private function Carrega(int $CursId) {
+		$this->Moduls = []; 
+		$SQL = $this->CreaSQL($CursId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while ($obj = $ResultSet->fetch_object())
+				array_push($this->Moduls, $obj);
+		}
+		$ResultSet->close();
+	}
+
+	/**
+	 * Crea la sentència SQL que retorna els mòduls i professors d'un curs.
+	 * @param integer $CursId Identificador del curs.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQL(int $CursId): string {
+		return "
+			SELECT DISTINCT
+				MPE.codi AS CodiMP, MPE.nom AS NomMP, 
+				UPE.nivell AS Nivell, 
+				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2,
+				U.nom AS Nom, U.cognom1 AS Cognom1, U.cognom2 AS Cognom2
+			FROM UNITAT_PLA_ESTUDI UPE 
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) 
+			LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=PUF.professor_id) 
+			WHERE curs_id=$CursId
+			ORDER BY MPE.codi, U.cognom1, U.cognom2, U.nom
+		";
+	}
+}
+/**
  * Formulari que mostra l'assignacio de professors per UF.
  */
 class ProfessorsAssignacioUF extends Form
