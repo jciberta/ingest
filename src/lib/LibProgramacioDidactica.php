@@ -349,6 +349,12 @@ class ProgramacioDidacticaFitxa extends FormRecerca
     private $AnyAcademic = null;
 
 	/**
+	* Array dels dies festius.
+	* @var array
+	*/    
+    private $DiesFestius = [];
+
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
@@ -359,8 +365,10 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 			header("Location: Surt.php"); */
 		
 		$this->CarregaAnyAcademic($this->Id);
+		$this->CarregaDiesFestius();
 
 		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('DateUtils.js?v1.0');
 		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.0');
 		$frm->Titol = "Programació didàctica";
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
@@ -375,6 +383,7 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		
 		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
 		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
+		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
 		
 		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
 			nom:Nom:text:400:r, 
@@ -400,6 +409,20 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) 
 			$this->AnyAcademic = $ResultSet->fetch_object();
+	}
+	
+	private function CarregaDiesFestius() {
+		$this->DiesFestius = [];
+		$SQL = "
+			SELECT data
+			FROM FESTIU F
+			WHERE data >= '".$this->AnyAcademic->data_inici."'
+			AND data <= '".$this->AnyAcademic->data_final."'
+			ORDER BY data			
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($row = $ResultSet->fetch_object()) 
+			array_push($this->DiesFestius, MySQLAData($row->data));
 	}
 }
 
