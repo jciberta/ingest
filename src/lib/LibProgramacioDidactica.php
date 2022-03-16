@@ -392,7 +392,15 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 			data_inici:Data inici:date:0:w,
 			data_final:Data final:date:0:w
 		');
-		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF');
+		$Ajuda = "
+			La proposta de dates es fa de manera <b>seqüencial</b> al llarg del curs, 
+			de forma <b>proporcional</b> al número d'hores, 
+			tenint en compte els <b>dies festius</b> 
+			i acostant-se al <b>cap de setmana</b> més proper.<p>
+			Qualsevol altre seqüenciació s'ha de fer a mà.
+		";
+		
+		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF', $Ajuda);
 		$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
 		
 		$frm->EscriuHTML();		

@@ -2269,6 +2269,9 @@ class FormFitxa extends Form {
 		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+
+		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();
@@ -2582,15 +2585,17 @@ class FormFitxaDetall extends FormFitxa {
 	 * Afegeix un botó al detall actual, amb una acció JavaScript.
 	 * @param string $Titol Títol del botó.
 	 * @param string $FuncioJS Funció JavaScript que cridarà.
+	 * @param string $Ajuda Ajuda del botó.
 	 */
-	public function AfegeixBotoJSDetall(string $Titol, string $FuncioJS) {
+	public function AfegeixBotoJSDetall(string $Titol, string $FuncioJS, string $Ajuda = '') {
 		$BotoJS = new stdClass();
 		$BotoJS->Titol = $Titol; 
 		$BotoJS->FuncioJS = $FuncioJS; 
+		$BotoJS->Ajuda = $Ajuda; 
 		$i = sizeof($this->Detalls);
 		array_push($this->Detalls[$i-1]->BotonsJS, $BotoJS);
 	}
-
+ 
 	/**
 	 * Genera la fitxa per l'edició.
 	 */
@@ -2675,7 +2680,11 @@ class FormFitxaDetall extends FormFitxa {
 		// Botons JavaScript
 		$Retorn .= '<DIV STYLE="margin-top:10px;">';
 		foreach($Detall->BotonsJS as $BotoJS) {
-			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;&nbsp;';
+			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;';
+			if ($BotoJS->Ajuda != '') {
+				$Retorn .= $this->CreaAjuda($BotoJS->Titol, $BotoJS->Ajuda);
+			}
+			$Retorn .= '&nbsp;';
 		}
 		$Retorn .= '</DIV>';
 		
