@@ -452,6 +452,7 @@ class Menu
 			$Retorn .= '	<div class="dropdown-menu">';
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ProgramacionsDidactiques')."'>Programacions didàctiques</a>";
 			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ResultatsAprenentatge')."'>Resultats d'aprenentatge</a>";
+			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ContingutsUF')."'>Continguts</a>";
 			$Retorn .= '	</div>';
 			$Retorn .= '</div>';
 			//$Retorn .= Menu::Opcio('Programació didàctica', 'FPRecerca.php?accio=UnitatsFormativesCF');

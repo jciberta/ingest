@@ -164,6 +164,10 @@ switch ($accio) {
 		$frm = new ResultatsAprenentatge($conn, $Usuari);
 		$frm->EscriuHTML();
         break;
+	case "ContingutsUF": // al crear objecte passar dos parameteres ($conn, $Usuari) El primer es la connexió a la basse de dades i el seogn l'usuari actual
+		$frm = new ContingutsUF($conn, $Usuari);
+		$frm->EscriuHTML();
+		break;
 }
 
 ?>

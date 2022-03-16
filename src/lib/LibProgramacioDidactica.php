@@ -1040,4 +1040,236 @@ class ResultatsAprenentatge extends Form
 	}	
 }
 
+/**
+ * Formulari que encapsula els continguts de les unitats formatives.
+ */
+class ContingutsUF extends Form
+{
+	/**
+	* Identificador del cicle formatiu.
+	* @var integer
+	*/    
+    public $CicleFormatiuId = -1; 
+	
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Continguts UF");
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/ProgramacioDidactica.js?v1.1" type="text/javascript"></script>';
+
+		echo $this->GeneraFiltre();
+		echo '<BR><BR>';
+		echo $this->GeneraTaula();
+		CreaFinalHTML();
+	}	
+
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $CicleFormatiuId Identificador del cicle.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQL(int $CicleFormatiuId): string {
+		return "
+	SELECT 
+		MP.modul_professional_id, 
+		MP.codi AS CodiMP, 
+		MP.nom AS NomMP,
+		UF.unitat_formativa_id, 
+		UF.codi AS CodiUF, 
+		UF.nom AS NomUF, 
+		UF.nivell, 
+		UF.hores AS HoresUF, 
+		UF.activa, 
+		UF.es_fct AS FCT, 
+		CUF.contingut_uf_id, 
+		CUF.descripcio AS ContingutUF,
+		SCUF.descripcio AS SubContingutUF
+	FROM MODUL_PROFESSIONAL MP 
+	LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
+	LEFT JOIN CONTINGUT_UF CUF ON (CUF.unitat_formativa_id=UF.unitat_formativa_id)
+	LEFT JOIN SUBCONTINGUT_UF SCUF ON (SCUF.contingut_uf_id=CUF.contingut_uf_id)
+	WHERE cicle_formatiu_id=$CicleFormatiuId;
+		";		
+	}
+
+	/**
+	 * Genera el filtre del formulari si n'hi ha.
+	 */
+	protected function GeneraFiltre() {
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$this->CicleFormatiuId = $aCicles[0][0]; 
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
+	}
+
+	/**
+	 * Genera la llista amb els RA d'un cicle.
+     * @return string Llista amb les dades.
+	 */
+	public function GeneraTaula() {
+		$sRetorn = '<DIV id=taula>';
+		$ModulProfessionalId = -1;
+		$UnitatFormativaId = -1;
+		$ContingutUFId = -1;
+		$SQL = $this->CreaSQL($this->CicleFormatiuId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->contingut_uf_id !== $ContingutUFId) {
+					// RA nou
+					if ($ContingutUFId != -1)
+						$sRetorn .= '</ul>';
+					if ($row->unitat_formativa_id !== $UnitatFormativaId) {
+						// UF nova
+						if ($UnitatFormativaId != -1)
+							$sRetorn .= '</ul>';
+						if ($row->modul_professional_id !== $ModulProfessionalId) {
+							// Mòdul nou
+							if ($ModulProfessionalId != -1)
+								$sRetorn .= '</ul>';
+							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+							$sRetorn .= '<ul>';
+							$ModulProfessionalId = $row->modul_professional_id;
+						}
+						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+						$sRetorn .= '<ul>';
+						$UnitatFormativaId = $row->unitat_formativa_id;
+					}
+					$sRetorn .= '<li>RA'.utf8_encode($row->ResultatAprenentatge);
+					$sRetorn .= '<ul>';
+					$ContingutUFId = $row->contingut_uf_id;
+				}
+				if ($row->CriteriAvaluacio != '')
+					$sRetorn .= '<li>'.utf8_encode($row->CriteriAvaluacio);
+			}
+		}
+		else
+			$sRetorn .= 'No hi ha dades.';
+		$sRetorn .= '</DIV>';
+		return $sRetorn;			
+	}
+
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $Modul Identificador del mòdul.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQLModul(int $ModulId): string {
+		// Es suposa que no hi ha més de 9 RA (pel LEFT de l'ORDER)
+		return "
+			SELECT * 
+			FROM (
+				SELECT 'R' AS Tipus, 
+					MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP,
+					UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, 
+					RA.resultat_aprenentatge_id AS DescripcioId, RA.descripcio AS Descripcio,
+					CAV.criteri_avaluacio_id AS Descripcio2Id, CAV.descripcio AS Descripcio2
+				FROM MODUL_PROFESSIONAL MP 
+				LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
+				LEFT JOIN RESULTAT_APRENENTATGE RA ON (RA.unitat_formativa_id=UF.unitat_formativa_id)
+				LEFT JOIN CRITERI_AVALUACIO CAV ON (CAV.resultat_aprenentatge_id=RA.resultat_aprenentatge_id)
+				WHERE MP.modul_professional_id=$ModulId            
+				UNION
+				SELECT 'C' AS Tipus, 
+					MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP,
+					UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, 
+					CUF.contingut_uf_id AS DescripcioId, CUF.descripcio AS Descripcio,
+					SCUF.subcontingut_uf_id AS Descripcio2Id, SCUF.descripcio AS Descripcio2
+				FROM MODUL_PROFESSIONAL MP 
+				LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
+				LEFT JOIN CONTINGUT_UF CUF ON (CUF.unitat_formativa_id=UF.unitat_formativa_id)
+				LEFT JOIN SUBCONTINGUT_UF SCUF ON (SCUF.contingut_uf_id=CUF.contingut_uf_id)
+				WHERE MP.modul_professional_id=$ModulId
+			) AS T
+			ORDER BY modul_professional_id, unitat_formativa_id, left(Descripcio, 1), Tipus DESC, Descripcio2Id
+		";		
+	}
+	
+	/**
+	 * Crea un registre amb els resultats d’aprenentatge, criteris d’avaluació i continguts d'un mòdul.
+	 * @param integer $ModulId Identificador del mòdul.
+	 */
+	public function CreaRegistreModul(int $ModulId) {
+		$this->Registre = [];
+		$SQL = $this->CreaSQLModul($ModulId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$UnitatFormativaId = -1;
+			$DescripcioId = -1;
+			$Tipus = '';
+
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->unitat_formativa_id !== $UnitatFormativaId) {
+					// UF nova
+					$UF = new stdClass();
+					array_push($this->Registre, $UF);
+					$UF->Id = $row->unitat_formativa_id;
+					$UF->Nom = utf8_encode($row->NomUF);
+					$UF->Dades = [];
+					
+					$UnitatFormativaId = $row->unitat_formativa_id;
+				}
+				
+				if (($row->DescripcioId !== $DescripcioId) || ($row->Tipus !== $Tipus)) {
+					// RA o contingut nou	
+					$Dades = new stdClass();
+					array_push($UF->Dades, $Dades);
+					$Dades->Id = $row->DescripcioId;
+					$Dades->Nom = utf8_encode($row->Descripcio);
+					$Dades->Tipus = $row->Tipus;
+					$Dades->Dades = [];
+
+					$DescripcioId = $row->DescripcioId;							
+					$Tipus = $row->Tipus;							
+				}
+				
+				array_push($Dades->Dades, utf8_encode($row->Descripcio2));
+			}
+		}
+	}	
+	
+	/**
+	 * Genera la taula amb els RA d'un mòdul.
+	 * @param integer $ModulId Identificador del mòdul.
+     * @return string Taula amb les dades.
+	 */
+	public function GeneraTaulaModul(int $ModulId): string {
+		$sRetorn = '';
+		$this->CreaRegistreModul($ModulId);
+		foreach ($this->Registre as $UF) {
+			$sRetorn .= '<table border=1>';
+			$sRetorn .= "<tr style='background-color:grey;'>";
+			$sRetorn .= '<th>'.$UF->Nom.'</th>';
+			$sRetorn .= '</tr>';
+			foreach ($UF->Dades as $Dades) {
+				if ($Dades->Tipus == 'R') {
+					$sRetorn .= "<tr style='background-color:grey;'>";
+					$sRetorn .= '<th>RA'.$Dades->Nom.'</th>';
+					$sRetorn .= '</tr>';
+					$sRetorn .= "<tr style='background-color:lightgrey;'>";
+					$sRetorn .= '<th>Resultats d’aprenentatge i criteris d’avaluació</th>';
+					$sRetorn .= '</tr>';
+				}
+				else if ($Dades->Tipus == 'C') {
+					$sRetorn .= "<tr style='background-color:lightgrey;'>";
+					$sRetorn .= '<th>Continguts</th>';
+					$sRetorn .= '</tr>';
+					$sRetorn .= "<tr>";
+					$sRetorn .= '<td>'.$Dades->Nom.'</td>';
+					$sRetorn .= '</tr>';
+				}
+				foreach ($Dades->Dades as $Dades2) {
+					$sRetorn .= "<tr>";
+					$sRetorn .= '<td>'.$Dades2.'</td>';
+					$sRetorn .= '</tr>';
+				}
+			}
+			$sRetorn .= '</table>';
+			$sRetorn .= '<br>';
+		}
+		return $sRetorn;
+	}	
+}
+
 ?>
