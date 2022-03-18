@@ -548,7 +548,7 @@ class Form {
 			$URL = GeneraURL($URL);
 		
 		$sRetorn = '<TD>&nbsp;</TD>';
-		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$Link.$Contingut.'">'.$Titol.'</a></TD>';
+		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$URL.'">'.$Titol.'</a></TD>';
 		return $sRetorn;
 	}
 	

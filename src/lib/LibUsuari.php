@@ -537,6 +537,29 @@ class Professor extends Usuari
 		$ResultSet->close();
 		return $bRetorn;
 	}
+
+	/**
+	 * Comprova si és tutor d'un pare d'alumne.
+	 * @param integer $PareId Identificador del pare o de la mare.
+	 * @returns boolean Cert si és tutor del pare de l'alumne.
+	 */
+	function EsTutorPare(int $PareId): bool {
+		$bRetorn = False;
+		$SQL = ' SELECT * FROM MATRICULA M '.
+			' LEFT JOIN CURS C ON (M.curs_id=C.curs_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' LEFT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
+			' WHERE AA.actual=1 '.
+			' AND alumne_id IN ('.
+			" 	SELECT usuari_id FROM USUARI WHERE pare_id=$PareId OR mare_id=$PareId ".
+			' ) '.
+			' AND professor_id='.$this->Usuari->usuari_id;
+		$ResultSet = $this->Connexio->query($SQL);
+		$bRetorn = ($ResultSet->num_rows > 0);
+		$ResultSet->close();
+		return $bRetorn;
+	}
 	
 	/**
 	 * Genera i escriu l'escriptori del professor.
