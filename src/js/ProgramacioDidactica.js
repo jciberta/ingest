@@ -33,3 +33,59 @@ console.log('sCicleFormatiuId: ' + sCicleFormatiuId);
     } );
 }
 
+function ProposaDatesUF() { 
+console.log('-> ProposaDatesUF');
+	
+	var hores;
+
+	var sDataIniciCurs = document.getElementById('data_inici').value;
+	var sDataFinalCurs = document.getElementById('data_final').value;
+	var sDiesFestius = document.getElementById('festius').value;
+//console.log('sDataIniciCurs: '+ sDataIniciCurs);	
+//console.log('sDataFinalCurs: '+ sDataFinalCurs);	
+
+	var dtDataIniciCurs = TextAData(sDataIniciCurs);  
+	var dtDataFinalCurs = TextAData(sDataFinalCurs);  
+//console.log('dtDataIniciCurs: '+ dtDataIniciCurs);	
+//console.log('dtDataFinalCurs: '+ dtDataFinalCurs);
+
+	var aDiesFestius = jQuery.parseJSON(sDiesFestius);	
+//console.dir(aDiesFestius);
+
+    var Temps = dtDataFinalCurs.getTime() - dtDataIniciCurs.getTime(); // Mil·lisegons
+    var Dies = Temps / (1000 * 60 * 60 * 24);        
+//console.log('Dies: '+ Dies);	
+
+	var n = 0;
+	var TotalHores = 0;
+    $(":input[name^='edt_hores-']").each(function () {
+          TotalHores += parseInt(this.value);
+		  n++;
+    });	
+	TotalDies = DiesEntreDates(dtDataIniciCurs, dtDataFinalCurs) - aDiesFestius.length;
+		
+	var i = 1;
+	var Sufix;
+	var dtData = dtDataIniciCurs;
+    $(":input[name^='edt_hores-']").each(function () {
+		Sufix = (this.name).split('-');
+		if (i == 1)
+			$("input[type='text'][name='edd_data_inici-"+Sufix[1]+"']").val(sDataIniciCurs);
+		else
+			$("input[type='text'][name='edd_data_inici-"+Sufix[1]+"']").val(DataAText(dtData));
+		hores = this.value;
+		dtData = CalculaDataFinal(dtData, TotalDies/TotalHores*hores, aDiesFestius);
+		dtData = ArrodoneixADiumenge(dtData);
+		if (i == n)
+			$("input[type='text'][name='edd_data_final-"+Sufix[1]+"']").val(sDataFinalCurs);
+		else
+			$("input[type='text'][name='edd_data_final-"+Sufix[1]+"']").val(DataAText(dtData));
+		dtData = AfegeixDies(dtData, 1);
+		i++;
+    });	
+}
+
+function EsborraDatesUF() { 
+	$(":input[name^='edd_data_inici-']").val('');
+	$(":input[name^='edd_data_final-']").val('');
+}

@@ -9,12 +9,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-//require_once(ROOT.'/lib/LibUsuari.php');
-//require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibForms.php');
-//require_once(ROOT.'/lib/LibHTML.php');
-
 require_once(ROOT.'/vendor/autoload.php');
 
 use PhpOffice\PhpWord\Shared\Converter;
@@ -353,6 +349,12 @@ class ProgramacioDidacticaFitxa extends FormRecerca
     private $AnyAcademic = null;
 
 	/**
+	* Array dels dies festius.
+	* @var array
+	*/    
+    private $DiesFestius = [];
+
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
@@ -363,8 +365,11 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 			header("Location: Surt.php"); */
 		
 		$this->CarregaAnyAcademic($this->Id);
+		$this->CarregaDiesFestius();
 
 		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('DateUtils.js?v1.0');
+		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.0');
 		$frm->Titol = "Programació didàctica";
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
@@ -376,6 +381,10 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
 		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
 		
+		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
+		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
+		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
+		
 		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
 			nom:Nom:text:400:r, 
 			hores:Hores:int:60:w,
@@ -383,6 +392,17 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 			data_inici:Data inici:date:0:w,
 			data_final:Data final:date:0:w
 		');
+		$Ajuda = "
+			La proposta de dates es fa de manera <b>seqüencial</b> al llarg del curs, 
+			de forma <b>proporcional</b> al número d'hores, 
+			tenint en compte els <b>dies festius</b> 
+			i acostant-se al <b>cap de setmana</b> més proper.<p>
+			Qualsevol altre seqüenciació s'ha de fer a mà.
+		";
+		
+		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF', $Ajuda);
+		$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
+		
 		$frm->EscriuHTML();		
 	}
 	
@@ -397,6 +417,20 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) 
 			$this->AnyAcademic = $ResultSet->fetch_object();
+	}
+	
+	private function CarregaDiesFestius() {
+		$this->DiesFestius = [];
+		$SQL = "
+			SELECT data
+			FROM FESTIU F
+			WHERE data >= '".$this->AnyAcademic->data_inici."'
+			AND data <= '".$this->AnyAcademic->data_final."'
+			ORDER BY data			
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($row = $ResultSet->fetch_object()) 
+			array_push($this->DiesFestius, MySQLAData($row->data));
 	}
 }
 

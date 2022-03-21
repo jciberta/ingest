@@ -68,7 +68,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 {
 //var_dump($bDataTables);	
 //exit;
-	$Retorn = '<HTML>';
+	$Retorn = '<!DOCTYPE html>';
+	$Retorn .= '<HTML>';
 	$Retorn .= '<HEAD>';
 	$Retorn .= '	<META charset=UTF8>';
 	$Retorn .= '	<TITLE>InGest</TITLE>';

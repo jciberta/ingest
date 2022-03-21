@@ -40,7 +40,7 @@ if ($Usuari->es_professor && $Id == -1)
 // Només poden veure la fitxa els tutors d'aquell alumne.
 $Professor = new Professor($conn, $Usuari);
 $ProfessorSenseCarrecDirectiu = ($Usuari->es_professor) && (!$Usuari->es_direccio) && (!$Usuari->es_cap_estudis);
-if ($ProfessorSenseCarrecDirectiu && !$Professor->EsTutorAlumne($Id))
+if ($ProfessorSenseCarrecDirectiu && (!$Professor->EsTutorAlumne($Id) && !$Professor->EsTutorPare($Id)))
 	header("Location: Surt.php");
 
 // Creació del formulari de la fitxa de l'usuari.

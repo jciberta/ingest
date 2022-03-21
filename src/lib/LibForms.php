@@ -78,6 +78,7 @@ class Form {
 	const tcTEXT_RIC = 12;
 	const tcHTML = 13;
 	const tcLINK = 14;
+	const tcAMAGAT = 15;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -547,8 +548,18 @@ class Form {
 			$URL = GeneraURL($URL);
 		
 		$sRetorn = '<TD>&nbsp;</TD>';
-		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$Link.$Contingut.'">'.$Titol.'</a></TD>';
+		$sRetorn .= '<TD valign=middle><a target=_blank href="'.$URL.'">'.$Titol.'</a></TD>';
 		return $sRetorn;
+	}
+	
+	/**
+	 * Crea un element amagat per posar una variable.
+	 * @param string $Nom Nom de l'element.
+	 * @param string $Valor Valor l'element.
+	 * @return string Codi HTML de l'element.
+	 */
+	public function CreaAmagat(string $Nom, string $Valor = '') {
+		return "<input type=hidden id=$Nom value='$Valor'>";
 	}
 	
 	/**
@@ -1891,7 +1902,6 @@ class FormFitxa extends Form {
 	 * @param string $Titol Títol del control.
 	 * @param string $Link Enllaç.
 	 * @param array $off Opcions del formulari.
-	 * @return string Codi HTML per a l'enllaç.
 	 */
 	public function AfegeixEnllac(string $Camp, string $Titol, string $Link, array $off = []) {
 		$i = count($this->Camps);
@@ -1902,6 +1912,21 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Titol = $Titol;
 		$this->Camps[$i]->Link = $Link;
 		$this->Camps[$i]->Opcions = $off;
+	}
+	
+	/**
+	 * Afegeix un element amagat per posar una variable.
+	 * @param string $Nom Nom de l'element.
+	 * @param string $Valor Valor l'element.
+	 */
+	public function AfegeixAmagat(string $Camp, string $Valor) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcAMAGAT;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Valor = $Valor;
+		$this->Camps[$i]->Opcions = [];
 	}
 	
 	/**
@@ -2028,6 +2053,13 @@ class FormFitxa extends Form {
 		$sRetorn .= "<input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>";
 		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";
 		$sRetorn .= "<input type=hidden name=hid_Id value='".$this->Id."'>";
+		
+		// Afegim els altres camps amagats
+		foreach($this->Camps as $Valor) {
+			if ($Valor->Tipus == self::tcAMAGAT)
+					$sRetorn .= $this->CreaAmagat($Valor->Camp, $Valor->Valor);
+		}
+		
 		$bAlCostat = False;
 		$bPrimeraPestanya = True;
 		$sRetorn .= '<TABLE>';
@@ -2235,6 +2267,11 @@ class FormFitxa extends Form {
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
 		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>';
+		for($i = 1; $i <= count($this->FitxerJS); $i++) 
+			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+
+		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
 		if ($this->Id > 0)
 			$this->CarregaDades();
 		echo $this->GeneraFitxa();
@@ -2509,9 +2546,8 @@ class FormFitxaDetall extends FormFitxa {
 	
 	/**
 	 * Afegeix un detall, és a dir, una taula relacionada.
-	 * @param string 
+	 * @param string ...
 	 */
-//	public function AfegeixDetall($Taula, $ClauPrimaria, $ClauForana, $Camps, $NomCamps, $TipusCamps) {
 	public function AfegeixDetall($Titol, $Taula, $ClauPrimaria, $ClauForana, $Camps) {
 		$Detall = new stdClass();
 		$Detall->Titol = $Titol; 
@@ -2524,6 +2560,7 @@ class FormFitxaDetall extends FormFitxa {
 		$Detall->TipusCamps = ''; 
 		$Detall->LongitudCamps = ''; 
 		$Detall->PermisCamps = ''; 
+		$Detall->BotonsJS = []; 
 		
 		$aCamps = explode(',',$Camps);
 		foreach($aCamps as $Camp) {
@@ -2543,7 +2580,22 @@ class FormFitxaDetall extends FormFitxa {
 		
 		array_push($this->Detalls, $Detall);
 	}
-
+	
+	/**
+	 * Afegeix un botó al detall actual, amb una acció JavaScript.
+	 * @param string $Titol Títol del botó.
+	 * @param string $FuncioJS Funció JavaScript que cridarà.
+	 * @param string $Ajuda Ajuda del botó.
+	 */
+	public function AfegeixBotoJSDetall(string $Titol, string $FuncioJS, string $Ajuda = '') {
+		$BotoJS = new stdClass();
+		$BotoJS->Titol = $Titol; 
+		$BotoJS->FuncioJS = $FuncioJS; 
+		$BotoJS->Ajuda = $Ajuda; 
+		$i = sizeof($this->Detalls);
+		array_push($this->Detalls[$i-1]->BotonsJS, $BotoJS);
+	}
+ 
 	/**
 	 * Genera la fitxa per l'edició.
 	 */
@@ -2624,6 +2676,18 @@ class FormFitxaDetall extends FormFitxa {
 		}
 		$Retorn .= '<TABLE>';
 		$Retorn .= '</FORM>';
+		
+		// Botons JavaScript
+		$Retorn .= '<DIV STYLE="margin-top:10px;">';
+		foreach($Detall->BotonsJS as $BotoJS) {
+			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;';
+			if ($BotoJS->Ajuda != '') {
+				$Retorn .= $this->CreaAjuda($BotoJS->Titol, $BotoJS->Ajuda);
+			}
+			$Retorn .= '&nbsp;';
+		}
+		$Retorn .= '</DIV>';
+		
 		return $Retorn;
 	}
 
