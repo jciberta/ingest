@@ -135,8 +135,10 @@ CREATE TABLE SISTEMA
 	/* Ha de contenir un únic registre 	que conté la configuració */
 	nom VARCHAR(100), /* Nom institut */ 
 	any_academic_id INT NOT NULL,
+    director_id INT NOT NULL,
 	
-    CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id)
+    CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
+    CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id)		
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE CICLE_PLA_ESTUDI
@@ -343,7 +345,7 @@ CREATE TABLE PROFESSOR_GUARDIA
 CREATE TABLE REGISTRE
 (
     /* R */
-    registre_id INT NOT NULL AUTO_INCREMENT,
+	registre_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     usuari_id INT NOT NULL,
     nom_usuari VARCHAR(100) NOT NULL, 
     data DATETIME NOT NULL,
@@ -447,6 +449,38 @@ CREATE TABLE SUBCONTINGUT_UF
 
     CONSTRAINT SubContingutUFPK PRIMARY KEY (subcontingut_uf_id),
     CONSTRAINT SCUF_ContingutUFFK FOREIGN KEY (contingut_uf_id) REFERENCES CONTINGUT_UF(contingut_uf_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE GEOLOCALITZACIO_IP
+(
+    /* GIP */
+    ip VARCHAR(15) NOT NULL,
+    is_eu BIT,
+    city VARCHAR(100),
+    region VARCHAR(100),
+    region_code CHAR(2),
+    country_name VARCHAR(100),
+    country_code CHAR(2),
+    latitude REAL,
+    longitude REAL,
+    postal VARCHAR(10),
+    calling_code VARCHAR(5),
+    flag_url VARCHAR(100),
+    asn VARCHAR(20),
+    asn_name VARCHAR(100),
+    asn_domain VARCHAR(50),
+    asn_route VARCHAR(20),
+    asn_type VARCHAR(5),
+    is_tor BIT,
+    is_proxy BIT,
+    is_anonymous BIT,
+    is_known_attacker BIT,
+    is_known_abuser BIT,
+    is_threat BIT,
+    is_bogon BIT,
+    data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	
+    CONSTRAINT GeolocalitzacioIPPK PRIMARY KEY (ip)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
