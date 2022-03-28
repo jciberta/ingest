@@ -1543,6 +1543,36 @@ class Notes extends Form
 		
 		return $Retorn;
 	}
+	
+	/**
+	 * Esborra les notes orientatòries d'un curs.
+	 * @param int $CursId Identificador del curs.
+	 */				
+	public function EsborraNotesOrientatoriesCurs(int $CursId) {
+		$this->EsborraNotesOrientatoriesCursConvocatoria($CursId, 1);
+		$this->EsborraNotesOrientatoriesCursConvocatoria($CursId, 2);
+		$this->EsborraNotesOrientatoriesCursConvocatoria($CursId, 3);
+		$this->EsborraNotesOrientatoriesCursConvocatoria($CursId, 4);
+		$this->EsborraNotesOrientatoriesCursConvocatoria($CursId, 5);
+	}
+	
+	/**
+	 * Esborra les notes orientatòries d'un curs i una convocatòria.
+	 * @param int $CursId Identificador del curs.
+	 * @param int $CursId Número de convocatòria.
+	 */				
+	private function EsborraNotesOrientatoriesCursConvocatoria(int $CursId, int $Convocatoria) {
+		$SQL = "
+			UPDATE NOTES N
+			LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id)
+			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
+			SET nota$Convocatoria=NULL	
+			WHERE curs_id=$CursId
+			AND convocatoria=$Convocatoria
+			AND orientativa=1
+		";
+		$this->Connexio->query($SQL);
+	}
 }
 
 /**

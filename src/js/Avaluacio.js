@@ -1,4 +1,4 @@
-﻿/** 
+/** 
  * Avaluacio.js
  *
  * Accions AJAX per a l'avaluació.
@@ -104,28 +104,63 @@ console.log('->PosaEstatCurs');
  */
 function PosaTrimestreCurs(obj, curs_id, trimestre) {
 console.log('->PosaTrimestreCurs');
+	bootbox.dialog({
+		message: "Desitgeu esborrar també les notes orientatives?<br>Aquesta acció <B>no</B> es pot desfer.",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la',
+				callback: function(){
+				}				
+			},
+			no: {
+				label: 'No',
+				callback: function(){
+					PosaTrimestreCursEsborraOrientativa(obj, curs_id, trimestre, 0);
+				}				
+			},
+			yes: {
+				label: 'Sí',
+				className: 'btn-danger',
+				callback: function(){
+					PosaTrimestreCursEsborraOrientativa(obj, curs_id, trimestre, 1);
+				}				
+			}
+		}
+	});
+}
 
+/**
+ * PosaTrimestreCursEsborraOrientativa
+ * Posa el curs en un trimestre determinat.
+ * @param obj Objecte que ha provocat la crida.
+ * @param curs_id Identificador del curs.
+ * @param trimestre Trimestre del curs.
+ * @param esborra_orientatives Indica si cal esborrar les notes orientatives.
+ */
+function PosaTrimestreCursEsborraOrientativa(obj, curs_id, trimestre, esborra_orientatives) {
+console.log('->PosaTrimestreCursEsborraOrientativa');
 	var btn = document.getElementById('btn_'+trimestre);
 	DeshabilitaBotonsTrimestre();
 
-    $.ajax( {
-        type: 'POST',
-        url: 'lib/LibAvaluacio.ajax.php',
-        data:{
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibAvaluacio.ajax.php',
+		data:{
 			'accio': 'PosaEstatTrimestre',
-            'nom': obj.name,
-            'curs_id': curs_id,
-            'trimestre': trimestre
-            },
-        success: function(data) {
-            $('#debug').html(data);
+			'nom': obj.name,
+			'curs_id': curs_id,
+			'trimestre': trimestre,
+			'esborra_orientatives': esborra_orientatives
+			},
+		success: function(data) {
+			$('#debug').html(data);
 			btn.disabled = true;
 			$('#trimestre').html("Trimestre: <b>" + trimestre + "</b>");
-        }, 
+		}, 
 		error: function (data) {
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
 		}
-    } );
+	} );	
 }
 
 /**

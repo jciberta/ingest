@@ -85,15 +85,32 @@ class DocumentPDF extends TCPDF
 	}
 
 	/**
-	 * escriu una línea per als expedients de notes.
+	 * Escriu un text.
 	 * @param string $Text Text a mostrar.
+	 * @param int $Mida Mida de la font.
+	 * @param int $IncrementY Increment de l'eix Y.
 	 */
-	public function Escriu($Text) {
+	public function Escriu($Text, int $Mida = 12, int $IncrementY = 8) {
+		$this->DesaFont();
+		//$this->SetX($this->original_lMargin);
+        $this->SetFont('helvetica', '', $Mida); 
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Text, '', 0, 'L'); 
+		//$this->SetY($this->GetY() + $IncrementY);
+		$this->RestauraFont();
+	}
+
+	/**
+	 * Escriu una línea.
+	 * @param string $Text Text a mostrar.
+	 * @param int $Mida Mida de la font.
+	 * @param int $IncrementY Increment de l'eix Y.
+	 */
+	public function EscriuLinia($Text, int $Mida = 12, int $IncrementY = 8) {
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
-        $this->SetFont('helvetica', '', 12); 
+        $this->SetFont('helvetica', '', $Mida); 
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Text), '', 0, 'L'); 
-		$this->SetY($this->GetY() + 8);
+		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
 	}
 
@@ -101,15 +118,15 @@ class DocumentPDF extends TCPDF
 	 * Títol 1 per als expedients de notes.
 	 * @param string $Titol Títol a mostrar.
 	 * @param int $Mida Mida de la font.
+	 * @param int $IncrementY Increment de l'eix Y.
 	 */
-	public function Titol1(string $Titol, int $Mida = 14) {
+	public function Titol1(string $Titol, int $Mida = 14, int $IncrementY = 10) {
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', $Mida); // Bold
-//		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
-		$this->SetY($this->GetY() + 10);
+		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
 	}
 
@@ -117,17 +134,27 @@ class DocumentPDF extends TCPDF
 	 * Títol 2 per als expedients de notes.
 	 * @param string $Titol Títol a mostrar.
 	 * @param int $Mida Mida de la font.
+	 * @param int $IncrementY Increment de l'eix Y.
 	 */
-	public function Titol2($Titol, int $Mida = 12) {
+	public function Titol2($Titol, int $Mida = 12, int $IncrementY = 8) {
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', $Mida);
-//		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => $headerdata['line_color']));
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
-		$this->SetY($this->GetY() + 8);
+		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
 	}
+	
+	/**
+	 * Dicuixa una línia a sota, estil subratllat.
+	 * @param float $Gruix Gruix de la línia.
+	 */
+	public function Linia(float $Gruix = 0.85) {
+		$this->SetX($this->original_lMargin);
+		$this->SetLineStyle(array('width' => $Gruix / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
+		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, '', 'B', 0, 'L'); // B: Bottom
+	}	
 
 	/**
 	 * Escriu text per a 5 columnes.
