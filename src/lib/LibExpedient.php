@@ -1031,6 +1031,12 @@ class QualificacionsPDF extends DocumentPDF
 class Acta extends Objecte
 {
 	/**
+	 * Nivell del curs (1 o 2).
+	 * @var int
+	 */
+	private $NivellCurs = -1;	
+
+	/**
 	 * Registre de les dades de la capçalera.
 	 * @var object
 	 */
@@ -1047,6 +1053,12 @@ class Acta extends Objecte
 	 * @var array
 	 */
 	private $RegistrePlaEstudis = [];	
+
+	/**
+	 * Registre de les dades dels professors.
+	 * @var array
+	 */
+	private $RegistreProfessors = [];	
 
 	/**
 	 * Constructor de l'objecte.
@@ -1137,6 +1149,31 @@ class Acta extends Objecte
 		";
 		return $SQL;
 	}
+	
+	/**
+	 * Genera la SQL per obtenir els professors del curs.
+	 * @param integer $CursId Identificador del curs.
+	 * @return string Sentència SQL.
+	 */
+	private function SQLProfessors(int $CursId): string {
+		$SQL = "
+			SELECT
+				C.nivell AS NivellCurs, 
+				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, 
+				UPE.unitat_pla_estudi_id AS IdUF, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.nivell AS NivellUF, UPE.hores AS HoresUF, 
+				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, 
+				PUF.professor_uf_id AS ProfessorUFId
+			FROM UNITAT_PLA_ESTUDI UPE 
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+			LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=PUF.professor_id) 
+			WHERE C.nivell=UPE.nivell AND C.curs_id=$CursId
+			ORDER BY CPE.codi, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
+		";
+		return $SQL;
+	}	
 	
 	private function Nota($row, int $Convocatoria) {
 		switch ($Convocatoria) {
@@ -1336,6 +1373,39 @@ class Acta extends Objecte
 //exit;		
 	}	
 	
+	/**
+	 * Carrega les dades dels professors.
+	 * @param integer $CursId Identificador del curs.
+	 */
+	private function CarregaProfessors(int $CursId) {
+		$this->RegistreProfessors = [];
+		$SQL = $this->SQLProfessors($CursId);
+		try {
+			$ResultSet = $this->Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		} catch (Exception $e) {
+			die("<BR><b>ERROR CarregaProfessors</b>. Causa: ".$e->getMessage());
+		}
+
+		$ModulId = -1;
+		$UnitatId = -1;
+		while ($row = $ResultSet->fetch_object()) {
+			$this->NivellCurs = $row->NivellCurs;
+			if ($row->IdMP != $ModulId) {
+				$Modul = new stdClass();
+				$Modul->Nom = $row->NomMP;
+				$Modul->Professors = [];
+				$this->RegistreProfessors[$row->CodiMP] = $Modul; // Array associatiu
+				$ModulId = $row->IdMP;
+			}
+			if (!in_array($row->NomCognom1Cognom2, $Modul->Professors))
+				array_push($Modul->Professors, $row->NomCognom1Cognom2);
+		}
+//print_h($this->RegistreProfessors);
+//exit;		
+	}	
+	
 	private function ObteNotaAlumne($ra, $CodiMP, $CodiUF) {
 		$Retorn = '';
 		if (array_key_exists($CodiMP, $ra->Moduls))
@@ -1482,6 +1552,82 @@ class Acta extends Objecte
 		}
 	}
 	
+	private function NumeroModul($Codi) {
+		$Codi = str_replace('MP', '', $Codi);
+		$Codi = str_replace('C', '', $Codi);
+		return $Codi;
+	}
+
+	private function CreaCella($Codi, $Nom, $Professor) {
+		$Retorn = '';
+		$Retorn .= '<TD height="120" style="border-bottom: 1px solid black">';
+		$Retorn .= '<TABLE>';
+		$Retorn .= '<TR>';
+		$Retorn .= '<TD height="100">';
+		$Retorn .= 'Mòdul '.$this->NumeroModul($Codi).' '.$Codi.'. '.$Nom;
+		$Retorn .= '</TD>';
+		$Retorn .= '</TR>';
+		$Retorn .= '<TR>';
+		$Retorn .= '<TD height="20">';
+		$Retorn .= $Professor;
+		$Retorn .= '</TD>';
+		$Retorn .= '</TR>';
+		$Retorn .= '</TABLE>';
+		$Retorn .= '</TD>';
+		return $Retorn;
+	}
+	
+	/**
+	 * Genera la part de la taula de signatures dels professors.
+	 * NOTA: El valor dels atributs HTML ha d'anar entre "", sinó no funciona!
+	 */
+	private function GeneraTaulaSignatures($pdf) {
+		$pdf->SetFont('helvetica', '', 7);
+
+		$pdf->SetY(65);
+		$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+		
+		$HTML = '';
+		$i = 0;
+		foreach ($this->RegistrePlaEstudis as $Codi => $Modul) {
+			$Professors = $this->RegistreProfessors[$Codi]->Professors;
+			if (count($Professors)>0) {
+				foreach ($Professors as $Nom) {
+					if ($i % 12 == 0) {$HTML .= '<TABLE style="font-family:helvetica;font-size:9;">';}
+					if ($i % 4 == 0) {$HTML .= '<TR>';}
+					$HTML .= $this->CreaCella($Codi, $Modul->Nom, $Nom);
+					if ($i % 4 == 3) {$HTML .= '</TR>';}
+					if ($i % 12 == 11) {
+						$HTML .= '</TABLE>';
+						$pdf->writeHTML($HTML, true, false, true, false, '');
+						$pdf->AddPage();
+						$pdf->SetY(65);
+						$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+						$HTML = '';
+					}
+					$i++;
+				}
+			}
+			else {
+				if ($i % 12 == 0) {$HTML .= '<TABLE style="font-family:helvetica;font-size:9;">';}
+				if ($i % 4 == 0) {$HTML .= '<TR>';}
+				$HTML .= $this->CreaCella($Codi, $Modul->Nom, 'Nom i cognoms');
+				if ($i % 4 == 3) {$HTML .= '</TR>';}
+				if ($i % 12 == 11) {
+					$HTML .= '</TABLE>';
+						$pdf->writeHTML($HTML, true, false, true, false, '');
+						$pdf->AddPage();
+						$pdf->SetY(65);
+						$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+						$HTML = '';
+				}
+				$i++;				
+			}
+		}
+		$HTML .= '</TABLE>';
+		$pdf->writeHTML($HTML, true, false, true, false, '');
+	}	
+	
 	/**
 	 * Genera l'acta en PDF per a un grup tutoria.
 	 * @param integer $CursId Identificador del curs.
@@ -1491,6 +1637,7 @@ class Acta extends Objecte
 		$this->CarregaDades($CursId, $Grup);
 		$this->CarregaDadesAlumne($CursId, $Grup);
 		$this->CarregaPlaEstudis($CursId);
+		$this->CarregaProfessors($CursId);
 
 		$pdf = new ActaPDF('L', 'mm', 'A4', true, 'UTF-8', false);
 		$pdf->SetTitle('Acta');
@@ -1535,6 +1682,7 @@ class Acta extends Objecte
 		$pdf->AddPage(); // Crida al mètode Header		
 
 		$this->GeneraTaulaNotes($pdf);
+		$this->GeneraTaulaSignatures($pdf);
 		
 		// Close and output PDF document
 		//$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
@@ -1609,53 +1757,6 @@ class ActaPDF extends DocumentPDF
 		$this->GeneraBlocTitol();
 		$this->GeneraBlocCicle();
 		$this->GeneraBlocCentre();
-
-
-/*		$HTML = '<TABLE>';
-		$HTML .= "<TR>";
-		if ($this->Llei == 'LO') {
-			// Mòdul professional
-			$HTML .= '<TD style="width:50%">';
-			$HTML .= "<TABLE>";
-			$HTML .= "<TR>";
-			$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
-			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
-			$HTML .= "</TR>";
-			$HTML .= "</TABLE>";
-			$HTML .= "</TD>";
-
-			// Unitats formatives
-			$HTML .= '<TD style="width:50%">';
-			$HTML .= "<TABLE>";
-			$HTML .= "<TR>";
-			$HTML .= '<TD style="width:55%">Unitat formativa</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
-			$HTML .= "</TR>";
-			$HTML .= "</TABLE>";
-			$HTML .= "</TD>";
-		} else {
-			// Crèdits
-			$HTML .= '<TD style="width:100%">';
-			$HTML .= "<TABLE>";
-			$HTML .= "<TR>";
-			$HTML .= utf8_decode('<TD style="width:55%">Crèdit</TD>');
-			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
-			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
-			$HTML .= "</TR>";
-			$HTML .= "</TABLE>";
-			$HTML .= "</TD>";			
-		}
-		$HTML .= "</TR>";
-		$HTML .= "</TABLE>";
-		$HTML .= "<HR>";
-
-		$this->SetY(110);
-		$this->writeHTML(utf8_encode($HTML), True, True);*/
     }
 
 	private function GeneraBlocTitol() {
