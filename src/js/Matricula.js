@@ -12,7 +12,7 @@
  * MatriculaUF
  *
  * Donat un checkbox, matricula o desmatricula una UF.
- * Bàsicament posa el camp baixa de NOTES al valor que li toca. Conserva les notes que hi havia.
+ * BÃ sicament posa el camp baixa de NOTES al valor que li toca. Conserva les notes que hi havia.
  *
  * @param element Checkbox que ha fet la crida.
  */
@@ -37,8 +37,8 @@ function MatriculaUF(element) {
 /**
  * ConvalidaUF
  *
- * Donat un checkbox, convalida una UF (només funciona en un sentit).
- * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatòria a 0.
+ * Donat un checkbox, convalida una UF (nomÃ©s funciona en un sentit).
+ * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatÃ²ria a 0.
  *
  * @param element Checkbox que ha fet la crida.
  * @param alumne Id de l'alumne.
@@ -49,7 +49,7 @@ function ConvalidaUF(element, alumne) {
 		message: "Esteu segur que voleu convalidar la UF?",
 		buttons: {
 			cancel: {
-				label: 'Cancel·la'
+				label: 'CancelÂ·la'
 			},
 			confirm: {
 				label: 'Convalida',
@@ -83,9 +83,9 @@ function ConvalidaUF(element, alumne) {
 
 /**
  * BaixaMatricula
- * Baixa de la matrícula d'un alumne.
+ * Baixa de la matrÃ­cula d'un alumne.
  * @param element Checkbox que ha fet la crida.
- * @param matricula_id Identificador de la matrícula.
+ * @param matricula_id Identificador de la matrÃ­cula.
  */
 function BaixaMatricula(element, matricula_id) { 
 	var sCerca = $('input[name="edtRecerca"]').val();	
@@ -96,7 +96,7 @@ function BaixaMatricula(element, matricula_id) {
 		message: "Esteu segur que voleu donar de baixa l'alumne?",
 		buttons: {
 			cancel: {
-				label: 'Cancel·la'
+				label: 'CancelÂ·la'
 			},
 			confirm: {
 				label: 'Dona de baixa',
@@ -130,7 +130,7 @@ function BaixaMatricula(element, matricula_id) {
 
 /**
  * EliminaMatriculaCurs
- * Elimina totes les matrícules d'un curs.
+ * Elimina totes les matrÃ­cules d'un curs.
  * @param curs_id Identificador del curs.
  */
 function EliminaMatriculaCurs(curs_id) { 
@@ -138,13 +138,13 @@ console.log('EliminaMatriculaCurs '+curs_id);
 	$('#MissatgeCorrecte').hide();
 	$('#MissatgeError').hide();
 	bootbox.confirm({
-		message: "Esteu segur que voleu eliminar totes les matrícules d'aquest curs?",
+		message: "Esteu segur que voleu eliminar totes les matrÃ­cules d'aquest curs?",
 		buttons: {
 			cancel: {
-				label: 'Cancel·la'
+				label: 'CancelÂ·la'
 			},
 			confirm: {
-				label: 'Elimina totes les matrícules',
+				label: 'Elimina totes les matrÃ­cules',
 				className: 'btn-danger'
 			}
 		},
@@ -162,7 +162,7 @@ console.log('EliminaMatriculaCurs '+curs_id);
 
 						i = data.indexOf('ERROR');
 						if (i > -1) {
-							$('#MissatgeError').html("Hi ha hagut un error en realitzar l''acció." + data);
+							$('#MissatgeError').html("Hi ha hagut un error en realitzar l''acciÃ³." + data);
 							$('#MissatgeError').show();
 						}
 						else {
@@ -182,19 +182,19 @@ console.log('EliminaMatriculaCurs '+curs_id);
 
 /**
  * EliminaMatriculaAlumne
- * Elimina la matrícula d'un alumne.
- * @param matricula_id Identificador de la matrícula.
+ * Elimina la matrÃ­cula d'un alumne.
+ * @param matricula_id Identificador de la matrÃ­cula.
  */
 function EliminaMatriculaAlumne(matricula_id) { 
 console.log('EliminaMatriculaAlumne '+matricula_id);
 	bootbox.confirm({
-		message: "Esteu segur que voleu eliminar la matrícula d'aquest alumne?",
+		message: "Esteu segur que voleu eliminar la matrÃ­cula d'aquest alumne?",
 		buttons: {
 			cancel: {
-				label: 'Cancel·la'
+				label: 'CancelÂ·la'
 			},
 			confirm: {
-				label: 'Elimina la matrícula',
+				label: 'Elimina la matrÃ­cula',
 				className: 'btn-danger'
 			}
 		},

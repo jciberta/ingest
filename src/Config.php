@@ -3,7 +3,7 @@
 /** 
  * Config.php
  *
- * Configuració general de l'aplicació.
+ * Configuraciï¿½ general de l'aplicaciï¿½.
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -15,11 +15,11 @@ class Config {
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
 	const Password       = 'root';
-	const Debug          = True; // Si està activat mostrara més informació.
+	const Debug          = True; // Si estï¿½ activat mostrara mï¿½s informaciï¿½.
 	const Demo           = False;
 	const Manteniment    = False; 
-	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
-	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
+	const Secret         = '736563726574'; // Clau per a les funcions d'encriptaciï¿½ (hexadecimal).
+	const EncriptaURL    = False; // Si estï¿½ actiu nomï¿½s passarï¿½ un parï¿½metre anomenat clau (que contindrï¿½ els parï¿½metres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;
@@ -45,13 +45,13 @@ $CFG->Usuari         = Config::Usuari;
 $CFG->Password       = Config::Password;
 $CFG->Debug          = Config::Debug;
 $CFG->Manteniment    = Config::Manteniment;
-$CFG->Secret         = hex2bin(Config::Secret); // Clau per a les funcions d'encriptació.
+$CFG->Secret         = hex2bin(Config::Secret); // Clau per a les funcions d'encriptaciï¿½.
 $CFG->Correu         = Config::Correu;
 $CFG->PasswordCorreu = Config::PasswordCorreu;
 
-// Definició de l'arrel de l'aplicació.
+// Definiciï¿½ de l'arrel de l'aplicaciï¿½.
 if (defined('STDIN')) {
-	// Execució de PHP via CLI.
+	// Execuciï¿½ de PHP via CLI.
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		define('ROOT', 'D:\CASA\Xiber\ingest\src');
 		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
@@ -65,7 +65,7 @@ if (defined('STDIN')) {
 	}
 }
 else {
-	// Execució de PHP via web.
+	// Execuciï¿½ de PHP via web.
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		// Windows
@@ -77,7 +77,7 @@ else {
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		// Linux
 		define('INGEST_DATA', '/var/www/ingest-data');
-		// Cals instal·lar les fonts
+		// Cals instalï¿½lar les fonts
 		// sudo apt-get install msttcorefonts
 		define('FONT_FILENAME_ARIAL', '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf');
 	}	

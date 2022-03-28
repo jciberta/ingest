@@ -33,6 +33,32 @@ console.log('sCicleFormatiuId: ' + sCicleFormatiuId);
     } );
 }
 
+/**
+ * ActualitzaTaulaContingutsUF
+ * @param element Element que ha fet la crida.
+ */
+function ActualitzaTaulaContingutsUF(element) { 
+	console.log('-> ActualitzaTaulaContingutsUF');
+		var sCicleFormatiuId = document.getElementById('cmb_cicle_formatiu_id').value;	
+	console.log('sCicleFormatiuId: ' + sCicleFormatiuId);	
+	
+		$.ajax( {
+			type: 'POST',
+			url: 'lib/LibProgramacioDidactica.ajax.php',
+			data:{
+				'accio': 'ActualitzaTaulaContingutsUF',
+				'cicle_formatiu_id': sCicleFormatiuId
+			},
+			success: function(data) {
+				$('#taula').html(data);
+				//$('#debug').html('<textarea disabled>'+data+'</textarea>');
+			}, 
+			error: function(data) {
+				$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+			}
+		} );
+}
+
 function ProposaDatesUF() { 
 console.log('-> ProposaDatesUF');
 	
