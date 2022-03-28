@@ -1074,4 +1074,115 @@ class ResultatsAprenentatge extends Form
 	}	
 }
 
+/**
+ * Formulari que encapsula els continguts de les unitats formatives.
+ */
+class ContingutsUF extends Form
+{
+	/**
+	* Identificador del cicle formatiu.
+	* @var integer
+	*/    
+    public $CicleFormatiuId = -1; 
+	
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Continguts UF");
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/ProgramacioDidactica.js?v1.4" type="text/javascript"></script>';
+
+		echo $this->GeneraFiltre();
+		echo '<BR><BR>';
+		echo $this->GeneraTaula();
+		CreaFinalHTML();
+	}	
+
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $CicleFormatiuId Identificador del cicle.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQL(int $CicleFormatiuId): string {
+		return "
+	SELECT 
+		MP.modul_professional_id, 
+		MP.codi AS CodiMP, 
+		MP.nom AS NomMP,
+		UF.unitat_formativa_id, 
+		UF.codi AS CodiUF, 
+		UF.nom AS NomUF, 
+		UF.nivell, 
+		UF.hores AS HoresUF, 
+		UF.activa, 
+		UF.es_fct AS FCT, 
+		CUF.contingut_uf_id, 
+		CUF.descripcio AS ContingutUF,
+		SCUF.descripcio AS SubContingutUF
+	FROM MODUL_PROFESSIONAL MP 
+	LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
+	LEFT JOIN CONTINGUT_UF CUF ON (CUF.unitat_formativa_id=UF.unitat_formativa_id)
+	LEFT JOIN SUBCONTINGUT_UF SCUF ON (SCUF.contingut_uf_id=CUF.contingut_uf_id)
+	WHERE cicle_formatiu_id=$CicleFormatiuId;
+		";		
+	}
+
+	/**
+	 * Genera el filtre del formulari si n'hi ha.
+	 */
+	protected function GeneraFiltre() {
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$this->CicleFormatiuId = $aCicles[0][0]; 
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaContingutsUF(this);"');
+	}
+
+	/**
+	 * Genera la llista amb els Continguts d'un cicle.
+     * @return string Llista amb les dades.
+	 */
+	public function GeneraTaula() {
+		$sRetorn = '<DIV id=taula>';
+		$ModulProfessionalId = -1;
+		$UnitatFormativaId = -1;
+		$ContingutUFId = -1;
+		$SQL = $this->CreaSQL($this->CicleFormatiuId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->contingut_uf_id !== $ContingutUFId) {
+					// Contingut nou
+					if ($ContingutUFId != -1)
+						$sRetorn .= '</ul>';
+					if ($row->unitat_formativa_id !== $UnitatFormativaId) {
+						// UF nova
+						if ($UnitatFormativaId != -1)
+							$sRetorn .= '</ul>';
+						if ($row->modul_professional_id !== $ModulProfessionalId) {
+							// Mòdul nou
+							if ($ModulProfessionalId != -1)
+								$sRetorn .= '</ul>';
+							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+							$sRetorn .= '<ul>';
+							$ModulProfessionalId = $row->modul_professional_id;
+						}
+						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+						$sRetorn .= '<ul>';
+						$UnitatFormativaId = $row->unitat_formativa_id;
+					}
+					$sRetorn .= '<li>'.utf8_encode($row->ContingutUF);
+					$sRetorn .= '<ul>';
+					$ContingutUFId = $row->contingut_uf_id;
+				}
+				if ($row->SubContingutUF != '')
+					$sRetorn .= '<li>'.utf8_encode($row->SubContingutUF);
+			}
+		}
+		else
+			$sRetorn .= 'No hi ha dades.';
+		$sRetorn .= '</DIV>';
+		return $sRetorn;			
+	}	
+}
+
 ?>

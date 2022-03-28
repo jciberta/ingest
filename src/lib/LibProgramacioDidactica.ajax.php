@@ -27,6 +27,11 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm = new ResultatsAprenentatge($conn, $Usuari);
 		$frm->CicleFormatiuId = $sCicleFormatiuId;
 		print $frm->GeneraTaula();
+	} else if ($_REQUEST['accio'] == 'ActualitzaTaulaContingutsUF') {
+		$sCicleFormatiuId = $_REQUEST['cicle_formatiu_id'];
+		$frm = new ContingutsUF($conn, $Usuari);
+		$frm->CicleFormatiuId = $sCicleFormatiuId;
+		print $frm->GeneraTaula();
 	}
 	else {
 		if ($CFG->Debug)
