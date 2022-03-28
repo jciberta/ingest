@@ -11,8 +11,7 @@
 
 require_once('../Config.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
-//require_once(ROOT.'/lib/LibCripto.php');
-//require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibNotes.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -41,9 +40,17 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'PosaEstatTrimestre') {
 		$Id = $_REQUEST['curs_id'];
 		$Trimestre = $_REQUEST['trimestre'];
+		$Trimestre = $_REQUEST['trimestre'];
+		$EsborraOrientatives = ($_REQUEST['esborra_orientatives'] == 1);
 		// Canviem l'estat del curs
 		$SQL = 'UPDATE CURS SET trimestre="'.$Trimestre.'" WHERE curs_id='.$Id;
 		$conn->query($SQL);
+		
+		if ($EsborraOrientatives) {
+			$Notes = new Notes($conn, $Usuari);
+			$Notes->EsborraNotesOrientatoriesCurs($Id);
+		}
+
 		//print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'TancaAvaluacio') {

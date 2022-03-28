@@ -84,10 +84,10 @@ class Avaluacio
 	}	
 	
 	/**
-	 * Crea la SQL pel llistat de cursos actuals.
+	 * Crea la SQL pel llistat de cursos.
      * @return string Sentència SQL.
 	 */
-	private function CreaSQLAvaluacionsActuals() {
+	private function CreaSQLAvaluacions() {
 		$SQL = ' SELECT '.
 			'   C.curs_id, '.
 			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) grups_tutoria, ".
@@ -100,7 +100,7 @@ class Avaluacio
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 
 //			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
-			' WHERE AA.actual=1 '.
+//			' WHERE AA.actual=1 '.
 			' ORDER by C.curs_id, C.grups_tutoria ';
 		return $SQL;
 	}
@@ -348,7 +348,7 @@ class Avaluacio
 	 * Escriu el llistat de les avaluacions actuals.
 	 */
 	public function EscriuFormulariRecera() {
-		$SQL = $this->CreaSQLAvaluacionsActuals();
+		$SQL = $this->CreaSQLAvaluacions();
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		//$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Avaluacions';
@@ -360,6 +360,11 @@ class Avaluacio
 		
 		$frm->AfegeixOpcio('Avaluació', 'Fitxa.php?accio=ExpedientSagaAvaluacio&Id=');
 		$frm->AfegeixOpcio('Acta', 'Fitxa.php?accio=Acta&Id=');
+		
+		// Filtre
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+
 		$frm->EscriuHTML();
 	}
 	
