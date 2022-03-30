@@ -22,15 +22,19 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
   /**
    * @var string
    */
+  public $appEngineIntegrationMode;
+  /**
+   * @var string
+   */
   public $concurrencyMode;
   /**
    * @var string
    */
-  public $earliestVersionTime;
+  public $etag;
   /**
    * @var string
    */
-  public $etag;
+  public $keyPrefix;
   /**
    * @var string
    */
@@ -44,6 +48,20 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
    */
   public $type;
 
+  /**
+   * @param string
+   */
+  public function setAppEngineIntegrationMode($appEngineIntegrationMode)
+  {
+    $this->appEngineIntegrationMode = $appEngineIntegrationMode;
+  }
+  /**
+   * @return string
+   */
+  public function getAppEngineIntegrationMode()
+  {
+    return $this->appEngineIntegrationMode;
+  }
   /**
    * @param string
    */
@@ -61,20 +79,6 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
   /**
    * @param string
    */
-  public function setEarliestVersionTime($earliestVersionTime)
-  {
-    $this->earliestVersionTime = $earliestVersionTime;
-  }
-  /**
-   * @return string
-   */
-  public function getEarliestVersionTime()
-  {
-    return $this->earliestVersionTime;
-  }
-  /**
-   * @param string
-   */
   public function setEtag($etag)
   {
     $this->etag = $etag;
@@ -85,6 +89,20 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
   public function getEtag()
   {
     return $this->etag;
+  }
+  /**
+   * @param string
+   */
+  public function setKeyPrefix($keyPrefix)
+  {
+    $this->keyPrefix = $keyPrefix;
+  }
+  /**
+   * @return string
+   */
+  public function getKeyPrefix()
+  {
+    return $this->keyPrefix;
   }
   /**
    * @param string

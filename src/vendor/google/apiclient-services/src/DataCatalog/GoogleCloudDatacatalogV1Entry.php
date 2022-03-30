@@ -23,6 +23,8 @@ class GoogleCloudDatacatalogV1Entry extends \Google\Model
   protected $bigqueryDateShardedSpecDataType = '';
   protected $bigqueryTableSpecType = GoogleCloudDatacatalogV1BigQueryTableSpec::class;
   protected $bigqueryTableSpecDataType = '';
+  protected $businessContextType = GoogleCloudDatacatalogV1BusinessContext::class;
+  protected $businessContextDataType = '';
   protected $dataSourceType = GoogleCloudDatacatalogV1DataSource::class;
   protected $dataSourceDataType = '';
   protected $dataSourceConnectionSpecType = GoogleCloudDatacatalogV1DataSourceConnectionSpec::class;
@@ -37,6 +39,8 @@ class GoogleCloudDatacatalogV1Entry extends \Google\Model
    * @var string
    */
   public $displayName;
+  protected $filesetSpecType = GoogleCloudDatacatalogV1FilesetSpec::class;
+  protected $filesetSpecDataType = '';
   /**
    * @var string
    */
@@ -111,6 +115,20 @@ class GoogleCloudDatacatalogV1Entry extends \Google\Model
     return $this->bigqueryTableSpec;
   }
   /**
+   * @param GoogleCloudDatacatalogV1BusinessContext
+   */
+  public function setBusinessContext(GoogleCloudDatacatalogV1BusinessContext $businessContext)
+  {
+    $this->businessContext = $businessContext;
+  }
+  /**
+   * @return GoogleCloudDatacatalogV1BusinessContext
+   */
+  public function getBusinessContext()
+  {
+    return $this->businessContext;
+  }
+  /**
    * @param GoogleCloudDatacatalogV1DataSource
    */
   public function setDataSource(GoogleCloudDatacatalogV1DataSource $dataSource)
@@ -179,6 +197,20 @@ class GoogleCloudDatacatalogV1Entry extends \Google\Model
   public function getDisplayName()
   {
     return $this->displayName;
+  }
+  /**
+   * @param GoogleCloudDatacatalogV1FilesetSpec
+   */
+  public function setFilesetSpec(GoogleCloudDatacatalogV1FilesetSpec $filesetSpec)
+  {
+    $this->filesetSpec = $filesetSpec;
+  }
+  /**
+   * @return GoogleCloudDatacatalogV1FilesetSpec
+   */
+  public function getFilesetSpec()
+  {
+    return $this->filesetSpec;
   }
   /**
    * @param string

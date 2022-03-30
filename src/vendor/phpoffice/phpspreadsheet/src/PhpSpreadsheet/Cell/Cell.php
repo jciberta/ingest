@@ -2,13 +2,17 @@
 
 namespace PhpOffice\PhpSpreadsheet\Cell;
 
+use DateTime;
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\Collection\Cells;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Shared\Date as SharedDate;
+use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\CellStyleAssessor;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Throwable;
 
 class Cell
 {
@@ -69,7 +73,7 @@ class Cell
      *
      * @return $this
      */
-    public function updateInCollection()
+    public function updateInCollection(): self
     {
         $this->parent->update($this);
 
@@ -139,7 +143,16 @@ class Cell
      */
     public function getCoordinate()
     {
-        return $this->parent->getCurrentCoordinate();
+        try {
+            $coordinate = $this->parent->getCurrentCoordinate();
+        } catch (Throwable $e) {
+            $coordinate = null;
+        }
+        if ($coordinate === null) {
+            throw new Exception('Coordinate no longer exists');
+        }
+
+        return $coordinate;
     }
 
     /**
@@ -223,6 +236,22 @@ class Cell
                 break;
             case DataType::TYPE_BOOL:
                 $this->value = (bool) $value;
+
+                break;
+            case DataType::TYPE_ISO_DATE:
+                if (!is_string($value)) {
+                    throw new Exception('Non-string supplied for datatype Date');
+                }
+                $date = new DateTime($value);
+                $newValue = SharedDate::PHPToExcel($date);
+                if ($newValue === false) {
+                    throw new Exception("Invalid string $value supplied for datatype Date");
+                }
+                if (preg_match('/^\\d\\d:\\d\\d:\\d\\d/', $value) == 1) {
+                    $newValue = fmod($newValue, 1.0);
+                }
+                $this->value = $newValue;
+                $dataType = DataType::TYPE_NUMERIC;
 
                 break;
             case DataType::TYPE_ERROR:
@@ -387,12 +416,8 @@ class Cell
 
     /**
      * Set Data validation rules.
-     *
-     * @param DataValidation $dataValidation
-     *
-     * @return Cell
      */
-    public function setDataValidation(?DataValidation $dataValidation = null)
+    public function setDataValidation(?DataValidation $dataValidation = null): self
     {
         if (!isset($this->parent)) {
             throw new Exception('Cannot set data validation for cell that is not bound to a worksheet');
@@ -446,8 +471,6 @@ class Cell
     /**
      * Set Hyperlink.
      *
-     * @param Hyperlink $hyperlink
-     *
      * @return Cell
      */
     public function setHyperlink(?Hyperlink $hyperlink = null)
@@ -478,7 +501,17 @@ class Cell
      */
     public function getWorksheet()
     {
-        return $this->parent->getParent();
+        try {
+            $worksheet = $this->parent->getParent();
+        } catch (Throwable $e) {
+            $worksheet = null;
+        }
+
+        if ($worksheet === null) {
+            throw new Exception('Worksheet no longer exists');
+        }
+
+        return $worksheet;
     }
 
     /**
@@ -527,12 +560,28 @@ class Cell
 
     /**
      * Get cell style.
-     *
-     * @return Style
      */
-    public function getStyle()
+    public function getStyle(): Style
     {
         return $this->getWorksheet()->getStyle($this->getCoordinate());
+    }
+
+    /**
+     * Get cell style.
+     */
+    public function getAppliedStyle(): Style
+    {
+        if ($this->getWorksheet()->conditionalStylesExists($this->getCoordinate()) === false) {
+            return $this->getStyle();
+        }
+        $range = $this->getWorksheet()->getConditionalRange($this->getCoordinate());
+        if ($range === null) {
+            return $this->getStyle();
+        }
+
+        $matcher = new CellStyleAssessor($this, $range);
+
+        return $matcher->matchConditions($this->getWorksheet()->getConditionalStyles($this->getCoordinate()));
     }
 
     /**

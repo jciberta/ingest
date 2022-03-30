@@ -17,8 +17,13 @@
 
 namespace Google\Service\Apigee;
 
-class GoogleCloudApigeeV1Instance extends \Google\Model
+class GoogleCloudApigeeV1Instance extends \Google\Collection
 {
+  protected $collection_key = 'consumerAcceptList';
+  /**
+   * @var string[]
+   */
+  public $consumerAcceptList;
   /**
    * @var string
    */
@@ -39,6 +44,10 @@ class GoogleCloudApigeeV1Instance extends \Google\Model
    * @var string
    */
   public $host;
+  /**
+   * @var string
+   */
+  public $ipRange;
   /**
    * @var string
    */
@@ -66,8 +75,26 @@ class GoogleCloudApigeeV1Instance extends \Google\Model
   /**
    * @var string
    */
+  public $serviceAttachment;
+  /**
+   * @var string
+   */
   public $state;
 
+  /**
+   * @param string[]
+   */
+  public function setConsumerAcceptList($consumerAcceptList)
+  {
+    $this->consumerAcceptList = $consumerAcceptList;
+  }
+  /**
+   * @return string[]
+   */
+  public function getConsumerAcceptList()
+  {
+    return $this->consumerAcceptList;
+  }
   /**
    * @param string
    */
@@ -137,6 +164,20 @@ class GoogleCloudApigeeV1Instance extends \Google\Model
   public function getHost()
   {
     return $this->host;
+  }
+  /**
+   * @param string
+   */
+  public function setIpRange($ipRange)
+  {
+    $this->ipRange = $ipRange;
+  }
+  /**
+   * @return string
+   */
+  public function getIpRange()
+  {
+    return $this->ipRange;
   }
   /**
    * @param string
@@ -221,6 +262,20 @@ class GoogleCloudApigeeV1Instance extends \Google\Model
   public function getRuntimeVersion()
   {
     return $this->runtimeVersion;
+  }
+  /**
+   * @param string
+   */
+  public function setServiceAttachment($serviceAttachment)
+  {
+    $this->serviceAttachment = $serviceAttachment;
+  }
+  /**
+   * @return string
+   */
+  public function getServiceAttachment()
+  {
+    return $this->serviceAttachment;
   }
   /**
    * @param string

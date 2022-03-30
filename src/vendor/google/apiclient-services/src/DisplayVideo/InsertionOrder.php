@@ -26,6 +26,10 @@ class InsertionOrder extends \Google\Collection
   public $advertiserId;
   protected $bidStrategyType = BiddingStrategy::class;
   protected $bidStrategyDataType = '';
+  /**
+   * @var string
+   */
+  public $billableOutcome;
   protected $budgetType = InsertionOrderBudget::class;
   protected $budgetDataType = '';
   /**
@@ -65,6 +69,10 @@ class InsertionOrder extends \Google\Collection
   /**
    * @var string
    */
+  public $reservationType;
+  /**
+   * @var string
+   */
   public $updateTime;
 
   /**
@@ -94,6 +102,20 @@ class InsertionOrder extends \Google\Collection
   public function getBidStrategy()
   {
     return $this->bidStrategy;
+  }
+  /**
+   * @param string
+   */
+  public function setBillableOutcome($billableOutcome)
+  {
+    $this->billableOutcome = $billableOutcome;
+  }
+  /**
+   * @return string
+   */
+  public function getBillableOutcome()
+  {
+    return $this->billableOutcome;
   }
   /**
    * @param InsertionOrderBudget
@@ -262,6 +284,20 @@ class InsertionOrder extends \Google\Collection
   public function getPerformanceGoal()
   {
     return $this->performanceGoal;
+  }
+  /**
+   * @param string
+   */
+  public function setReservationType($reservationType)
+  {
+    $this->reservationType = $reservationType;
+  }
+  /**
+   * @return string
+   */
+  public function getReservationType()
+  {
+    return $this->reservationType;
   }
   /**
    * @param string
