@@ -230,14 +230,9 @@ switch ($accio) {
 //			header("Location: Surt.php");		
 		
 		$acta = new Acta($conn, $Usuari);
-		$acta = $acta->GeneraPDF($CursId, $Grup);
-//print_h($aMatricules);
-//exit;
-/*		if (count($aMatricules) > 0) {
-			$frm = new ExpedientSaga($conn, $Usuari, $aMatricules[0]);
-			$frm->Titol = "Avaluació d'alumnes";
-			$frm->EscriuHTML();
-		}*/
+//		$acta = $acta->GeneraPDF($CursId, $Grup);
+		$acta = $acta->EscriuHTML($CursId, $Grup);
+		
         break;
     case "PlaTreball":
 		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];

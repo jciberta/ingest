@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
+require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPDF.php');
@@ -280,13 +281,16 @@ class Expedient extends Form
 			}
 		}
 
-		$pdf->Titol2(utf8_decode("Comentaris de l'avaluació"));
+//		$pdf->Titol2(utf8_decode("Comentaris de l'avaluació"));
+		$pdf->Titol2("Comentaris de l'avaluació");
 		$pdf->EscriuLinia("Sense comentaris");
 
 		$pdf->Titol2("Llegenda");
-		$pdf->EscriuLinia(utf8_decode("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
+//		$pdf->EscriuLinia(utf8_decode("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
+		$pdf->EscriuLinia("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
 		if ($Llei == 'LO')
-			$pdf->EscriuLinia(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
+//			$pdf->EscriuLinia(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
+			$pdf->EscriuLinia("L'anotació * identifica les qualificacions orientatives");
 
 		// Close and output PDF document
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
@@ -953,14 +957,16 @@ class QualificacionsPDF extends DocumentPDF
 
 		$this->Titol2("Dades del centre");
 		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
-		$this->Encolumna5(utf8_decode("Institut de Palamós"), "", "", "17005352", utf8_decode("Palamós"));
+//		$this->Encolumna5(utf8_decode("Institut de Palamós"), "", "", "17005352", utf8_decode("Palamós"));
+		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
 
 		$this->Titol2("Dades de l'alumne");
 		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
 		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
 
 		$this->Titol2("Dades dels estudis");
-		$this->Encolumna5("Cicle formatiu", "", "", utf8_decode("Avaluació"), "");
+//		$this->Encolumna5("Cicle formatiu", "", "", utf8_decode("Avaluació"), "");
+		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
 		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
 
 		$this->Titol2("Qualificacions");
@@ -972,7 +978,8 @@ class QualificacionsPDF extends DocumentPDF
 			$HTML .= '<TD style="width:50%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-			$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
+//			$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
+			$HTML .= '<TD style="width:55%">Mòdul</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
@@ -996,7 +1003,8 @@ class QualificacionsPDF extends DocumentPDF
 			$HTML .= '<TD style="width:100%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-			$HTML .= utf8_decode('<TD style="width:55%">Crèdit</TD>');
+//			$HTML .= utf8_decode('<TD style="width:55%">Crèdit</TD>');
+			$HTML .= '<TD style="width:55%">Crèdit</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
@@ -1009,7 +1017,8 @@ class QualificacionsPDF extends DocumentPDF
 		$HTML .= "<HR>";
 
 		$this->SetY(110);
-		$this->writeHTML(utf8_encode($HTML), True, True);
+//		$this->writeHTML(utf8_encode($HTML), True, True);
+		$this->writeHTML($HTML, True, True);
     }
 
     // Peu de pàgina
@@ -1028,7 +1037,7 @@ class QualificacionsPDF extends DocumentPDF
 /**
  * Classe que encapsula les utilitats per al maneig de l'acta.
  */
-class Acta extends Objecte
+class Acta extends Form
 {
 	/**
 	 * Nivell del curs (1 o 2).
@@ -1087,7 +1096,7 @@ class Acta extends Objecte
 				AA.any_inici, AA.any_final,
 				N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, 
 				M.matricula_id, M.grup_tutoria AS GrupTutoria, 
-				C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, 
+				C.curs_id AS IdCurs, C.nivell AS NivellMAT, C.estat AS EstatCurs, C.avaluacio,
 				N.* 
 			FROM NOTES N 
 			LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
@@ -1267,7 +1276,8 @@ class Acta extends Objecte
 			if ($AlumneId == -1) {
 				// Primer cop, agafem les dades de la capçalera
 				$this->Registre->CursAcademic = $row->any_inici.'/'.$row->any_final;
-				$this->Registre->NomCicleFormatiu = $row->NomCicleFormatiu;
+				$this->Registre->Avaluacio = $row->avaluacio;
+				$this->Registre->NomCicleFormatiu = utf8_encode($row->NomCicleFormatiu);
 				$this->Registre->CodiXTEC = $row->codi_xtec;
 				$this->Registre->Grau = $row->grau;
 				$this->Registre->Llei = $row->llei;
@@ -1355,7 +1365,10 @@ class Acta extends Objecte
 		while ($row = $ResultSet->fetch_object()) {
 			if ($row->IdMP != $ModulId) {
 				$Modul = new stdClass();
-				$Modul->Nom = $row->NomMP;
+				$Modul->Nom = utf8_encode($row->NomMP);
+				
+//				$Modul->Nom = str_replace("'", "`", $Modul->Nom);
+				
 				$Modul->Hores = $row->HoresMP;
 				$Modul->Unitats = [];
 				$this->RegistrePlaEstudis[$row->CodiMP] = $Modul; // Array associatiu
@@ -1363,7 +1376,10 @@ class Acta extends Objecte
 			}
 			if ($row->IdUF != $UnitatId) {
 				$Unitat = new stdClass();
-				$Unitat->Nom = $row->NomUF;
+				$Unitat->Nom = utf8_encode($row->NomUF);
+
+//				$Unitat->Nom = str_replace("'", "`", $Modul->Nom);
+
 				$Unitat->Hores = $row->HoresUF;
 				$Modul->Unitats[$row->CodiUF] = $Unitat; // Array associatiu
 				$UnitatId = $row->IdUF;
@@ -1394,13 +1410,14 @@ class Acta extends Objecte
 			$this->NivellCurs = $row->NivellCurs;
 			if ($row->IdMP != $ModulId) {
 				$Modul = new stdClass();
-				$Modul->Nom = $row->NomMP;
+				$Modul->Nom = utf8_encode($row->NomMP);
 				$Modul->Professors = [];
 				$this->RegistreProfessors[$row->CodiMP] = $Modul; // Array associatiu
 				$ModulId = $row->IdMP;
 			}
-			if (!in_array($row->NomCognom1Cognom2, $Modul->Professors))
-				array_push($Modul->Professors, $row->NomCognom1Cognom2);
+			$NomCognom1Cognom2 = utf8_encode($row->NomCognom1Cognom2);
+			if (!in_array($NomCognom1Cognom2, $Modul->Professors))
+				array_push($Modul->Professors, $NomCognom1Cognom2);
 		}
 //print_h($this->RegistreProfessors);
 //exit;		
@@ -1552,6 +1569,11 @@ class Acta extends Objecte
 		}
 	}
 	
+	/**
+	 * Extreu el número del mòdul a partir del codi.
+	 * @param string $Codi Codi del mòdul.
+	 * @return string Número del mòdul.
+	 */
 	private function NumeroModul($Codi) {
 		$Codi = str_replace('MP', '', $Codi);
 		$Codi = str_replace('C', '', $Codi);
@@ -1564,7 +1586,8 @@ class Acta extends Objecte
 		$Retorn .= '<TABLE>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD height="100">';
-		$Retorn .= 'Mòdul '.$this->NumeroModul($Codi).' '.$Codi.'. '.$Nom;
+		if ($Codi != '')
+			$Retorn .= 'Mòdul '.$this->NumeroModul($Codi).' '.$Codi.'. '.$Nom;
 		$Retorn .= '</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
@@ -1585,12 +1608,31 @@ class Acta extends Objecte
 		$pdf->SetFont('helvetica', '', 7);
 
 		$pdf->SetY(65);
-		$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+//		$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+		$pdf->Titol2("Signatures de l'equip docent dels mòduls", 9);
 		
 		$HTML = '';
 		$i = 0;
+//print_h($this->RegistrePlaEstudis);
+//print('<hr>');
+//print_h($this->RegistreProfessors);
+//exit;		
 		foreach ($this->RegistrePlaEstudis as $Codi => $Modul) {
-			$Professors = $this->RegistreProfessors[$Codi]->Professors;
+//print_h($Codi);
+//print_h($Modul);
+			
+			$Professors = [];
+//print_h($Codi);
+//print_h($this->RegistreProfessors);
+//exit;
+//print('<hr>');
+			if (array_key_exists($Codi, $this->RegistreProfessors)) {
+				$Professors = $this->RegistreProfessors[$Codi]->Professors;
+//print('Professor: '.count($Professors));
+//print_h($Professors);
+//print('<hr>');
+			}
+			
 			if (count($Professors)>0) {
 				foreach ($Professors as $Nom) {
 					if ($i % 12 == 0) {$HTML .= '<TABLE style="font-family:helvetica;font-size:9;">';}
@@ -1599,10 +1641,15 @@ class Acta extends Objecte
 					if ($i % 4 == 3) {$HTML .= '</TR>';}
 					if ($i % 12 == 11) {
 						$HTML .= '</TABLE>';
+						
+//print_h($HTML);
+//exit;
+
 						$pdf->writeHTML($HTML, true, false, true, false, '');
+//						$pdf->writeHTML($HTML, true);
 						$pdf->AddPage();
 						$pdf->SetY(65);
-						$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+						$pdf->Titol2("Signatures de l'equip docent dels mòduls", 9);
 						$HTML = '';
 					}
 					$i++;
@@ -1615,25 +1662,34 @@ class Acta extends Objecte
 				if ($i % 4 == 3) {$HTML .= '</TR>';}
 				if ($i % 12 == 11) {
 					$HTML .= '</TABLE>';
+//print_h($HTML);
 						$pdf->writeHTML($HTML, true, false, true, false, '');
 						$pdf->AddPage();
 						$pdf->SetY(65);
-						$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+						$pdf->Titol2("Signatures de l'equip docent dels mòduls", 9);
 						$HTML = '';
 				}
 				$i++;				
 			}
 		}
+		while ($i % 4 != 0) {
+			$HTML .= $this->CreaCella('', '', '');
+			$i++;
+		}
+		$HTML .= '</TR>';
 		$HTML .= '</TABLE>';
+//print_h($HTML);
 		$pdf->writeHTML($HTML, true, false, true, false, '');
 	}	
 	
 	/**
 	 * Genera l'acta en PDF per a un grup tutoria.
 	 * @param integer $CursId Identificador del curs.
-	 * @param string $Grup Grup de tutoria (si n'hi ha).
+	 * @param string $Grup Grup de tutoria ('' si no n'hi ha).
+	 * @param string $DataAvaluacio Data de l'avaluació.
+	 * @param string $DataImpressio Data de l'impressió.
 	 */
-	public function GeneraPDF(int $CursId, string $Grup = '') {
+	public function GeneraPDF(int $CursId, string $Grup, $DataAvaluacio, $DataImpressio) {
 		$this->CarregaDades($CursId, $Grup);
 		$this->CarregaDadesAlumne($CursId, $Grup);
 		$this->CarregaPlaEstudis($CursId);
@@ -1673,25 +1729,49 @@ class Acta extends Objecte
 		
 		
 		$pdf->CursAcademic = $this->Registre->CursAcademic;
+		$pdf->Avaluacio = $this->Registre->Avaluacio;
 		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
 		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
 		$pdf->Grau = $this->Registre->Grau;
 		$pdf->Llei = $this->Registre->Llei;
 		$pdf->NomTutor = $this->Registre->NomTutor;
 		$pdf->NomDirector = $this->Registre->NomDirector;
+		$pdf->DataAvaluacio = $DataAvaluacio;
+		$pdf->DataImpressio = $DataImpressio;
 		$pdf->AddPage(); // Crida al mètode Header		
 
 		$this->GeneraTaulaNotes($pdf);
 		$this->GeneraTaulaSignatures($pdf);
 		
 		// Close and output PDF document
-		//$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
-		$Nom = '';
+		$Nom = 'Acta '.str_replace('/', '-', $this->Registre->CursAcademic).' '.$this->Registre->Avaluacio.' '.$this->Registre->NomCicleFormatiu;
+		$Nom = Normalitza($Nom);		
 		// Clean any content of the output buffer
 		ob_end_clean();
-		$pdf->Output('Acta '.$Nom.'.pdf', 'I');
+		$pdf->Output($Nom.'.pdf', 'I');
 	}
 
+	/**
+	 * Mostra el diàleg demanant les dates abans de general el PDF.
+	 * @param integer $CursId Identificador del curs.
+	 * @param string $Grup Grup de tutoria (si n'hi ha).
+	 */
+	public function EscriuHTML(int $CursId, string $Grup = '') {
+		CreaIniciHTML($this->Usuari, 'Acta');
+		echo '<script language="javascript" src="js/Avaluacio.js?v1.2" type="text/javascript"></script>';
+		echo '<form action="Descarrega.php" method="POST">';
+		echo $this->CreaAmagat('Accio', bin2hex(Encripta('GeneraActaPDF')));
+		echo $this->CreaAmagat('CursId', bin2hex(Encripta($CursId)));
+		echo $this->CreaAmagat('Grup', bin2hex(Encripta($Grup)));
+		echo '<table>';
+		echo '<tr>'.$this->CreaData('data_avaluacio', 'Data avaluació', [Form::offREQUERIT]).'</tr>';
+		echo '<tr>'.$this->CreaData('data_impressio', 'Data impressió', [Form::offREQUERIT], date("d/m/Y")).'</tr>';
+		echo '</table>';
+		echo '<br>';
+		echo '<input class="btn btn-primary" type="submit" value="Genera PDF">';
+		echo '</form>';
+		CreaFinalHTML();		
+	}
 }
 
 /**
@@ -1704,6 +1784,12 @@ class ActaPDF extends DocumentPDF
 	* @var string
 	*/
 	public $CursAcademic = '';
+
+	/**
+	* Avaluació.
+	* @var string
+	*/
+	public $Avaluacio = '';
 
 	/**
 	* Nom de cicle formatiu.
@@ -1741,6 +1827,18 @@ class ActaPDF extends DocumentPDF
 	*/
 	public $NomDirector = '';
 	
+	/**
+	* Data de l'avaluació.
+	* @var string
+	*/
+	public $DataAvaluacio = '';
+
+	/**
+	* Data de l'impressió.
+	* @var string
+	*/
+	public $DataImpressio = '';
+
     // Capçalera
     public function Header() {
         // Logo
@@ -1766,13 +1864,14 @@ class ActaPDF extends DocumentPDF
 		$this->SetX($this->original_lMargin);
 		$this->writeHTML('<B>Acta de qualificacions de mòduls i unitats formatives de cicle formatiu de grau mitjà</B>', False);
 
+		$Avaluacio = ($this->Avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
 		$this->SetX($this->original_lMargin+150);
-		$this->writeHTML('<B>Avaluació:</B> G1', False);
+		$this->writeHTML('<B>Avaluació:</B>'.$Avaluacio, False);
 
-		$this->SetX($this->original_lMargin+180);
+		$this->SetX($this->original_lMargin+190);
 		$this->writeHTML('<B>Curs acadèmic:</B> '.$this->CursAcademic, False);
 
-		$this->SetX($this->original_lMargin+230);
+		$this->SetX($this->original_lMargin+240);
 		$Grup = 'CFP'.$this->Grau[1].' '.$this->CodiXTEC;
 		$this->writeHTML('<B>Grup:</B> '.$Grup, False);
 		

@@ -100,7 +100,9 @@ function Ocurrencies($array)
 function print_h($Variable)
 {
 	echo '<pre>';
-	print_r(EscapaHTML($Variable));
+	$Temp = print_r($Variable, 1);
+	echo EscapaHTML($Temp);
+//	print_r(EscapaHTML($Variable));
 	echo '</pre>';
 }
  

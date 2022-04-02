@@ -343,6 +343,9 @@ class Form {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 
+		if (!strpos($DataSeleccionada, 'value'))
+			$DataSeleccionada = 'value="'.$DataSeleccionada.'"';
+
 		$sNom = 'edd_' . $Nom;
 		if (!in_array(self::offNO_TITOL, $off))
 			$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
@@ -559,7 +562,7 @@ class Form {
 	 * @return string Codi HTML de l'element.
 	 */
 	public function CreaAmagat(string $Nom, string $Valor = '') {
-		return "<input type=hidden id=$Nom value='$Valor'>";
+		return "<input type=hidden id='$Nom' name='$Nom' value='$Valor'>";
 	}
 	
 	/**
