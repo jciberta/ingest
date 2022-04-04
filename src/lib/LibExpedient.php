@@ -1679,6 +1679,9 @@ class Acta extends Form
 		$HTML .= '</TR>';
 		$HTML .= '</TABLE>';
 //print_h($HTML);
+//exit;
+		// Pedaç: depèn la casuística, acaba amb 2 </TR>
+		$HTML = str_replace('/TR></TR>', '/TR>', $HTML);
 		$pdf->writeHTML($HTML, true, false, true, false, '');
 	}	
 	
