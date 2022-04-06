@@ -5,3 +5,4 @@ src/img/pix
 *.BASE
 *.LOCAL
 *.REMOTE
+doc/cache
