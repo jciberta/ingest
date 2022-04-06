@@ -9,7 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-  /**
+/**
  * ComprovaData
  *
  * Comprova una data si és correcta.
@@ -114,6 +114,13 @@ function ProperDia($date, $dies)
 		$Retorn = $dt->format('d/m/Y');
 	}
 	return $Retorn;
+}
+
+function DataATextCatala($Data) {
+	$TextMes = ['de gener', 'de febrer', 'de març', "d'abril", 'de maig', 'de juny', 
+		'de juliol', "d'agost", 'de setembre', "d'octubre", 'de novembre', 'de desembre'];
+	list($Dia, $Mes, $Any) = explode('/', $Data);
+	return intval($Dia).' '.$TextMes[intval($Mes)-1].' de '.$Any;
 }
 
 ?>

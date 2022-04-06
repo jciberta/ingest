@@ -12,6 +12,7 @@
 require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
+require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
@@ -1701,6 +1702,18 @@ class Acta extends Form
 		$pdf = new ActaPDF('L', 'mm', 'A4', true, 'UTF-8', false);
 		$pdf->SetTitle('Acta');
 		$pdf->SetSubject('Acta');
+
+		$pdf->CursAcademic = $this->Registre->CursAcademic;
+		$pdf->Avaluacio = $this->Registre->Avaluacio;
+		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
+		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
+		$pdf->Grau = $this->Registre->Grau;
+		$pdf->Llei = $this->Registre->Llei;
+		$pdf->NomTutor = $this->Registre->NomTutor;
+		$pdf->NomDirector = $this->Registre->NomDirector;
+		$pdf->DataAvaluacio = $DataAvaluacio;
+		$pdf->DataImpressio = $DataImpressio;
+		$pdf->AddPage(); // Crida al mètode Header		
 		
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
@@ -1731,17 +1744,6 @@ class Acta extends Form
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);		
 		
 		
-		$pdf->CursAcademic = $this->Registre->CursAcademic;
-		$pdf->Avaluacio = $this->Registre->Avaluacio;
-		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
-		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
-		$pdf->Grau = $this->Registre->Grau;
-		$pdf->Llei = $this->Registre->Llei;
-		$pdf->NomTutor = $this->Registre->NomTutor;
-		$pdf->NomDirector = $this->Registre->NomDirector;
-		$pdf->DataAvaluacio = $DataAvaluacio;
-		$pdf->DataImpressio = $DataImpressio;
-		$pdf->AddPage(); // Crida al mètode Header		
 
 		$this->GeneraTaulaNotes($pdf);
 		$this->GeneraTaulaSignatures($pdf);
@@ -1934,7 +1936,7 @@ class ActaPDF extends DocumentPDF
 		$this->SetX($this->original_lMargin + 150);
 		$this->writeHTML('Palamós', False);
 		$this->SetX($this->original_lMargin + 210);
-		$this->writeHTML("__/__/____", False);		
+		$this->writeHTML($this->DataAvaluacio, False);		
 
 		$this->Linia();
 
@@ -1964,7 +1966,8 @@ class ActaPDF extends DocumentPDF
         $this->SetY(-5);
         $this->SetFont('helvetica', '', 8);
         $this->SetX($this->original_lMargin);
-		$this->Escriu('Palamós, X de XX de XXXX', 8);
+		$this->Escriu('Palamós, '.DataATextCatala($this->DataImpressio), 8);
+		
         //$this->SetX($this->original_lMargin + 200);
 		//$this->Escriu('Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 8);
 		
