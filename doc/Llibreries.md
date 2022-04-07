@@ -18,3 +18,4 @@
 - Chart.js 3.3.2 (https://www.chartjs.org/). Llicència MIT
 - Summernote 0.8.18 (https://summernote.org). Llicència MIT
 - DataTables 1.10.25 (https://www.datatables.net/). Llicència MIT
+- pswmeter (https://github.com/pascualmj/pswmeter). 
