@@ -281,7 +281,7 @@ class Form {
 
 		$sRetorn = '';
 		if (!in_array(self::offNO_TITOL, $off))
-			$sRetorn .= '<TD><label for="ede_'.$sNom.'">'.$Titol.'</label></TD>';
+			$sRetorn .= '<TD><label for="ede_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
 		return $sRetorn;
 	}
@@ -343,12 +343,14 @@ class Form {
 		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 
-		if (!strpos($DataSeleccionada, 'value'))
+//print("DataSeleccionada: $DataSeleccionada");
+		if (strpos($DataSeleccionada, 'value') === false)
 			$DataSeleccionada = 'value="'.$DataSeleccionada.'"';
 
+		$sRetorn = '';
 		$sNom = 'edd_' . $Nom;
 		if (!in_array(self::offNO_TITOL, $off))
-			$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+			$sRetorn .= '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div id='.$sNom.' class="input-group date" style="width:150px">';
 		$sRetorn .= '  <input type="text" class="form-control" name="'.$sNom.'" '.$DataSeleccionada.$Requerit.$NomesLectura.'>';
@@ -1179,7 +1181,8 @@ class FormRecerca extends Form {
 					}
 					else {
 						$sValor = $row[$data];
-						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
+//						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
 					}
 				}
 				$sRetorn .= "<TD>";

@@ -332,7 +332,9 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 			$AnyAcademicId = $aAnys[0][0]; 
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		}
-		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'));
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 		$frm->EscriuHTML();
 	}
 }
@@ -408,12 +410,19 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 	
 	private function CarregaAnyAcademic(string $ModulPlaEstudiId) {
 		$SQL = "
+			SELECT C.*
+			FROM MODUL_PLA_ESTUDI MPE
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
+		";
+/*		$SQL = "
 			SELECT AA.*
 			FROM MODUL_PLA_ESTUDI MPE
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
 			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
 			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
-		";
+		";*/
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) 
 			$this->AnyAcademic = $ResultSet->fetch_object();
