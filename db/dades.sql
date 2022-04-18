@@ -558,5 +558,51 @@ INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 1r', 'CAI1', 17, 1);
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2021-2022 2n', 'CAI2', 17, 2);
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2021-2022 1r', 'FPB1', 18, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2021-2022 2n', 'HBD1', 19, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2021-2022 1r', 'HBD1', 19, 1);
 
+
+/* 
+ * Curs 2021-2022 
+ */
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2022, 2023, 'Curs 2022-2023');
+UPDATE ANY_ACADEMIC SET actual=0;
+UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=5;
+
+INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (10, 'Intel·ligència Artificial i Big Data', 'CE', 'IAB', 'IC03', 17);
+
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (120, 'Models d´Intel·ligència Artificial', 'MP01', 66, 2, '507, Esp', 'A' ,10);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (121, 'Sistemes d´aprenentatge Automàtic', 'MP02', 99, 3, '507, Esp', 'A' ,10);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (122, 'Programació d´Intel·ligència Artificial', 'MP03', 132, 4, '507, Esp', 'A' ,10);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (123, 'Sistemes de Big Data', 'MP04', 99, 3, '627, Esp', 'B' ,10);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (124, 'Big Data Aplicat', 'MP05', 99, 3, '627, Esp', 'B' ,10);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (125, 'Formació en centres de treball', 'MP06', 105, NULL, '', '' ,10);
+
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (270, 'UF1. Models d´Intel·ligència Artificial', 'UF1', 66, 1, 120);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (271, 'UF1. Sistemes d´aprenentatge Automàtic', 'UF1', 99, 1, 121);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (272, 'UF1. Programació d´Intel·ligència Artificial', 'UF1', 132, 1, 122);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (273, 'UF1. Sistemes de Big Data', 'UF1', 99, 1, 123);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (274, 'UF1. Big Data Aplicat', 'UF1', 99, 1, 124);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (275, 'UF1. Formació en centres de treball', 'UF1', 105, 1, 125);
+
+-- Desmarca MP, UF no actius
+call CreaPlaEstudis(5);
+
+-- Posar data inici i data final
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2022-2023 1r', 'SMX1', 21, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2022-2023 2n', 'SMX2', 21, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2022-2023 1r', 'DAM1', 22, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2022-2023 2n', 'DAM2', 22, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2022-2023 1r', 'FIP1', 23, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2022-2023 2n', 'FIP2', 23, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2022-2023 1r', 'APD1', 24, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2022-2023 2n', 'APD2', 24, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2022-2023 1r', 'CAI1', 25, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2022-2023 2n', 'CAI2', 25, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2022-2023 1r', 'FPB1', 26, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2022-2023 2n', 'FPB2', 26, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2022-2023 1r', 'HBD1', 27, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2022-2023 2n', 'HBD2', 27, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CE Intel·ligència Artificial i Big Data (LOE) 2022-2023 2n', 'IAB1', 28, 1);
+
+UPDATE CURS SET data_inici = '2022-09-15' WHERE curs_id>=63;
+UPDATE CURS SET data_final = '2023-05-31' WHERE curs_id>=63;
