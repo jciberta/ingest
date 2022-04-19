@@ -503,6 +503,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
 			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
 		$Retorn .= Menu::Tanca();
