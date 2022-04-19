@@ -9,6 +9,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibStr.php');
+
 /**
  * ComprovaFortalesaPassword
  *
@@ -53,7 +55,8 @@ function ObteCodiValorDesDeSQL($Connexio, $SQL, $CampCodi, $CampValor)
 		$i = 0;
 		while($row = $ResultSet->fetch_assoc()) {
 			$Codi[$i] = $row[$CampCodi];
-			$Valor[$i] = utf8_encode($row[$CampValor]);
+//			$Valor[$i] = utf8_encode($row[$CampValor]);
+			$Valor[$i] = CodificaUTF8($row[$CampValor]);
 			$i++;
 		}
 	};	
