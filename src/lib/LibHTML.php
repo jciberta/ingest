@@ -351,6 +351,8 @@ class Portal
 		echo '		<nav>';
 		echo '		<ul class="nav nav-pills float-right">';
 		echo '			<li class="nav-item"><a class="nav-link" href="http://inspalamos.cat" target="_blank">Web</a></li>';
+		echo '			<li class="nav-item"><a class="nav-link" href="https://educaciodigital.cat/iespalamos/moodle/" target="_blank">Moodle</a></li>';
+		echo '			<li class="nav-item"><a class="nav-link" href="https://classroom.google.com" target="_blank">Classroom</a></li>';
 		echo '		</ul>';
 		echo '		</nav>';
 		echo '	</div>';
