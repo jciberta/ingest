@@ -16,7 +16,6 @@ require_once(ROOT.'/vendor/autoload.php');
 use PhpOffice\PhpWord\Shared\Converter;
 use PhpOffice\PhpWord\Style\TablePosition;
 
-
 /**
  * Classe que encapsula el formulari de la programació didàctica.
  */
@@ -236,7 +235,7 @@ class ProgramacioDidactica extends Form
 		$sRetorn .= "<tbody>";
 		while($row = $ResultSet->fetch_object()) {
 			$sRetorn .= "<TR>";
-			$sRetorn .= "<TD>".utf8_encode($row->nom)."</TD>";
+			$sRetorn .= "<TD>".CodificaUTF8($row->nom)."</TD>";
 			$sRetorn .= "<TD style='text-align:center;'>".$row->hores."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
 			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
@@ -558,6 +557,9 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 	 * @param string $html Fragment HTML per tractar.
 	 */
 	private function AfegeixHTML(&$section, $html) {
+		// https://www.php.net/manual/en/migration70.new-features.php#migration70.new-features.null-coalesce-op
+		$html = $html ?? '';
+		
 		$aHTML = [];
 		$aTable = [];
 		$i = 0;
@@ -892,7 +894,7 @@ class ResultatsAprenentatge extends Form
 				MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP,
 				UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, 
 				RA.resultat_aprenentatge_id, RA.descripcio AS ResultatAprenentatge,
-				CAV.descripcio AS CriteriAvaluacio
+				CAV.criteri_avaluacio_id, CAV.descripcio AS CriteriAvaluacio
 			FROM MODUL_PROFESSIONAL MP 
 			LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
 			LEFT JOIN RESULTAT_APRENENTATGE RA ON (RA.unitat_formativa_id=UF.unitat_formativa_id)
@@ -903,8 +905,9 @@ class ResultatsAprenentatge extends Form
 
 	/**
 	 * Genera el filtre del formulari si n'hi ha.
+     * @return string Codi HTML del filtre.
 	 */
-	protected function GeneraFiltre() {
+	protected function GeneraFiltre(): string {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
 		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
@@ -914,7 +917,7 @@ class ResultatsAprenentatge extends Form
 	 * Genera la llista amb els RA d'un cicle.
      * @return string Llista amb les dades.
 	 */
-	public function GeneraTaula() {
+	public function GeneraTaula(): string {
 		$sRetorn = '<DIV id=taula>';
 		$ModulProfessionalId = -1;
 		$UnitatFormativaId = -1;
@@ -938,20 +941,28 @@ class ResultatsAprenentatge extends Form
 							// Mòdul nou
 							if ($ModulProfessionalId != -1)
 								$sRetorn .= '</ul>';
-							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+							$Id = ($this->Usuari->es_admin) ? ' ['.$row->modul_professional_id.']' : '';
+//							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.CodificaUTF8($row->NomMP).'</b>'.$Id;
 							$sRetorn .= '<ul>';
 							$ModulProfessionalId = $row->modul_professional_id;
 						}
-						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+						$Id = ($this->Usuari->es_admin) ? ' ['.$row->unitat_formativa_id.']' : '';
+//						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+						$sRetorn .= '<li><u>'.CodificaUTF8($row->NomUF).'</u>'.$Id;
 						$sRetorn .= '<ul>';
 						$UnitatFormativaId = $row->unitat_formativa_id;
 					}
-					$sRetorn .= '<li>RA'.utf8_encode($row->ResultatAprenentatge);
+					$Id = ($this->Usuari->es_admin) ? ' ['.$row->resultat_aprenentatge_id.']' : '';
+//					$sRetorn .= '<li>RA'.utf8_encode($row->ResultatAprenentatge);
+					$sRetorn .= '<li>RA'.CodificaUTF8($row->ResultatAprenentatge).$Id;
 					$sRetorn .= '<ul>';
 					$ResultatAprenentatgeId = $row->resultat_aprenentatge_id;
 				}
 				if ($row->CriteriAvaluacio != '')
-					$sRetorn .= '<li>'.utf8_encode($row->CriteriAvaluacio);
+					$Id = ($this->Usuari->es_admin) ? ' ['.$row->criteri_avaluacio_id.']' : '';
+//					$sRetorn .= '<li>'.utf8_encode($row->CriteriAvaluacio);
+					$sRetorn .= '<li>'.CodificaUTF8($row->CriteriAvaluacio).$Id;
 			}
 		}
 		else
@@ -1015,7 +1026,7 @@ class ResultatsAprenentatge extends Form
 					$UF = new stdClass();
 					array_push($this->Registre, $UF);
 					$UF->Id = $row->unitat_formativa_id;
-					$UF->Nom = utf8_encode($row->NomUF);
+					$UF->Nom = CodificaUTF8($row->NomUF);
 					$UF->Dades = [];
 					
 					$UnitatFormativaId = $row->unitat_formativa_id;
@@ -1026,7 +1037,7 @@ class ResultatsAprenentatge extends Form
 					$Dades = new stdClass();
 					array_push($UF->Dades, $Dades);
 					$Dades->Id = $row->DescripcioId;
-					$Dades->Nom = utf8_encode($row->Descripcio);
+					$Dades->Nom = CodificaUTF8($row->Descripcio);
 					$Dades->Tipus = $row->Tipus;
 					$Dades->Dades = [];
 
@@ -1034,7 +1045,7 @@ class ResultatsAprenentatge extends Form
 					$Tipus = $row->Tipus;							
 				}
 				
-				array_push($Dades->Dades, utf8_encode($row->Descripcio2));
+				array_push($Dades->Dades, CodificaUTF8($row->Descripcio2));
 			}
 		}
 //print_h($this->Registre);
@@ -1115,32 +1126,24 @@ class ContingutsUF extends Form
 	 */
 	protected function CreaSQL(int $CicleFormatiuId): string {
 		return "
-	SELECT 
-		MP.modul_professional_id, 
-		MP.codi AS CodiMP, 
-		MP.nom AS NomMP,
-		UF.unitat_formativa_id, 
-		UF.codi AS CodiUF, 
-		UF.nom AS NomUF, 
-		UF.nivell, 
-		UF.hores AS HoresUF, 
-		UF.activa, 
-		UF.es_fct AS FCT, 
-		CUF.contingut_uf_id, 
-		CUF.descripcio AS ContingutUF,
-		SCUF.descripcio AS SubContingutUF
-	FROM MODUL_PROFESSIONAL MP 
-	LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
-	LEFT JOIN CONTINGUT_UF CUF ON (CUF.unitat_formativa_id=UF.unitat_formativa_id)
-	LEFT JOIN SUBCONTINGUT_UF SCUF ON (SCUF.contingut_uf_id=CUF.contingut_uf_id)
-	WHERE cicle_formatiu_id=$CicleFormatiuId;
+			SELECT 
+				MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP, 
+				UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, 
+				CUF.contingut_uf_id, CUF.descripcio AS ContingutUF,
+				SCUF.subcontingut_uf_id, SCUF.descripcio AS SubContingutUF
+			FROM MODUL_PROFESSIONAL MP 
+			LEFT JOIN UNITAT_FORMATIVA UF ON (UF.modul_professional_id=MP.modul_professional_id)
+			LEFT JOIN CONTINGUT_UF CUF ON (CUF.unitat_formativa_id=UF.unitat_formativa_id)
+			LEFT JOIN SUBCONTINGUT_UF SCUF ON (SCUF.contingut_uf_id=CUF.contingut_uf_id)
+			WHERE cicle_formatiu_id=$CicleFormatiuId;
 		";		
 	}
 
 	/**
 	 * Genera el filtre del formulari si n'hi ha.
+     * @return string Codi HTML del filtre.
 	 */
-	protected function GeneraFiltre() {
+	protected function GeneraFiltre(): string {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
 		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaContingutsUF(this);"');
@@ -1150,7 +1153,7 @@ class ContingutsUF extends Form
 	 * Genera la llista amb els Continguts d'un cicle.
      * @return string Llista amb les dades.
 	 */
-	public function GeneraTaula() {
+	public function GeneraTaula(): string {
 		$sRetorn = '<DIV id=taula>';
 		$ModulProfessionalId = -1;
 		$UnitatFormativaId = -1;
@@ -1171,20 +1174,25 @@ class ContingutsUF extends Form
 							// Mòdul nou
 							if ($ModulProfessionalId != -1)
 								$sRetorn .= '</ul>';
-							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+							$Id = ($this->Usuari->es_admin) ? ' ['.$row->modul_professional_id.']' : '';
+							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.CodificaUTF8($row->NomMP).'</b>'.$Id;
 							$sRetorn .= '<ul>';
 							$ModulProfessionalId = $row->modul_professional_id;
 						}
-						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+						$Id = ($this->Usuari->es_admin) ? ' ['.$row->unitat_formativa_id.']' : '';
+						$sRetorn .= '<li><u>'.CodificaUTF8($row->NomUF).'</u>'.$Id;
 						$sRetorn .= '<ul>';
 						$UnitatFormativaId = $row->unitat_formativa_id;
 					}
-					$sRetorn .= '<li>'.utf8_encode($row->ContingutUF);
+					$Id = ($this->Usuari->es_admin) ? ' ['.$row->contingut_uf_id.']' : '';
+					$sRetorn .= '<li>'.CodificaUTF8($row->ContingutUF).$Id;
 					$sRetorn .= '<ul>';
 					$ContingutUFId = $row->contingut_uf_id;
 				}
-				if ($row->SubContingutUF != '')
-					$sRetorn .= '<li>'.utf8_encode($row->SubContingutUF);
+				if ($row->SubContingutUF != '') {
+					$Id = ($this->Usuari->es_admin) ? ' ['.$row->subcontingut_uf_id.']' : '';
+					$sRetorn .= '<li>'.CodificaUTF8($row->SubContingutUF).$Id;
+				}
 			}
 		}
 		else

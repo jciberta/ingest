@@ -136,8 +136,9 @@ function JSONEncodeUTF8($row)
  * @param string $text text a codificar en UTF8.
  * @return string Text codificat.
  */
-function CodificaUTF8(string $text): string 
+function CodificaUTF8($text): string 
 {
+	$text =  ($text === null) ? '' : $text;
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		// Linux
 		$text = utf8_encode($text);

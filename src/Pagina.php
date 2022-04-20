@@ -1,0 +1,80 @@
+<?php
+
+/** 
+ * Pagina.php
+ *
+ * Pàgina de pròposit general.
+ *
+ * @author Josep Ciberta
+ * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
+ */
+
+require_once('Config.php');
+require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibHTML.php');
+//require_once(ROOT.'/lib/LibDB.php');
+//require_once(ROOT.'/lib/LibForms.php');
+//require_once(ROOT.'/lib/LibMatricula.php');
+//require_once(ROOT.'/lib/LibExpedient.php');
+//require_once(ROOT.'/lib/LibCurs.php');
+
+session_start();
+if (!isset($_SESSION['usuari_id'])) 
+	header("Location: Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
+
+$conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
+if ($conn->connect_error)
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
+
+if (!isset($_GET))
+	header("Location: Surt.php");
+
+RecuperaGET($_GET);
+$accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
+
+switch ($accio) {
+    case "QuantA":
+		CreaIniciHTML($Usuari, "Quant a...");
+		$version = apache_get_version();
+		echo "$version<br>";
+		echo "MySQL server version: ".mysqli_get_server_version($conn);
+
+		// https://stackoverflow.com/questions/52865732/how-to-embed-phpinfo-within-a-page-without-affecting-that-pages-css-styles#52865821
+		ob_start();
+		phpinfo();
+		$phpinfo = ob_get_contents();
+		ob_end_clean();
+		$phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $phpinfo);
+		echo "
+			<style type='text/css'>
+				#phpinfo {}
+				#phpinfo pre {margin: 0; font-family: monospace;}
+				#phpinfo a:link {color: #009; text-decoration: none; background-color: #fff;}
+				#phpinfo a:hover {text-decoration: underline;}
+				#phpinfo table {border-collapse: collapse; border: 0; width: 934px; box-shadow: 1px 2px 3px #ccc;}
+				#phpinfo .center {text-align: center;}
+				#phpinfo .center table {margin: 1em auto; text-align: left;}
+				#phpinfo .center th {text-align: center !important;}
+				#phpinfo td, th {border: 1px solid #666; font-size: 75%; vertical-align: baseline; padding: 4px 5px;}
+				#phpinfo h1 {font-size: 150%;}
+				#phpinfo h2 {font-size: 125%;}
+				#phpinfo .p {text-align: left;}
+				#phpinfo .e {background-color: #ccf; width: 300px; font-weight: bold;}
+				#phpinfo .h {background-color: #99c; font-weight: bold;}
+				#phpinfo .v {background-color: #ddd; max-width: 300px; overflow-x: auto; word-wrap: break-word;}
+				#phpinfo .v i {color: #999;}
+				#phpinfo img {float: right; border: 0;}
+				#phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
+			</style>
+			<div id='phpinfo'>
+				$phpinfo
+			</div>
+		";
+		CreaFinalHTML();	
+        break;
+}
+
+$conn->close();
+
+?>
