@@ -240,6 +240,21 @@ switch ($accio) {
 		else
 			header("Location: Surt.php");		
         break;
+    case "PlaTreballCalendari":
+		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
+		if ($MatriculaId == -1)
+			header("Location: Surt.php");
+
+		$mat = new Matricula($conn, $Usuari);
+		$mat->Carrega($MatriculaId);
+		$AlumneId = $mat->ObteAlumne();
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+			$frm = new PlaTreballCalendari($conn, $Usuari, $MatriculaId);
+			$frm->EscriuHTML();
+		}
+		else
+			header("Location: Surt.php");		
+        break;
 	case "Altre":
         break;
 }

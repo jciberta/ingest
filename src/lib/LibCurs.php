@@ -281,7 +281,7 @@ class Curs
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		if ($this->Usuari->es_admin) {
 			$frm->Camps = 'curs_id, CodiCurs, NomCurs, nivell, Any, data_inici, data_final, avaluacio, trimestre';
-			$frm->Descripcions = 'Id, Nom, Nivell, Any, Data inici, Data final, Avaluació, Trimestre';
+			$frm->Descripcions = 'Id, Codi, Nom, Nivell, Any, Data inici, Data final, Avaluació, Trimestre';
 		}
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', Curs::LlegendaEstat());
 		if (!$this->NomesProfessor) {
