@@ -11,9 +11,9 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-// Report all errors except E_NOTICE
+// Report all errors except E_NOTICE i E_DEPRECATED
 // https://www.php.net/manual/en/function.error-reporting.php
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');

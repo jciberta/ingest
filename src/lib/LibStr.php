@@ -131,16 +131,25 @@ function JSONEncodeUTF8($row)
 /**
  * CodificaUTF8
  *
- * Codifica un text en UTF8. Si ja ho era, el deixa igual (a diferència de utf8_encode).
+ * Codifica un text en UTF8.
  *
  * @param string $text text a codificar en UTF8.
  * @return string Text codificat.
  */
-function CodificaUTF8(string $text): string
+function CodificaUTF8($text): string 
 {
-	$Codificacio = mb_detect_encoding($text);
-	if (!in_array($Codificacio, ['UTF-8', 'ASCII']))
-		$text = utf8_encode($text); 
+	$text =  ($text === null) ? '' : $text;
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+		// Linux
+		$text = utf8_encode($text);
+	}		
+	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+		// Windows
+		$Codificacio = mb_detect_encoding($text);
+//print "Codificacio: $Codificacio";
+		if (in_array($Codificacio, ['ASCII']))
+			$text = utf8_encode($text);
+	}
 	return $text;
 }
 

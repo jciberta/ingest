@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * LibExpedient.php
@@ -12,6 +12,7 @@
 require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
+require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
@@ -72,7 +73,7 @@ class Expedient extends Form
 	public static function SQL($MatriculaId): string {
 		$SQL = '
 			SELECT 
-				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, 
+				UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, UPE.data_inici AS DataIniciUF, UPE.data_final AS DataFinalUF,
 				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
 				CPE.nom AS NomCF, CPE.nom AS NomCF, 
 				CF.llei,
@@ -1679,6 +1680,9 @@ class Acta extends Form
 		$HTML .= '</TR>';
 		$HTML .= '</TABLE>';
 //print_h($HTML);
+//exit;
+		// Pedaç: depèn la casuística, acaba amb 2 </TR>
+		$HTML = str_replace('/TR></TR>', '/TR>', $HTML);
 		$pdf->writeHTML($HTML, true, false, true, false, '');
 	}	
 	
@@ -1698,6 +1702,18 @@ class Acta extends Form
 		$pdf = new ActaPDF('L', 'mm', 'A4', true, 'UTF-8', false);
 		$pdf->SetTitle('Acta');
 		$pdf->SetSubject('Acta');
+
+		$pdf->CursAcademic = $this->Registre->CursAcademic;
+		$pdf->Avaluacio = $this->Registre->Avaluacio;
+		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
+		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
+		$pdf->Grau = $this->Registre->Grau;
+		$pdf->Llei = $this->Registre->Llei;
+		$pdf->NomTutor = $this->Registre->NomTutor;
+		$pdf->NomDirector = $this->Registre->NomDirector;
+		$pdf->DataAvaluacio = $DataAvaluacio;
+		$pdf->DataImpressio = $DataImpressio;
+		$pdf->AddPage(); // Crida al mètode Header		
 		
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
@@ -1728,17 +1744,6 @@ class Acta extends Form
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);		
 		
 		
-		$pdf->CursAcademic = $this->Registre->CursAcademic;
-		$pdf->Avaluacio = $this->Registre->Avaluacio;
-		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
-		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
-		$pdf->Grau = $this->Registre->Grau;
-		$pdf->Llei = $this->Registre->Llei;
-		$pdf->NomTutor = $this->Registre->NomTutor;
-		$pdf->NomDirector = $this->Registre->NomDirector;
-		$pdf->DataAvaluacio = $DataAvaluacio;
-		$pdf->DataImpressio = $DataImpressio;
-		$pdf->AddPage(); // Crida al mètode Header		
 
 		$this->GeneraTaulaNotes($pdf);
 		$this->GeneraTaulaSignatures($pdf);
@@ -1931,7 +1936,7 @@ class ActaPDF extends DocumentPDF
 		$this->SetX($this->original_lMargin + 150);
 		$this->writeHTML('Palamós', False);
 		$this->SetX($this->original_lMargin + 210);
-		$this->writeHTML("__/__/____", False);		
+		$this->writeHTML($this->DataAvaluacio, False);		
 
 		$this->Linia();
 
@@ -1961,7 +1966,8 @@ class ActaPDF extends DocumentPDF
         $this->SetY(-5);
         $this->SetFont('helvetica', '', 8);
         $this->SetX($this->original_lMargin);
-		$this->Escriu('Palamós, X de XX de XXXX', 8);
+		$this->Escriu('Palamós, '.DataATextCatala($this->DataImpressio), 8);
+		
         //$this->SetX($this->original_lMargin + 200);
 		//$this->Escriu('Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 8);
 		
@@ -2003,14 +2009,13 @@ class PlaTreball extends Objecte
 		$this->Carrega();
 		echo $this->GeneraTitol();
 		echo $this->GeneraTaula();
-		//echo $this->GeneraModal();
 		CreaFinalHTML();
 	}
 
 	/**
 	 * Carrega les dades d'una matrícula i les emmagatzema en l'atribut Registre.
 	 */
-	private function Carrega() {
+	protected function Carrega() {
 		$SQL = Expedient::SQL($this->MatriculaId);
 //print($SQL);
 		$RecordSet = [];
@@ -2037,13 +2042,14 @@ class PlaTreball extends Objecte
 				$ModulAnterior = $row['CodiMP'];
 			}
 			$UF = new stdClass();
+			$UF->CodiUF = $row['CodiUF'];
 			$UF->NomUF = utf8_encode($row['NomUF']);
 			$UF->HoresUF = $row['HoresUF'];
 			$UF->Convocatoria = $row['convocatoria'];
 			$UF->Orientativa = $row['orientativa'];
 			$UF->NivellUF = $row['NivellUF'];
-			$UF->DataInici = MySQLAData($row['data_inici']);
-			$UF->DataFinal = MySQLAData($row['data_final']);
+			$UF->DataInici = MySQLAData($row['DataIniciUF']);
+			$UF->DataFinal = MySQLAData($row['DataFinalUF']);
 			$UF->UltimaNota = UltimaNota($row);
 			
 			array_push($MP->UF, $UF);
@@ -2065,7 +2071,7 @@ class PlaTreball extends Objecte
 	 * Crea la sentència SQL per recuperar les dades de la capçalera.
 	 * @return string Sentència SQL.
 	 */
-	private function CreaSQLTitol() {
+	protected function CreaSQLTitol() {
 		return '
 			SELECT 
 				M.matricula_id,
@@ -2113,6 +2119,7 @@ class PlaTreball extends Objecte
 		
 		// Botó d'impressió
 		echo '<span style="float:right;">';
+		echo '<a href="Fitxa.php?accio=PlaTreballCalendari&Id='.$this->MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Calendari</a>&nbsp';
 		echo '<a href="#" onclick="print();" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Imprimeix</a>';
 		echo '</span>';
 		
@@ -2173,6 +2180,135 @@ class PlaTreball extends Objecte
 				</div>
 			  </div>
 			</div>	';	
+	}
+	
+	/**
+	 * Extreu el número del mòdul a partir del codi.
+	 * @param string $Codi Codi del mòdul.
+	 * @return string Número del mòdul.
+	 */
+	protected function NumeroModul($Codi) {
+		$Codi = str_replace('MP', '', $Codi);
+		$Codi = str_replace('C', '', $Codi);
+		return $Codi;
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig del calendari del pla de treball.
+ */
+class PlaTreballCalendari extends PlaTreball
+{
+	/**
+	 * Escriu el pla de treball.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML_JS_CSS(
+			$this->Usuari, 
+			"Calendari del pla de treball",
+			'<script src="vendor/visjs/moment-with-locales.min.js">
+			 </script><script src="vendor/visjs/vis-timeline-graph2d.min.js"></script>',
+			'<link href="vendor/visjs/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css"/>'
+		);
+		$this->Carrega();
+		echo $this->GeneraTitol();
+		echo $this->GeneraLiniaTemps();
+		CreaFinalHTML();
+	}
+	
+	/**
+	 * Genera la capçalera del pla de treball.
+	 * @return string HTML amb la capçalera del pla de treball.
+	 */
+	private function GeneraTitol(): string {
+		$SQL = $this->CreaSQLTitol();
+		try {
+			$ResultSet = $this->Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		} catch (Exception $e) {
+			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
+		}
+		$Retorn = '';
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+			if ($this->Usuari->es_admin) {
+				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+			}
+			$Retorn .= '<b>'.CodificaUTF8($NomComplet).'</b>, '.CodificaUTF8($row["NomCF"]).' ('.$row["any_inici"].'-'.$row["any_final"].')';
+			$Retorn .= '<BR>';
+		}
+		return $Retorn;
+	}	
+
+	/**
+	 * @return string Data en codi JavaScript.
+	 */
+	private function DataJS($Data) {
+		if (ComprovaData($Data)) {
+			$aData = explode('/', $Data);
+			return 'new Date('.$aData[2].','.($aData[1]-1).','.$aData[0].')';
+		}
+		else 
+			return '';
+	}
+	
+	/**
+	 * Genera el calendari de les UF (línia de temps).
+	 * @return string HTML de línia de temps.
+	 */
+	private function GeneraLiniaTemps(): string {
+		$Retorn = '<br><div id="visualization"></div>';
+
+		$Retorn .= '<script>';
+		$Retorn .= 'var groups = new vis.DataSet([';
+		$Grup = '';
+		foreach($this->Registre as $MP) {
+			$Grup .= "{id: ".$this->NumeroModul($MP->CodiMP).", content: '".$MP->CodiMP."'},";
+		}
+		$Grup = substr($Grup, 0, -1); // Treiem la darrera coma		
+		$Retorn .= $Grup.']);';
+
+		$i = 0;
+		$Retorn .= 'var items = new vis.DataSet([';
+		$Items = '';
+		foreach($this->Registre as $MP) {
+			$GrupId = $this->NumeroModul($MP->CodiMP);
+			if (!$MP->aprovat) {
+				foreach($MP->UF as $UF) {
+					if (($UF->Convocatoria != 0) && ($UF->DataInici != '') && ($UF->DataFinal != '')) {
+						$Items .= "{id: $i, group: $GrupId, content: '".$UF->CodiUF."', start: ".$this->DataJS($UF->DataInici).", end: ".$this->DataJS($UF->DataFinal)."},";
+						$i++;
+					}
+				}				
+			}
+		}
+		$Items = substr($Items, 0, -1); // Treiem la darrera coma		
+		$Retorn .= $Items.']);';
+		
+		// Opcions
+		$Retorn .= "
+			var options = {
+				locale: 'ca_ES',
+				stack: true,
+				horizontalScroll: true,
+				zoomKey: 'ctrlKey',
+				maxHeight: 500,
+				start: new Date(2021, 8, 1),
+				end: new Date(2022, 5, 30),
+				editable: false,
+				orientation: 'top'
+			};
+		";
+		
+		// Línia del temps
+		$Retorn .= "
+			var container = document.getElementById('visualization');
+			timeline = new vis.Timeline(container, items, groups, options);		
+		";		
+		$Retorn .= '</script>';
+		return $Retorn;
 	}
 }
 

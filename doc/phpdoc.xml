@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- https://docs.phpdoc.org/guide/references/configuration.html -->
+<phpdocumentor
+        configVersion="3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://www.phpdoc.org"
+        xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd">
+    <paths>
+        <output>/var/www/html/ingest/doc</output>
+        <cache>/var/www/html/ingest/doc/cache</cache>
+    </paths>
+    <version number="3.0.0">
+        <api>
+			<default-package-name>InGest</default-package-name>
+			<include-source>true</include-source>
+            <source dsn="/var/www/html/ingest/">
+                <path>src/*</path>
+                <path>src/lib/*</path>
+            </source>
+			<visibility>private</visibility>
+			<ignore>
+				<path>src/css/*</path>
+				<path>src/img/*</path>
+				<path>src/js/*</path>
+				<path>src/upload/*</path>
+				<path>src/vendor/*</path>			
+				<path>/var/www/html/ingest/src/vendor/*</path>			
+			</ignore>
+			<markers>
+				<marker>TODO</marker>
+				<marker>FIXME</marker>
+			</markers>
+        </api>
+    </version>
+</phpdocumentor>

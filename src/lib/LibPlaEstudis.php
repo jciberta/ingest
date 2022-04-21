@@ -405,7 +405,9 @@ class PlaEstudisUnitatRecerca extends FormRecerca
 			$AnyAcademicId = $aAnys[0][0]; 
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		}
-		$frm->Filtre->AfegeixLlista('CPE.codi', 'Cicle', 30, array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'), array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'HBD', 'FPB'));
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 		$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
 	}

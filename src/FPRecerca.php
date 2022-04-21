@@ -112,10 +112,9 @@ switch ($accio) {
 		}
 		$frm->PermetEditar = ($Usuari->es_admin);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ModulsProfessionals';
-		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
-			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
-			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD')
-		);
+		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormativesCF":
@@ -136,10 +135,9 @@ switch ($accio) {
 		}
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
-		$frm->Filtre->AfegeixLlista('CF.codi', 'Cicle', 30, 
-			array('', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
-			array('Tots', 'APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD')
-		);
+		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 		$frm->Filtre->AfegeixLlista('UF.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
         break;

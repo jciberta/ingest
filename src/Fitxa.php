@@ -58,17 +58,12 @@ switch ($accio) {
 		
 		$aPE = ObteCodiValorDesDeSQL($conn, "SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI", "cicle_pla_estudi_id", "nom");
 		echo $frm->AfegeixLlista('cicle_formatiu_id', "Pla d'estudis", 200, $aPE[0], $aPE[1]);
-		
-//		$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT any_academic_id, nom FROM ANY_ACADEMIC", "any_academic_id", "nom");
-//		echo $frm->AfegeixLlista('any_academic_id', 'Any acadèmic', 200, $aCurs[0], $aCurs[1]);
-
-//		$aCF = ObteCodiValorDesDeSQL($conn, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU", "cicle_formatiu_id", "nom");
-//		echo $frm->AfegeixLlista('cicle_formatiu_id', 'Cicle formatiu', 200, $aCF[0], $aCF[1]);
-		
 		$frm->AfegeixEspai();
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nivell', 'Nivell (1 o 2)', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixData('data_inici', 'Data inici', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixData('data_final', 'Data final', [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('grups_classe', 'Grups classe', 50);
 		$frm->AfegeixText('grups_tutoria', 'Grups tutoria', 50);
 
@@ -76,10 +71,6 @@ switch ($accio) {
 		$frm->AfegeixLlista('estat', 'Estat', 30, array('A', 'J', 'I', 'O', 'T'), array('Actiu', 'Junta', 'Inactiu', 'Obertura', 'Tancat'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
-//		$frm->AfegeixCheckBox('', 'Curs ', [FormFitxa::offREQUERIT]);
-		
-//		$frm->AfegeixText('any_inici', 'Any inici', True, 20);
-//		$frm->AfegeixText('any_final', 'Any final', True, 20);
 		$frm->EscriuHTML();
         break;
     case "Tutor":
@@ -244,6 +235,21 @@ switch ($accio) {
 		$AlumneId = $mat->ObteAlumne();
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
 			$frm = new PlaTreball($conn, $Usuari, $MatriculaId);
+			$frm->EscriuHTML();
+		}
+		else
+			header("Location: Surt.php");		
+        break;
+    case "PlaTreballCalendari":
+		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
+		if ($MatriculaId == -1)
+			header("Location: Surt.php");
+
+		$mat = new Matricula($conn, $Usuari);
+		$mat->Carrega($MatriculaId);
+		$AlumneId = $mat->ObteAlumne();
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+			$frm = new PlaTreballCalendari($conn, $Usuari, $MatriculaId);
 			$frm->EscriuHTML();
 		}
 		else

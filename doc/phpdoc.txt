@@ -1,0 +1,19 @@
+# https://docs.phpdoc.org/guide/guides/running-phpdocumentor.html
+# phpdoc -h
+
+phpdoc --config phpdoc.xml
+
+
+# Per esborrar i tornar a generar de nou
+rm -r cache
+rm -r classes
+rm -r css
+rm -r descriptors
+rm -r files
+rm -r graphs
+rm -r indices
+rm -r js
+rm -r namespaces
+rm -r packages
+rm -r .phpdoc
+rm -r reports

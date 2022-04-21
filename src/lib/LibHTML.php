@@ -121,6 +121,64 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
  * @param string $Titol Títol de la pàgina.
  * @return string Codi HTML de la pàgina.
  */
+function CreaIniciHTML_JS_CSS($Usuari, $Titol, $JS = '', $CSS = '')
+{
+	$Retorn = '<HTML>';
+	$Retorn .= '<HEAD>';
+	$Retorn .= '	<META charset=UTF8>';
+	$Retorn .= '	<TITLE>InGest</TITLE>';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
+	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
+	$Retorn .= $CSS;
+	if (Config::UsaDataTables) {
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
+	}
+	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
+	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
+	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
+	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
+	$Retorn .= '	<script src="js/Util.js"></script>';
+	$Retorn .= $JS;
+	if (Config::UsaDataTables) {
+		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
+	}
+	$Retorn .= '</HEAD>';
+	
+	if (Config::UsaDataTables) {
+		$Retorn .= "<style>";
+		$Retorn .= "    th, td { white-space: nowrap; } ";
+		$Retorn .= "    div.dataTables_wrapper {";
+		$Retorn .= "        width: 99%;";
+		//$Retorn .= "        width: 1800px;";
+		$Retorn .= "        margin: 0 auto;";
+		$Retorn .= "    }";
+		$Retorn .= "</style>";
+	}	
+
+	$Retorn .= '<BODY>';
+	$Retorn .= Menu::Crea($Usuari);
+	$Retorn .= '      <div class="starter-template" style="padding:20px">';
+	$Retorn .= '<H1>'.$Titol.'</H1>';
+	echo $Retorn;
+}
+
+/**
+ * CreaIniciHTML_Notes
+ * @param object $Usuari Usuari autenticat.
+ * @param string $Titol Títol de la pàgina.
+ * @return string Codi HTML de la pàgina.
+ */
 function CreaIniciHTML_Notes($Usuari, $Titol)
 {
 	$Retorn = '<HTML>';
@@ -351,6 +409,8 @@ class Portal
 		echo '		<nav>';
 		echo '		<ul class="nav nav-pills float-right">';
 		echo '			<li class="nav-item"><a class="nav-link" href="http://inspalamos.cat" target="_blank">Web</a></li>';
+		echo '			<li class="nav-item"><a class="nav-link" href="https://educaciodigital.cat/iespalamos/moodle/" target="_blank">Moodle</a></li>';
+		echo '			<li class="nav-item"><a class="nav-link" href="https://classroom.google.com" target="_blank">Classroom</a></li>';
 		echo '		</ul>';
 		echo '		</nav>';
 		echo '	</div>';
@@ -503,6 +563,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
 			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
 		$Retorn .= Menu::Tanca();
