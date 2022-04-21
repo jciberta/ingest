@@ -690,6 +690,20 @@ class Professor extends Usuari
 		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 		echo '    </div>';
 		echo '  </div>';		
+		
+		echo '</div>';
+		echo '<h3>Altres</h3>';
+		echo '<div class="card-columns" style="column-count:6">';
+
+		// Orla
+		$URL = GeneraURL('UsuariRecerca.php?accio=Orla');
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Orla</h5>';
+		echo '      <p class="card-text">Orla alumnes</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';		
 	}
 }
 
@@ -1663,10 +1677,13 @@ class Orla extends Form
 				$Retorn .= '<IMG SRC="'.$Fitxer.'">';
 				$Retorn .= '<BR>';
 				$AlumneId = $row->usuari_id;
-				$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
-				$Retorn .= "<A target=_blank href='$URL'>$Nom</A>";
-				if ($this->Usuari->es_admin)
+				if ($this->Usuari->es_admin) {
+					$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
+					$Retorn .= "<A target=_blank href='$URL'>$Nom</A>";
 					$Retorn .= "<BR>".$row->document;
+				}
+				else 
+					$Retorn .= "$Nom";
 				$Retorn .= '</TD>';
 				$i++;
 			}
@@ -1689,7 +1706,9 @@ class Orla extends Form
 		$Nivell = $this->Nivell;
 		$Grup = $this->Grup;
 		$SQL = "
-			SELECT U.*, M.baixa
+			SELECT 
+				U.*, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, 
+				M.grup as Grup, M.baixa
 			FROM MATRICULA M
 			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
@@ -1697,6 +1716,7 @@ class Orla extends Form
 			WHERE any_academic_id=$AnyAcademicId 
 			AND CPE.cicle_formatiu_id=$CicleFormatiuId
 			AND nivell=$Nivell
+			ORDER BY Cognom1Alumne, Cognom2Alumne, NomAlumne
 		";		
 		if ($Grup <> '')
 			$SQL .= " AND grup='$Grup' ";
