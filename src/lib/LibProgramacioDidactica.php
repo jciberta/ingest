@@ -5,7 +5,7 @@
  *
  * Llibreria d'utilitats per a la programació didàctica.
  *
- * @author Josep Ciberta
+ * @author Josep Ciberta, Jordi Planelles
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 

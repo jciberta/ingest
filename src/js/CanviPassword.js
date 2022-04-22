@@ -17,7 +17,8 @@
 function ComprovaFortalesaPassword(pwd) {
 	return (
 		(pwd.length >= 8) &&
-		(pwd.match(/[a-zA-Z]/)) &&
+		(pwd.match(/[a-z]/)) &&
+		(pwd.match(/[A-Z]/)) &&
 		(pwd.match(/[0-9]/))
 	);
 }
@@ -32,7 +33,7 @@ function ComprovaCamps() {
         return false;
     } 
 	else if (!ComprovaFortalesaPassword(document.CanviPassword.contrasenya1.value)) {
-        alert("La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres.");
+        alert("La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres majúscules i minúscules.");
         return false;
 	}
 	else {
@@ -53,7 +54,7 @@ function CanviPassword(usuari_id) {
 			console.log(result);
 			if (result != null) {
 				if (!ComprovaFortalesaPassword(result)) {
-					alert("La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres.");
+					alert("La contrasenya no és prou segura. Ha de tenir una longitud mínima de 8 caràcters, i ha de contenir números i lletres majúscules i minúscules.");
 				}
 				else {
 					// Aquesta crida AJAX s'ha d'enviar amb HTTPS!
