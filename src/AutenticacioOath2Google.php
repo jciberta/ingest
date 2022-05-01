@@ -77,11 +77,11 @@ if (!isset($_SESSION['access_token']))
 	header('Location: '.$google_client->createAuthUrl());
 	   
 // Comprovem que l'usuari existeixi a la base de dades	
-// De moment només per professors   
+// Disponible per al professorat i alumnat que s'ha identificat un primer cop amb usuari i contrasenya
 $SQL = "
-	SELECT * 
-	FROM USUARI 
-	WHERE email_ins='".$_SESSION['user_email_address']."' AND es_professor=1 AND NOT usuari_bloquejat=1
+	SELECT *
+	FROM USUARI
+	WHERE email_ins='".$_SESSION['user_email_address']."' AND (es_professor=1 OR (es_alumne=1 AND imposa_canvi_password=0)) AND NOT usuari_bloquejat=1
 ";
 //echo $SQL;
 $ResultSet = $conn->query($SQL);
@@ -128,7 +128,7 @@ if ($ResultSet->num_rows > 0) {
 }
 else 
 {
-	PaginaHTMLMissatge("Error", "L'usuari no existeix o no es pot identificar amb aquest mitjà.<br>Només està disponible per al professorat.");
+	PaginaHTMLMissatge("Error", "L'usuari no existeix o no es pot identificar amb aquest mitjà.<br>Disponible per al professorat i alumnat que s'ha identificat un primer cop amb usuari i contrasenya.");
 }
 
 ?>
