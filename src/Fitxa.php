@@ -21,6 +21,7 @@ require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibMaterial.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -254,6 +255,33 @@ switch ($accio) {
 		}
 		else
 			header("Location: Surt.php");		
+        break;
+    case "Material":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Material = new Material($conn, $Usuari);
+		$Material->Id = $Id;
+		$Material->EscriuFormulariFitxa();
+        break;
+    case "TipusMaterial":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$TipusMaterial = new TipusMaterial($conn, $Usuari);
+		$TipusMaterial->Id = $Id;
+		$TipusMaterial->EscriuFormulariFitxa();
+        break;
+    case "ReservaMaterial":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$ReservaMaterial = new ReservaMaterial($conn, $Usuari);
+		$ReservaMaterial->Id = $Id;
+		$ReservaMaterial->EscriuFormulariFitxa();
         break;
 	case "Altre":
         break;

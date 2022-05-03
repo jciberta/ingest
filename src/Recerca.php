@@ -19,6 +19,7 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
+require_once(ROOT.'/lib/LibMaterial.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -105,7 +106,7 @@ switch ($accio) {
         break;		
     case "Avaluacio":
 		$avaluacio = new Avaluacio($conn, $Usuari);
-		$avaluacio->EscriuFormulariRecera();
+		$avaluacio->EscriuFormulariRecerca();
         break;		
     case "Registre":
 		if (!$Usuari->es_admin)
@@ -125,6 +126,18 @@ switch ($accio) {
 
 		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
 		$frm->EscriuHTML();
+        break;		
+    case "Material":
+		$Material = new Material($conn, $Usuari);
+		$Material->EscriuFormulariRecerca($Modalitat);
+        break;		
+    case "TipusMaterial":
+		$TipusMaterial = new TipusMaterial($conn, $Usuari);
+		$TipusMaterial->EscriuFormulariRecerca($Modalitat);
+        break;		
+    case "ReservaMaterial":
+		$ReservaMaterial = new ReservaMaterial($conn, $Usuari);
+		$ReservaMaterial->EscriuFormulariRecerca($Modalitat);
         break;		
 }
 

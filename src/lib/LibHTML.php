@@ -449,6 +449,17 @@ class Menu
 		return '</div></li>';
 	}
 
+	static public function ObreSubMenu(string $Text): string {
+		$Retorn = '<div class="dropdown dropright dropdown-submenu">';
+		$Retorn .= "<button class='dropdown-item dropdown-toggle' type='button'>$Text</button>";
+		$Retorn .= '<div class="dropdown-menu">';		
+		return $Retorn;
+	}
+
+	static public function TancaSubMenu(): string {
+		return '</div></div>';
+	}
+
 	static public function Separador(): string {
 		return '<div class="dropdown-divider"></div>';
 	}
@@ -500,23 +511,16 @@ class Menu
 			$Retorn .= Menu::Opcio('Mòduls professionals', 'FPRecerca.php?accio=ModulsProfessionals');
 			$Retorn .= Menu::Opcio('Unitats formatives', 'FPRecerca.php?accio=UnitatsFormativesCF');
 			$Retorn .= Menu::Separador();
-			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Plans d'estudis</button>";
-			$Retorn .= '	<div class="dropdown-menu">';
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisAny')."'>Pla d'estudis per any</a>";
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisCicle')."'>Pla d'estudis per cicle</a>";
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat')."'>Unitats formatives del pla d'estudis</a>";
-			$Retorn .= '	</div>';
-			$Retorn .= '</div>';
-			$Retorn .= '<div class="dropdown dropright dropdown-submenu">';
-			$Retorn .= "	<button class='dropdown-item dropdown-toggle' type='button'>Programacions</button>";
-			$Retorn .= '	<div class="dropdown-menu">';
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ProgramacionsDidactiques')."'>Programacions didàctiques</a>";
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ResultatsAprenentatge')."'>Resultats d'aprenentatge</a>";
-			$Retorn .= "		<a class='dropdown-item' href='".GeneraURL('FPRecerca.php?accio=ContingutsUF')."'>Continguts</a>";
-			$Retorn .= '	</div>';
-			$Retorn .= '</div>';
-			//$Retorn .= Menu::Opcio('Programació didàctica', 'FPRecerca.php?accio=UnitatsFormativesCF');
+			$Retorn .= Menu::ObreSubMenu("Plans d'estudis");
+			$Retorn .= Menu::Opcio("Pla d'estudis per any", 'FPRecerca.php?accio=PlaEstudisAny');
+			$Retorn .= Menu::Opcio("Pla d'estudis per cicle", 'FPRecerca.php?accio=PlaEstudisCicle');
+			$Retorn .= Menu::Opcio("Unitats formatives del pla d'estudis", 'FPRecerca.php?accio=PlaEstudisUnitat');
+			$Retorn .= Menu::TancaSubMenu();
+			$Retorn .= Menu::ObreSubMenu('Programacions');
+			$Retorn .= Menu::Opcio('Programacions didàctiques', 'FPRecerca.php?accio=ProgramacionsDidactiques');
+			$Retorn .= Menu::Opcio("Resultats d'aprenentatge", 'FPRecerca.php?accio=ResultatsAprenentatge');
+			$Retorn .= Menu::Opcio('Continguts', 'FPRecerca.php?accio=ContingutsUF');
+			$Retorn .= Menu::TancaSubMenu();
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
 			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
@@ -529,6 +533,14 @@ class Menu
 			$Retorn .= Menu::Opcio('Any acadèmic', 'Recerca.php?accio=AnyAcademic');
 			$Retorn .= Menu::Opcio('Equips', 'Recerca.php?accio=Equip');
 			$Retorn .= Menu::Separador();
+			if ($Usuari->es_admin) {
+				$Retorn .= Menu::ObreSubMenu('Material');
+				$Retorn .= Menu::Opcio('Classificació', 'Recerca.php?accio=TipusMaterial');
+				$Retorn .= Menu::Opcio('Material', 'Recerca.php?accio=Material');
+				$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
+				$Retorn .= Menu::TancaSubMenu();
+				$Retorn .= Menu::Separador();
+			}
 			$Retorn .= Menu::Opcio('Importa usuaris', 'ImportaUsuarisDialeg.php');
 			//$Retorn .= Menu::Opcio('Importa passwords iEduca', 'ImportaPasswordsDialeg.php');
 			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
@@ -549,7 +561,6 @@ class Menu
 		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
 		$Retorn .= '		<ul class="navbar-nav">';
 		$Retorn .= '		  <li class="nav-item dropdown">';
-	//		$Retorn .= '		  <a class="nav-link dropdown-toggle" tabindex="0" data-toggle="dropdown" data-submenu="" aria-haspopup="true">'.$NomComplet.'</a>';
 		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
 		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
 		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');

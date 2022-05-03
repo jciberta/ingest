@@ -347,7 +347,7 @@ class Avaluacio
 	/**
 	 * Escriu el llistat de les avaluacions actuals.
 	 */
-	public function EscriuFormulariRecera() {
+	public function EscriuFormulariRecerca() {
 		$SQL = $this->CreaSQLAvaluacions();
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		//$frm->AfegeixJavaScript('Matricula.js?v1.2');

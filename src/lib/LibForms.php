@@ -39,6 +39,12 @@ class Objecte {
 	* @var object
 	*/    
 	public $Usuari = null;
+
+	/**
+	* Identificador de propòsit general.
+	* @var mixed
+	*/    
+	public $Id = -1;
 	
 	/**
 	* Registre per a emmagatzemar el resultat d'un DataSet.
@@ -2250,6 +2256,7 @@ class FormFitxa extends Form {
 //echo '<br>'.$Where.'<br>';			
 			$SQL = 'SELECT * FROM '.$this->Taula.' WHERE '.$Where;
 //echo '<br>'.$SQL.'<br>';
+//var_dump($this);
 			$ResultSet = $this->Connexio->query($SQL);
 			if ($ResultSet->num_rows > 0) {
 				$this->Registre = $ResultSet->fetch_assoc();
@@ -2413,8 +2420,8 @@ class FormFitxa extends Form {
 			}
 			else {
 				$sCamps = $ClauPrimaria.', '.$sCamps;
-				$sValues = '(SELECT MAX('.$ClauPrimaria.')+1 FROM '. $Taula.'), '.$sValues;
-				$SQL = "INSERT INTO ".$Taula." (".$sCamps.") SELECT ".$sValues;
+				$sValues = '(SELECT IFNULL(MAX('.$ClauPrimaria.'),0) FROM '. $Taula.')+1, '.$sValues;
+				$SQL = "INSERT INTO $Taula ($sCamps) SELECT $sValues";
 			}
 		}
 
