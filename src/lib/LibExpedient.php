@@ -2265,7 +2265,8 @@ class PlaTreballCalendari extends PlaTreball
 		$Retorn .= 'var groups = new vis.DataSet([';
 		$Grup = '';
 		foreach($this->Registre as $MP) {
-			$Grup .= "{id: ".$this->NumeroModul($MP->CodiMP).", content: '".$MP->CodiMP."'},";
+			$Grup .= "{id: ".$this->NumeroModul($MP->CodiMP).", content: '".$MP->CodiMP."',";
+			$Grup .= "subgroupStack:{'nostack': false, 'stack': true}},"; // Afegir subgrups per controlar la funció "stack" a cada grup.
 		}
 		$Grup = substr($Grup, 0, -1); // Treiem la darrera coma		
 		$Retorn .= $Grup.']);';
@@ -2276,9 +2277,31 @@ class PlaTreballCalendari extends PlaTreball
 		foreach($this->Registre as $MP) {
 			$GrupId = $this->NumeroModul($MP->CodiMP);
 			if (!$MP->aprovat) {
+				$stack = false; // Declaració del flag d'stacking, si aquest és true es farà el stacking al MP
+				foreach($MP->UF as $UF) {
+					// Fem un bucle per totes les UFs i busquem si les dates de les UFs són majors o menors, si es així el flag $stacking sera true
+					$DataInicial = strtotime(str_replace("/", "-", $UF->DataInici)); // Primer canviem les barres a guionets per obtenir el format DD-MM-YYYY i tot seguit la convertim a temps UNIX (epoch) per calcular-la.
+					$DataFinal = strtotime(str_replace("/", "-", $UF->DataFinal));
+					foreach($MP->UF as $subUF) {
+						if ((strtotime(str_replace("/", "-", $subUF->DataInici)) > $DataInicial) && (strtotime(str_replace("/", "-", $subUF->DataInici)) < $DataFinal)) {
+							$stack = True;
+							break;
+						}
+						if ((strtotime(str_replace("/", "-", $subUF->DataFinal)) > $DataInicial) && (strtotime(str_replace("/", "-", $subUF->DataFinal)) < $DataFinal)) {
+							$stack = True;
+							break;
+						}
+					}
+				}
 				foreach($MP->UF as $UF) {
 					if (($UF->Convocatoria != 0) && ($UF->DataInici != '') && ($UF->DataFinal != '')) {
-						$Items .= "{id: $i, group: $GrupId, content: '".$UF->CodiUF."', start: ".$this->DataJS($UF->DataInici).", end: ".$this->DataJS($UF->DataFinal)."},";
+						$Items .= "{id: $i, group: $GrupId, content: '".$UF->CodiUF."', start: ".$this->DataJS($UF->DataInici).", end: ".$this->DataJS($UF->DataFinal);
+						if ($stack) {
+							$Items .= ", subgroup:'stack'";
+						} else {
+							$Items .= ", subgroup:'nostack'";
+						}
+						$Items .= "},";
 						$i++;
 					}
 				}				
