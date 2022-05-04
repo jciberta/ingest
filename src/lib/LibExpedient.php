@@ -1475,6 +1475,8 @@ class Acta extends Form
 		$pdf->SetY(65);
 		$HTML = '';
 		$i = 0;
+//print_h($ra);		
+//exit;
 		foreach ($ra as $AlumneId => $a) {
 			// Capçalera
 			if ($i % 2 == 0) {
@@ -1503,7 +1505,7 @@ class Acta extends Form
 				}
 				$k++;
 			}
-			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.'?'.'</TD>';
+			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.' '.'</TD>'; // TODO
 			$HTML .= '</TR>';
 
 			// Fem els 8 primers mòduls/UF
@@ -1560,7 +1562,7 @@ class Acta extends Form
 			$HTML .= '</TR>';			
 			$HTML .= '</TABLE>';
 			
-			if ($i % 2 == 1) {
+			if (($i % 2 == 1) || ($i+1 == count($ra))) {
 				$pdf->writeHTML($HTML, true, false, true, false, '');
 				$HTML = '';
 				$pdf->AddPage();
