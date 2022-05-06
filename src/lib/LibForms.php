@@ -149,6 +149,12 @@ class Form {
     protected $FitxerJS = [];	
 
 	/**
+	* Codi JavaScript que s'afegirà la funció $(document).ready.
+	* @var string
+	*/    
+    protected $DocumentReady = '';
+
+	/**
 	* Indica si un formulari s'hi permet realitzar canvis o no.
 	* @var boolean
 	*/    
@@ -523,6 +529,8 @@ class Form {
 		$sRetorn .= "<textarea class='summernote' name='$sNom'>$Contingut</textarea>";
 //		$sRetorn .= "<span class='summernote' name='$sNom'>$Contingut</span>";
 		$sRetorn .= '</TD>';
+		$this->DocumentReady .= "$('textarea[name=".'"'.$sNom.'"'."]').summernote({lang:'ca-ES',height:$Altura});";
+//		$this->DocumentReady .= "$('.summernote').summernote({lang:'ca-ES',height:100});";
 		return $sRetorn;
 	}
 
@@ -1888,7 +1896,7 @@ class FormFitxa extends Form {
 		$this->Camps[$i]->Camp = $Camp;
 		$this->Camps[$i]->Titol = $Titol;
 		$this->Camps[$i]->Longitud = 5*$Longitud;
-//		$this->Camps[$i]->Altura = $Altura;
+		$this->Camps[$i]->Altura = $Altura;
 		$this->Camps[$i]->Opcions = $off;		
 	}	
 
@@ -2160,9 +2168,12 @@ class FormFitxa extends Form {
 					break;
 				case self::tcTEXT_RIC:
 					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
 //print_r($sRetorn);					
 //					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
+
+
+
 					break;
 				case self::tcHTML:
 					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
@@ -2273,6 +2284,18 @@ class FormFitxa extends Form {
 		$sRetorn .= '</div>';
 		return $sRetorn;
 	}
+
+	/**
+	 * Genera les accions JavaScript a fer quan el document està a punt.
+	 */
+	private function GeneraDocumentReady() {
+		$sRetorn = "<script>";
+		$sRetorn .= "$(document).ready(function() {";
+		$sRetorn .= $this->DocumentReady;
+		$sRetorn .= "});";
+		$sRetorn .= "</script>";
+		return $sRetorn;
+	}
 	
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
@@ -2291,6 +2314,7 @@ class FormFitxa extends Form {
 		echo $this->GeneraDesa();
 		echo $this->GeneraMissatges();
 		echo $this->GeneraTorna();
+		echo $this->GeneraDocumentReady();
 		CreaFinalHTML();
 	}
 	
