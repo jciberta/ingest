@@ -1660,6 +1660,12 @@ class FormFitxa extends Form {
 	* @var boolean
 	*/    
     private $HiHaPestanyes = False;	
+	
+	/**
+	* Indica si els detalls es posen en pestanyes o van un a sota l'altre.
+	* @var boolean
+	*/    
+    public $DetallsEnPestanyes = false;
 
 	/**
 	 * Afegeix un camp del tipus especificat al formulari.
@@ -1944,13 +1950,19 @@ class FormFitxa extends Form {
 	/**
 	 * Marca l'inici d'una pestanya.
 	 * @param string $titol Títol de la pestanya.
+	 * @param boolean $detall Indica si la pestanya és per algun detall.
 	 */
-	public function Pestanya(string $titol) {
+	public function Pestanya(string $titol, bool $detall = false) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcPESTANYA;
 		$this->Camps[$i]->Titol = $titol;
+		$Nom = Normalitza($titol);
+		$Nom = str_replace(" ", "", $Nom);
+		$Nom = str_replace("'", "", $Nom);
+		$this->Camps[$i]->Nom = $Nom;
+		$this->Camps[$i]->Detall = $detall;
 		$this->Camps[$i]->Opcions = [];
 	}
 
@@ -2045,13 +2057,18 @@ class FormFitxa extends Form {
 				case self::tcPESTANYA:
 					$this->HiHaPestanyes = True;
 					$Titol = $Valor->Titol;
-					$sRetorn .= '<a class="nav-item nav-link '.$Active.'" id="nav-'.$Titol.'-tab" data-toggle="tab" href="#nav-'.$Titol.'" role="tab" aria-controls="nav-'.$Titol.'" aria-selected="true">'.$Titol.'</a>';
+					$Nom = $Valor->Nom;
+					$sRetorn .= '<a class="nav-item nav-link '.$Active.'" id="nav-'.$Nom.'-tab" data-toggle="tab" href="#nav-'.$Nom.'" role="tab" aria-controls="nav-'.$Nom.'" aria-selected="true">'.$Titol.'</a>'.PHP_EOL;
 					$Active = '';
 					break;
 			}
 		}
-		if ($sRetorn != '')
-			$sRetorn = '<nav style="padding-top:20px;padding-bottom:20px"><div class="nav nav-tabs" id="nav-tab" role="tablist">'.$sRetorn.'</div></nav>';
+		if ($sRetorn != '') {
+			$sRetorn = PHP_EOL .
+				'<!-- Pestanyes -->'.PHP_EOL .
+				'<nav style="padding-top:20px;padding-bottom:20px"><div class="nav nav-tabs" id="nav-tab" role="tablist">'.PHP_EOL .
+				$sRetorn.'</div></nav>'.PHP_EOL .PHP_EOL;
+		}
 		return $sRetorn;
 	}
 	
@@ -2059,39 +2076,39 @@ class FormFitxa extends Form {
 	 * Genera la fitxa per l'edició.
 	 */
 	protected function GeneraFitxa() {
-		$sRetorn = '<DIV id=Fitxa>';
-		$sRetorn .= '<FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">';
-		$sRetorn .= "<input type=hidden name=hid_Taula value='".$this->Taula."'>";
-		$sRetorn .= "<input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>";
-		$sRetorn .= "<input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>";
-		$sRetorn .= "<input type=hidden name=hid_Id value='".$this->Id."'>";
+		$sRetorn = '<DIV id=Fitxa>'.PHP_EOL;
+		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">'.PHP_EOL;
+		$sRetorn .= "    <input type=hidden name=hid_Taula value='".$this->Taula."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name=hid_Id value='".$this->Id."'>".PHP_EOL;
 		
 		// Afegim els altres camps amagats
 		foreach($this->Camps as $Valor) {
 			if ($Valor->Tipus == self::tcAMAGAT)
-					$sRetorn .= $this->CreaAmagat($Valor->Camp, $Valor->Valor);
+					$sRetorn .= "    ".$this->CreaAmagat($Valor->Camp, $Valor->Valor).PHP_EOL;
 		}
 		
 		$bAlCostat = False;
 		$bPrimeraPestanya = True;
-		$sRetorn .= '<TABLE>';
-		$sRetorn .= '<TR>';
+		$sRetorn .= '    <TABLE>'.PHP_EOL;
+		$sRetorn .= '      <TR>';
 		foreach($this->Camps as $Valor) {
 			$Requerit = (in_array(self::offREQUERIT, $Valor->Opcions) ? ' required' : '');
 			$NomesLectura = (in_array(self::offNOMES_LECTURA, $Valor->Opcions) || $this->NomesLectura) ? ' readonly' : '';
 			$bAlCostat = in_array(self::offAL_COSTAT, $Valor->Opcions);
 			switch ($Valor->Tipus) {
 				case self::tcESPAI:
-					$sRetorn .= '</TR><TR style="padding:'.$Valor->Longitud.'px"><TD>&nbsp</TD>';
+					$sRetorn .= '</TR>'.PHP_EOL .'<TR style="padding:'.$Valor->Longitud.'px"><TD>&nbsp</TD>';
 					break;
 				case self::tcTEXT:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					//$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.'></TD>';
 					$sRetorn .= $this->CreaText($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp), $Valor->MaximCaracters);
 					break;
 				case self::tcENTER:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 //					$sRetorn .= $this->CreaEnter($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $Valor->Camp);
 
 					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 0);"></TD>';
@@ -2101,28 +2118,28 @@ class FormFitxa extends Form {
 
 					break;
 				case self::tcREAL:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					//$sRetorn .= '<TD><label for="edr_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					//$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Valor->Longitud.'px" name="edt_'.$Valor->Camp.'" '.$this->ValorCampText($Valor->Camp).$Requerit.$NomesLectura.' onkeydown="FormFitxaKeyDown(this, event, 1);"></TD>';
 					$sRetorn .= $this->CreaReal($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Opcions, $this->ValorCampText($Valor->Camp));
 					break;
 				case self::tcPASSWORD:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="password" style="width:'.$Valor->Longitud.'px" name="pwd_'.$Valor->Camp.'" '.$this->ValorCampPassword($Valor->Camp).$Requerit.'></TD>';
 					break;
 				case self::tcCHECKBOX:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= '<TD><label for="edt_'.$Valor->Camp.'">'.$Valor->Titol.'</label></TD>';
 					$NomesLecturaCB = ($NomesLectura == '') ? '' : ' disabled';
 					$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.$NomesLecturaCB.'></TD>';
 					break;
 				case self::tcDATA:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
 					break;
 				case self::tcSELECCIO:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 //exit;
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
 //					$CodiSeleccionat = $this->Registre[$Valor->Camp];
@@ -2135,7 +2152,7 @@ class FormFitxa extends Form {
 //exit;			
 					if ($this->NomesLectura)
 						array_push($Valor->Opcions, self::offNOMES_LECTURA);
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaLookup(
 						$Valor->Camp, 
 						$Valor->Titol, 
@@ -2148,18 +2165,18 @@ class FormFitxa extends Form {
 						$CodiSeleccionat);
 					break;
 				case self::tcCALCULAT:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaCalculat($Valor->Calcul, $Valor->Camp, $Valor->Titol, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
 					break;
 				case self::tcFOTOGRAFIA:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 //echo '<hr>'.$Valor->Camp;
 //echo '<hr>'.$this->ValorCampText($Valor->Camp);
 //echo '<hr>'.$this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
 					break;
 				case self::tcTEXT_RIC:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Longitud, $this->Registre[$Valor->Camp], $Valor->Opcions);
 //print_r($sRetorn);					
 //					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
@@ -2169,31 +2186,36 @@ class FormFitxa extends Form {
 					$sRetorn .= $this->CreaHTML($Valor->Text, $Valor->Titol);
 					break;
 				case self::tcLINK:
-					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 //print "Valor->Camp: ".$Valor->Camp.'<br>';					
 //print "this->Registre[Valor->Camp]: ".$this->Registre[$Valor->Camp].'<br>';					
 					if ($this->Registre[$Valor->Camp] != '')
 						$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, $this->Registre[$Valor->Camp], $Valor->Opcions);
 					break;
 				case self::tcPESTANYA:
-					$Titol = $Valor->Titol;
-					if ($bPrimeraPestanya) {
-						$sRetorn .= '</TR><TR>';
-						$sRetorn .= '<TD colspan=10>';
-						$sRetorn .= '<DIV>';
-						$sRetorn .= $this->GeneraNavegadorPestanya();
-						$sRetorn .= '<div class="tab-content" id="nav-tabContent">';
-						$sRetorn .= '<div class="tab-pane fade show active" id="nav-'.$Titol.'" role="tabpanel" aria-labelledby="nav-'.$Titol.'-tab">';
-						$bPrimeraPestanya = False;
-						$sRetorn .= '<TABLE>';
-						$sRetorn .= '<TR>';
-					}
-					else {
-						$sRetorn .= '</TR></TABLE>';
-						$sRetorn .= '</div>';
-						$sRetorn .= '<div class="tab-pane fade" id="nav-'.$Titol.'" role="tabpanel" aria-labelledby="nav-'.$Titol.'-tab">';
-						$sRetorn .= '<TABLE>';
-						$sRetorn .= '<TR>';
+					$Nom = $Valor->Nom;
+					
+					if (!$Valor->Detall) {
+						if ($bPrimeraPestanya) {
+							$sRetorn .= '</TR>'. PHP_EOL .'<TR>';
+							$sRetorn .= '<TD colspan=10>';
+							$sRetorn .= '<DIV>'.PHP_EOL;
+							$sRetorn .= $this->GeneraNavegadorPestanya();
+							$sRetorn .= '<div class="tab-content" id="nav-tabContent">'.PHP_EOL;
+							$sRetorn .= "    <!-- Pestanya $Nom -->".PHP_EOL;
+							$sRetorn .= '    <div class="tab-pane fade show active" id="nav-'.$Nom.'" role="tabpanel" aria-labelledby="nav-'.$Nom.'-tab">'.PHP_EOL;
+							$bPrimeraPestanya = False;
+							$sRetorn .= '        <TABLE>'.PHP_EOL;
+							$sRetorn .= '            <TR>'.PHP_EOL;
+						}
+						else {
+							$sRetorn .= '</TR></TABLE>'.PHP_EOL;
+							$sRetorn .= '    </div>'.PHP_EOL;
+							$sRetorn .= "    <!-- Pestanya $Nom -->".PHP_EOL;
+							$sRetorn .= '    <div class="tab-pane fade" id="nav-'.$Nom.'" role="tabpanel" aria-labelledby="nav-'.$Nom.'-tab">'.PHP_EOL;
+							$sRetorn .= '        <TABLE>'.PHP_EOL;
+							$sRetorn .= '            <TR>'.PHP_EOL;
+						}
 					}
 					break;
 				case self::tcCOLUMNA_INICI:
@@ -2217,25 +2239,40 @@ class FormFitxa extends Form {
 					break;
 			}
 		}
-		if ($this->HiHaPestanyes)
-			$sRetorn .= '</TD></TR></TABLE></DIV></DIV></DIV></DIV>';
-		$sRetorn .= '</TR>';
-//		if (!$this->NomesLectura)
-//			$sRetorn .= '<TR><TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a></TD></TR>';
-		$sRetorn .= '</TABLE>';
-		$sRetorn .= '</FORM>';
-		$sRetorn .= '</DIV>';
+		
+		if ($this->HiHaPestanyes) {
+			$sRetorn .= '</TD></TR></TABLE>'.PHP_EOL;
+			$sRetorn .= '    </div>'.PHP_EOL;
+			if ($this->DetallsEnPestanyes) {
+				$sRetorn .= '  </FORM>'.PHP_EOL;
+				$sRetorn .= $this->GeneraDetalls();
+			}
+			$sRetorn .= '</DIV></DIV></DIV>'.PHP_EOL;
+		}
+		
+		$sRetorn .= '      </TR>';
+		$sRetorn .= '    </TABLE>'.PHP_EOL;
+		if (!$this->DetallsEnPestanyes)
+			$sRetorn .= '  </FORM>'.PHP_EOL;
+		$sRetorn .= '</DIV>'.PHP_EOL;
 		return $sRetorn;
 	}
+	
+	/**
+	 * Genera els detalls de la fitxa.
+	 */
+	protected function GeneraDetalls() {
+		// Per implementar a les classes desdendents
+	}	
 	
 	/**
 	 * Genera el botó de desar.
 	 */	
 	private function GeneraDesa() {
-		$sRetorn = '<DIV>';
+		$sRetorn = '<DIV>'.PHP_EOL;
 		if (!$this->NomesLectura)
-			$sRetorn .= '<br><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a>';
-		$sRetorn .= '</DIV>';
+			$sRetorn .= '  <br><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnDesa" name="btnDesa" onclick="DesaFitxa(this.form);">Desa</a>'.PHP_EOL;
+		$sRetorn .= '</DIV>'.PHP_EOL;
 		return $sRetorn;
 	}
 
@@ -2268,9 +2305,9 @@ class FormFitxa extends Form {
 	 * Genera el botó i l'acció de tornar enrera (cap a la llista).
 	 */
 	private function GeneraTorna() {
-		$sRetorn = '<div class="collapse" id="MissatgeTorna">';
-		$sRetorn .= '<a class="btn btn-primary active" role="button" aria-pressed="true" id="btnTorna" name="btnTorna" onclick="window.history.go(-1); return false;">Torna</a>';
-		$sRetorn .= '</div>';
+		$sRetorn = '<div class="collapse" id="MissatgeTorna">'.PHP_EOL;
+		$sRetorn .= '  <a class="btn btn-primary active" role="button" aria-pressed="true" id="btnTorna" name="btnTorna" onclick="window.history.go(-1); return false;">Torna</a>'.PHP_EOL;
+		$sRetorn .= '</div>'.PHP_EOL;
 		return $sRetorn;
 	}
 	
@@ -2279,11 +2316,11 @@ class FormFitxa extends Form {
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>'.PHP_EOL;
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
-			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>'.PHP_EOL;
 
-		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>'.PHP_EOL;
 
 		if ($this->Id > 0)
 			$this->CarregaDades();
@@ -2614,29 +2651,49 @@ class FormFitxaDetall extends FormFitxa {
 	 */
 	protected function GeneraFitxa() {
 		$Retorn = parent::GeneraFitxa();
-//echo "<hr>";
-//print_h($this->Detalls);
+		if (!$this->DetallsEnPestanyes) 
+			$Retorn .= $this->GeneraDetalls();
+		return $Retorn;
+	}	
+
+	/**
+	 * Genera els detalls de la fitxa.
+	 */
+	protected function GeneraDetalls() {
+		$Retorn = '';
 		foreach($this->Detalls as $Detall)
 			$Retorn .= $this->GeneraDetall($Detall);
 		return $Retorn;
-	}	
+	}
 	
 	/**
 	 * Genera un detall de la fitxa.
 	 */
 	private function GeneraDetall($Detall) {
-		$Retorn = '<BR>';
-		$Retorn .= '<H2>'.$Detall->Titol.'</H2>';
-		$Retorn .= '<FORM class="Detalls">';
+		if ($this->DetallsEnPestanyes) {
+			
+			$Nom = Normalitza($Detall->Titol);
+			$Nom = str_replace(" ", "", $Nom);
+			$Nom = str_replace("'", "", $Nom);
+			
+			$Retorn = "    <!-- Pestanya $Nom -->".PHP_EOL;
+			
+			$Retorn .= '    <div class="tab-pane fade" id="nav-'.$Nom.'" role="tabpanel" aria-labelledby="nav-'.$Nom.'-tab">'.PHP_EOL;
+		}
+		else {
+			$Retorn = '<BR>'.PHP_EOL;
+			$Retorn .= '<H2>'.$Detall->Titol.'</H2>'.PHP_EOL;
+		}
+		$Retorn .= '<FORM class="Detalls">'.PHP_EOL;
 
-		$Retorn .= "<input type=hidden name=hid_Taula value='".$Detall->Taula."'>";
-		$Retorn .= "<input type=hidden name=hid_ClauPrimaria value='".$Detall->ClauPrimaria."'>";
-		$Retorn .= "<input type=hidden name=hid_ClauForana value='".$Detall->ClauForana."'>";
+		$Retorn .= "<input type=hidden name=hid_Taula value='".$Detall->Taula."'>".PHP_EOL;
+		$Retorn .= "<input type=hidden name=hid_ClauPrimaria value='".$Detall->ClauPrimaria."'>".PHP_EOL;
+		$Retorn .= "<input type=hidden name=hid_ClauForana value='".$Detall->ClauForana."'>".PHP_EOL;
 		
-		$Retorn .= '<TABLE border=0>';
+		$Retorn .= '<TABLE border=0>'.PHP_EOL;
 //echo "<hr>";
 //var_dump($Detall);
-		$Retorn .= '<THEAD>';
+		$Retorn .= '<THEAD>'.PHP_EOL;
 		$aCamps = explode(",", TrimXX($Detall->Camps));
 		$aNomCamps = explode(",", $Detall->NomCamps);
 		$aTipusCamps = explode(",", $Detall->TipusCamps);
@@ -2651,7 +2708,7 @@ class FormFitxaDetall extends FormFitxa {
 		for($i=0; $i < count($aCamps); $i++) {
 			$Retorn .= '<TH>'.trim($aNomCamps[$i]).'</TH>';
 		}
-		$Retorn .= '</THEAD>';
+		$Retorn .= '</THEAD>'.PHP_EOL;
 		
 		foreach($Detall->Registre as $row) {
 			$Retorn .= '<TR>';
@@ -2685,21 +2742,25 @@ class FormFitxaDetall extends FormFitxa {
 						break;
 				}				
 			}
-			$Retorn .= '</TR>';
+			$Retorn .= '</TR>'.PHP_EOL;
 		}
-		$Retorn .= '<TABLE>';
-		$Retorn .= '</FORM>';
+		$Retorn .= '<TABLE>'.PHP_EOL;
+		$Retorn .= '</FORM>'.PHP_EOL;
 		
 		// Botons JavaScript
 		$Retorn .= '<DIV STYLE="margin-top:10px;">';
 		foreach($Detall->BotonsJS as $BotoJS) {
-			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;';
+			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;'.PHP_EOL;
 			if ($BotoJS->Ajuda != '') {
 				$Retorn .= $this->CreaAjuda($BotoJS->Titol, $BotoJS->Ajuda);
 			}
 			$Retorn .= '&nbsp;';
 		}
-		$Retorn .= '</DIV>';
+		$Retorn .= '</DIV>'.PHP_EOL;
+		
+		if ($this->DetallsEnPestanyes) {
+			$Retorn .= '</div>'.PHP_EOL;
+		}
 		
 		return $Retorn;
 	}
