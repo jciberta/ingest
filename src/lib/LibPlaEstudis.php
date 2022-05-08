@@ -367,6 +367,70 @@ class PlaEstudisCicle extends PlaEstudis
 }
 
 /**
+ * Classe que encapsula el formulari de recerca dels MP del pla d'estudis.
+ */
+class PlaEstudisModulRecerca extends FormRecerca
+{
+	/**
+	 * Crea la sentència SQL.
+	 * @return string Sentència SQL.
+	 */
+	public function CreaSQL(): string {
+		$Usuari = $this->Usuari;
+		$SubSQL = 'SELECT '.
+			' 	UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell, UPE.orientativa, '.
+			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, '.
+			'	CPE.codi AS CodiCF, FormataData(UPE.data_inici) AS data_inici, FormataData(UPE.data_final) AS data_final '. 
+			' FROM UNITAT_PLA_ESTUDI UPE '.
+			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			// És professor
+			if ($Usuari->es_professor)
+				$SubSQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+					' WHERE PUF.professor_id='.$Usuari->usuari_id.
+					' AND AA.actual=1 ';		
+		$SQL = "
+			SELECT 
+				modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores
+			FROM ($SubSQL) AS M
+			GROUP BY modul_pla_estudi_id, CodiCF, CodiMP, NomMP
+		";			
+		return $SQL;
+	}
+
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$Usuari = $this->Usuari;
+		$frm->Modalitat = $this->Modalitat;
+		$frm->Titol = 'Mòduls professionals';
+		$frm->SQL = $this->CreaSQL();
+//print '<br><br><br>'.$frm->SQL;
+		$frm->Taula = 'MODUL_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'modul_pla_estudi_id';
+		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
+		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
+		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$AnyAcademicId = $aAnys[0][0]; 
+			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		}
+		//$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		//$CicleFormatiuId = $aCicles[0][0]; 
+		//$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
+		//$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
+		$frm->EscriuHTML();
+	}
+}
+
+/**
  * Classe que encapsula el formulari de recerca de les UF del pla d'estudis.
  */
 class PlaEstudisUnitatRecerca extends FormRecerca
