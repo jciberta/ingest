@@ -380,13 +380,13 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offNOMES_LECTURA]);
 		
 		$frm->Pestanya('Metodologia');
-		$frm->AfegeixTextRic('metodologia', '', 200, 100);
+		$frm->AfegeixTextRic('metodologia', '', 500, 300);
 
 		$frm->Pestanya("Criteris d'avaluació");
-		$frm->AfegeixTextRic('criteris_avaluacio', '', 200, 100);
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300);
 
 		$frm->Pestanya("Recursos");
-		$frm->AfegeixTextRic('recursos', '', 200, 100);
+		$frm->AfegeixTextRic('recursos', '', 500, 300);
 		
 		$frm->DetallsEnPestanyes = true;
 		$frm->Pestanya("Unitats formatives", true);
