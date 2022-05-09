@@ -190,6 +190,11 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     data_final DATE,
     orientativa BIT,
     es_fct BIT,
+    lms CHAR(1) NOT NULL DEFAULT 'M', /* Moodle, Classroom */
+    nota_maxima INT NOT NULL DEFAULT 100, /* Nota sobre 100 */
+    nota_inferior_5 CHAR(1) NOT NULL DEFAULT 'T', /* Trunca, Arrodoneix */
+    nota_superior_5 CHAR(1) NOT NULL DEFAULT 'A', /* Trunca, Arrodoneix */
+    categoria_moodle_importacio VARCHAR(50),
 
     CONSTRAINT UnitatPlaEstudiPK PRIMARY KEY (unitat_pla_estudi_id),
     CONSTRAINT UPE_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id),

@@ -2,6 +2,12 @@
 Actualització de la DB a partir de la versió 1.5
 */
 
+ALTER TABLE UNITAT_PLA_ESTUDI ADD lms CHAR(1) NOT NULL DEFAULT 'M'; /* Moodle, Classroom */
+ALTER TABLE UNITAT_PLA_ESTUDI ADD nota_maxima INT NOT NULL DEFAULT 100; /* Nota sobre 100 */
+ALTER TABLE UNITAT_PLA_ESTUDI ADD nota_inferior_5 CHAR(1) NOT NULL DEFAULT 'T'; /* Trunca, Arrodoneix */
+ALTER TABLE UNITAT_PLA_ESTUDI ADD nota_superior_5 CHAR(1) NOT NULL DEFAULT 'A'; /* Trunca, Arrodoneix */
+ALTER TABLE UNITAT_PLA_ESTUDI ADD categoria_moodle_importacio VARCHAR(50); 
+
 CREATE TABLE TIPUS_MATERIAL
 (
     /* TM */

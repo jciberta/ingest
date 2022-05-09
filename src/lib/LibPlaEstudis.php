@@ -459,6 +459,13 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 		$this->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
 		if (!$this->EsLOGSE())
 			$this->AfegeixCheckBox('orientativa', 'És orientativa?');
+
+		$this->AfegeixLlista('lms', 'LMS', 30, array('M', 'C'), array('Moodle', 'Clasroom'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixEnter('nota_maxima', 'Nota màxima', 20, [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('nota_inferior_5', 'Nota inferior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixText('categoria_moodle_importacio', "Categoria Moodle per a l'importacio", 100);
+		
 		parent::EscriuHTML();		
 	}
 }
