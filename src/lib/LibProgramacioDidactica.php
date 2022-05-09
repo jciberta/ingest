@@ -318,7 +318,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 			'	CPE.codi AS CodiCF '. 
 			' FROM MODUL_PLA_ESTUDI MPE '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
-		$frm->Taula = 'UNITAT_PLA_ESTUDI';
+		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
 		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
 		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
@@ -378,14 +378,21 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offNOMES_LECTURA]);
-		$frm->AfegeixTextRic('metodologia', 'Metodologia', 200, 100);
-		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
-		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
 		
+		$frm->Pestanya('Metodologia');
+		$frm->AfegeixTextRic('metodologia', '', 500, 300);
+
+		$frm->Pestanya("Criteris d'avaluació");
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300);
+
+		$frm->Pestanya("Recursos");
+		$frm->AfegeixTextRic('recursos', '', 500, 300);
+		
+		$frm->DetallsEnPestanyes = true;
+		$frm->Pestanya("Unitats formatives", true);
 		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
 		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
 		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
-		
 		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
 			nom:Nom:text:400:r, 
 			hores:Hores:int:60:w,

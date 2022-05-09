@@ -6,3 +6,4 @@ src/img/pix
 *.LOCAL
 *.REMOTE
 doc/cache
+*.ser

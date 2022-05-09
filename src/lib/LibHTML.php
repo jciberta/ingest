@@ -68,44 +68,44 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 {
 //var_dump($bDataTables);	
 //exit;
-	$Retorn = '<!DOCTYPE html>';
-	$Retorn .= '<HTML>';
-	$Retorn .= '<HEAD>';
-	$Retorn .= '	<META charset=UTF8>';
-	$Retorn .= '	<TITLE>InGest</TITLE>';
-	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
-	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">';
+	$Retorn = '<!DOCTYPE html>'.PHP_EOL;
+	$Retorn .= '<HTML>'.PHP_EOL;
+	$Retorn .= '<HEAD>'.PHP_EOL;
+	$Retorn .= '	<META charset=UTF8>'.PHP_EOL;
+	$Retorn .= '	<TITLE>InGest</TITLE>'.PHP_EOL;
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">'.PHP_EOL;
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">'.PHP_EOL;
 //	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
-	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
-	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
-	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
+	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">'.PHP_EOL;
+	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">'.PHP_EOL;
+	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">'.PHP_EOL;
 	if ($bSaga)
-		$Retorn .= '	<link rel="stylesheet" href="css/saga.css">';
+		$Retorn .= '	<link rel="stylesheet" href="css/saga.css">'.PHP_EOL;
 	if ($bDataTables) {
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">'.PHP_EOL;
+		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">'.PHP_EOL;
 	}
-	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
-	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
-	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
-	$Retorn .= '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>';
-	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>';
-	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>';
-	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>';
-	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
-	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
-	$Retorn .= '	<script src="js/Util.js"></script>';
+	$Retorn .= '	<script src="vendor/jquery.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/popper.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/dist/js/bootstrap-submenu.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootstrap-submenu/bootstrap-submenu.fix.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ca.min.js" charset="UTF-8"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>'.PHP_EOL;
+	$Retorn .= '	<script src="js/Util.js"></script>'.PHP_EOL;
 	if ($bDataTables) {
-		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
+		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>'.PHP_EOL;
+		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>'.PHP_EOL;
+		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>'.PHP_EOL;
 	}
-	$Retorn .= '</HEAD>';
+	$Retorn .= '</HEAD>'.PHP_EOL;
 	if (Config::Demo)
-		$Retorn .= '<BODY STYLE="background-color:#ffa70570">';
+		$Retorn .= '<BODY STYLE="background-color:#ffa70570">'.PHP_EOL;
 	else
-		$Retorn .= '<BODY BGCOLOR=yellow>';
-//		$Retorn .= '<BODY>';
+		$Retorn .= '<BODY>'.PHP_EOL;
+//		$Retorn .= '<BODY BGCOLOR=yellow>'.PHP_EOL;
 	if ($bMenu) {
 		$Retorn .= Menu::Crea($Usuari);
 	}
@@ -237,11 +237,11 @@ function CreaIniciHTML_Notes($Usuari, $Titol)
  */
 function CreaFinalHTML_BootstrapStarterTemplate()
 {
-	echo "</div>";
-	echo "<DIV id=debug></DIV>";
-	echo "<DIV id=debug2></DIV>";
-	echo '</BODY>';
-	echo '</HTML>';
+	echo "</div>".PHP_EOL;
+	echo "    <DIV id=debug></DIV>".PHP_EOL;
+	echo "    <DIV id=debug2></DIV>".PHP_EOL;
+	echo '</BODY>'.PHP_EOL;
+	echo '</HTML>'.PHP_EOL;
 }
 
 /**
@@ -255,8 +255,8 @@ function CreaFinalHTML_BootstrapStarterTemplate()
  */
 function PaginaHTMLMissatge($Titol, $Missatge)
 {
-	echo "<HTML>";
-	echo "<HEAD>";
+	echo "<HTML>".PHP_EOL;
+	echo "<HEAD>".PHP_EOL;;
 	echo "	<META charset=UTF8>";
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
 	echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
@@ -371,14 +371,14 @@ class Portal
 class Menu
 {
 	static public function Obre(string $Text): string {
-		$Retorn = '<li class="nav-item dropdown">';
-		$Retorn .= '<a class="nav-link dropdown-toggle" href="#" id="dd'.$Text.'" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">'.$Text.'</a>';
-		$Retorn .= '<div class="dropdown-menu" aria-labelledby="dd'.$Text.'">';
+		$Retorn = '            <li class="nav-item dropdown">'.PHP_EOL;
+		$Retorn .= '                <a class="nav-link dropdown-toggle" href="#" id="dd'.$Text.'" data-toggle="dropdown" data-submenu="" aria-haspopup="true" aria-expanded="false">'.$Text.'</a>'.PHP_EOL;
+		$Retorn .= '                <div class="dropdown-menu" aria-labelledby="dd'.$Text.'">'.PHP_EOL;
 		return $Retorn;
 	}
 
 	static public function Tanca(): string {
-		return '</div></li>';
+		return '                </div>'.PHP_EOL .'            </li>'.PHP_EOL;
 	}
 
 	static public function ObreSubMenu(string $Text): string {
@@ -397,23 +397,24 @@ class Menu
 	}
 	
 	static public function Opcio(string $Text, string $URL): string {
-		return '<a class="dropdown-item" href="'.GeneraURL($URL).'">'.$Text.'</a>';
+		return '<a class="dropdown-item" href="'.GeneraURL($URL).'">'.$Text.'</a>'.PHP_EOL;
 	}
 	
 	static public function Crea($Usuari): string {
-		$Retorn = '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">';
+		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
+		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
 		if ($Usuari->es_admin) 
-			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>';
+			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>'.PHP_EOL;
 		else
-			$Retorn .= '	<span class="navbar-brand">inGest</span>';
-		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">';
-		$Retorn .= '		<span class="navbar-toggler-icon"></span>';
-		$Retorn .= '	</button>';
-		$Retorn .= '	<div class="collapse navbar-collapse">';
-		$Retorn .= '		<ul class="navbar-nav mr-auto">';
-		$Retorn .= '			<li class="nav-item active">';
-		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>';
-		$Retorn .= '			</li>';
+			$Retorn .= '	<span class="navbar-brand">inGest</span>'.PHP_EOL;
+		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">'.PHP_EOL;
+		$Retorn .= '		<span class="navbar-toggler-icon"></span>'.PHP_EOL;
+		$Retorn .= '	</button>'.PHP_EOL;
+		$Retorn .= '	<div class="collapse navbar-collapse">'.PHP_EOL;
+		$Retorn .= '		<ul class="navbar-nav mr-auto">'.PHP_EOL;
+		$Retorn .= '			<li class="nav-item active">'.PHP_EOL;
+		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>'.PHP_EOL;
+		$Retorn .= '			</li>'.PHP_EOL;
 		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
 			// Menú Alumnes
 			$Retorn .= Menu::Obre('Alumnes');
@@ -491,10 +492,10 @@ class Menu
 
 		// Menú usuari
 		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
-		$Retorn .= '		<ul class="navbar-nav">';
-		$Retorn .= '		  <li class="nav-item dropdown">';
-		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>';
-		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">';
+		$Retorn .= '		<ul class="navbar-nav">'.PHP_EOL;
+		$Retorn .= '		  <li class="nav-item dropdown">'.PHP_EOL;
+		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>'.PHP_EOL;
+		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">'.PHP_EOL;
 		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
 		$Retorn .= Menu::Separador();
 		if ($Usuari->es_cap_estudis) {
@@ -510,12 +511,15 @@ class Menu
 		}
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
 		$Retorn .= Menu::Tanca();
-		$Retorn .= '		</ul>';
+		$Retorn .= '		</ul>'.PHP_EOL;
 
-		$Retorn .= '	</div>';
-		$Retorn .= '</nav>';
+		$Retorn .= '	</div>'.PHP_EOL;
+		$Retorn .= '</nav>'.PHP_EOL;
+		$Retorn .= '<!-- FINAL Menú -->'.PHP_EOL;
+		$Retorn .= PHP_EOL;
 		$Retorn .= '<BR><BR>'; // Per donar espai al menú
-	
+		$Retorn .= PHP_EOL;
+
 		return $Retorn;
 	}	
 }

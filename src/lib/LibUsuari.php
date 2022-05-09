@@ -647,6 +647,16 @@ class Professor extends Usuari
 		echo '    </div>';
 		echo '  </div>';
 
+		// Programacions
+		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&ProfId='.$this->Usuari->usuari_id);
+		echo '  <div class="card">';
+		echo '    <div class="card-body">';
+		echo '      <h5 class="card-title">Programacions</h5>';
+		echo '      <p class="card-text">Els meus mòduls</p>';
+		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+		echo '    </div>';
+		echo '  </div>';
+
 		echo '</div>';
 		echo '<h3>Informes</h3>';
 		echo '<div class="card-columns" style="column-count:6">';
