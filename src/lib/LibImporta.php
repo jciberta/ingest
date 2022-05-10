@@ -949,8 +949,10 @@ class ImportaNotes extends Importa
 		if ($IndexCorreu == -1 || $IndexNota == -1)
 			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha pogut lligar la importació amb les dades de l'InGest.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
 
-		echo '<PRE>';
+		echo '<TABLE>';
+		echo '<TR><TD><B>Alumne</B></TD><TD><B>Correu</B></TD><TD><B>Nota Moodle</B></TD><TD><B>Nota InGest</B></TD></TR>';
 		foreach($this->Notes as &$Nota) {
+			echo '<TR>';
 			$Nota['nota_moodle'] = $this->ObteNota($aFull, $Nota['email_ins'], $IndexCorreu, $IndexNota);
 			if ($Nota['nota_moodle'] < 5) {
 				$Nota['nota_ingest'] = ($this->Registre->nota_inferior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
@@ -961,7 +963,10 @@ class ImportaNotes extends Importa
 				$Nota['nota_ingest'] = ($this->Registre->nota_superior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
 			}
 			$Nom = str_pad(CodificaUTF8($Nota['NomCognom1Cognom2']), 50);
-			echo $Nom.'nota Moodle: '.$Nota['nota_moodle'].', nota InGest:'.$Nota['nota_ingest'].'<BR>';
+			echo "<TD>$Nom</TD>";
+			echo "<TD>".$Nota['email_ins']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_moodle']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_ingest']."</TD>";
 			
 			if ($Nota['nota_ingest'] > 0) {
 				$SQL = 'UPDATE NOTES SET nota'.$Nota['convocatoria'].'='.$Nota['nota_ingest'].' WHERE notes_id='.$Nota['notes_id'];
@@ -975,8 +980,9 @@ class ImportaNotes extends Importa
 					$Retorn .= "<BR><b>ERROR Importa</b>. Causa: ".$e->getMessage();
 				}		
 			}
+			echo '</TR>';
 		}
-		echo '</PRE>';
+		echo '</TABLE>';
 
 //print_h($this->Notes);
 
@@ -1029,7 +1035,8 @@ class ImportaNotes extends Importa
 			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
 			WHERE IFNULL(M.baixa,0)<>1 AND IFNULL(N.baixa,0)<>1
 			AND N.convocatoria<>0	
-			AND unitat_pla_estudi_id=".$this->UnitatPlaEstudiId;
+			AND unitat_pla_estudi_id=".$this->UnitatPlaEstudiId."
+			ORDER BY U.cognom1, U.cognom2, U.nom";
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			while ($row = $ResultSet->fetch_assoc())

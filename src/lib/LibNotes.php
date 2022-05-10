@@ -1771,10 +1771,14 @@ class NotesModul extends Notes
 		echo "<TR><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			
 			$Link = GeneraURL('Pagina.php?accio=DialegImportaNotes&UnitatPlaEstudiId='.$row["unitat_pla_estudi_id"]);
-			echo '<TH class="contingut" width=20 colspan=2 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">';
-			echo "<A href=$Link>".utf8_encode($row["CodiUF"])."</A>";
+			echo '<TH class="contingut" width=20 colspan=2 style="text-align:center">';
+			echo '<SPAN data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">';
+			echo utf8_encode($row["CodiUF"]).'&nbsp;&nbsp;';
+			echo "</SPAN>";
+			echo '<SPAN data-toggle="tooltip" data-placement="top" title="Importa notes">';
+			echo "<A href=$Link><IMG src='img/backup.svg'></A>";
+			echo "</SPAN>";
 			echo '</TH>';
 		}
 
