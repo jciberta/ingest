@@ -528,7 +528,7 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 		$this->AfegeixEnter('nota_maxima', 'Nota màxima', 20, [FormFitxa::offREQUERIT]);
 		$this->AfegeixLlista('nota_inferior_5', 'Nota inferior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
 		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixText('categoria_moodle_importacio', "Categoria Moodle per a l'importacio", 100);
+		$this->AfegeixText('categoria_moodle_importacio', "Categoria Moodle per a la importació", 100);
 		
 		parent::EscriuHTML();		
 	}
