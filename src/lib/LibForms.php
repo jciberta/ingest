@@ -27,7 +27,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * Classe Objecte.
  * Classe base de la quals descendeixen els objectes.
  */
-class Objecte {
+class Objecte 
+{
 	/**
 	* Connexió a la base de dades.
 	* @var object
@@ -68,7 +69,8 @@ class Objecte {
  * Classe base de la quals descendeixen els formularis.
  * Conté els mètodes per crear els components bàsics.
  */
-class Form {
+class Form 
+{
 	// Tipus de camps per al formulari.
 	const tcTEXT = 1;
 	const tcENTER = 2;
@@ -611,7 +613,8 @@ class Form {
  * Classe FormRecerca.
  * Classe per als formularis de recerca.
  */
-class Filtre {
+class Filtre 
+{
 	/**
 	* Camps del filtre amb les seves característiques. S'usa per generar els components visuals.
 	* @access private
@@ -866,7 +869,8 @@ exit;*/
  * Classe FormRecerca.
  * Classe per als formularis de recerca.
  */
-class FormRecerca extends Form {
+class FormRecerca extends Form 
+{
 	// Modalitats del formulari.
 	const mfLLISTA = 1;
 	const mfBUSCA = 2;
@@ -1195,8 +1199,8 @@ class FormRecerca extends Form {
 					}
 					else {
 						$sValor = $row[$data];
-						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
-//						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+//						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
+						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
 					}
 				}
 				$sRetorn .= "<TD>";
@@ -1261,7 +1265,7 @@ class FormRecerca extends Form {
 	private function GeneraCerca() {
 		if ($this->PermetCercar) {
 			$sRetorn = '<DIV id=Recerca style="padding:10px">';
-			$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
+			$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="" accept-charset="UTF-8">';
 			$sRetorn .= '    <TABLE style="width:100%">';
 			$sRetorn .= '    <TR>';
 			$sRetorn .= '    <TD>';
@@ -1626,7 +1630,8 @@ class FormRecerca extends Form {
  * Classe FormFitxa.
  * Classe per als formularis de fitxa.
  */
-class FormFitxa extends Form {
+class FormFitxa extends Form 
+{
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
 	* @var boolean
@@ -2085,7 +2090,7 @@ class FormFitxa extends Form {
 	 */
 	protected function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>'.PHP_EOL;
-		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">'.PHP_EOL;
+		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php" accept-charset="UTF-8">'.PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_Taula value='".$this->Taula."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>".PHP_EOL;
@@ -2399,10 +2404,6 @@ class FormFitxa extends Form {
 						$sCamps .= substr($Valor->name, 4).", ";
 						$Valor->value = strip_tags($Valor->value);
 						$sValues .= TextAMySQL($Valor->value).', ';
-//						if ($Valor->value == '')
-//							$sValues .= "NULL, ";
-//						else
-//							$sValues .= "'".$Valor->value."', ";
 						break;
 					case 'edd':
 						// Camp data
@@ -2431,10 +2432,6 @@ class FormFitxa extends Form {
 							// Camp lookup
 							$sCamps .= substr($Valor->name, 4).", ";
 							$sValues .= ($Valor->value == '') ? "NULL, " : $Valor->value.", ";
-							//if ($Valor->value == '')
-								//$sValues .= "NULL, ";
-							//else
-								//$sValues .= "'".$Valor->value."', ";
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //print_r($Valor);
 						}
@@ -2504,7 +2501,8 @@ class FormFitxa extends Form {
  * Classe FormDetall.
  * Classe per als formularis amb un mestre fix (subtítol) i un detall (variable).
  */
-class FormDetall extends FormRecerca {
+class FormDetall extends FormRecerca 
+{
 	/**
 	* Objecte qur conté les dades per fer el lookup per al botó afegeix.
 	* @var object
@@ -2601,7 +2599,8 @@ class FormDetall extends FormRecerca {
  * Classe FormFitxaDetall.
  * Classe per als formularis mestre/detall. Poden haver múltiples detalls.
  */
-class FormFitxaDetall extends FormFitxa {
+class FormFitxaDetall extends FormFitxa 
+{
 	/**
 	* Llista dels diferents detalls de la fitxa.
 	* @var array
@@ -2708,7 +2707,7 @@ class FormFitxaDetall extends FormFitxa {
 			$Retorn = '<BR>'.PHP_EOL;
 			$Retorn .= '<H2>'.$Detall->Titol.'</H2>'.PHP_EOL;
 		}
-		$Retorn .= '<FORM class="Detalls">'.PHP_EOL;
+		$Retorn .= '<FORM class="Detalls" accept-charset="UTF-8">'.PHP_EOL;
 
 		$Retorn .= "<input type=hidden name=hid_Taula value='".$Detall->Taula."'>".PHP_EOL;
 		$Retorn .= "<input type=hidden name=hid_ClauPrimaria value='".$Detall->ClauPrimaria."'>".PHP_EOL;
