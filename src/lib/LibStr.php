@@ -130,13 +130,28 @@ function JSONEncodeUTF8($row)
 
 /**
  * CodificaUTF8
- *
  * Codifica un text en UTF8.
- *
  * @param string $text text a codificar en UTF8.
  * @return string Text codificat.
  */
-function CodificaUTF8($text): string 
+function CodificaUTF8($text): string {
+	$text =  ($text === null) ? '' : $text;
+	// https://devtut.github.io/php/utf-8.html#input
+	if (!mb_check_encoding($text, 'UTF-8')) {
+		// the string is not UTF-8, so re-encode it.
+		$actualEncoding = mb_detect_encoding($text);
+		$text = mb_convert_encoding($text, 'UTF-8', $actualEncoding);
+	}
+	return $text;
+}
+
+/**
+ * CodificaUTF8
+ * Codifica un text en UTF8.
+ * @param string $text text a codificar en UTF8.
+ * @return string Text codificat.
+ */
+function CodificaUTF8_old($text): string 
 {
 	$text =  ($text === null) ? '' : $text;
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {

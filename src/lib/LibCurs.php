@@ -137,7 +137,7 @@ class Curs
 	private function CreaSQL(int $CursId = -1) {
 		$SQL = ' SELECT '.
 			'	C.cicle_formatiu_id, C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.estat, C.nivell, '.
-			'	C.data_inici, C.data_final, '.
+			'	C.data_inici AS DataInici, C.data_final AS DataFinal, '.
 			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			' CASE '.
 			'     WHEN C.estat = "T" THEN "Tancada" '.
@@ -280,7 +280,7 @@ class Curs
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		if ($this->Usuari->es_admin) {
-			$frm->Camps = 'curs_id, CodiCurs, NomCurs, nivell, Any, data_inici, data_final, avaluacio, trimestre';
+			$frm->Camps = 'curs_id, CodiCurs, NomCurs, nivell, Any, DataInici, DataFinal, avaluacio, trimestre';
 			$frm->Descripcions = 'Id, Codi, Nom, Nivell, Any, Data inici, Data final, Avaluació, Trimestre';
 		}
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', Curs::LlegendaEstat());
