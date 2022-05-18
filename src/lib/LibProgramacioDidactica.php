@@ -21,6 +21,12 @@ use PhpOffice\PhpWord\Style\TablePosition;
  */
 class ProgramacioDidactica extends Form
 {
+	// Estats de la programació didàctica.
+	const epELABORACIO = 'E'; 		// Elaboració
+	const epCAP_DEPARTAMENT = 'D'; 	// Revisió cap departament
+	const epCAP_ESTUDIS = 'T'; 		// Revisió cap d'estudis
+	const epACCEPTADA = 'A'; 		// Acceptada (tancada)
+
 	// Seccions de la programació didàctica.
 	const pdESTRATEGIES = 1;
 	const pdCRITERIS = 2;
@@ -30,11 +36,11 @@ class ProgramacioDidactica extends Form
 
 	// Títol de les seccions de la programació didàctica.
 	const SECCIO = array(
-		self::pdESTRATEGIES => 'Estratègies metodològiques',
-		self::pdCRITERIS => 'Criteris d’avaluació, qualificació i recuperació',
-		self::pdRECURSOS => 'Recursos i material utilitzat',
+		self::pdESTRATEGIES => 	'Estratègies metodològiques',
+		self::pdCRITERIS => 	'Criteris d’avaluació, qualificació i recuperació',
+		self::pdRECURSOS => 	'Recursos i material utilitzat',
 		self::pdSEQUENCIACIO => 'Seqüenciació i temporitzador de les unitats formatives',
-		self::pdUNITATS => 'Unitats formatives'
+		self::pdUNITATS => 		'Unitats formatives'
 	);
 
 	/**
