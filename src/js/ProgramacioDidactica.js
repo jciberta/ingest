@@ -115,3 +115,63 @@ function EsborraDatesUF() {
 	$(":input[name^='edd_data_inici-']").val('');
 	$(":input[name^='edd_data_final-']").val('');
 }
+
+/**
+ * Envia
+ * Envia la programació a l'estat corresponent.
+ * @param modul_pla_estudi_id Identificador del MP.
+ * @param estat Estat de la programació.
+ */
+function Envia(modul_pla_estudi_id, estat) { 
+console.log('Envia '+modul_pla_estudi_id);
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+
+	$('#MissatgeCorrecte').hide();
+	$('#MissatgeError').hide();
+	bootbox.confirm({
+		message: "Esteu segur que voleu enviar la programació?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Envia',
+				className: 'btn-danger'
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibProgramacioDidactica.ajax.php',
+					data:{
+						'accio': 'Envia',
+						'modul_pla_estudi_id': modul_pla_estudi_id, 
+						'estat': estat,
+						'frm': sFrm
+						},
+					success: function(data) {
+						i = data.indexOf('ERROR');
+						if (i > -1) {
+							$('#MissatgeError').html("Hi ha hagut un error en realitzar l''acció." + data);
+							$('#MissatgeError').show();
+						}
+						else {
+							$('#taula').html(data);
+							//$('#MissatgeCorrecte').show();
+							//$('#debug').html('Dades rebudes: '+ JSON.stringify(data));
+						}
+					}, 
+					error: function (data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				} );
+			}
+		}
+	});	
+}
+
+function EnviaDepartament(modul_pla_estudi_id, estat) { 
+	Envia(modul_pla_estudi_id, 'D');
+}
