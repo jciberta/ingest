@@ -1149,6 +1149,11 @@ class FormRecerca extends Form
      * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
+		if ($this->Usuari->es_admin) {
+			$this->Camps = $this->ClauPrimaria.', '.$this->Camps;
+			$this->Descripcions = 'Id, '.$this->Descripcions;
+		}
+		
 		$sRetorn = '<DIV id=taula>';
 		$SQL = $this->CreaSQL();
 //print $SQL;
