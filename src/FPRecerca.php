@@ -154,7 +154,9 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisModul":
+		$FamiliaFPId = (array_key_exists('FamiliaFPId', $_GET)) ? $_GET['FamiliaFPId'] : -1; 
 		$frm = new PlaEstudisModulRecerca($conn, $Usuari);
+		$frm->FamiliaFPId = $FamiliaFPId;
 		$frm->EscriuHTML();
         break;
     case "ProgramacionsDidactiques":

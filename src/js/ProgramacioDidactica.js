@@ -175,3 +175,7 @@ console.log('Envia '+modul_pla_estudi_id);
 function EnviaDepartament(modul_pla_estudi_id, estat) { 
 	Envia(modul_pla_estudi_id, 'D');
 }
+
+function EnviaCapEstudis(modul_pla_estudi_id, estat) { 
+	Envia(modul_pla_estudi_id, 'T');
+}

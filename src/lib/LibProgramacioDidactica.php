@@ -321,13 +321,19 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 		$frm->Titol = 'Programacions didàctiques';
 		$frm->SQL = 'SELECT '.
 			' 	MPE.modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, '.
+			' 	CASE MPE.estat '.
+			'   	WHEN "E" THEN "Elaboració" '.
+			'   	WHEN "D" THEN "Revisió cap departament" '.
+			'   	WHEN "T" THEN "Revisió cap d\'estudis" '.
+			'   	WHEN "A" THEN "Acceptada" '.
+			' 	END AS NomEstat, '.
 			'	CPE.codi AS CodiCF '. 
 			' FROM MODUL_PLA_ESTUDI MPE '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
-		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
-		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
+		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
+		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');

@@ -372,6 +372,12 @@ class PlaEstudisCicle extends PlaEstudis
 class PlaEstudisModulRecerca extends FormRecerca
 {
 	/**
+	* Registre carregat amb Carrega.
+	* @var integer
+	*/    
+	public $FamiliaFPId = -1;
+	
+	/**
 	 * Crea la sentència SQL.
 	 * @return string Sentència SQL.
 	 */
@@ -390,7 +396,14 @@ class PlaEstudisModulRecerca extends FormRecerca
 			' FROM UNITAT_PLA_ESTUDI UPE '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+		if ($this->FamiliaFPId != -1) {
+			// És cap de departament
+			$SubSQL .= 
+				' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+				' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
+				' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+		}
+		else if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			// És professor
 			if ($Usuari->es_professor)
 				$SubSQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
@@ -411,7 +424,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
-		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.3');
+		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.4');
 		$Usuari = $this->Usuari;
 		$frm->Modalitat = $this->Modalitat;
 		$frm->Titol = 'Mòduls professionals';
@@ -422,13 +435,22 @@ class PlaEstudisModulRecerca extends FormRecerca
 		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
 		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
 
-		//$frm->PermetEditar = True;
-		$frm->PermetEditarCondicional(['estat' => 'E']);
-
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 
-		$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
+		if ($this->FamiliaFPId == -1) {
+			// És professor
+			$frm->PermetEditarCondicional(['estat' => 'E']);
+			$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
+// TODO
+// NO FUNCIONA al refrescar (AJAX)
+			if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis)
+				$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'T']);
+		}
+		else {
+			// És cap de departament
+			$frm->AfegeixOpcioAJAX("Envia a cap d'estudis", 'EnviaCapEstudis', '', [], '', '', ['estat' => 'D']);
+		}
 	 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");

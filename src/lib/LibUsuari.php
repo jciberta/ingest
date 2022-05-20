@@ -560,6 +560,27 @@ class Professor extends Usuari
 		$ResultSet->close();
 		return $bRetorn;
 	}
+
+	/**
+	 * Comprova si és cap de departament.
+	 * @param integer $ProfessorId Identificador del professor.
+	 * @returns integer Identificador de la família de la qual és cap de departament (sinó -1).
+	 */
+	function EsCapDepartament(int $ProfessorId): int {
+		$Retorn = -1;
+		$SQL = ' 
+			SELECT * FROM EQUIP E
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=E.any_academic_id) 
+			WHERE AA.actual=1 AND tipus="DP"
+			AND cap='.$this->Usuari->usuari_id;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_object();
+			$Retorn = $row->familia_fp_id;
+		}
+		$ResultSet->close();
+		return $Retorn;
+	}
 	
 	/**
 	 * Genera i escriu l'escriptori del professor.
@@ -639,23 +660,32 @@ class Professor extends Usuari
 		
 		// Les meves UF
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat&ProfId='.$this->Usuari->usuari_id);
-		echo '  <div class="card">';
+		echo CreaTargeta('Unitats formatives', 'Les meves UF', $URL);
+		/*echo '  <div class="card">';
 		echo '    <div class="card-body">';
 		echo '      <h5 class="card-title">Unitats formatives</h5>';
 		echo '      <p class="card-text">Les meves UF</p>';
 		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 		echo '    </div>';
-		echo '  </div>';
+		echo '  </div>';*/
 
 		// Programacions
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&ProfId='.$this->Usuari->usuari_id);
-		echo '  <div class="card">';
+		echo CreaTargeta('Programacions', 'Els meus mòduls', $URL);
+/*		echo '  <div class="card">';
 		echo '    <div class="card-body">';
 		echo '      <h5 class="card-title">Programacions</h5>';
 		echo '      <p class="card-text">Els meus mòduls</p>';
 		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 		echo '    </div>';
-		echo '  </div>';
+		echo '  </div>';*/
+
+		// Cap de departament
+		$FamiliaFPId = $this->EsCapDepartament($this->Usuari->usuari_id);
+		if ($FamiliaFPId != -1) {
+			$URL = GeneraURL("FPRecerca.php?accio=PlaEstudisModul&FamiliaFPId=$FamiliaFPId&ProfId=".$this->Usuari->usuari_id);
+			echo CreaTargeta('Departament', 'Revisió programacions', $URL);
+		}
 
 		echo '</div>';
 		echo '<h3>Informes</h3>';
