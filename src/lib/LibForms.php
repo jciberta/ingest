@@ -1149,6 +1149,11 @@ class FormRecerca extends Form
      * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
+		if ($this->Usuari->es_admin) {
+			$this->Camps = $this->ClauPrimaria.', '.$this->Camps;
+			$this->Descripcions = 'Id, '.$this->Descripcions;
+		}
+		
 		$sRetorn = '<DIV id=taula>';
 		$SQL = $this->CreaSQL();
 //print $SQL;
@@ -2415,7 +2420,16 @@ class FormFitxa extends Form
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
 		// Configuracions http://htmlpurifier.org/demo.php
-		$config->set('HTML.Allowed', 'a[href|title],img[title|src|alt],em,strong,cite,blockquote,code,ul,ol,li,dl,dt,dd,p,br,h1,h2,h3,h4,h5,h6,span,font[color],*[style]');
+		// *[style] means that you allow for all the accepted tags the attribute style
+		$config->set(
+			'HTML.Allowed', 
+			'a[href|title|target],img[title|src|alt],em,strong,cite,blockquote,code,
+			 ul,ol,li,dl,dt,dd,
+			 p,br,
+			 h1,h2,h3,h4,h5,h6,
+			 table[class],tr[align],th[align],td[align],
+			 span,font[color],*[style]
+			');
 		$purifier = new HTMLPurifier($config);
 		
 		$Retorn = '';

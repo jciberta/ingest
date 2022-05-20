@@ -185,11 +185,103 @@ class ProgramacioDidactica extends Form
 	}
 
 	/**
+	 * Dona format a les taules d'un HTML.
+	 * @param string $html Codi HTML amb les taules a tractar (si n'hi ha).
+	 * @return string Codi HTML amb les taules amb el format adequat.
+	 */
+	protected function TractaTaules($html) {
+		// https://www.php.net/manual/en/migration70.new-features.php#migration70.new-features.null-coalesce-op
+		$html = $html ?? '';
+		
+		$Retorn = '';
+		$i = 0;
+		$HTML = strtoupper($html);
+		$j = strpos($HTML, '<TABLE', $i);
+
+		if ($j !== false) {
+			while ($j > 0) {
+				$Retorn .= substr($html, $i, $j-$i);
+				$i = $j + 1;
+				
+				$j1 = strpos($HTML, '<TABLE', $i);
+				$j2 = strpos($HTML, '</TABLE>', $i);
+				
+//				if ($j1 < $j2)
+//					throw new Exception("No es permeten taules aniuades (taules dins de taules).");
+				
+				$Taula = substr($html, $i-1, $j2-$i+9);
+//print_h($Taula);
+				$Retorn .= $this->FormataTaula($Taula);
+				$i = $j2 + 1;
+				$j = strpos($HTML, '<TABLE', $i);
+			}
+			$Retorn .= substr($html, $i+7, strlen($html)-$i-7);
+		}
+		else 
+			// No hi ha cap taula
+			$Retorn = $html; 
+		return $Retorn;		
+	}
+	
+	private function FormataTaula($Taula) {
+		$sRetorn = "";
+		$dom = new domDocument;
+
+		// Some versions of the DOMDocument parser that PHP uses are super-strict about HTML compliance, and will whine 
+		// and regularly do wrong things when confronted with spec violations.
+		// This completely depends on whether the version of libxml2 you are using has support for this part of HTML5. 
+		// https://bugs.php.net/bug.php?id=63477
+		// https://stackoverflow.com/questions/5645536/issue-with-using-domnode-attributes-with-attributes-that-have-multiple-words-in
+		$Taula = str_replace('class=""""', '', $Taula);
+//print htmlspecialchars($taula);
+//exit;		
+//print_h($Taula);
+		$dom->loadHTML($Taula); 
+		$dom->preserveWhiteSpace = false; 
+   
+		$tables = $dom->getElementsByTagName('table'); 
+
+		// Es suposa una única taula
+		$rows = $tables->item(0)->getElementsByTagName('tr'); 
+
+		$sRetorn .= "<TABLE BORDER=1'>";
+		$PrimeraFila = true;
+		$aFiles = [];
+		foreach ($rows as $row) {
+			if ($PrimeraFila) {
+				$sRetorn .= "<THEAD>";
+				$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
+				$cols = $row->getElementsByTagName('td'); 
+				for($i=0; $i<count($cols); $i++) {
+					$Valor = utf8_decode($cols->item($i)->nodeValue);
+					$sRetorn .= "<TH>$Valor</TH>";
+				}
+				$sRetorn .= "</TR>";
+				$sRetorn .= "</THEAD>";
+				$PrimeraFila = false;
+			}
+			else {
+				$sRetorn .= "<TR>";
+				$cols = $row->getElementsByTagName('td'); 
+				for($i=0; $i<count($cols); $i++) {
+					$Valor = utf8_decode($cols->item($i)->nodeValue);
+					$sRetorn .= "<TD>$Valor</TD>";
+				}
+				$sRetorn .= "</TR>";
+			}
+		}
+		$sRetorn .= "</TABLE>";
+		$sRetorn .= "<BR>";
+		return $sRetorn;
+	}
+
+	/**
 	 * Genera la secció d'estratègies de la programació didàctica.
 	 * @return string Codi HTML amb la secció.
 	 */
 	protected function GeneraSeccioEstrategies() {
 		$sRetorn = $this->Registre->metodologia;
+		$sRetorn = $this->TractaTaules($sRetorn);
 		return $sRetorn;		
 	}
 
@@ -199,6 +291,7 @@ class ProgramacioDidactica extends Form
 	 */
 	protected function GeneraSeccioCriteris() {
 		$sRetorn = $this->Registre->criteris_avaluacio;
+		$sRetorn = $this->TractaTaules($sRetorn);
 		return $sRetorn;		
 	}
 
@@ -208,6 +301,7 @@ class ProgramacioDidactica extends Form
 	 */
 	protected function GeneraSeccioRecursos() {
 		$sRetorn = $this->Registre->recursos;
+		$sRetorn = $this->TractaTaules($sRetorn);
 		return $sRetorn;		
 	}
 
@@ -218,9 +312,7 @@ class ProgramacioDidactica extends Form
 	 */
 	protected function GeneraSeccioSequenciacio(&$section = null) {
 		$ModulPlaEstudiId = $this->Id;
-			
 		$sRetorn = "<BR>";
-
 		$sRetorn .= "<TABLE BORDER=1'>";
 		$sRetorn .= "<thead>";
 		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
@@ -250,7 +342,6 @@ class ProgramacioDidactica extends Form
 		$sRetorn .= "</tbody>";
 		$sRetorn .= "</TABLE>";
 		$sRetorn .= "<BR>";
-
 		return $sRetorn;		
 	}
 
