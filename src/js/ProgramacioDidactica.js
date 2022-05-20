@@ -172,10 +172,18 @@ console.log('Envia '+modul_pla_estudi_id);
 	});	
 }
 
+function EnviaElaboracio(modul_pla_estudi_id, estat) { 
+	Envia(modul_pla_estudi_id, 'E');
+}
+
 function EnviaDepartament(modul_pla_estudi_id, estat) { 
 	Envia(modul_pla_estudi_id, 'D');
 }
 
 function EnviaCapEstudis(modul_pla_estudi_id, estat) { 
 	Envia(modul_pla_estudi_id, 'T');
+}
+
+function EnviaAcceptada(modul_pla_estudi_id, estat) { 
+	Envia(modul_pla_estudi_id, 'A');
 }

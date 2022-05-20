@@ -442,14 +442,11 @@ class PlaEstudisModulRecerca extends FormRecerca
 			// És professor
 			$frm->PermetEditarCondicional(['estat' => 'E']);
 			$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
-// TODO
-// NO FUNCIONA al refrescar (AJAX)
-			if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis)
-				$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'T']);
 		}
 		else {
 			// És cap de departament
 			$frm->AfegeixOpcioAJAX("Envia a cap d'estudis", 'EnviaCapEstudis', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX('Torna a professor', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
 		}
 	 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
@@ -457,10 +454,6 @@ class PlaEstudisModulRecerca extends FormRecerca
 			$AnyAcademicId = $aAnys[0][0]; 
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		}
-		//$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
-		//$CicleFormatiuId = $aCicles[0][0]; 
-		//$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
-		//$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
 	}
 }
