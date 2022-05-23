@@ -232,19 +232,19 @@ class Curs
 	static public function TextEstatColor(string $sEstat): string {
 		switch ($sEstat) {
 			case "A":
-				return '<img src=img/colorA.png> Actiu. Entrada de notes.';
+				return '<img src=img/curs/colorA.png> Actiu. Entrada de notes.';
 				break;
 			case "J":
-				return '<img src=img/colorJ.png> Junta. Realització de l’avaluació (pantalla especial).';
+				return '<img src=img/curs/colorJ.png> Junta. Realització de l’avaluació (pantalla especial).';
 				break;
 			case "I":
-				return '<img src=img/colorI.png> Inactiu. Bloquejat per als professors i alumnes.';
+				return '<img src=img/curs/colorI.png> Inactiu. Bloquejat per als professors i alumnes.';
 				break;
 			case "O":
-				return '<img src=img/colorO.png> Obert. Visualització de butlletins.';
+				return '<img src=img/curs/colorO.png> Obert. Visualització de butlletins.';
 				break;
 			case "T":
-				return '<img src=img/colorT.png> Tancat. Els curs està tancat.';
+				return '<img src=img/curs/colorT.png> Tancat. Els curs està tancat.';
 				break;
 			default:
 				return '';
@@ -283,7 +283,7 @@ class Curs
 			$frm->Camps = 'curs_id, CodiCurs, NomCurs, nivell, Any, DataInici, DataFinal, avaluacio, trimestre';
 			$frm->Descripcions = 'Id, Codi, Nom, Nivell, Any, Data inici, Data final, Avaluació, Trimestre';
 		}
-		$frm->AfegeixOpcioColor('Estat', 'estat', 'color', 'png', Curs::LlegendaEstat());
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'curs/color', 'png', Curs::LlegendaEstat());
 		if (!$this->NomesProfessor) {
 			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
 			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');

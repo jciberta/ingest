@@ -13,6 +13,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibProgramacioDidactica.php');
 
 
 /**
@@ -435,6 +436,8 @@ class PlaEstudisModulRecerca extends FormRecerca
 		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
 		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
 
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'programacio/color', 'png', ProgramacioDidactica::LlegendaEstat());
+
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 
@@ -445,8 +448,8 @@ class PlaEstudisModulRecerca extends FormRecerca
 		}
 		else {
 			// És cap de departament
-			$frm->AfegeixOpcioAJAX("Envia a cap d'estudis", 'EnviaCapEstudis', '', [], '', '', ['estat' => 'D']);
-			$frm->AfegeixOpcioAJAX('Torna a professor', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX("Accepta", 'EnviaAcceptada', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX('Retorna', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
 		}
 	 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
