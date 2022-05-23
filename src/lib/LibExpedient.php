@@ -2057,11 +2057,12 @@ class PlaTreball extends Objecte
 			array_push($MP->UF, $UF);
 		}
 
-		// Repassem totes les UF per indicar els MP superats
+		// Repassem totes les UF per indicar els MP superats en començar el curs
 		foreach($this->Registre as &$MP) {
 			$MP->aprovat = true;
 			foreach($MP->UF as $UF) {
-				if ($UF->UltimaNota < 5)
+//				if ($UF->UltimaNota < 5)
+				if ($UF->Convocatoria > 0)
 					$MP->aprovat = false;
 			}
 		}

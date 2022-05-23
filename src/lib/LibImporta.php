@@ -13,37 +13,42 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibArray.php');
 require_once(ROOT.'/lib/LibMatricula.php');
+require_once(ROOT.'/vendor/autoload.php');
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
  * Classe Importa.
- *
  * Classe base de la quals descendeixen les importacions.
  */
-class Importa {
+class Importa 
+{
 	/**
 	* Connexió a la base de dades.
-	* @access public 
 	* @var object
 	*/    
 	public $Connexio;
 
 	/**
 	* Usuari autenticat.
-	* @access public 
 	* @var object
 	*/    
 	public $Usuari;
-
+	
+	/**
+	* Registre per a emmagatzemar el resultat d'un DataSet.
+	* @var object
+	*/    
+    private $Registre = null;
+	
 	/**
 	* Camps de la capçalera indexats per número.
-	* @access protected
 	* @var array
 	*/    
     protected $Camps = [];	
 
 	/**
 	* Camps de la capçalera indexats per nom.
-	* @access protected
 	* @var array
 	*/    
     protected $CampsNom = [];	
@@ -67,8 +72,8 @@ class Importa {
  * 	- SAGA: per encaixar amb la base de dades, el pare és el responsable 1 i la mare el responsable 2
  * 	- SAGA2: format SAGA de la secretària (d'on va sortir?)f
  */
-class ImportaUsuaris extends Importa {
-
+class ImportaUsuaris extends Importa 
+{
 	// Tipus importació.
 	const tiSAGA = 1;
 	const tiSAGA2 = 2; 
@@ -831,7 +836,7 @@ class ImportaMatricula extends Importa {
 	);
 
 	/**
-	* Objete per a fer les matriculacions.
+	* Objecte per a fer les matriculacions.
 	* @var object
 	*/    
 	private $Mat;
@@ -900,6 +905,145 @@ class ImportaMatricula extends Importa {
 			fclose($handle);
 		}
 		echo "Importació realitzada amb èxit.";		
+	}
+}
+
+/**
+ * Classe ImportaNotes.
+ * Classe per a la importació de les notes.
+ */
+class ImportaNotes extends Importa 
+{
+	/**
+	* Identificador de la unitat formativa del pla d'estudis on es volen importar les notes.
+	* @var integer
+	*/    
+	public $UnitatPlaEstudiId = -1;
+
+	/**
+	* Notes de la base de dades.
+	* @var array
+	*/    
+	private $Notes = [];
+
+	/**
+	 * Importa la matrícula.
+     * @param string $Fitxer Fitxer XLSX a importar.
+	 */
+	public function Importa(string $Fitxer) {
+		$this->Carrega();
+//print_h($this->Registre);
+		$this->CarregaNotes();
+		
+		$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+		$spreadsheet = $reader->load($Fitxer);
+		$aFull = $spreadsheet->getSheet(0)->toArray();
+//print_h($aFull);
+		
+		$IndexCorreu = $this->ObteId($aFull, 'Adreça electrònica');
+		$IndexNota = $this->ObteId($aFull, $this->Registre->categoria_moodle_importacio);
+		
+//echo "Adreça electrònica i ".$this->Registre->categoria_moodle_importacio." <br>";		
+//echo "$IndexCorreu i $IndexNota <br>";		
+		
+		if ($IndexCorreu == -1 || $IndexNota == -1)
+			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha pogut lligar la importació amb les dades de l'InGest.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
+
+		echo '<TABLE>';
+		echo '<TR><TD><B>Alumne</B></TD><TD><B>Correu</B></TD><TD><B>Nota Moodle</B></TD><TD><B>Nota InGest</B></TD></TR>';
+		foreach($this->Notes as &$Nota) {
+			echo '<TR>';
+			$Nota['nota_moodle'] = $this->ObteNota($aFull, $Nota['email_ins'], $IndexCorreu, $IndexNota);
+			if ($Nota['nota_moodle'] < 5) {
+				$Nota['nota_ingest'] = ($this->Registre->nota_inferior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
+				if ($Nota['nota_ingest'] == 0)
+					$Nota['nota_ingest'] = 1;
+			}
+			else {
+				$Nota['nota_ingest'] = ($this->Registre->nota_superior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
+			}
+			$Nom = str_pad(CodificaUTF8($Nota['NomCognom1Cognom2']), 50);
+			echo "<TD>$Nom</TD>";
+			echo "<TD>".$Nota['email_ins']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_moodle']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_ingest']."</TD>";
+			
+			if ($Nota['nota_ingest'] > 0) {
+				$SQL = 'UPDATE NOTES SET nota'.$Nota['convocatoria'].'='.$Nota['nota_ingest'].' WHERE notes_id='.$Nota['notes_id'];
+				if ($this->Usuari->es_admin)
+					echo '    '.$SQL.'<BR>';
+
+				try {
+					if (!$this->Connexio->query($SQL))
+						throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+				} catch (Exception $e) {
+					$Retorn .= "<BR><b>ERROR Importa</b>. Causa: ".$e->getMessage();
+				}		
+			}
+			echo '</TR>';
+		}
+		echo '</TABLE>';
+
+//print_h($this->Notes);
+
+	}
+
+	/**
+	 * Carrega les dades de la UF.
+	 */				
+	protected function Carrega() {
+		$SQL = "SELECT * FROM UNITAT_PLA_ESTUDI WHERE unitat_pla_estudi_id=".$this->UnitatPlaEstudiId;
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$this->Registre = $ResultSet->fetch_object();
+		}
+	}
+	
+	private function ObteId($Full, $Titol) {
+		$Retorn = -1;
+		$Linia = $Full[0];
+		for ($i=0; $i<count($Linia); $i++) {
+			if ($Linia[$i] == $Titol)
+				$Retorn = $i;
+		}
+		return $Retorn;
+	}
+	
+	private function ObteNota($Full, $Correu, $IndexCorreu, $IndexNota) {
+		$Retorn = -1;
+		for ($i=1; $i<count($Full); $i++) {
+			if ($Full[$i][$IndexCorreu] == $Correu) {
+				$Retorn = $Full[$i][$IndexNota];
+				$Retorn = 10 * $Retorn / $this->Registre->nota_maxima;
+			}
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Carrega les notes de la UF.
+	 */				
+	protected function CarregaNotes() {
+		$this->Notes = [];
+		$SQL = "
+			SELECT 
+				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, U.usuari_id, U.email_ins, 
+				N.*
+			FROM NOTES N
+			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
+			LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
+			WHERE IFNULL(M.baixa,0)<>1 AND IFNULL(N.baixa,0)<>1
+			AND N.convocatoria<>0	
+			AND unitat_pla_estudi_id=".$this->UnitatPlaEstudiId."
+			ORDER BY U.cognom1, U.cognom2, U.nom";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			while ($row = $ResultSet->fetch_assoc())
+				array_push($this->Notes, $row);
+		}
+		$ResultSet->close();
+//print_h($this->Notes);		
 	}
 }
 

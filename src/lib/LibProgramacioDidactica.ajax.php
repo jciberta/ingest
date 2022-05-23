@@ -32,6 +32,25 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm = new ContingutsUF($conn, $Usuari);
 		$frm->CicleFormatiuId = $sCicleFormatiuId;
 		print $frm->GeneraTaula();
+	} else if ($_REQUEST['accio'] == 'Envia') {
+		$sModulPlaEstudiId = $_REQUEST['modul_pla_estudi_id'];
+		$sEstat = $_REQUEST['estat'];
+
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza (per seguretat)
+
+		// Actualitzem l'estat
+		try {
+			$SQL = "UPDATE MODUL_PLA_ESTUDI SET estat='$sEstat' WHERE modul_pla_estudi_id=$sModulPlaEstudiId";
+			if (!$conn->query($SQL))
+				throw new Exception($conn->error.'. SQL: '.$SQL);
+		} catch (Exception $e) {
+			die("ERROR Envia. Causa: ".$e->getMessage());
+		}
+		
+		print $frm->GeneraTaula();
 	}
 	else {
 		if ($CFG->Debug)

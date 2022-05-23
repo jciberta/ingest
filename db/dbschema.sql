@@ -170,6 +170,7 @@ CREATE TABLE MODUL_PLA_ESTUDI
     especialitat VARCHAR(20),
     cos CHAR(1),
     es_fct BIT,
+	estat CHAR(1) NOT NULL DEFAULT 'E', /* Elaboració, Departament, esTudis, Acceptada */
 
     CONSTRAINT ModulPlaEstudiPK PRIMARY KEY (modul_pla_estudi_id),
     CONSTRAINT MPE_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id),
@@ -190,6 +191,12 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     data_final DATE,
     orientativa BIT,
     es_fct BIT,
+    lms CHAR(1) NOT NULL DEFAULT 'M', /* Moodle, Classroom */
+	metode_importacio_notes CHAR(1) NOT NULL DEFAULT 'F', /* Fitxer, servei Web */
+    nota_maxima INT NOT NULL DEFAULT 100, /* Nota sobre 100 */
+    nota_inferior_5 CHAR(1) NOT NULL DEFAULT 'T', /* Trunca, Arrodoneix */
+    nota_superior_5 CHAR(1) NOT NULL DEFAULT 'A', /* Trunca, Arrodoneix */
+    categoria_moodle_importacio_notes VARCHAR(50),
 
     CONSTRAINT UnitatPlaEstudiPK PRIMARY KEY (unitat_pla_estudi_id),
     CONSTRAINT UPE_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id),

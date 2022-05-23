@@ -27,7 +27,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * Classe Objecte.
  * Classe base de la quals descendeixen els objectes.
  */
-class Objecte {
+class Objecte 
+{
 	/**
 	* Connexió a la base de dades.
 	* @var object
@@ -68,7 +69,8 @@ class Objecte {
  * Classe base de la quals descendeixen els formularis.
  * Conté els mètodes per crear els components bàsics.
  */
-class Form {
+class Form 
+{
 	// Tipus de camps per al formulari.
 	const tcTEXT = 1;
 	const tcENTER = 2;
@@ -611,7 +613,8 @@ class Form {
  * Classe FormRecerca.
  * Classe per als formularis de recerca.
  */
-class Filtre {
+class Filtre 
+{
 	/**
 	* Camps del filtre amb les seves característiques. S'usa per generar els components visuals.
 	* @access private
@@ -866,7 +869,8 @@ exit;*/
  * Classe FormRecerca.
  * Classe per als formularis de recerca.
  */
-class FormRecerca extends Form {
+class FormRecerca extends Form 
+{
 	// Modalitats del formulari.
 	const mfLLISTA = 1;
 	const mfBUSCA = 2;
@@ -941,6 +945,12 @@ class FormRecerca extends Form {
 	* @var boolean
 	*/    
     public $PermetEditar = False; 
+
+	/**
+	* Permet editar un registre si es dona una condició.
+	* @var array
+	*/    
+    public $PermetEditarCondicional = []; 
 	
 	/**
 	* URL per a l'edició d'un registre.
@@ -1139,6 +1149,11 @@ class FormRecerca extends Form {
      * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
+		if ($this->Usuari->es_admin) {
+			$this->Camps = $this->ClauPrimaria.', '.$this->Camps;
+			$this->Descripcions = 'Id, '.$this->Descripcions;
+		}
+		
 		$sRetorn = '<DIV id=taula>';
 		$SQL = $this->CreaSQL();
 //print $SQL;
@@ -1195,13 +1210,13 @@ class FormRecerca extends Form {
 					}
 					else {
 						$sValor = $row[$data];
-						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
-//						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+//						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
+						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
 					}
 				}
 				$sRetorn .= "<TD>";
 				$Concatena = (strpos($this->URLEdicio, '?') > 0) ? '&' : '?';
-				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditar) {
+				if ($this->Modalitat == self::mfLLISTA && $this->PermetEditarRegistre($row)) {
 					$URL = $this->URLEdicio.$Concatena."Id=".$row[$this->ClauPrimaria];
 					$sRetorn .= "<A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
@@ -1261,7 +1276,7 @@ class FormRecerca extends Form {
 	private function GeneraCerca() {
 		if ($this->PermetCercar) {
 			$sRetorn = '<DIV id=Recerca style="padding:10px">';
-			$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="">';
+			$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id=form method="post" action="" accept-charset="UTF-8">';
 			$sRetorn .= '    <TABLE style="width:100%">';
 			$sRetorn .= '    <TR>';
 			$sRetorn .= '    <TD>';
@@ -1411,8 +1426,9 @@ class FormRecerca extends Form {
 	 * @param array $ofr Opcions. 
 	 * @param string $CampValor Camp del registre que analitzem el seu valor (opció ofrBOOLEA). 
 	 * @param string $Imatge Imatge a posar en comptes del títol. 
+	 * @param array $Condicio Array de condicions perquè es pugui veure l'opció.
 	 */
-	public function AfegeixOpcioAJAX(string $Titol, string $Funcio, string $CampClau = '', array $ofr = [], string $CampValor = '', string $Imatge = '') {
+	public function AfegeixOpcioAJAX(string $Titol, string $Funcio, string $CampClau = '', array $ofr = [], string $CampValor = '', string $Imatge = '', array $Condicio = []) {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
@@ -1423,6 +1439,7 @@ class FormRecerca extends Form {
 		$this->Opcions[$i]->Imatge = $Imatge;
 		$this->Opcions[$i]->Opcions = $ofr;
 		$this->Opcions[$i]->CampValor = $CampValor;
+		$this->Opcions[$i]->Condicio = $Condicio;
 	}
 	
 	/**
@@ -1465,47 +1482,55 @@ class FormRecerca extends Form {
 				$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
 			}
 			else if ($obj->Tipus == self::toAJAX) {
-				// AfegeixOpcioAJAX
-				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
-				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
-				if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
-					$NoMostrisCheckBox = False;
-					$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
-					if ($obj->Camp == '')
-						$Funcio = $obj->Funcio.'(this, '.$Id.')';
-					else {
-//echo '$row[$obj->Camp]:'.$row[$obj->Camp].'<BR>';
-						// Si el camp és extern (no la clau primària) pot ser que valgui NULL o res
-						if ($row[$obj->Camp] == '')
-							$NoMostrisCheckBox = True;
-						$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
-					}
-					$Nom = $obj->Funcio.'_'.$Id;
-
-					$Retorn .= '<TD style="text-align:center">';
+				if ($this->MostraOpcioAJAX($row, $obj->Condicio)) {
 					
-					if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1) && !$NoMostrisCheckBox)
-						$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
-//					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
+					// AfegeixOpcioAJAX
+					$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
+					$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
+					if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
+						$NoMostrisCheckBox = False;
+						$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
+						if ($obj->Camp == '')
+							$Funcio = $obj->Funcio.'(this, '.$Id.')';
+						else {
+	//echo '$row[$obj->Camp]:'.$row[$obj->Camp].'<BR>';
+							// Si el camp és extern (no la clau primària) pot ser que valgui NULL o res
+							if ($row[$obj->Camp] == '')
+								$NoMostrisCheckBox = True;
+							$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
+						}
+						$Nom = $obj->Funcio.'_'.$Id;
+
+						$Retorn .= '<TD style="text-align:center">';
+						
+						if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1) && !$NoMostrisCheckBox)
+							$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
+	//					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
+						
+					}
+					else {
+						if ($obj->Camp == '')
+	//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+							$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$Text.'<A>';
+						else {
+
+							// Cal posar cometes si no és un número
+							$Valor = $row[$obj->Camp];
+							if (!is_numeric($Valor)) 
+								$Valor = "'$Valor'";
+							
+	//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$obj->Titol.'<A>';
+							$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$Text.'<A>';
+						}					
+	//				$Retorn .= 'AJAX';
+	//				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+	//				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+					}
 					
 				}
 				else {
-					if ($obj->Camp == '')
-//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
-						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$Text.'<A>';
-					else {
-
-						// Cal posar cometes si no és un número
-						$Valor = $row[$obj->Camp];
-						if (!is_numeric($Valor)) 
-							$Valor = "'$Valor'";
-						
-//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$obj->Titol.'<A>';
-						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$Text.'<A>';
-					}					
-//				$Retorn .= 'AJAX';
-//				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
-//				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+					// No mostrem l'opció
+					$Retorn .= '<TD>';
 				}
 			}
 			else if ($obj->Tipus == self::toImatge) {
@@ -1620,13 +1645,44 @@ class FormRecerca extends Form {
 		$writer->save('php://output');
 		exit;
 	 }
+	 
+	/**
+	 * Permet editar els registres si es compleix les condicions de l'array.
+ 	 * @param string $a Array de condicions.
+	 */
+	 public function PermetEditarCondicional($a) {
+		 $this->PermetEditarCondicional = $a;
+	 }
+	 
+	 private function PermetEditarRegistre($row): bool {
+		$Retorn = false;
+		if ($this->PermetEditarCondicional == [])
+			 $Retorn = $this->PermetEditar;
+		else {
+			foreach ($this->PermetEditarCondicional as $key => $value) {
+				if ($row[$key] == $value)
+					$Retorn = true;
+			}
+		}
+		return $Retorn;
+	 }
+
+	 private function MostraOpcioAJAX($row, $Condicio): bool {
+		$Retorn = false;
+		foreach ($Condicio as $key => $value) {
+			if ($row[$key] == $value)
+				$Retorn = true;
+		}
+		return $Retorn;
+	 }
 } 
 
 /**
  * Classe FormFitxa.
  * Classe per als formularis de fitxa.
  */
-class FormFitxa extends Form {
+class FormFitxa extends Form 
+{
 	/**
 	* Indica si la clau primària de la taula és autoincrementable o no.
 	* @var boolean
@@ -2085,7 +2141,7 @@ class FormFitxa extends Form {
 	 */
 	protected function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>'.PHP_EOL;
-		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php">'.PHP_EOL;
+		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php" accept-charset="UTF-8">'.PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_Taula value='".$this->Taula."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>".PHP_EOL;
@@ -2364,7 +2420,16 @@ class FormFitxa extends Form {
 		// Iniciem el supressor de XSS
 		$config = HTMLPurifier_Config::createDefault();
 		// Configuracions http://htmlpurifier.org/demo.php
-		$config->set('HTML.Allowed', 'a[href|title],img[title|src|alt],em,strong,cite,blockquote,code,ul,ol,li,dl,dt,dd,p,br,h1,h2,h3,h4,h5,h6,span,font[color],*[style]');
+		// *[style] means that you allow for all the accepted tags the attribute style
+		$config->set(
+			'HTML.Allowed', 
+			'a[href|title|target],img[title|src|alt],em,strong,cite,blockquote,code,
+			 ul,ol,li,dl,dt,dd,
+			 p,br,
+			 h1,h2,h3,h4,h5,h6,
+			 table[class],tr[align],th[align],td[align],
+			 span,font[color],*[style]
+			');
 		$purifier = new HTMLPurifier($config);
 		
 		$Retorn = '';
@@ -2399,10 +2464,6 @@ class FormFitxa extends Form {
 						$sCamps .= substr($Valor->name, 4).", ";
 						$Valor->value = strip_tags($Valor->value);
 						$sValues .= TextAMySQL($Valor->value).', ';
-//						if ($Valor->value == '')
-//							$sValues .= "NULL, ";
-//						else
-//							$sValues .= "'".$Valor->value."', ";
 						break;
 					case 'edd':
 						// Camp data
@@ -2431,10 +2492,6 @@ class FormFitxa extends Form {
 							// Camp lookup
 							$sCamps .= substr($Valor->name, 4).", ";
 							$sValues .= ($Valor->value == '') ? "NULL, " : $Valor->value.", ";
-							//if ($Valor->value == '')
-								//$sValues .= "NULL, ";
-							//else
-								//$sValues .= "'".$Valor->value."', ";
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //print_r($Valor);
 						}
@@ -2504,7 +2561,8 @@ class FormFitxa extends Form {
  * Classe FormDetall.
  * Classe per als formularis amb un mestre fix (subtítol) i un detall (variable).
  */
-class FormDetall extends FormRecerca {
+class FormDetall extends FormRecerca 
+{
 	/**
 	* Objecte qur conté les dades per fer el lookup per al botó afegeix.
 	* @var object
@@ -2601,7 +2659,8 @@ class FormDetall extends FormRecerca {
  * Classe FormFitxaDetall.
  * Classe per als formularis mestre/detall. Poden haver múltiples detalls.
  */
-class FormFitxaDetall extends FormFitxa {
+class FormFitxaDetall extends FormFitxa 
+{
 	/**
 	* Llista dels diferents detalls de la fitxa.
 	* @var array
@@ -2708,7 +2767,7 @@ class FormFitxaDetall extends FormFitxa {
 			$Retorn = '<BR>'.PHP_EOL;
 			$Retorn .= '<H2>'.$Detall->Titol.'</H2>'.PHP_EOL;
 		}
-		$Retorn .= '<FORM class="Detalls">'.PHP_EOL;
+		$Retorn .= '<FORM class="Detalls" accept-charset="UTF-8">'.PHP_EOL;
 
 		$Retorn .= "<input type=hidden name=hid_Taula value='".$Detall->Taula."'>".PHP_EOL;
 		$Retorn .= "<input type=hidden name=hid_ClauPrimaria value='".$Detall->ClauPrimaria."'>".PHP_EOL;

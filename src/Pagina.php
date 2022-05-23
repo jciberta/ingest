@@ -73,6 +73,20 @@ switch ($accio) {
 		";
 		CreaFinalHTML();	
         break;
+	case "DialegImportaNotes":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+			header("Location: Surt.php");
+		CreaIniciHTML($Usuari, "Importació de notes");
+		$UnitatPlaEstudiId = $_GET['UnitatPlaEstudiId'];
+		echo "<P>Seleccioneu el fitxer XLSX a importar:</P>";
+		echo '<form action="ImportaNotes.php" method="post" enctype="multipart/form-data">';
+		echo '	<div class="form-group">';
+		echo '		<input class="form-control-file" type="file" name="Fitxer" id="Fitxer" accept=".xlsx">';
+		echo '		<input type="hidden" name="UnitatPlaEstudiId" id="UnitatPlaEstudiId" value="'.$UnitatPlaEstudiId.'">';
+		echo '	</div>';
+		echo '	<input type="submit" name="submit" value="Importa" class="btn btn-primary">';
+		echo '</form>';		
+		break;
 }
 
 $conn->close();

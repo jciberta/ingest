@@ -372,6 +372,12 @@ class PlaEstudisCicle extends PlaEstudis
 class PlaEstudisModulRecerca extends FormRecerca
 {
 	/**
+	* Registre carregat amb Carrega.
+	* @var integer
+	*/    
+	public $FamiliaFPId = -1;
+	
+	/**
 	 * Crea la sentència SQL.
 	 * @return string Sentència SQL.
 	 */
@@ -379,12 +385,25 @@ class PlaEstudisModulRecerca extends FormRecerca
 		$Usuari = $this->Usuari;
 		$SubSQL = 'SELECT '.
 			' 	UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell, UPE.orientativa, '.
-			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, '.
+			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, MPE.estat, '.
+			' 	CASE MPE.estat '.
+			'   	WHEN "E" THEN "Elaboració" '.
+			'   	WHEN "D" THEN "Revisió cap departament" '.
+			'   	WHEN "T" THEN "Revisió cap d\'estudis" '.
+			'   	WHEN "A" THEN "Acceptada" '.
+			' 	END AS NomEstat, '.
 			'	CPE.codi AS CodiCF, FormataData(UPE.data_inici) AS data_inici, FormataData(UPE.data_final) AS data_final '. 
 			' FROM UNITAT_PLA_ESTUDI UPE '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+		if ($this->FamiliaFPId != -1) {
+			// És cap de departament
+			$SubSQL .= 
+				' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+				' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
+				' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+		}
+		else if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			// És professor
 			if ($Usuari->es_professor)
 				$SubSQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
@@ -393,7 +412,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 					' AND AA.actual=1 ';		
 		$SQL = "
 			SELECT 
-				modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores
+				modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores, estat, NomEstat
 			FROM ($SubSQL) AS M
 			GROUP BY modul_pla_estudi_id, CodiCF, CodiMP, NomMP
 		";			
@@ -405,6 +424,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.4');
 		$Usuari = $this->Usuari;
 		$frm->Modalitat = $this->Modalitat;
 		$frm->Titol = 'Mòduls professionals';
@@ -412,20 +432,28 @@ class PlaEstudisModulRecerca extends FormRecerca
 //print '<br><br><br>'.$frm->SQL;
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
-		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
-		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
-		$frm->PermetEditar = True;
+		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
+		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
+
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
+
+		if ($this->FamiliaFPId == -1) {
+			// És professor
+			$frm->PermetEditarCondicional(['estat' => 'E']);
+			$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
+		}
+		else {
+			// És cap de departament
+			$frm->AfegeixOpcioAJAX("Envia a cap d'estudis", 'EnviaCapEstudis', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX('Torna a professor', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
+		}
+	 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 			$AnyAcademicId = $aAnys[0][0]; 
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		}
-		//$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
-		//$CicleFormatiuId = $aCicles[0][0]; 
-		//$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
-		//$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
 	}
 }
@@ -470,7 +498,11 @@ class PlaEstudisUnitatRecerca extends FormRecerca
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
 		}
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
-		$CicleFormatiuId = $aCicles[0][0]; 
+		
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
+		//$CicleFormatiuId = $aCicles[0][0];  ??
+
 		$frm->Filtre->AfegeixLlista('CPE.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 		$frm->Filtre->AfegeixLlista('UPE.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
 		$frm->EscriuHTML();
@@ -523,6 +555,15 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 		$this->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
 		if (!$this->EsLOGSE())
 			$this->AfegeixCheckBox('orientativa', 'És orientativa?');
+
+		$this->Pestanya('Importació notes');
+		$this->AfegeixLlista('lms', 'LMS', 30, array('M', 'C'), array('Moodle', 'Clasroom'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('metode_importacio_notes', 'Mètode importació', 30, array('F', 'W'), array('Fitxer', 'Servei web'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixEnter('nota_maxima', 'Nota màxima', 20, [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('nota_inferior_5', 'Nota inferior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
+		
 		parent::EscriuHTML();		
 	}
 }
