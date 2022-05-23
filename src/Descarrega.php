@@ -75,6 +75,11 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			$Notes->ExportaCSV($CursId, Notes::teULTIMA_CONVOCATORIA);
 			//$Notes->ExportaCSV($CursId, Notes::teULTIMA_NOTA);
 			break;
+		case "ExportaNotesXLSX":
+			$CursId = $_GET['CursId'];
+			$Notes = new Notes($conn, $Usuari);
+			$Notes->ExportaXLSX($CursId, Notes::teULTIMA_CONVOCATORIA);
+			break;
 		case "ExportaProgramacioDidacticaDOCX":
 			$ModulId = $_GET['ModulId'];
 	//print('<B>SQL</B>: '.$SQL.'<BR>');
