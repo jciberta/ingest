@@ -1548,6 +1548,15 @@ class Notes extends Form
 				for($j = 0; $j < count($Estadistiques); $j++) {
 					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 3, $y, $Estadistiques[$j]);
 				}
+				$Columnes = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AZ'];
+				$AmpladaTotal = 2 + count($RegistreAlumne) + count($Estadistiques);
+				$LongitudMax = $AmpladaTotal % count($Columnes);
+				if ($LongitudMax == 0) {
+					$LongitudMax = count($Columnes);
+				}
+				for($j = 0; $j < $LongitudMax; $j++) {
+					$sheet->getColumnDimension($Columnes[$j])->setAutoSize(true);
+				}
 				$y++;
 			}
 		}
