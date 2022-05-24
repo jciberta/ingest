@@ -158,9 +158,8 @@ console.log('Envia '+modul_pla_estudi_id);
 							$('#MissatgeError').show();
 						}
 						else {
-							$('#taula').html(data);
-							//$('#MissatgeCorrecte').show();
-							//$('#debug').html('Dades rebudes: '+ JSON.stringify(data));
+							ActualitzaTaula(null);
+							//$('#taula').html(data);
 						}
 					}, 
 					error: function (data) {

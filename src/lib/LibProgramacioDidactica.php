@@ -440,6 +440,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('Forms.js?v1.0');
 		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.4');
 		$Usuari = $this->Usuari;
 		$frm->Modalitat = $this->Modalitat;
