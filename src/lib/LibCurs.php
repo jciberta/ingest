@@ -279,10 +279,6 @@ class Curs
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
-		if ($this->Usuari->es_admin) {
-			$frm->Camps = 'curs_id, CodiCurs, NomCurs, nivell, Any, DataInici, DataFinal, avaluacio, trimestre';
-			$frm->Descripcions = 'Id, Codi, Nom, Nivell, Any, Data inici, Data final, Avaluació, Trimestre';
-		}
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'curs/color', 'png', Curs::LlegendaEstat());
 		if (!$this->NomesProfessor) {
 			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');

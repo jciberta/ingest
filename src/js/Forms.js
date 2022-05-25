@@ -89,7 +89,7 @@ console.log('-> ActualitzaTaula');
 			// cada cop que es modifica el filtre.
 			var urlCSV = document.getElementById('urlCSV');
 			var URLDescarregaCSV = document.getElementById('DescarregaCSV');
-console.log('urlCSV: ' + urlCSV.value);
+//console.log('urlCSV: ' + urlCSV.value);
 //console.dir(DescarregaCSV);
 			URLDescarregaCSV.href = urlCSV.value;
             //$('#debug').html('<textarea disabled>'+data+'</textarea>');

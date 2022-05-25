@@ -88,6 +88,7 @@ function ConvalidaUF(element, alumne) {
  * @param matricula_id Identificador de la matrícula.
  */
 function BaixaMatricula(element, matricula_id) { 
+console.log('-> BaixaMatricula '+matricula_id);
 	var sCerca = $('input[name="edtRecerca"]').val();	
 	var frm = document.getElementById('frm');
 	var sFrm = frm.value;	
@@ -115,7 +116,8 @@ function BaixaMatricula(element, matricula_id) {
 						'frm': sFrm
 						},
 					success: function(data) {
-						$('#taula').html(data);
+						ActualitzaTaula(null);
+						//$('#taula').html(data);
 					}, 
 					error: function (data) {
 						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
@@ -134,7 +136,7 @@ function BaixaMatricula(element, matricula_id) {
  * @param curs_id Identificador del curs.
  */
 function EliminaMatriculaCurs(curs_id) { 
-console.log('EliminaMatriculaCurs '+curs_id);
+console.log('-> EliminaMatriculaCurs '+curs_id);
 	$('#MissatgeCorrecte').hide();
 	$('#MissatgeError').hide();
 	bootbox.confirm({
@@ -186,7 +188,7 @@ console.log('EliminaMatriculaCurs '+curs_id);
  * @param matricula_id Identificador de la matrícula.
  */
 function EliminaMatriculaAlumne(matricula_id) { 
-console.log('EliminaMatriculaAlumne '+matricula_id);
+console.log('-> EliminaMatriculaAlumne '+matricula_id);
 	bootbox.confirm({
 		message: "Esteu segur que voleu eliminar la matrícula d'aquest alumne?",
 		buttons: {
@@ -226,7 +228,7 @@ console.log('EliminaMatriculaAlumne '+matricula_id);
  * @param usuari_id Identificador de l'usuari.
  */
 function BloquejaUsuari(element, usuari_id) { 
-console.log('BloquejaUsuari');
+console.log('-> BloquejaUsuari '+usuari_id);
 	var sCerca = $('input[name="edtRecerca"]').val();	
 	var filtre = document.getElementById('filtre');
 	var sFiltre = CreaFiltreJSON(filtre);
