@@ -13,6 +13,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibProgramacioDidactica.php');
 
 
 /**
@@ -435,6 +436,8 @@ class PlaEstudisModulRecerca extends FormRecerca
 		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
 		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
 
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'programacio/color', 'png', ProgramacioDidactica::LlegendaEstat());
+
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 
@@ -445,8 +448,8 @@ class PlaEstudisModulRecerca extends FormRecerca
 		}
 		else {
 			// És cap de departament
-			$frm->AfegeixOpcioAJAX("Envia a cap d'estudis", 'EnviaCapEstudis', '', [], '', '', ['estat' => 'D']);
-			$frm->AfegeixOpcioAJAX('Torna a professor', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX("Accepta", 'EnviaAcceptada', '', [], '', '', ['estat' => 'D']);
+			$frm->AfegeixOpcioAJAX('Retorna', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
 		}
 	 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
@@ -558,11 +561,16 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 
 		$this->Pestanya('Importació notes');
 		$this->AfegeixLlista('lms', 'LMS', 30, array('M', 'C'), array('Moodle', 'Clasroom'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixLlista('metode_importacio_notes', 'Mètode importació', 30, array('F', 'W'), array('Fitxer', 'Servei web'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('metode_importacio_notes', 'Mètode importació', 30, array('F', 'W'), array('Fitxer', 'Servei web'), [FormFitxa::offREQUERIT, FormFitxa::offAL_COSTAT]);
 		$this->AfegeixEnter('nota_maxima', 'Nota màxima', 20, [FormFitxa::offREQUERIT]);
 		$this->AfegeixLlista('nota_inferior_5', 'Nota inferior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
+		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT, FormFitxa::offAL_COSTAT]);
+//		$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
+
+		$this->AfegeixEnter('curs_moodle_id', 'Id curs Moodle', 20);
+		$this->AfegeixEnter('categoria_moodle_id', 'Id categoria Moodle', 20);
+		$this->AfegeixText('categoria_moodle_text', 'Text categoria Moodle', 100, [FormFitxa::offAL_COSTAT]);
+		//$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
 		
 		parent::EscriuHTML();		
 	}

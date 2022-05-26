@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			die("ERROR Envia. Causa: ".$e->getMessage());
 		}
 		
-		print $frm->GeneraTaula();
+//		print $frm->GeneraTaula();
 	}
 	else {
 		if ($CFG->Debug)

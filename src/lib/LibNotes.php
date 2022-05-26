@@ -1994,7 +1994,10 @@ class NotesModul extends Notes
 		echo "<TR><TD></TD>";
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
-			$Link = GeneraURL('Pagina.php?accio=DialegImportaNotes&UnitatPlaEstudiId='.$row["unitat_pla_estudi_id"]);
+
+//			$Link = GeneraURL('Pagina.php?accio=DialegImportaNotes&UnitatPlaEstudiId='.$row["unitat_pla_estudi_id"]);
+			$Link = GeneraURL('Importa.php?accio=ImportaNotesMoodleServeiWeb&UnitatPlaEstudiId='.$row["unitat_pla_estudi_id"]);			
+
 			echo '<TH class="contingut" width=20 colspan=2 style="text-align:center">';
 			echo '<SPAN data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">';
 			echo utf8_encode($row["CodiUF"]).'&nbsp;&nbsp;';

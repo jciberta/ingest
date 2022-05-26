@@ -395,6 +395,39 @@ class ProgramacioDidactica extends Form
 		$PDE = new ProgramacioDidacticaDOCX($this->Connexio, $this->Usuari);
 		$PDE->EscriuDOCX($ModulId);
 	}	
+	
+	/**
+	 * Retorna la llegenda dels estats de la programació.
+     * @return string Llegenda en format HTML.
+	 */
+	static public function LlegendaEstat(): string {
+		$Retorn = 'Els diferents estats en que pot estar una programació són els següents:<br>'.
+			Self::TextEstatColor('E').'<br>'.
+			Self::TextEstatColor('D').'<br>'.
+			Self::TextEstatColor('A').'<br>';
+		return $Retorn;
+	}
+
+	/**
+	 * Retorna el text de l'estat (inclosa la imatge).
+	 * @param string $sEstat Codi de l'estat.
+     * @return string Text de l'estat en format HTML.
+	 */
+	static public function TextEstatColor(string $sEstat): string {
+		switch ($sEstat) {
+			case "E":
+				return '<img src=img/programacio/colorE.png> Elaboració';
+				break;
+			case "D":
+				return '<img src=img/programacio/colorD.png> Revisió departament';
+				break;
+			case "A":
+				return '<img src=img/programacio/colorA.png> Acceptada';
+				break;
+			default:
+				return '';
+		}
+	}	
 }
 
 /**
@@ -407,6 +440,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('Forms.js?v1.0');
 		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.4');
 		$Usuari = $this->Usuari;
 		$frm->Modalitat = $this->Modalitat;
@@ -424,15 +458,28 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ';
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
-		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores, NomEstat';
-		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores, Estat';
+		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
+		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 
+		$frm->AfegeixOpcioColor('Estat', 'estat', 'programacio/color', 'png', ProgramacioDidactica::LlegendaEstat());
+
+		if ($Usuari->es_admin) {
+			
+//	print('<HR><HR><HR><HR><HR><HR><HR><HR>');
+			$frm->AfegeixOpcioAJAX('Elaboració', 'EnviaElaboracio');
+			$frm->AfegeixOpcioAJAX('Departament', 'EnviaDepartament');
+			$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada');
+//			$frm->AfegeixOpcioAJAX('Elaboració', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
+//			$frm->AfegeixOpcioAJAX('Departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'D']);
+//			$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'D']);
+		}
+		
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
-			$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'T']);
-			$frm->AfegeixOpcioAJAX('Torna a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'T']);
+			//$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'T']);
+			//$frm->AfegeixOpcioAJAX('Torna a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'T']);
 			
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 			$AnyAcademicId = $aAnys[0][0]; 

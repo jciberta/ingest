@@ -1668,10 +1668,15 @@ class FormRecerca extends Form
 	 }
 
 	 private function MostraOpcioAJAX($row, $Condicio): bool {
-		$Retorn = false;
-		foreach ($Condicio as $key => $value) {
-			if ($row[$key] == $value)
-				$Retorn = true;
+		if ($Condicio == [])
+			// No hi ha condicions
+			$Retorn = true;
+		else {
+			$Retorn = false;
+			foreach ($Condicio as $key => $value) {
+				if ($row[$key] == $value)
+					$Retorn = true;
+			}
 		}
 		return $Retorn;
 	 }
