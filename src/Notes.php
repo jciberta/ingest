@@ -143,7 +143,7 @@ else {
 	echo $Tutoria->GeneraMostraGrup($CursId);
 }
 echo '<span style="float:right;">';
-echo $Notes->CreaBotoDescarregaCSV($CursId);
+echo $Notes->CreaBotoDescarrega($CursId);
 if ($Usuari->es_admin) {
 	// Administració avançada
 	echo '&nbsp';

@@ -23,6 +23,9 @@ require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibCurs.php');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
  * ObteTaulaNotesJSON
  *
@@ -580,6 +583,31 @@ class Notes extends Form
 		else
 			$this->EscriuFormulari1($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
 	}	
+
+	/**
+	 * Crea el botó per a la descàrrega en CSV i XLSX.
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @return string Codi HTML del botó.
+	 */
+	public function CreaBotoDescarrega(string $CursId): string {
+		$sRetorn = '<div class="btn-group" role="group">';
+		$sRetorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+		$sRetorn .= 'Descarrega';
+		$sRetorn .= '</button>';
+		$sRetorn .= '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaNotesCSV&CursId=$CursId");
+		$sRetorn .= '<a id="btnDescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
+
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaNotesXLSX&CursId=$CursId");
+		$sRetorn .= '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
+
+
+		$sRetorn .= '</div>';
+		$sRetorn .= '</div>';		
+		return $sRetorn;
+ 	}
 
 	/**
 	 * Crea el botó per a la descàrrega en CSV.
@@ -1386,10 +1414,10 @@ class Notes extends Form
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		$aNotes = [];
 		array_push($aNotes, utf8_decode('Alumnes aprovats'));
-		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
-			$euf = $aEstadistiquesUF[$i];
-			array_push($aNotes, $euf->AlumnesAprovats);
-		}
+        for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
+            $euf = $aEstadistiquesUF[$i];
+            array_push($aNotes, $euf->AlumnesAprovats);
+        }
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
 		array_push($aNotes, utf8_decode('Alumnes aprovats convocatòries anteriors'));
@@ -1405,6 +1433,201 @@ class Notes extends Form
 			array_push($aNotes, str_replace('.', ',', $euf->PercentatgeAprovats));
 		}
 		fputcsv($handle, $aNotes, $delimiter);
+	}
+
+	/**
+	 * Exporta les notes d'un curs en format XLSX.
+	 * https://stackoverflow.com/questions/16251625/how-to-create-and-download-a-csv-file-from-php-script
+	 * @param string $CursId Identificador del curs del cicle formatiu.
+	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
+	 * @param string $filename Nom del fitxer.
+	 */				
+	public function ExportaXLSX($CursId, int $Tipus=self::teULTIMA_NOTA, string $filename="export.xlsx", string $delimiter=";") {
+		$spreadsheet = new Spreadsheet();
+		$spreadsheet->getProperties()->setCreator('InGest')->setLastModifiedBy('InGest');
+		$spreadsheet->createSheet();
+
+		$Curs = new Curs($this->Connexio, $this->Usuari);
+		$Curs->CarregaRegistre($CursId);
+		$Nivell = $Curs->ObteNivell();
+		$Notes = $this->CarregaRegistre($CursId, $Nivell);
+		$RegistreNotes = ($Nivell == 1) ? $this->Registre1 : $this->Registre2;
+
+		$y = 1;
+		
+		switch ($Nivell) {
+			case 1:
+				$spreadsheet->getSheet(0)->setTitle('Alumnes de 1r');
+				$this->ExportaXLSXRegistre($this->Registre1, 1, $Tipus, $filename, $y, $spreadsheet->getSheet(0));
+				$spreadsheet->getSheet(1)->setTitle('Alumnes de 2n');
+				$this->ExportaXLSXRegistre($this->Registre1, 2, $Tipus, $filename, $y, $spreadsheet->getSheet(1));
+				break;
+			case 2:
+				$spreadsheet->getSheet(0)->setTitle('Alumnes de 2n');
+				$this->ExportaXLSXRegistre($this->Registre2, 2, $Tipus, $filename, $y, $spreadsheet->getSheet(0));
+				$spreadsheet->getSheet(1)->setTitle('Alumnes de 1r');
+				$this->ExportaXLSXRegistre($this->Registre1, 2, $Tipus, $filename, $y, $spreadsheet->getSheet(1));
+				break;
+		}
+
+		// Redirect output to a client’s web browser (Xlsx)
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="'.$filename.'"');
+		header('Cache-Control: max-age=0');
+		// If you're serving to IE 9, then the following may be needed
+		header('Cache-Control: max-age=1');
+
+		// If you're serving to IE over SSL, then the following may be needed
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+		header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		header('Pragma: public'); // HTTP/1.0
+
+		$writer = new XLSX($spreadsheet);
+		$writer->save('php://output');
+		exit;
+		
+	}
+
+	/**
+	 * Exporta les notes d'un registre en format XLSX (corresponent a 1r o 2n).
+	 * @param string $RegistreNotes Registre de notes.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
+	 * @param string $filename Nom del fitxer.
+	 * @param int $y Valor vertical del full de càlcul.
+	 * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet Full de càlcul.
+	 */				
+	public function ExportaXLSXRegistre($RegistreNotes, $Nivell, $Tipus=self::teULTIMA_NOTA, string $filename="export.xlsx", int $y = 1, PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
+		$Columnes = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X', 'Y', 'Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX', 'AY', 'AZ'];
+
+		// Mòduls
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiMP"]));
+			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$y++;
+
+		// UFs
+		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
+			$row = $RegistreNotes->UF[0][$j];
+			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiUF"]));
+			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$Noms = ['HoresTotals', 'HoresFetes', 'HoresAprovades', 'NotaMitjana', 'UFAprovades', 'UFSuspeses', 'PercentatgeAprovat'];
+		for($j = 0; $j < count($Noms); $j++) {
+			$sheet->setCellValueByColumnAndRow($j + count($RegistreNotes->UF[0]) + 3, $y, $Noms[$j]);
+			$cellStyle = $Columnes[$j + count($RegistreNotes->UF[0]) + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$y++;
+
+		// Notes
+		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
+			$RegistreAlumne = $RegistreNotes->UF[$i];
+			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
+				$Document = $RegistreNotes->Alumne[$i]['document'];
+				$sheet->setCellValueByColumnAndRow(1, $y, $Document);
+				$Nom = utf8_encode($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
+				//$Nom = utf8_encode($Nom);
+				$sheet->setCellValueByColumnAndRow(2, $y, $Nom);
+				$sheet->getStyle('B'.$y)->getFont()->getColor()->setARGB('ff007bff');
+				for($j = 0; $j < count($RegistreAlumne); $j++) {
+					$row = $RegistreAlumne[$j];
+					$cellStyle = $Columnes[$j + 2].$y;
+					switch ($Tipus) {
+						case Notes::teULTIMA_NOTA:
+							$UltimaNota = UltimaNota($row);
+							break;
+						case Notes::teULTIMA_CONVOCATORIA:
+							$UltimaNota = ($row["Convocatoria"] == 0) ? UltimaNota($row) : $row["nota".$row["Convocatoria"]];
+							break;
+					}
+					if (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1)) {
+						$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff808080');
+					} else {
+						$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+						if ($UltimaNota >= 5) {
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff000000');
+						} else {
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffff0000');
+						}
+						if ($row["Convalidat"] == 1) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff0000ff');
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffffffff');
+						} else if ($row["Convocatoria"] == 0) { 
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff000000');
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffffffff');
+						} else if ($row["Convocatoria"] < Notes::UltimaConvocatoriaNota($row) && Notes::UltimaConvocatoriaNota($row) != -999) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff00ff00');
+						} else if ($row["Convocatoria"] == 5) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffff0000');
+						} else if ($row["Orientativa"]) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffffff00');
+						}
+						$sheet->setCellValueByColumnAndRow($j + 3, $y, $UltimaNota);
+					}
+				}
+				$Estadistiques = [$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals, 
+				$RegistreNotes->Alumne[$i]['Estadistiques']->HoresFetes, 
+				$RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades, 
+				number_format($RegistreNotes->Alumne[$i]['Estadistiques']->NotaMitjana, 2), 
+				$RegistreNotes->Alumne[$i]['Estadistiques']->UFAprovades, 
+				$RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses, 
+				number_format($RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades/$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals*100, 2)];
+				for($j = 0; $j < count($Estadistiques); $j++) {
+					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 3, $y, $Estadistiques[$j]);
+					$cellStyle = $Columnes[$j + count($RegistreAlumne) + 2].$y;
+					$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+				}
+
+				// Amplada Automàtica
+				$AmpladaTotal = 2 + count($RegistreAlumne) + count($Estadistiques);
+				$LongitudMax = $AmpladaTotal % count($Columnes);
+				if ($LongitudMax == 0) {
+					$LongitudMax = count($Columnes);
+				}
+				for($j = 0; $j < $LongitudMax; $j++) {
+					$sheet->getColumnDimension($Columnes[$j])->setAutoSize(true);
+				}
+				$y++;
+			}
+		}
+
+		//Estadístiques UF
+		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
+		
+		$sheet->setCellValueByColumnAndRow(1, $y, 'Alumnes aprovats');
+		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovats);
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$y++;
+
+		$sheet->setCellValueByColumnAndRow(1, $y, 'Alumnes aprovats convocatòries anteriors');
+		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovatsConvocatoriaAnterior);
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$y++;
+
+		$sheet->setCellValueByColumnAndRow(1, $y, '% aprovats convocatòria actual');
+		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
+			$euf = $aEstadistiquesUF[$i];
+			$sheet->setCellValueByColumnAndRow($i + 3, $y, str_replace('.', ',', $euf->PercentatgeAprovats));
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+		}
+		$y++;
 	}
 
 	/**
