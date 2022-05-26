@@ -561,11 +561,16 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 
 		$this->Pestanya('Importació notes');
 		$this->AfegeixLlista('lms', 'LMS', 30, array('M', 'C'), array('Moodle', 'Clasroom'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixLlista('metode_importacio_notes', 'Mètode importació', 30, array('F', 'W'), array('Fitxer', 'Servei web'), [FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('metode_importacio_notes', 'Mètode importació', 30, array('F', 'W'), array('Fitxer', 'Servei web'), [FormFitxa::offREQUERIT, FormFitxa::offAL_COSTAT]);
 		$this->AfegeixEnter('nota_maxima', 'Nota màxima', 20, [FormFitxa::offREQUERIT]);
 		$this->AfegeixLlista('nota_inferior_5', 'Nota inferior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT]);
-		$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
+		$this->AfegeixLlista('nota_superior_5', 'Nota superior a 5', 30, array('A', 'T'), array('Arrodoneix', 'Trunca'), [FormFitxa::offREQUERIT, FormFitxa::offAL_COSTAT]);
+//		$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
+
+		$this->AfegeixEnter('curs_moodle_id', 'Id curs Moodle', 20);
+		$this->AfegeixEnter('categoria_moodle_id', 'Id categoria Moodle', 20);
+		$this->AfegeixText('categoria_moodle_text', 'Text categoria Moodle', 100, [FormFitxa::offAL_COSTAT]);
+		//$this->AfegeixText('categoria_moodle_importacio_notes', "Categoria Moodle per a la importació", 100);
 		
 		parent::EscriuHTML();		
 	}

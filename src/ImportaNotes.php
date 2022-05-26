@@ -59,40 +59,19 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["Fitxer"]["tmp_name"], $target_file)) {
-        echo "El fitxer ". basename( $_FILES["Fitxer"]["name"]). " s'ha penjat correctament.<p>";
-    } else {
-        echo "Hi ha hagut en penjar el fitxer.";
-		exit;
+        echo "El fitxer ". basename( $_FILES["Fitxer"]["name"]). " s'ha penjat correctament.<BR>";
+    } 
+	else {
+		die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: Hi ha hagut un error en penjar el fitxer.<br>Si el problema persisteix, contacteu amb l'administrador.</div>");
     }
 }
 
 $inputFileName = INGEST_DATA.'/upload/'.$_FILES["Fitxer"]["name"];
 $UnitatPlaEstudiId = $_POST['UnitatPlaEstudiId'];
 
-$ImportaNotes = new ImportaNotes($conn, $Usuari);
+$ImportaNotes = new ImportaNotesMoodleFitxer($conn, $Usuari);
 $ImportaNotes->UnitatPlaEstudiId = $UnitatPlaEstudiId;
 $ImportaNotes->Importa($inputFileName);
-
-
-//$ImportaUsuaris = new ImportaUsuaris($conn, $Usuari);
-
-
-
-
-/*
-$row = 1;
-if (($handle = fopen($inputFileName, "r")) !== FALSE) {
-    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-		if ($row == 1)
-			$ImportaUsuaris->TractaPrimeraLinia($data);
-		else 
-			$ImportaUsuaris->Importa($data);
-        $row++;
-    }
-    fclose($handle);
-}*/
-
-echo "Importació realitzada amb èxit.";
 
 $conn->close(); 
  

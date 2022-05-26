@@ -741,7 +741,8 @@ class ImportaUsuaris extends Importa
  * Classe per a la importació de les contrasenyes d'iEduca.
  * Només s'importen les contrasenyes dels alumnes i dels pares.
  */
-class ImportaPasswords extends Importa {
+class ImportaPasswords extends Importa 
+{
 	/**
 	* Número de línia.
 	* @var int
@@ -805,7 +806,8 @@ class ImportaPasswords extends Importa {
  * Formats suportats:
  * 	- SAGA
  */
-class ImportaMatricula extends Importa {
+class ImportaMatricula extends Importa 
+{
 	/**
 	* Array amb els cursos. S'hauria de poder configurar!
 	* @var array
@@ -912,81 +914,25 @@ class ImportaMatricula extends Importa {
  * Classe ImportaNotes.
  * Classe per a la importació de les notes.
  */
-class ImportaNotes extends Importa 
+abstract class ImportaNotes extends Importa 
 {
 	/**
-	* Identificador de la unitat formativa del pla d'estudis on es volen importar les notes.
-	* @var integer
-	*/    
+	 * Identificador de la unitat formativa del pla d'estudis on es volen importar les notes.
+	 * @var integer
+	 */    
 	public $UnitatPlaEstudiId = -1;
 
 	/**
-	* Notes de la base de dades.
-	* @var array
-	*/    
-	private $Notes = [];
+	 * Notes de la base de dades.
+	 * @var array
+	 */    
+	protected $Notes = [];
 
 	/**
-	 * Importa la matrícula.
-     * @param string $Fitxer Fitxer XLSX a importar.
-	 */
-	public function Importa(string $Fitxer) {
-		$this->Carrega();
-//print_h($this->Registre);
-		$this->CarregaNotes();
-		
-		$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-		$spreadsheet = $reader->load($Fitxer);
-		$aFull = $spreadsheet->getSheet(0)->toArray();
-//print_h($aFull);
-		
-		$IndexCorreu = $this->ObteId($aFull, 'Adreça electrònica');
-		$IndexNota = $this->ObteId($aFull, $this->Registre->categoria_moodle_importacio);
-		
-//echo "Adreça electrònica i ".$this->Registre->categoria_moodle_importacio." <br>";		
-//echo "$IndexCorreu i $IndexNota <br>";		
-		
-		if ($IndexCorreu == -1 || $IndexNota == -1)
-			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha pogut lligar la importació amb les dades de l'InGest.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
-
-		echo '<TABLE>';
-		echo '<TR><TD><B>Alumne</B></TD><TD><B>Correu</B></TD><TD><B>Nota Moodle</B></TD><TD><B>Nota InGest</B></TD></TR>';
-		foreach($this->Notes as &$Nota) {
-			echo '<TR>';
-			$Nota['nota_moodle'] = $this->ObteNota($aFull, $Nota['email_ins'], $IndexCorreu, $IndexNota);
-			if ($Nota['nota_moodle'] < 5) {
-				$Nota['nota_ingest'] = ($this->Registre->nota_inferior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
-				if ($Nota['nota_ingest'] == 0)
-					$Nota['nota_ingest'] = 1;
-			}
-			else {
-				$Nota['nota_ingest'] = ($this->Registre->nota_superior_5 == 'A') ? round($Nota['nota_moodle']) : floor($Nota['nota_moodle']);
-			}
-			$Nom = str_pad(CodificaUTF8($Nota['NomCognom1Cognom2']), 50);
-			echo "<TD>$Nom</TD>";
-			echo "<TD>".$Nota['email_ins']."</TD>";
-			echo "<TD STYLE='text-align:center;'>".$Nota['nota_moodle']."</TD>";
-			echo "<TD STYLE='text-align:center;'>".$Nota['nota_ingest']."</TD>";
-			
-			if ($Nota['nota_ingest'] > 0) {
-				$SQL = 'UPDATE NOTES SET nota'.$Nota['convocatoria'].'='.$Nota['nota_ingest'].' WHERE notes_id='.$Nota['notes_id'];
-				if ($this->Usuari->es_admin)
-					echo '    '.$SQL.'<BR>';
-
-				try {
-					if (!$this->Connexio->query($SQL))
-						throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
-				} catch (Exception $e) {
-					$Retorn .= "<BR><b>ERROR Importa</b>. Causa: ".$e->getMessage();
-				}		
-			}
-			echo '</TR>';
-		}
-		echo '</TABLE>';
-
-//print_h($this->Notes);
-
-	}
+	 * Notes de la importació.
+	 * @var array
+	 */    
+	protected $NotesImport = [];
 
 	/**
 	 * Carrega les dades de la UF.
@@ -998,28 +944,9 @@ class ImportaNotes extends Importa
 			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
-	private function ObteId($Full, $Titol) {
-		$Retorn = -1;
-		$Linia = $Full[0];
-		for ($i=0; $i<count($Linia); $i++) {
-			if ($Linia[$i] == $Titol)
-				$Retorn = $i;
-		}
-		return $Retorn;
-	}
-	
-	private function ObteNota($Full, $Correu, $IndexCorreu, $IndexNota) {
-		$Retorn = -1;
-		for ($i=1; $i<count($Full); $i++) {
-			if ($Full[$i][$IndexCorreu] == $Correu) {
-				$Retorn = $Full[$i][$IndexNota];
-				$Retorn = 10 * $Retorn / $this->Registre->nota_maxima;
-			}
-		}
-		return $Retorn;
-	}
 
+	abstract protected function ComprovaConfiguracio();
+	
 	/**
 	 * Carrega les notes de la UF.
 	 */				
@@ -1045,6 +972,243 @@ class ImportaNotes extends Importa
 		$ResultSet->close();
 //print_h($this->Notes);		
 	}
+
+	/**
+	 * Calcula les notes de l'InGest.
+	 * Treu la part decimal segons la configuració de cada UF.
+	 */				
+	protected function CalculaNotaInGest() {
+		foreach($this->Notes as &$Nota) {
+			$NotaImport = 10 * $Nota['nota_import'] / $this->Registre->nota_maxima;
+			if ($NotaImport == -1) {
+				// Res
+			}
+			else if ($NotaImport < 5) {
+				$Nota['nota_ingest'] = ($this->Registre->nota_inferior_5 == 'A') ? round($NotaImport) : floor($NotaImport);
+				if ($Nota['nota_ingest'] == 0)
+					$Nota['nota_ingest'] = 1;
+			}
+			else {
+				$Nota['nota_ingest'] = ($this->Registre->nota_superior_5 == 'A') ? round($NotaImport) : floor($NotaImport);
+			}			
+		}
+	}
+	
+	/**
+	 * Desa les notes a la base de dades.
+	 */				
+	protected function DesaNotes() {
+		echo '<TABLE>';
+		echo '<TR><TD><B>Alumne</B></TD><TD><B>Correu</B></TD><TD><B>Nota importació</B></TD><TD><B>Nota InGest</B></TD></TR>';
+		foreach($this->Notes as &$Nota) {
+			echo '<TR>';
+			$Nom = str_pad(CodificaUTF8($Nota['NomCognom1Cognom2']), 50);
+			echo "<TD>$Nom</TD>";
+			echo "<TD>".$Nota['email_ins']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_import']."</TD>";
+			echo "<TD STYLE='text-align:center;'>".$Nota['nota_ingest']."</TD>";
+			
+			$SQL = $this->ActualitzaNota($Nota);
+			if ($this->Usuari->es_admin)
+				echo "<TD>$SQL</TD>";
+			
+			echo '</TR>';
+		}
+		echo '</TABLE>';	
+		echo "<BR>Importació realitzada amb èxit.";		
+	}
+	
+	/**
+	 * Actualitza la nota.
+	 */				
+	protected function ActualitzaNota($Nota) {
+		$Retorn = '';
+		if ($Nota['nota_ingest'] > 0) {
+			$SQL = 'UPDATE NOTES SET nota'.$Nota['convocatoria'].'='.$Nota['nota_ingest'].' WHERE notes_id='.$Nota['notes_id'];
+			$Retorn = $Retorn;
+			try {
+				if (!$this->Connexio->query($SQL))
+					throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+			} catch (Exception $e) {
+				die("<BR><b>ERROR ActualitzaNota</b>. Causa: ".$e->getMessage());
+			}		
+		}
+		return $Retorn;
+	}	
+}
+
+/**
+ * Classe ImportaNotes.
+ * Classe per a la importació de les notes del Moodle via fitxer.
+ */
+class ImportaNotesMoodleFitxer extends ImportaNotes 
+{
+	/**
+	 * Importa les notes.
+     * @param string $Fitxer Fitxer XLSX a importar.
+	 */
+	public function Importa(string $Fitxer) {
+		$this->Carrega();
+		$this->CarregaNotes();
+		$this->ComprovaConfiguracio();
+		$this->CarregaNotesMoodle($Fitxer);
+		$this->TraspassaNotes();
+		$this->CalculaNotaInGest();
+		$this->DesaNotes();
+	}
+	
+	protected function ComprovaConfiguracio() {
+		if ($this->Registre->categoria_moodle_text == '')
+			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha configurat la importació a la unitat corresponent.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
+	}	
+	
+	private function CarregaNotesMoodle(string $Fitxer) {
+		$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+		$spreadsheet = $reader->load($Fitxer);
+		$this->NotesImport = $spreadsheet->getSheet(0)->toArray();
+//print_h($this->NotesImport);
+	}	
+
+	/**
+	 * Traspassa les notes importades al registre carregat de la base de dades.
+	 */
+	private function TraspassaNotes() {
+		$IndexCorreu = $this->ObteId($this->NotesImport, 'Adreça electrònica');
+		$IndexNota = $this->ObteId($this->NotesImport, $this->Registre->categoria_moodle_text);
+		
+//echo "Adreça electrònica i ".$this->Registre->categoria_moodle_text." <br>";		
+//echo "$IndexCorreu i $IndexNota <br>";		
+		
+		if ($IndexCorreu == -1 || $IndexNota == -1)
+			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha pogut lligar la importació amb les dades de l'InGest.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
+
+		foreach($this->Notes as &$Nota) {
+			$Nota['nota_import'] = $this->ObteNota($this->NotesImport, $Nota['email_ins'], $IndexCorreu, $IndexNota);
+		}
+	}
+	
+	private function ObteId($Full, $Titol) {
+		$Retorn = -1;
+		$Linia = $Full[0];
+		for ($i=0; $i<count($Linia); $i++) {
+			if ($Linia[$i] == $Titol)
+				$Retorn = $i;
+		}
+		return $Retorn;
+	}
+	
+	private function ObteNota($Full, $Correu, $IndexCorreu, $IndexNota) {
+		$Retorn = -1;
+		for ($i=1; $i<count($Full); $i++) {
+			if ($Full[$i][$IndexCorreu] == $Correu) {
+				$Retorn = $Full[$i][$IndexNota];
+			}
+		}
+		return $Retorn;
+	}
+}
+
+/**
+ * Classe ImportaNotes.
+ * Classe per a la importació de les notes del Moodle via servei web.
+ */
+class ImportaNotesMoodleServeiWeb extends ImportaNotes 
+{
+	/**
+	 * Importa les notes.
+     * @param integer $CursId Identificador del curs.
+     * @param integer $CategoriaId Identificador de la categoria.
+	 */
+	public function Importa() {
+		$this->Carrega();
+		$this->CarregaNotes();
+		$this->ComprovaConfiguracio();
+		$this->CarregaAlumnes($this->Registre->curs_moodle_id);
+		$this->CarregaNotesMoodle($this->Registre->curs_moodle_id, $this->Registre->categoria_moodle_id);
+		$this->TraspassaNotes();
+		$this->CalculaNotaInGest();
+		$this->DesaNotes();
+	}
+
+	protected function ComprovaConfiguracio() {
+		if ($this->Registre->curs_moodle_id == '' || $this->Registre->categoria_moodle_id == '')
+			die("<div class='alert alert-danger' role='alert'><b>ERROR</b>: No s'ha configurat la importació a la unitat corresponent.<br>Reviseu els paràmetres o contacteu amb l'administrador.</div>");
+	}	
+	
+	private function CarregaAlumnes(int $CursId) {
+		$URL = MOODLE_URL.'/moodle/webservice/rest/server.php?wstoken='.MOODLE_WS_TOKEN.'&wsfunction=core_enrol_get_enrolled_users&moodlewsrestformat=json&courseid='.$CursId;
+//echo "URL: $URL<p>";
+	
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $URL);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$jsondata = curl_exec($ch);
+		$output = json_decode($jsondata, true);
+		curl_close($ch);    
+
+		if ($output === null)
+			die('Error en CarregaNotesImport. Torna-ho a provar');
+		
+		foreach($output as $Alumne) {
+			$this->NotesImport[$Alumne['id']] = array(
+				'username' => $Alumne['username'], 
+				'fullname' => $Alumne['fullname'], 
+				'email' => $Alumne['email'],
+				'nota_import' => -1,
+			);
+		}
+//print_h($this->NotesImport);
+	}
+
+	private function CarregaNotesMoodle(int $CursId, int $CategoriaId) {
+		$URL = MOODLE_URL.'/moodle/webservice/rest/server.php?wstoken='.MOODLE_WS_TOKEN.'&wsfunction=gradereport_user_get_grade_items&moodlewsrestformat=json&courseid='.$CursId;
+//echo "URL: $URL<p>";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $URL);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$jsondata = curl_exec($ch);
+		$output = json_decode($jsondata, true);
+		curl_close($ch);    
+//print_h($output);
+
+		if ($output === null)
+			die('Error en CarregaNotesMoodle. Torna-ho a provar');
+
+		foreach($output['usergrades'] as $Alumne) {
+			$Notes = $Alumne['gradeitems'];
+			$Nota = $this->BuscaId($Notes, $CategoriaId);
+			$this->NotesImport[$Alumne['userid']]['nota_import'] = $Nota['graderaw'];
+		}
+	}
+	
+	/**
+	 * Traspassa les notes importades al registre carregat de la base de dades.
+	 */
+	private function TraspassaNotes() {
+		foreach($this->Notes as &$Nota) {
+			$Nota['nota_import'] = $this->ObteNota($this->NotesImport, $Nota['email_ins']);
+		}
+	}
+	
+	private function BuscaId($Notes, int $CategoriaId) {
+		$Retorn = null;
+		for ($i=1; $i<count($Notes); $i++) {
+			if ($Notes[$i]['id'] == $CategoriaId)
+				$Retorn = $Notes[$i];
+		}
+		return $Retorn;	
+	}
+	
+	private function ObteNota($Llista, $Correu) {
+		$Retorn = -1;
+		foreach($Llista as $Alumne) {
+			if ($Alumne['email'] == $Correu) {
+				$Retorn = $Alumne['nota_import'];
+			}
+		}
+		return $Retorn;
+	}	
 }
 
 ?>
