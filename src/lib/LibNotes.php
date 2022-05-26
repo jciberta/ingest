@@ -1499,10 +1499,15 @@ class Notes extends Form
 	 * @param PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet Full de càlcul.
 	 */				
 	public function ExportaXLSXRegistre($RegistreNotes, $Nivell, $Tipus=self::teULTIMA_NOTA, string $filename="export.xlsx", int $y = 1, PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
+		$Columnes = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X', 'Y', 'Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX', 'AY', 'AZ'];
+
 		// Mòduls
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
 			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiMP"]));
+			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
@@ -1510,10 +1515,15 @@ class Notes extends Form
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
 			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiUF"]));
+			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$Noms = ['HoresTotals', 'HoresFetes', 'HoresAprovades', 'NotaMitjana', 'UFAprovades', 'UFSuspeses', 'PercentatgeAprovat'];
 		for($j = 0; $j < count($Noms); $j++) {
 			$sheet->setCellValueByColumnAndRow($j + count($RegistreNotes->UF[0]) + 3, $y, $Noms[$j]);
+			$cellStyle = $Columnes[$j + count($RegistreNotes->UF[0]) + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
@@ -1523,11 +1533,13 @@ class Notes extends Form
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$Document = $RegistreNotes->Alumne[$i]['document'];
 				$sheet->setCellValueByColumnAndRow(1, $y, $Document);
-				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
+				$Nom = utf8_encode($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
 				//$Nom = utf8_encode($Nom);
 				$sheet->setCellValueByColumnAndRow(2, $y, $Nom);
+				$sheet->getStyle('B'.$y)->getFont()->getColor()->setARGB('ff007bff');
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];
+					$cellStyle = $Columnes[$j + 2].$y;
 					switch ($Tipus) {
 						case Notes::teULTIMA_NOTA:
 							$UltimaNota = UltimaNota($row);
@@ -1536,7 +1548,30 @@ class Notes extends Form
 							$UltimaNota = ($row["Convocatoria"] == 0) ? UltimaNota($row) : $row["nota".$row["Convocatoria"]];
 							break;
 					}
-					$sheet->setCellValueByColumnAndRow($j + 3, $y, $UltimaNota);
+					if (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1)) {
+						$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff808080');
+					} else {
+						$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+						if ($UltimaNota >= 5) {
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff000000');
+						} else {
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffff0000');
+						}
+						if ($row["Convalidat"] == 1) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff0000ff');
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffffffff');
+						} else if ($row["Convocatoria"] == 0) { 
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff000000');
+							$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ffffffff');
+						} else if ($row["Convocatoria"] < Notes::UltimaConvocatoriaNota($row) && Notes::UltimaConvocatoriaNota($row) != -999) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ff00ff00');
+						} else if ($row["Convocatoria"] == 5) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffff0000');
+						} else if ($row["Orientativa"]) {
+							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffffff00');
+						}
+						$sheet->setCellValueByColumnAndRow($j + 3, $y, $UltimaNota);
+					}
 				}
 				$Estadistiques = [$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals, 
 				$RegistreNotes->Alumne[$i]['Estadistiques']->HoresFetes, 
@@ -1547,8 +1582,11 @@ class Notes extends Form
 				number_format($RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades/$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals*100, 2)];
 				for($j = 0; $j < count($Estadistiques); $j++) {
 					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 3, $y, $Estadistiques[$j]);
+					$cellStyle = $Columnes[$j + count($RegistreAlumne) + 2].$y;
+					$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 				}
-				$Columnes = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AZ'];
+
+				// Amplada Automàtica
 				$AmpladaTotal = 2 + count($RegistreAlumne) + count($Estadistiques);
 				$LongitudMax = $AmpladaTotal % count($Columnes);
 				if ($LongitudMax == 0) {
@@ -1568,6 +1606,8 @@ class Notes extends Form
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovats);
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
@@ -1575,6 +1615,8 @@ class Notes extends Form
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovatsConvocatoriaAnterior);
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
@@ -1582,6 +1624,8 @@ class Notes extends Form
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			$sheet->setCellValueByColumnAndRow($i + 3, $y, str_replace('.', ',', $euf->PercentatgeAprovats));
+			$cellStyle = $Columnes[$i + 2].$y;
+			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 	}
