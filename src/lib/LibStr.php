@@ -182,8 +182,9 @@ function TextAMySQL($text)
 	if ($text == '' || $text === null)
 		$Retorn = 'NULL';
 	else {
-		if (is_string($text))
-			$text = CodificaUTF8($text);
+//		if (is_string($text))
+//			$text = utf8_encode($text);
+//			$text = CodificaUTF8($text);
 //print $text." -> CodificaUTF8(text): ".$text.'<BR>';
     	$Retorn = "'".str_replace("'", "''", $text)."'";
 	}
