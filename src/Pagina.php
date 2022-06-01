@@ -36,8 +36,11 @@ $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 switch ($accio) {
     case "QuantA":
 		CreaIniciHTML($Usuari, "Quant a...");
+		echo "Navegador: ".$_SERVER['HTTP_USER_AGENT']."<br>";
+		echo "Sistema operatiu: ".PHP_OS."<br>";
+		echo "Equip: ".php_uname()."<br>";
 		$version = apache_get_version();
-		echo "$version<br>";
+		echo "Servidor web: $version<br>";
 		echo "MySQL server version: ".mysqli_get_server_version($conn);
 
 		// https://stackoverflow.com/questions/52865732/how-to-embed-phpinfo-within-a-page-without-affecting-that-pages-css-styles#52865821
