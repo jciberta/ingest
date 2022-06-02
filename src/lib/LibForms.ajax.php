@@ -66,7 +66,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
 
 		// Esborrem el registre
-		$SQL = 'DELETE FROM '.$Taula.' WHERE '.$ClauPrimaria.'='.$Valor;
+		$SQL = "DELETE FROM $Taula WHERE $ClauPrimaria='$Valor'";
 		$frm->Connexio->query($SQL);
 		print $frm->GeneraTaula();
 	}

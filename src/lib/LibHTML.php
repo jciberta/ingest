@@ -434,6 +434,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Assignació UF', 'AssignaUFs.php?accio=GrupAssignaUF');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Tutors', 'UsuariRecerca.php?accio=Tutors');
+			$Retorn .= Menu::Opcio('Equips', 'Recerca.php?accio=Equip');
 			//$Retorn .= Menu::Opcio('Guàrdies', 'Guardia.php');
 			$Retorn .= Menu::Tanca();
 
@@ -464,7 +465,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Any acadèmic', 'Recerca.php?accio=AnyAcademic');
-			$Retorn .= Menu::Opcio('Equips', 'Recerca.php?accio=Equip');
+			$Retorn .= Menu::Opcio('Festius', 'Recerca.php?accio=Festiu');
 			$Retorn .= Menu::Separador();
 			if ($Usuari->es_admin) {
 				$Retorn .= Menu::ObreSubMenu('Material');

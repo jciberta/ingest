@@ -1221,7 +1221,7 @@ class FormRecerca extends Form
 					$sRetorn .= "<A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
 				}
 				if ($this->Modalitat == self::mfLLISTA && $this->PermetSuprimir) {
-					$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
+					$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", "'.$row[$this->ClauPrimaria].'");';
 					$sRetorn .= "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
 //					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}

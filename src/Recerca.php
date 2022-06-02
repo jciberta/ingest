@@ -127,6 +127,24 @@ switch ($accio) {
 		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
 		$frm->EscriuHTML();
         break;		
+    case "Festiu":
+		if (!$Usuari->es_admin)
+				header("Location: Surt.php");
+		$frm = new FormRecerca($conn, $Usuari);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Festius';
+		$SQL = ' SELECT festiu_id, data, motiu FROM FESTIU ';
+		$frm->SQL = $SQL;
+		$frm->Taula = 'FESTIU';		
+		$frm->ClauPrimaria = 'festiu_id';
+		$frm->Camps = 'data, motiu';
+		$frm->Descripcions = 'Data, Motiu';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'Fitxa.php?accio=Festiu';
+		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		$frm->PermetSuprimir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		$frm->EscriuHTML();
+        break;		
     case "Material":
 		$Material = new Material($conn, $Usuari);
 		$Material->EscriuFormulariRecerca($Modalitat);

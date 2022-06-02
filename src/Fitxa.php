@@ -171,6 +171,25 @@ switch ($accio) {
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;
+    case "Festiu":
+		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			header("Location: Surt.php");
+	
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+
+		$frm = new FormFitxa($conn, $Usuari);
+		$frm->Titol = 'Festiu';
+		$frm->Taula = 'FESTIU';
+		$frm->ClauPrimaria = 'festiu_id';
+		$frm->AutoIncrement = True;
+		$frm->Id = $Id;
+		
+		$frm->AfegeixData('data', 'Data');
+		$frm->AfegeixText('motiu', 'Motiu', 100, [FormFitxa::offREQUERIT]);
+	
+		$frm->EscriuHTML();
+        break;
 	case "ExpedientSaga":
 		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
 		if ($MatriculaId == -1)
