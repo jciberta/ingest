@@ -486,7 +486,7 @@ class Avaluacio
 			'     U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne '.
 			' FROM MATRICULA M '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-			' WHERE curs_id='.$aCursIdGrup[0];
+			' WHERE (M.baixa IS NULL OR M.baixa=0) AND curs_id='.$aCursIdGrup[0];
 		if ((count($aCursIdGrup)>1) && ($aCursIdGrup[1] != ''))
 			$SQL .= ' AND grup_tutoria="'.$aCursIdGrup[1].'"';
 		$SQL .= ' ORDER BY U.cognom1, U.cognom2, U.nom ';
