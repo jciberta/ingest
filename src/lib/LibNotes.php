@@ -733,41 +733,18 @@ class Notes extends Form
 		if (!$Baixa) {
 			if ($Convalidat) {
 				// Nota convalidada
-				$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$BackgroundColor = 'background-color:blue;';
-				$Color = 'color:white;';
-				//$style .= ";background-color:blue;color:white";
+				$Nota = $this->NotaConvalidada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
 			}
 			else if ($row["Convocatoria"] == 0) {
 				// Nota aprovada
-				$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$BackgroundColor = 'background-color:black;';
-				$Color = 'color:white;';
-				//$style .= ";background-color:black;color:white";
+				$Nota = $this->NotaAprovada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
 			}
 			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
 				// Nota recuperada
-				$Nota = UltimaNota($row);
-				$Deshabilitat = " disabled ";
-				$BackgroundColor = 'background-color:lime;';
-				//$style .= ";background-color:lime";
-				$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
+				$Nota = $this->NotaRecuperada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
 			}
 			else {
-				$Nota = $row["nota".$row["Convocatoria"]];
-				if ($row["Convocatoria"] == 5) {
-					// Nota en 5a convocatòria
-					$BackgroundColor = 'background-color:red;';
-					$Color = 'color:white;';
-					//$style .= ";background-color:red;color:white";
-				}				
-				else if ($row["Orientativa"] && !$Baixa) {
-					// Nota orientativa
-					$BackgroundColor = 'background-color:yellow;';
-					//$style .= ";background-color:yellow";
-				}
+				$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
 			}
 		}
 		else
@@ -802,6 +779,47 @@ class Notes extends Form
 			."<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." $Events></TD>";
+	}
+
+	protected function NotaNormal($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+		$Nota = $row["nota".$row["Convocatoria"]];
+		if ($row["Convocatoria"] == 5) {
+			// Nota en 5a convocatòria
+			$BackgroundColor = 'background-color:red;';
+			$Color = 'color:white;';
+		}				
+		else if ($row["Orientativa"] && !$Baixa) {
+			// Nota orientativa
+			$BackgroundColor = 'background-color:yellow;';
+		}
+		return $Nota;
+	}
+	
+	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+		// Nota recuperada
+		$Nota = UltimaNota($row);
+		$Deshabilitat = " disabled ";
+		$BackgroundColor = 'background-color:lime;';
+		$ToolTip = 'data-toggle="tooltip" title="Nota anterior: '.$row["nota".$row["Convocatoria"]].'"';
+		return $Nota;
+	}
+
+	protected function NotaConvalidada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+		// Nota convalidada
+		$Nota = UltimaNota($row);
+		$Deshabilitat = " disabled ";
+		$BackgroundColor = 'background-color:blue;';
+		$Color = 'color:white;';
+		return $Nota;
+	}
+
+	protected function NotaAprovada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+		// Nota aprovada
+		$Nota = UltimaNota($row);
+		$Deshabilitat = " disabled ";
+		$BackgroundColor = 'background-color:black;';
+		$Color = 'color:white;';
+		return $Nota;
 	}
 
 	/**
@@ -2174,6 +2192,12 @@ class NotesModul extends Notes
 			" name=txtNotaModulId_".$NotaId."_".$MatriculaId."_".$this->IdMP.
 			" id='".$Id."' value='".$ValorNota."' size=1 ".
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+	}
+	
+	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+		// No mostrem la nota recuperada
+		$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+		return $Nota;
 	}
 }
 
