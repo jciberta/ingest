@@ -50,12 +50,12 @@ switch ($Accio) {
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Professors";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, titol_angles, usuari_bloquejat '.
 			' FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi';
+		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi, titol_angles';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi, Anglès';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;
