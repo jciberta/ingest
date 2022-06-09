@@ -25,10 +25,12 @@ class Usuari extends Objecte
 	 * Si es vol canviar d'usuari, cal usar el mètode Carrega.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
+		//$this->Connexio = $con;
+		//$this->Usuari = $user;
 		$this->Registre = $user;
 	}	
 
@@ -777,7 +779,8 @@ class ProfessorsUF extends Form
 	 */
 	protected function GeneraFiltre() {
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$this->AnyAcademicId = $aAnys[0][0]; 
+//		$this->AnyAcademicId = $aAnys[0][0]; 
+		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		return $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsUF(this);"');
 	}
 
@@ -994,7 +997,8 @@ class ProfessorsAssignacioUF extends Form
 	 */
 	protected function GeneraFiltre() {
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$this->AnyAcademicId = $aAnys[0][0]; 
+//		$this->AnyAcademicId = $aAnys[0][0]; 
+		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		return $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsAssignacioUF(this);"');
 	}
 
@@ -1142,7 +1146,8 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$Retorn = '';
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$this->AnyAcademicId = $aAnys[0][0]; 
+//		$this->AnyAcademicId = $aAnys[0][0]; 
+		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		
 		$Retorn .= $this->CreaLlista('CPE.codi', 'Cicle', 100, 
@@ -1565,7 +1570,7 @@ class AlumnesPromocio1r extends Alumne
 		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Data naixement, Edat, Municipi, Telèfon, Correu, Nivell, Grup, Percentatge aprovat';
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		if ($this->Usuari->es_professor) {
 			$p = new Professor($this->Connexio, $this->Usuari);
 			$a = $p->ObteCodiCicles();
@@ -1613,7 +1618,7 @@ class AlumnesGraduacio2n extends Usuari
 		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Data naixement, Edat, Municipi, Telèfon, Correu, Nivell, Grup, Percentatge aprovat';
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 			if ($this->Usuari->es_professor) {
 			$p = new Professor($this->Connexio, $this->Usuari);
 			$a = $p->ObteCodiCicles();
@@ -1676,7 +1681,8 @@ class Orla extends Form
 		$Retorn = '';
 
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$this->AnyAcademicId = $aAnys[0][0];
+//		$this->AnyAcademicId = $aAnys[0][0];
+		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaOrla(this);"');		
 		
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");

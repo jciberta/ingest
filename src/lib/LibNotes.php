@@ -319,9 +319,10 @@ class Notes extends Form
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con, $user) {
-		parent::__construct($con, $user);
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
 		$this->Registre1 = new stdClass();
 		$this->Registre2 = new stdClass();
 		$this->Administracio = false;
@@ -733,18 +734,18 @@ class Notes extends Form
 		if (!$Baixa) {
 			if ($Convalidat) {
 				// Nota convalidada
-				$Nota = $this->NotaConvalidada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+				$Nota = $this->NotaConvalidada($row, $Baixa, $Deshabilitat, $BackgroundColor, $Color, $ToolTip);
 			}
 			else if ($row["Convocatoria"] == 0) {
 				// Nota aprovada
-				$Nota = $this->NotaAprovada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+				$Nota = $this->NotaAprovada($row, $Baixa, $Deshabilitat, $BackgroundColor, $Color, $ToolTip);
 			}
 			else if ($row["Convocatoria"] < self::UltimaConvocatoriaNota($row) && self::UltimaConvocatoriaNota($row) != -999) {
 				// Nota recuperada
-				$Nota = $this->NotaRecuperada($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+				$Nota = $this->NotaRecuperada($row, $Baixa, $Deshabilitat, $BackgroundColor, $Color, $ToolTip);
 			}
 			else {
-				$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+				$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $Color, $ToolTip);
 			}
 		}
 		else
@@ -781,7 +782,7 @@ class Notes extends Form
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." $Events></TD>";
 	}
 
-	protected function NotaNormal($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+	protected function NotaNormal($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$Color, &$ToolTip) {
 		$Nota = $row["nota".$row["Convocatoria"]];
 		if ($row["Convocatoria"] == 5) {
 			// Nota en 5a convocatòria
@@ -795,7 +796,7 @@ class Notes extends Form
 		return $Nota;
 	}
 	
-	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$Color, &$ToolTip) {
 		// Nota recuperada
 		$Nota = UltimaNota($row);
 		$Deshabilitat = " disabled ";
@@ -804,7 +805,7 @@ class Notes extends Form
 		return $Nota;
 	}
 
-	protected function NotaConvalidada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+	protected function NotaConvalidada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$Color, &$ToolTip) {
 		// Nota convalidada
 		$Nota = UltimaNota($row);
 		$Deshabilitat = " disabled ";
@@ -813,7 +814,7 @@ class Notes extends Form
 		return $Nota;
 	}
 
-	protected function NotaAprovada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+	protected function NotaAprovada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$Color, &$ToolTip) {
 		// Nota aprovada
 		$Nota = UltimaNota($row);
 		$Deshabilitat = " disabled ";
@@ -2194,9 +2195,9 @@ class NotesModul extends Notes
 			" onfocus='EnEntrarCellaNotaModul(this);' onBlur='EnSortirCellaNotaModul(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
 	}
 	
-	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$ToolTip) {
+	protected function NotaRecuperada($row, $Baixa, &$Deshabilitat, &$BackgroundColor, &$Color, &$ToolTip) {
 		// No mostrem la nota recuperada
-		$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $ToolTip);
+		$Nota = $this->NotaNormal($row, $Baixa, $Deshabilitat, $BackgroundColor, $Color, $ToolTip);
 		return $Nota;
 	}
 }

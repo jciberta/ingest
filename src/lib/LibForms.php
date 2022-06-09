@@ -42,6 +42,13 @@ class Objecte
 	public $Usuari = null;
 
 	/**
+	* Dades de l'aplicació.
+	* @access public 
+	* @var object
+	*/    
+	public $Sistema;
+
+	/**
 	* Identificador de propòsit general.
 	* @var mixed
 	*/    
@@ -57,10 +64,12 @@ class Objecte
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con = NULL, $user = NULL) {
+	function __construct($con = null, $user = null, $system = null) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
+		$this->Sistema = $system;
 	}	
 }
 
@@ -69,7 +78,7 @@ class Objecte
  * Classe base de la quals descendeixen els formularis.
  * Conté els mètodes per crear els components bàsics.
  */
-class Form 
+class Form extends Objecte
 {
 	// Tipus de camps per al formulari.
 	const tcTEXT = 1;
@@ -106,13 +115,13 @@ class Form
 	* Connexió a la base de dades.
 	* @var object
 	*/    
-	public $Connexio;
+//	public $Connexio;
 
 	/**
 	* Usuari autenticat.
 	* @var object
 	*/    
-	public $Usuari;
+//	public $Usuari;
 
 	/**
 	* Títol del formulari.
@@ -166,11 +175,12 @@ class Form
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con = NULL, $user = NULL) {
+/*	function __construct($con = null, $user = null, $system = null) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
-	}
+	}*/
 
 	/**
 	 * Afegeix un fitxer JavaScript.
@@ -709,9 +719,10 @@ class Filtre
 	 * @param array $aCodis Codis de la llista. Per exemple: array(1, 2, 3, 4)
 	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
 	 * @param array $off Opcions del formulari.
+	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
 	 * @return void
 	 */
-	public function AfegeixLlista(string $camp, string $titol, int $longitud, array $aCodis, array $aValors, array $off = []) {
+	public function AfegeixLlista(string $camp, string $titol, int $longitud, array $aCodis, array $aValors, array $off = [], $CodiSeleccionat = '') {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
@@ -723,6 +734,7 @@ class Filtre
 		$this->Camps[$i]->Llista = new stdClass();
 		$this->Camps[$i]->Llista->Codis = $aCodis;
 		$this->Camps[$i]->Llista->Valors = $aValors;
+		$this->Camps[$i]->Llista->CodiSeleccionat = $CodiSeleccionat;
 	}
 	
 	/**
@@ -791,11 +803,7 @@ exit;*/
 //					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
 					break;
 				case Form::tcSELECCIO:
-//					$Retorn .= '<BR>EI<BR>';
-//					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
-//					$CodiSeleccionat = $this->Registre[$Valor->Camp];
-//					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
-					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors);
+					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $Valor->Llista->CodiSeleccionat);
 					break;
 				case Form::tcLOOKUP:
 					//$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
@@ -848,7 +856,8 @@ exit;*/
 //					$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';
 //					$CodiSeleccionat = $this->Registre[$Valor->Camp];
 //					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
-					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->Codis[0].'", ';
+//					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->Codis[0].'", ';
+					$sFiltre .= '"'.$Valor->Camp.'": "'.$Valor->Llista->CodiSeleccionat.'", ';
 					break;
 				case Form::tcLOOKUP:
 //print_r($Valor);
@@ -979,9 +988,11 @@ class FormRecerca extends Form
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con, $user) {
-		parent::__construct($con, $user);
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
 		$this->Filtre = new Filtre($this);
 	}	
 
@@ -993,8 +1004,8 @@ class FormRecerca extends Form
 		$sRetorn = $this->SQL;
 		
 		// Filtre de components visuals
-		if ($this->Filtre->JSON != '') {
 //print 'Filtre: '.$this->Filtre->JSON;
+		if ($this->Filtre->JSON != '') {
 			$Filtre = $this->CreaSQLFiltre();
 			if ($Filtre != '') {
 				$obj = new SQL($this->SQL);
@@ -2595,9 +2606,11 @@ class FormDetall extends FormRecerca
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
+	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con, $user) {
-		parent::__construct($con, $user);
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
 		$this->PermetCercar = False;
 		$this->LookUp = new StdClass();
 	}	
@@ -2676,9 +2689,10 @@ class FormFitxaDetall extends FormFitxa
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($con = NULL, $user = NULL) {
-		parent::__construct($con, $user);
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
 		$this->Detalls = [];
 	}
 	

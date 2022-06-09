@@ -14,11 +14,10 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
-
 /**
  * Classe que encapsula les utilitats per al maneig del curs.
  */
-class Curs
+class Curs extends Objecte
 {
 	// Estats del curs
 	const Actiu = 'A'; 		// Entrada de notes.
@@ -46,21 +45,28 @@ class Curs
 	* @access public 
 	* @var object
 	*/    
-	public $Connexio;
+//	public $Connexio;
 
 	/**
 	* Usuari autenticat.
 	* @access public 
 	* @var object
 	*/    
-	public $Usuari;
+//	public $Usuari;
+
+	/**
+	* Dades de l'aplicació.
+	* @access public 
+	* @var object
+	*/    
+//	public $Sistema;
 
 	/**
 	* Registre carregat amb CarregaRegistre.
 	* @access private
 	* @var object
 	*/    
-	private $Registre = NULL;
+//	private $Registre = NULL;
 
 	/**
 	* Indica que només és professor i no admin, ni cap d'estudis...
@@ -72,9 +78,10 @@ class Curs
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 */
-	function __construct($con, $user) {
+	function __construct($con, $user, $system = null) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
+		$this->Sistema = $system;
 		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);			
 	}	
 
@@ -301,7 +308,7 @@ class Curs
 
 		// Filtre
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		$frm->EscriuHTML();
 	}
 

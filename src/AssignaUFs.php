@@ -24,6 +24,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -37,16 +38,16 @@ if ($Accio == 'AssignaUF') {
 	// Assigna diferents UF a un professor.
 	$ProfessorId = $_GET['ProfessorId'];
 //print_r($ProfessorId);
-	$frm = new ProfessorsAssignacioUF($conn, $Usuari);
+	$frm = new ProfessorsAssignacioUF($conn, $Usuari, $Sistema);
 	$frm->ProfessorId = $ProfessorId;
 	$frm->EscriuHTML();
 }
 else if ($Accio == 'GrupAssignaUF') {
-	$frm = new GrupProfessorsAssignacioUF($conn, $Usuari);
+	$frm = new GrupProfessorsAssignacioUF($conn, $Usuari, $Sistema);
 	$frm->EscriuHTML();
 }
 else if ($Accio == 'ProfessorsUF') {
-	$frm = new ProfessorsUF($conn, $Usuari);
+	$frm = new ProfessorsUF($conn, $Usuari, $Sistema);
 	$frm->EscriuHTML();
 }
 

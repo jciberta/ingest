@@ -20,6 +20,8 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
+//print_h($Sistema);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -36,7 +38,7 @@ if ($conn->connect_error)
 //  - pare: Expedient fills.
 
 if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
-	$curs = new Curs($conn, $Usuari);
+	$curs = new Curs($conn, $Usuari, $Sistema);
 	$curs->EscriuFormulariRecera();
 }
 else if ($Usuari->es_professor) {

@@ -25,6 +25,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
 
@@ -51,7 +52,7 @@ switch ($accio) {
     case "AnyAcademic":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Any acadèmic';
 		$frm->SQL = 'SELECT * FROM ANY_ACADEMIC';
@@ -68,7 +69,7 @@ switch ($accio) {
     case "Equip":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
 		$SQL = ' SELECT EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, '.
@@ -96,22 +97,22 @@ switch ($accio) {
 		$frm->AfegeixOpcio('Membres', 'Fitxa.php?accio=EquipProfessors&Id=', '', 'enrolusers.svg');		
 		
 		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $Sistema->any_academic_id);
 		
 		$frm->EscriuHTML();
         break;
     case "HistoricCurs":
-		$curs = new Curs($conn, $Usuari);
+		$curs = new Curs($conn, $Usuari, $Sistema);
 		$curs->EscriuFormulariRecera();
         break;		
     case "Avaluacio":
-		$avaluacio = new Avaluacio($conn, $Usuari);
+		$avaluacio = new Avaluacio($conn, $Usuari, $Sistema);
 		$avaluacio->EscriuFormulariRecerca();
         break;		
     case "Registre":
 		if (!$Usuari->es_admin)
 				header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Inet.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Registres';
@@ -130,7 +131,7 @@ switch ($accio) {
     case "Festiu":
 		if (!$Usuari->es_admin)
 				header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Festius';
 		$SQL = ' SELECT festiu_id, data, motiu FROM FESTIU ';
@@ -146,15 +147,15 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;		
     case "Material":
-		$Material = new Material($conn, $Usuari);
+		$Material = new Material($conn, $Usuari, $Sistema);
 		$Material->EscriuFormulariRecerca($Modalitat);
         break;		
     case "TipusMaterial":
-		$TipusMaterial = new TipusMaterial($conn, $Usuari);
+		$TipusMaterial = new TipusMaterial($conn, $Usuari, $Sistema);
 		$TipusMaterial->EscriuFormulariRecerca($Modalitat);
         break;		
     case "ReservaMaterial":
-		$ReservaMaterial = new ReservaMaterial($conn, $Usuari);
+		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->EscriuFormulariRecerca($Modalitat);
         break;		
 }

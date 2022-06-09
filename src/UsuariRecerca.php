@@ -19,6 +19,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
 
@@ -45,7 +46,7 @@ switch ($Accio) {
     case "Professors":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
@@ -71,7 +72,7 @@ switch ($Accio) {
     case "Tutors":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
 		$SQL = ' SELECT C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.nivell, CPE.any_academic_id, '.
@@ -93,13 +94,13 @@ switch ($Accio) {
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $Sistema->any_academic_id);
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
@@ -123,7 +124,7 @@ switch ($Accio) {
     case "Matricules":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Forms.js?v1.2');
 		$frm->AfegeixJavaScript('Matricula.js?v1.6');
 		$frm->Modalitat = $Modalitat;
@@ -173,7 +174,7 @@ switch ($Accio) {
 			$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 //print_h($aAnys);
 			$AnyAcademicId = $aAnys[0][0]; 
-			$frm->Filtre->AfegeixLlista('AnyAcademicId', 'Any', 30, $aAnys[0], $aAnys[1]);
+			$frm->Filtre->AfegeixLlista('AnyAcademicId', 'Any', 30, $aAnys[0], $aAnys[1], [], $Sistema->any_academic_id);
 
 //			$aCurs = ObteCodiValorDesDeSQL($conn, "SELECT curs_id, nom FROM CURS_ACTUAL", "curs_id", "nom");
 //			array_unshift($aCurs[0], '');
@@ -193,7 +194,7 @@ switch ($Accio) {
     case "AlumnesPares":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
 		$frm->SQL = ' SELECT '.
@@ -216,7 +217,7 @@ switch ($Accio) {
     case "Pares":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Pares";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2 FROM USUARI WHERE es_pare=1 ORDER BY cognom1, cognom2, nom';
@@ -237,7 +238,7 @@ switch ($Accio) {
 		// Tots
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
 		$frm->Modalitat = $Modalitat;
@@ -266,7 +267,7 @@ switch ($Accio) {
         break;
     case "UltimLogin":
 		$NomesProfessor = ($Usuari->es_professor && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis);			
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Últims logins";
@@ -320,19 +321,19 @@ switch ($Accio) {
     case "AlumnesPromocio1r":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
-		$frm = new AlumnesPromocio1r($conn, $Usuari);
+		$frm = new AlumnesPromocio1r($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
     case "AlumnesGraduacio2n":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
-		$frm = new AlumnesGraduacio2n($conn, $Usuari);
+		$frm = new AlumnesGraduacio2n($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
 	case "Orla":
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 			header("Location: Surt.php");
-		$frm = new Orla($conn, $Usuari);
+		$frm = new Orla($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
 }

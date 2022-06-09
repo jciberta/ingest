@@ -23,6 +23,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -50,7 +51,7 @@ unset($frm);
 
 switch ($accio) {
     case "Families":
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Famílies';
 		$frm->SQL = 'SELECT * FROM FAMILIA_FP';
@@ -69,7 +70,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "CiclesFormatius":
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Cicles formatius';
 		$frm->SQL = ' SELECT CF.cicle_formatiu_id, CF.nom AS NomCF, CF.*, '.
@@ -95,7 +96,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "ModulsProfessionals":
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Mòduls professionals';
 		$frm->SQL = 'SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, MP.actiu, es_fct AS FCT, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
@@ -118,7 +119,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormativesCF":
-		$frm = new FormRecerca($conn, $Usuari);
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Unitats formatives';
 		$frm->SQL = 'SELECT UF.unitat_formativa_id, UF.codi AS CodiUF, UF.nom AS NomUF, UF.nivell, UF.hores AS HoresUF, UF.activa, UF.es_fct AS FCT, MP.codi AS CodiMP, MP.nom AS NomMP, CF.codi AS CodiCF, CF.nom AS NomCF'. 
@@ -142,34 +143,34 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisAny":
-		$frm = new PlaEstudisAny($conn, $Usuari);
+		$frm = new PlaEstudisAny($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisCicle":
-		$frm = new PlaEstudisCicle($conn, $Usuari);
+		$frm = new PlaEstudisCicle($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisUnitat":
-		$frm = new PlaEstudisUnitatRecerca($conn, $Usuari);
+		$frm = new PlaEstudisUnitatRecerca($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisModul":
 		$FamiliaFPId = (array_key_exists('FamiliaFPId', $_GET)) ? $_GET['FamiliaFPId'] : -1; 
-		$frm = new PlaEstudisModulRecerca($conn, $Usuari);
+		$frm = new PlaEstudisModulRecerca($conn, $Usuari, $Sistema);
 		$frm->FamiliaFPId = $FamiliaFPId;
 		$frm->EscriuHTML();
         break;
     case "ProgramacionsDidactiques":
-		$frm = new ProgramacioDidacticaRecerca($conn, $Usuari);
+		$frm = new ProgramacioDidacticaRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->EscriuHTML();
         break;
     case "ResultatsAprenentatge":
-		$frm = new ResultatsAprenentatge($conn, $Usuari);
+		$frm = new ResultatsAprenentatge($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
 	case "ContingutsUF": // al crear objecte passar dos parameteres ($conn, $Usuari) El primer es la connexió a la basse de dades i el seogn l'usuari actual
-		$frm = new ContingutsUF($conn, $Usuari);
+		$frm = new ContingutsUF($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
 		break;
 }
