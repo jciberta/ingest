@@ -175,7 +175,7 @@ class Expedient extends Form
 			$Cognom2Alumne = $row["Cognom2Alumne"];
 			$Llei = $row["llei"];
 			$pdf->AnyAcademic = $row["AnyAcademic"];
-			$pdf->NomComplet = trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne;
+			$pdf->NomComplet = utf8_encode(trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne);
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
