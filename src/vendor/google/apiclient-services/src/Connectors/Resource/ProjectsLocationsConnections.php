@@ -106,8 +106,9 @@ class ProjectsLocationsConnections extends \Google\Service\Resource
    * resource exists and does not have a policy set. (connections.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -160,11 +161,11 @@ class ProjectsLocationsConnections extends \Google\Service\Resource
    * @param Connection $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string updateMask Field mask is used to specify the fields to be
-   * overwritten in the Connection resource by the update. The fields specified in
-   * the update_mask are relative to the resource, not the full request. A field
-   * will be overwritten if it is in the mask. If the user does not provide a mask
-   * then all fields will be overwritten.
+   * @opt_param string updateMask Required. Field mask is used to specify the
+   * fields to be overwritten in the Connection resource by the update. The fields
+   * specified in the update_mask are relative to the resource, not the full
+   * request. A field will be overwritten if it is in the mask. If the user does
+   * not provide a mask then all fields will be overwritten.
    * @return Operation
    */
   public function patch($name, Connection $postBody, $optParams = [])
@@ -179,8 +180,9 @@ class ProjectsLocationsConnections extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (connections.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -200,8 +202,9 @@ class ProjectsLocationsConnections extends \Google\Service\Resource
    * (connections.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse

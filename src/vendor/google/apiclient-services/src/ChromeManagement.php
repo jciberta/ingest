@@ -275,7 +275,21 @@ class ChromeManagement extends \Google\Service
         'devices',
         [
           'methods' => [
-            'list' => [
+            'get' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'readMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'list' => [
               'path' => 'v1/{+parent}/telemetry/devices',
               'httpMethod' => 'GET',
               'parameters' => [

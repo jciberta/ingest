@@ -12896,6 +12896,10 @@ class Compute extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'validateOnly' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
               ],
             ],'aggregatedList' => [
               'path' => 'projects/{project}/aggregated/securityPolicies',
@@ -12997,6 +13001,10 @@ class Compute extends \Google\Service
                   'location' => 'query',
                   'type' => 'string',
                 ],
+                'validateOnly' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
               ],
             ],'list' => [
               'path' => 'projects/{project}/global/securityPolicies',
@@ -13094,6 +13102,10 @@ class Compute extends \Google\Service
                 'priority' => [
                   'location' => 'query',
                   'type' => 'integer',
+                ],
+                'validateOnly' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ],
               ],
             ],'removeRule' => [
@@ -14476,6 +14488,25 @@ class Compute extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'setCertificateMap' => [
+              'path' => 'projects/{project}/global/targetHttpsProxies/{targetHttpsProxy}/setCertificateMap',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'targetHttpsProxy' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'requestId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
             ],'setQuicOverride' => [
               'path' => 'projects/{project}/global/targetHttpsProxies/{targetHttpsProxy}/setQuicOverride',
               'httpMethod' => 'POST',
@@ -15070,6 +15101,25 @@ class Compute extends \Google\Service
               ],
             ],'setBackendService' => [
               'path' => 'projects/{project}/global/targetSslProxies/{targetSslProxy}/setBackendService',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'targetSslProxy' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'requestId' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'setCertificateMap' => [
+              'path' => 'projects/{project}/global/targetSslProxies/{targetSslProxy}/setCertificateMap',
               'httpMethod' => 'POST',
               'parameters' => [
                 'project' => [

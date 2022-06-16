@@ -17,12 +17,19 @@
 
 namespace Google\Service\OnDemandScanning;
 
-class PackageData extends \Google\Model
+class PackageData extends \Google\Collection
 {
+  protected $collection_key = 'patchedCve';
   /**
    * @var string
    */
   public $cpeUri;
+  protected $fileLocationType = FileLocation::class;
+  protected $fileLocationDataType = 'array';
+  /**
+   * @var string
+   */
+  public $hashDigest;
   /**
    * @var string
    */
@@ -39,6 +46,10 @@ class PackageData extends \Google\Model
    * @var string
    */
   public $packageType;
+  /**
+   * @var string[]
+   */
+  public $patchedCve;
   /**
    * @var string
    */
@@ -61,6 +72,34 @@ class PackageData extends \Google\Model
   public function getCpeUri()
   {
     return $this->cpeUri;
+  }
+  /**
+   * @param FileLocation[]
+   */
+  public function setFileLocation($fileLocation)
+  {
+    $this->fileLocation = $fileLocation;
+  }
+  /**
+   * @return FileLocation[]
+   */
+  public function getFileLocation()
+  {
+    return $this->fileLocation;
+  }
+  /**
+   * @param string
+   */
+  public function setHashDigest($hashDigest)
+  {
+    $this->hashDigest = $hashDigest;
+  }
+  /**
+   * @return string
+   */
+  public function getHashDigest()
+  {
+    return $this->hashDigest;
   }
   /**
    * @param string
@@ -117,6 +156,20 @@ class PackageData extends \Google\Model
   public function getPackageType()
   {
     return $this->packageType;
+  }
+  /**
+   * @param string[]
+   */
+  public function setPatchedCve($patchedCve)
+  {
+    $this->patchedCve = $patchedCve;
+  }
+  /**
+   * @return string[]
+   */
+  public function getPatchedCve()
+  {
+    return $this->patchedCve;
   }
   /**
    * @param string

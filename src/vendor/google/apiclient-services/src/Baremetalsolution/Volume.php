@@ -30,6 +30,10 @@ class Volume extends \Google\Model
   /**
    * @var string
    */
+  public $emergencySizeGib;
+  /**
+   * @var string
+   */
   public $id;
   /**
    * @var string[]
@@ -38,7 +42,19 @@ class Volume extends \Google\Model
   /**
    * @var string
    */
+  public $maxSizeGib;
+  /**
+   * @var string
+   */
   public $name;
+  /**
+   * @var string
+   */
+  public $originallyRequestedSizeGib;
+  /**
+   * @var string
+   */
+  public $pod;
   /**
    * @var string
    */
@@ -101,6 +117,20 @@ class Volume extends \Google\Model
   /**
    * @param string
    */
+  public function setEmergencySizeGib($emergencySizeGib)
+  {
+    $this->emergencySizeGib = $emergencySizeGib;
+  }
+  /**
+   * @return string
+   */
+  public function getEmergencySizeGib()
+  {
+    return $this->emergencySizeGib;
+  }
+  /**
+   * @param string
+   */
   public function setId($id)
   {
     $this->id = $id;
@@ -129,6 +159,20 @@ class Volume extends \Google\Model
   /**
    * @param string
    */
+  public function setMaxSizeGib($maxSizeGib)
+  {
+    $this->maxSizeGib = $maxSizeGib;
+  }
+  /**
+   * @return string
+   */
+  public function getMaxSizeGib()
+  {
+    return $this->maxSizeGib;
+  }
+  /**
+   * @param string
+   */
   public function setName($name)
   {
     $this->name = $name;
@@ -139,6 +183,34 @@ class Volume extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param string
+   */
+  public function setOriginallyRequestedSizeGib($originallyRequestedSizeGib)
+  {
+    $this->originallyRequestedSizeGib = $originallyRequestedSizeGib;
+  }
+  /**
+   * @return string
+   */
+  public function getOriginallyRequestedSizeGib()
+  {
+    return $this->originallyRequestedSizeGib;
+  }
+  /**
+   * @param string
+   */
+  public function setPod($pod)
+  {
+    $this->pod = $pod;
+  }
+  /**
+   * @return string
+   */
+  public function getPod()
+  {
+    return $this->pod;
   }
   /**
    * @param string

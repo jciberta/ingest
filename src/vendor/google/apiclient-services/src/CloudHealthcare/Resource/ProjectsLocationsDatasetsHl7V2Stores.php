@@ -111,8 +111,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
    * resource exists and does not have a policy set. (hl7V2Stores.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See the operation documentation for the appropriate value for this
-   * field.
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
@@ -219,8 +220,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
   /**
    * Updates the HL7v2 store. (hl7V2Stores.patch)
    *
-   * @param string $name Resource name of the HL7v2 store, of the form
-   * `projects/{project_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}`.
+   * @param string $name Resource name of the HL7v2 store, of the form `projects/{
+   * project_id}/locations/{location_id}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_
+   * store_id}`.
    * @param Hl7V2Store $postBody
    * @param array $optParams Optional parameters.
    *
@@ -241,8 +243,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
    * `PERMISSION_DENIED` errors. (hl7V2Stores.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See the operation documentation for the appropriate value for this
-   * field.
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
@@ -262,8 +265,9 @@ class ProjectsLocationsDatasetsHl7V2Stores extends \Google\Service\Resource
    * (hl7V2Stores.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See the operation documentation for the appropriate value
-   * for this field.
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
