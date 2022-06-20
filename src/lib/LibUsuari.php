@@ -578,6 +578,7 @@ class Professor extends Usuari
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_object();
+			if (is_null($row->familia_fp_id)) die("CONFIG. Falta especificar la família per al cap de departament.");
 			$Retorn = $row->familia_fp_id;
 		}
 		$ResultSet->close();
