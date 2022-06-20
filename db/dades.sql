@@ -568,6 +568,50 @@ INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2022, 2023, 'Curs 2
 UPDATE ANY_ACADEMIC SET actual=0;
 UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=5;
 
+/* Festius */
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-09-11', '11 de setembre');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-10-12', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-10-31', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-11-01', 'Tots sants');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-11-02', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-05', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-06', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-07', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-08', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-22', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-23', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-24', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-25', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-26', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-27', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-28', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-29', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-30', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2022-12-31', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-01', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-02', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-03', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-04', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-05', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-06', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-07', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-01-08', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-02-17', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-02-20', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-03', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-04', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-05', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-06', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-07', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-08', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-09', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-04-10', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-05-01', '1 de maig');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-05-02', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-06-23', 'Festa local');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-06-24', 'Sant Joan');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-06-26', 'Festa local');
+
 INSERT INTO CICLE_FORMATIU (cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES (10, 'Intel·ligència Artificial i Big Data', 'CE', 'IAB', 'IC03', 17);
 
 INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (120, 'Models d´Intel·ligència Artificial', 'MP01', 66, 2, '507, Esp', 'A' ,10);
