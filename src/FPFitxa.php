@@ -180,8 +180,14 @@ switch ($accio) {
 
 		$Professor = new Professor($conn, $Usuari);
 		$Professor->CarregaUFAssignades();
-		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+		$FamiliaFPId = $Professor->EsCapDepartament($Usuari->usuari_id); // Si és cap de departament
+
+		if ($Professor->TeMP($Id) || $Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis
+			|| $FamiliaFPId>0) {} // ToDo: Comprovar que la programació (mòdul) és de la família
+		else
 			header("Location: Surt.php");
+//		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+//			header("Location: Surt.php");
 		
 		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari);
 		$frm->Id = $Id;

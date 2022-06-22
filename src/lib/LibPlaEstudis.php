@@ -451,6 +451,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 		}
 		else {
 			// És cap de departament
+			$frm->PermetEditarCondicional(['estat' => 'D']);
 			$frm->AfegeixOpcioAJAX("Accepta", 'EnviaAcceptada', '', [], '', '', ['estat' => 'D']);
 			$frm->AfegeixOpcioAJAX('Retorna', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
 		}
