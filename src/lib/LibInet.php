@@ -88,7 +88,8 @@ class Inet extends Objecte
 	 * @returns array Dades en format JSON posades en un array.
 	 */
 	private function ObteJsonIP(string $ip) {
-		$URL = "https://api.ipdata.co/$ip?api-key=".IPDATA_API_KEY;
+//		$URL = "https://api.ipdata.co/$ip?api-key=".IPDATA_API_KEY;
+		$URL = "https://api.ipdata.co/$ip?api-key=".$this->Sistema->ipdata_api_key;
 		$json = file_get_contents($URL);
 
 		// https://www.php.net/manual/en/function.json-decode.php

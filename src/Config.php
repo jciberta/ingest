@@ -38,7 +38,7 @@ define('MOODLE_URL', '****');
 define('MOODLE_WS_TOKEN', '****');
 
 // API api.ipdata.co
-define('IPDATA_API_KEY', '***');
+//define('IPDATA_API_KEY', '***');
 
 unset($CFG);
 global $CFG;

@@ -17,6 +17,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -26,7 +27,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'MostraDadesIP') {
 		$ip = $_REQUEST['ip'];
 		if (!str_starts_with($ip, '10.') && !str_starts_with($ip, '192.168.')) {
-			$inet = new Inet($conn, $Usuari);
+			$inet = new Inet($conn, $Usuari, $Sistema);
 			print $inet->ObteDadesIP($ip);
 		}
 		else
