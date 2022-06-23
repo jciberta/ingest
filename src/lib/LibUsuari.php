@@ -1152,8 +1152,8 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		
 		$Retorn .= $this->CreaLlista('CPE.codi', 'Cicle', 100, 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'), 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD'),
+			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD', 'IAB'), 
+			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD', 'IAB'),
 			$this->CodiCiclePlaEstudi, 
 			'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		return $Retorn;
@@ -1190,7 +1190,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$AnyAcademicId = $this->AnyAcademicId;
 		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
 		// Pedaç
-		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB'))
+		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB') || ($CodiCiclePlaEstudi == 'IAB'))
 			$CodiCiclePlaEstudi = 'SMX';
 		if ($CodiCiclePlaEstudi == 'FIP')
 			$CodiCiclePlaEstudi = 'CAI';
@@ -1236,7 +1236,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$AnyAcademicId = $this->AnyAcademicId;
 		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
 		// Pedaç
-		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB'))
+		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB') || ($CodiCiclePlaEstudi == 'IAB'))
 			$CodiCiclePlaEstudi = 'SMX';
 		if ($CodiCiclePlaEstudi == 'FIP')
 			$CodiCiclePlaEstudi = 'CAI';

@@ -656,6 +656,11 @@ INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CE Intel·ligè
 UPDATE CURS SET data_inici = '2022-09-07' WHERE curs_id>=49;
 UPDATE CURS SET data_final = '2023-05-31' WHERE curs_id>=49;
 
+-- Còpies del curs passat
+call CopiaTutors(4, 5);
+
+
+
 -- Copiar les programacions del curs passat
 update MODUL_PLA_ESTUDI MPE 
 left join CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
