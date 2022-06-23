@@ -658,36 +658,5 @@ UPDATE CURS SET data_final = '2023-05-31' WHERE curs_id>=49;
 
 -- Còpies del curs passat
 call CopiaTutors(4, 5);
+call CopiaProgramacions(4, 5);
 
-
-
--- Copiar les programacions del curs passat
-update MODUL_PLA_ESTUDI MPE 
-left join CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-set MPE.metodologia = (
-	select MPE2.metodologia from MODUL_PLA_ESTUDI MPE2
-	left join CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=MPE2.cicle_pla_estudi_id)
-	where CPE2.any_academic_id=4
-    and MPE2.modul_professional_id=MPE.modul_professional_id
-)
-where CPE.any_academic_id=5;
-
-update MODUL_PLA_ESTUDI MPE 
-left join CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-set MPE.criteris_avaluacio = (
-	select MPE2.criteris_avaluacio from MODUL_PLA_ESTUDI MPE2
-	left join CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=MPE2.cicle_pla_estudi_id)
-	where CPE2.any_academic_id=4
-    and MPE2.modul_professional_id=MPE.modul_professional_id
-)
-where CPE.any_academic_id=5;
-
-update MODUL_PLA_ESTUDI MPE 
-left join CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-set MPE.recursos = (
-	select MPE2.recursos from MODUL_PLA_ESTUDI MPE2
-	left join CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=MPE2.cicle_pla_estudi_id)
-	where CPE2.any_academic_id=4
-    and MPE2.modul_professional_id=MPE.modul_professional_id
-)
-where CPE.any_academic_id=5;
