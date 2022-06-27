@@ -1128,52 +1128,54 @@ class Notes extends Form
 		$ResultSet = $this->Connexio->query($SQL);
 		if (!$ResultSet)
 			die("<b>ERROR</b>. SQL: ".$SQL); 
-		
+	
 //print_r($ResultSet);	
 
-		// Creem 2 objectes per administrar les notes de 1r i de 2n respectivament
-		$i = -1; 
-		$j1 = 0;
-		$j2 = 0;
-		$AlumneId = -1;
-		$row = $ResultSet->fetch_assoc();
-		while($row) {
+		if ($ResultSet->num_rows > 0) {
+			// Creem 2 objectes per administrar les notes de 1r i de 2n respectivament
+			$i = -1; 
+			$j1 = 0;
+			$j2 = 0;
+			$AlumneId = -1;
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
 //print_r($row);
 //print '<hr>';
-			if ($row["NivellUF"] == 1) {
-				if ($row["AlumneId"] != $AlumneId) {
-					$AlumneId = $row["AlumneId"];
-					$i++;
-					$this->Registre1->Alumne[$i] = $row;
-					$this->Registre2->Alumne[$i] = $row;
-					$j1 = 0; 
-					$j2 = 0; 
-				}	
-				$this->Registre1->UF[$i][$j1] = $row;
-				$j1++;
-			}
-			else if ($row["NivellUF"] == 2) {
-				if ($row["AlumneId"] != $AlumneId) {
-					$AlumneId = $row["AlumneId"];
-					$i++;
-					$this->Registre1->Alumne[$i] = $row;
-					$this->Registre2->Alumne[$i] = $row;
-					$j1 = 0; 
-					$j2 = 0; 
-				}	
-				$this->Registre2->UF[$i][$j2] = $row;
-				$j2++;
-			}
-			$row = $ResultSet->fetch_assoc();
-		}		
+				if ($row["NivellUF"] == 1) {
+					if ($row["AlumneId"] != $AlumneId) {
+						$AlumneId = $row["AlumneId"];
+						$i++;
+						$this->Registre1->Alumne[$i] = $row;
+						$this->Registre2->Alumne[$i] = $row;
+						$j1 = 0; 
+						$j2 = 0; 
+					}	
+					$this->Registre1->UF[$i][$j1] = $row;
+					$j1++;
+				}
+				else if ($row["NivellUF"] == 2) {
+					if ($row["AlumneId"] != $AlumneId) {
+						$AlumneId = $row["AlumneId"];
+						$i++;
+						$this->Registre1->Alumne[$i] = $row;
+						$this->Registre2->Alumne[$i] = $row;
+						$j1 = 0; 
+						$j2 = 0; 
+					}	
+					$this->Registre2->UF[$i][$j2] = $row;
+					$j2++;
+				}
+				$row = $ResultSet->fetch_assoc();
+			}		
 //print_r($this->Registre1->Alumne[0]);
 //print('<hr>');
 //print_r($this->Registre2);
 //print('<hr>');
-		$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio);
-		$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio);
+			$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio);
+			$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio);
 //print_r($this->Registre2);
 //print('<hr>');
+		}
 	}	
 	
 	/**
@@ -1239,13 +1241,15 @@ class Notes extends Form
 						if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
 							$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);
 					}
-					else if ($Avaluacio == 'Extraordinària') {
+					else if ($Avaluacio == 'Extraordinària' || $Avaluacio == 'Tancada') {
 						
 						$ea->UFTotals++;
 						$ea->HoresTotals += $row['Hores'];
 						$ea->UFFetes++;
 						$UltimaNota = Notes::UltimaNotaAvaluada($row);  
-//if ($row['AlumneId']==1022)	echo "UltimaNota: $UltimaNota<BR>";
+//if ($row['AlumneId']==1022)	
+//	echo "UltimaNota: $UltimaNota<BR>";
+//	echo "UFTotals: ".$ea->UFTotals."<BR>";
 
 						if ($UltimaNota != '') {
 							if ($UltimaNota < 5 && $UltimaNota != '')
@@ -1720,12 +1724,15 @@ class Notes extends Form
 //print_r($objCurs);		
 //exit;
 		$ec = $this->CalculaEstadistiquesCurs($Nivell);
+//print_r($ec);		
+//exit;
 		
 		$Retorn .= "<TR><TD style='background-color:black;color:white;' COLSPAN=3>".utf8_encode($objCurs->NomCurs)."</TD></TR>";
 
 		$Retorn .= "<TR><TD>Nombre d'alumnes</TD><TD $style>".$ec->NumeroAlumnes."</TD><TD $style>100%</TD></TR>";
 		$Retorn .= "<TR><TD>Repetidors</TD><TD $style>".$ec->NumeroRepetidors."</TD><TD $style>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
 		$Retorn .= "<TR><TD>Total UF's</TD><TD $style>".$ec->UFTotals."</TD><TD $style>100%</TD></TR>";
+echo "ec->UFTotals: ".$ec->UFTotals."<br>";		
 		$Retorn .= "<TR><TD>UF's avaluades</TD><TD $style>".$ec->UFFetes."</TD><TD $style>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."%</TD></TR>";
 		//$Retorn .= "<TR><TD>&nbsp;</TD><TD></TD></TR>";
 
