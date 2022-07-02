@@ -386,10 +386,45 @@ class PlaEstudisModulRecerca extends FormRecerca
 	 * @return string Sentència SQL.
 	 */
 	public function CreaSQL(): string {
+		if ($this->FamiliaFPId != -1) 
+			return $this->CreaSQLCapDepartament();
+		else
+			return $this->CreaSQLProfessor();
+	}
+	
+	/**
+	 * Crea la sentència SQL per al cap de departament.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQLCapDepartament(): string {
+		$SQL = 'SELECT '.
+			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, MPE.estat, '.
+			' 	CPE.cicle_pla_estudi_id, '.
+			' 	CASE MPE.estat '.
+			'   	WHEN "E" THEN "Elaboració" '.
+			'   	WHEN "D" THEN "Revisió cap departament" '.
+			'   	WHEN "T" THEN "Revisió cap d\'estudis" '.
+			'   	WHEN "A" THEN "Acceptada" '.
+			' 	END AS NomEstat, '.
+			'	CPE.codi AS CodiCF '. 
+			' FROM MODUL_PLA_ESTUDI MPE '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
+			' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+		return $SQL;
+	}
+
+	/**
+	 * Crea la sentència SQL per al professor.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQLProfessor(): string {
 		$Usuari = $this->Usuari;
 		$SubSQL = 'SELECT '.
 			' 	UPE.unitat_pla_estudi_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell, UPE.orientativa, '.
 			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, MPE.estat, '.
+			' 	CPE.cicle_pla_estudi_id, '.
 			' 	CASE MPE.estat '.
 			'   	WHEN "E" THEN "Elaboració" '.
 			'   	WHEN "D" THEN "Revisió cap departament" '.
@@ -416,9 +451,9 @@ class PlaEstudisModulRecerca extends FormRecerca
 					' AND AA.actual=1 ';		
 		$SQL = "
 			SELECT 
-				modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores, estat, NomEstat
+				cicle_pla_estudi_id, modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores, estat, NomEstat
 			FROM ($SubSQL) AS M
-			GROUP BY modul_pla_estudi_id, CodiCF, CodiMP, NomMP
+			GROUP BY cicle_pla_estudi_id, modul_pla_estudi_id, CodiCF, CodiMP, NomMP
 		";			
 		return $SQL;
 	}
@@ -428,6 +463,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm->AfegeixJavaScript('Forms.js?v1.12');
 		$frm->AfegeixJavaScript('ProgramacioDidactica.js?v1.4');
 		$Usuari = $this->Usuari;
 		$frm->Modalitat = $this->Modalitat;
@@ -462,7 +498,28 @@ class PlaEstudisModulRecerca extends FormRecerca
 //			sAnyAcademicId = $this->Sistema->any_academic_id;
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		}
+		
+		if ($this->FamiliaFPId != -1) {
+			// És cap de departament
+			$this->GeneraFiltreCicleFormatiu($frm);
+		}
+
 		$frm->EscriuHTML();
+	}
+	
+	private function GeneraFiltreCicleFormatiu($frm) {
+		$SQL = '
+			SELECT CPE.cicle_pla_estudi_id, CPE.nom
+			FROM CICLE_PLA_ESTUDI CPE
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
+			WHERE CPE.any_academic_id='.$this->Sistema->any_academic_id;
+		if ($this->FamiliaFPId != -1) {
+			$SQL .= ' AND familia_fp_id='.$this->FamiliaFPId;
+		}
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, $SQL, "cicle_pla_estudi_id", "nom");
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
+		$frm->Filtre->AfegeixLlista('CPE.cicle_pla_estudi_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 	}
 }
 

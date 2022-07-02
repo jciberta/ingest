@@ -91,7 +91,8 @@ console.log('-> ActualitzaTaula');
 			var URLDescarregaCSV = document.getElementById('DescarregaCSV');
 //console.log('urlCSV: ' + urlCSV.value);
 //console.dir(DescarregaCSV);
-			URLDescarregaCSV.href = urlCSV.value;
+			if (URLDescarregaCSV != null)
+				URLDescarregaCSV.href = urlCSV.value;
             //$('#debug').html('<textarea disabled>'+data+'</textarea>');
         }, 
 		error: function(data) {
