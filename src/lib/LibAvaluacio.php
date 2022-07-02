@@ -434,7 +434,10 @@ class Avaluacio
 		// S'ha d'executar de forma atòmica
 		$this->Connexio->query('START TRANSACTION');
 		try {
-			$SQL = ' UPDATE CURS SET estat="T" WHERE curs_id='.$id;
+			$SQL = ' 
+				UPDATE CURS 
+				SET estat="T", data_tancament=now()
+				WHERE curs_id='.$id;
 			if (!$this->Connexio->query($SQL))
 				throw new Exception($this->Connexio->error.'. SQL: '.$SQL);
 

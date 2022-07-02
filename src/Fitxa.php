@@ -72,6 +72,7 @@ switch ($accio) {
 		$frm->AfegeixLlista('estat', 'Estat', 30, array('A', 'J', 'I', 'O', 'T'), array('Actiu', 'Junta', 'Inactiu', 'Obertura', 'Tancat'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLlista('avaluacio', 'Avaluació', 30, array('ORD', 'EXT'), array('Ordinària', 'Extraordinària'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('trimestre', 'Trimestre', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('data_tancament', 'Tancament curs', 40, [FormFitxa::offNOMES_LECTURA]);
 		$frm->EscriuHTML();
         break;
     case "Tutor":

@@ -9,6 +9,8 @@ ALTER TABLE SISTEMA ADD moodle_url VARCHAR(100);
 ALTER TABLE SISTEMA ADD moodle_ws_token VARCHAR(100);
 ALTER TABLE SISTEMA ADD ipdata_api_key VARCHAR(100);
 
+ALTER TABLE CURS ADD data_tancament DATETIME;
+
 /*
  * CopiaTutors
  *
@@ -89,4 +91,3 @@ BEGIN
     END;
 END //
 DELIMITER ;
-
