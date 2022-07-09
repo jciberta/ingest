@@ -380,6 +380,12 @@ class PlaEstudisModulRecerca extends FormRecerca
 	* @var integer
 	*/    
 	public $FamiliaFPId = -1;
+
+	/**
+	* Indica si mostra totes les programacions (acceptades i només lectura).
+	* @var integer
+	*/    
+	public $MostraTot = 0;
 	
 	/**
 	 * Crea la sentència SQL.
@@ -388,6 +394,8 @@ class PlaEstudisModulRecerca extends FormRecerca
 	public function CreaSQL(): string {
 		if ($this->FamiliaFPId != -1) 
 			return $this->CreaSQLCapDepartament();
+		else if ($this->MostraTot == 1) 
+			return $this->CreaSQLMostraTot();
 		else
 			return $this->CreaSQLProfessor();
 	}
@@ -403,7 +411,6 @@ class PlaEstudisModulRecerca extends FormRecerca
 			' 	CASE MPE.estat '.
 			'   	WHEN "E" THEN "Elaboració" '.
 			'   	WHEN "D" THEN "Revisió cap departament" '.
-			'   	WHEN "T" THEN "Revisió cap d\'estudis" '.
 			'   	WHEN "A" THEN "Acceptada" '.
 			' 	END AS NomEstat, '.
 			'	CPE.codi AS CodiCF '. 
@@ -412,6 +419,28 @@ class PlaEstudisModulRecerca extends FormRecerca
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
 			' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+		return $SQL;
+	}
+
+	/**
+	 * Crea la sentència SQL per a mostrar les programacions acceptades.
+	 * @return string Sentència SQL.
+	 */
+	private function CreaSQLMostraTot(): string {
+		$SQL = 'SELECT '.
+			' 	MPE.modul_pla_estudi_id AS modul_pla_estudi_id, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores, MPE.estat, '.
+			' 	CPE.cicle_pla_estudi_id, CPE.any_academic_id AS any_academic_id, '.
+			' 	CASE MPE.estat '.
+			'   	WHEN "E" THEN "Elaboració" '.
+			'   	WHEN "D" THEN "Revisió cap departament" '.
+			'   	WHEN "A" THEN "Acceptada" '.
+			' 	END AS NomEstat, '.
+			'	CPE.codi AS CodiCF '. 
+			' FROM MODUL_PLA_ESTUDI MPE '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
+			' WHERE MPE.estat="A" ';
 		return $SQL;
 	}
 
@@ -428,7 +457,6 @@ class PlaEstudisModulRecerca extends FormRecerca
 			' 	CASE MPE.estat '.
 			'   	WHEN "E" THEN "Elaboració" '.
 			'   	WHEN "D" THEN "Revisió cap departament" '.
-			'   	WHEN "T" THEN "Revisió cap d\'estudis" '.
 			'   	WHEN "A" THEN "Acceptada" '.
 			' 	END AS NomEstat, '.
 			'	CPE.codi AS CodiCF, FormataData(UPE.data_inici) AS data_inici, FormataData(UPE.data_final) AS data_final '. 
@@ -492,18 +520,23 @@ class PlaEstudisModulRecerca extends FormRecerca
 			$frm->AfegeixOpcioAJAX('Retorna', 'EnviaElaboracio', '', [], '', '', ['estat' => 'D']);
 		}
 	 
-		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || $this->MostraTot==1) {
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 //			$AnyAcademicId = $aAnys[0][0]; 
 //			sAnyAcademicId = $this->Sistema->any_academic_id;
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		}
 		
-		if ($this->FamiliaFPId != -1) {
+		if ($this->FamiliaFPId != -1 || $this->MostraTot==1) {
 			// És cap de departament
 			$this->GeneraFiltreCicleFormatiu($frm);
 		}
 
+		if ($this->FamiliaFPId != -1) {
+			// És cap de departament
+			$frm->Filtre->AfegeixLlista('estat', 'Estat', 60, Array('', 'E', 'D' , 'A'), Array('Tots', 'Elaboració', 'Revisió cap departament', 'Acceptada'));
+		}
+		
 		$frm->EscriuHTML();
 	}
 	

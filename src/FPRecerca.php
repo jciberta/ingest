@@ -30,10 +30,8 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 RecuperaGET($_GET);
-
 if (empty($_GET))
 	header("Location: Surt.php");
-
 $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
 
 // Comprovem que el professor coincideix amb l'usuari de la sessió
@@ -59,10 +57,6 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'familia_fp_id';
 		$frm->Camps = 'nom';
 		$frm->Descripcions = 'Nom';
-		if ($Usuari->es_admin) {
-			$frm->Camps = 'familia_fp_id, '.$frm->Camps;
-			$frm->Descripcions = 'Id, '.$frm->Descripcions;
-		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=Families';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
@@ -85,10 +79,6 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'cicle_formatiu_id';
 		$frm->Camps = 'NomCF, grau, codi, codi_xtec, NomFFP, Llei, bool:actiu';
 		$frm->Descripcions = 'Nom, Grau, Codi, Codi XTEC, Família, Llei, Actiu';
-		if ($Usuari->es_admin) {
-			$frm->Camps = 'cicle_formatiu_id, '.$frm->Camps;
-			$frm->Descripcions = 'Id, '.$frm->Descripcions;
-		}
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=CiclesFormatius';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
@@ -107,10 +97,6 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'modul_professional_id';
 		$frm->Camps = 'codi, nom, hores, hores_setmana, bool:FCT, especialitat, cos, CodiCF, NomCF, NomFFP, bool:actiu';
 		$frm->Descripcions = 'Codi, Nom, Hores, Hores Setmana, FCT, Especialitat, Cos, Codi, Cicle Formatiu, Família, Actiu';
-		if ($Usuari->es_admin) {
-			$frm->Camps = 'modul_professional_id, '.$frm->Camps;
-			$frm->Descripcions = 'Id, '.$frm->Descripcions;
-		}
 		$frm->PermetEditar = ($Usuari->es_admin);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ModulsProfessionals';
 		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
@@ -130,10 +116,6 @@ switch ($accio) {
 		$frm->ClauPrimaria = 'unitat_formativa_id';
 		$frm->Camps = 'CodiUF, NomUF, nivell, HoresUF, bool:FCT, CodiMP, NomMP, CodiCF, NomCF, bool:activa';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Hores, FCT, Codi, Mòdul professional, Codi, Cicle Formatiu, Activa';
-		if ($Usuari->es_admin) {
-			$frm->Camps = 'unitat_formativa_id, '.$frm->Camps;
-			$frm->Descripcions = 'Id, '.$frm->Descripcions;
-		}
 		$frm->PermetEditar = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		$frm->URLEdicio = 'FPFitxa.php?accio=UnitatsFormatives';
 		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
@@ -156,8 +138,10 @@ switch ($accio) {
         break;
     case "PlaEstudisModul":
 		$FamiliaFPId = (array_key_exists('FamiliaFPId', $_GET)) ? $_GET['FamiliaFPId'] : -1; 
+		$MostraTot = (array_key_exists('MostraTot', $_GET)) ? $_GET['MostraTot'] : 0; 
 		$frm = new PlaEstudisModulRecerca($conn, $Usuari, $Sistema);
 		$frm->FamiliaFPId = $FamiliaFPId;
+		$frm->MostraTot = $MostraTot;
 		$frm->EscriuHTML();
         break;
     case "ProgramacionsDidactiques":

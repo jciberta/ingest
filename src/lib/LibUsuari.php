@@ -664,24 +664,10 @@ class Professor extends Usuari
 		// Les meves UF
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisUnitat&ProfId='.$this->Usuari->usuari_id);
 		echo CreaTargeta('Unitats formatives', 'Les meves UF', $URL);
-		/*echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Unitats formatives</h5>';
-		echo '      <p class="card-text">Les meves UF</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';*/
 
-		// Programacions
+		// Els meus mòduls
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&ProfId='.$this->Usuari->usuari_id);
-		echo CreaTargeta('Programacions', 'Els meus mòduls', $URL);
-/*		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Programacions</h5>';
-		echo '      <p class="card-text">Els meus mòduls</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';*/
+		echo CreaTargeta('Mòduls professionals', 'Programacions', $URL);
 
 		// Cap de departament
 		$FamiliaFPId = $this->EsCapDepartament($this->Usuari->usuari_id);
@@ -689,6 +675,10 @@ class Professor extends Usuari
 			$URL = GeneraURL("FPRecerca.php?accio=PlaEstudisModul&FamiliaFPId=$FamiliaFPId&ProfId=".$this->Usuari->usuari_id);
 			echo CreaTargeta('Departament', 'Revisió programacions', $URL);
 		}
+
+		// Programacions
+		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&MostraTot=1&ProfId='.$this->Usuari->usuari_id);
+		echo CreaTargeta('Programacions', 'Totes les programacions', $URL);
 
 		echo '</div>';
 		echo '<h3>Informes</h3>';
