@@ -263,15 +263,18 @@ switch ($accio) {
 			header("Location: Surt.php");		
         break;
     case "PlaTreballCalendari":
-		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
-		if ($MatriculaId == -1)
+		$MatriculaId = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		$CursId = (array_key_exists('CursId', $_GET)) ? $_GET['CursId'] : -1; 
+		if ($MatriculaId == -1 && $CursId == -1)
 			header("Location: Surt.php");
 
 		$mat = new Matricula($conn, $Usuari);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
-			$frm = new PlaTreballCalendari($conn, $Usuari, $MatriculaId);
+			$frm = new PlaTreballCalendari($conn, $Usuari);
+			$frm->MatriculaId = $MatriculaId;
+			$frm->CursId = $CursId;
 			$frm->EscriuHTML();
 		}
 		else

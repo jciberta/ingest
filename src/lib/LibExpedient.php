@@ -1987,21 +1987,25 @@ class PlaTreball extends Objecte
 	* Identificador de la matrícula.
 	* @var integer
 	*/
-	private $MatriculaId = -1;
+	public $MatriculaId = -1;
+
+	/**
+	* Identificador del curs.
+	* @var integer
+	*/
+	public $CursId = -1;
 
 	/**
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
-	 * @param int $MatriculaId Identificador de la matrícula.
 	 */
-	function __construct($conn, $user, $MatriculaId) {
+/*	function __construct($conn, $user) {
 		parent::__construct($conn);
 
 		$this->Connexio = $conn;
 		$this->Usuari = $user;
-		$this->MatriculaId = $MatriculaId;
-	}
+	}*/
 	
 	/**
 	 * Escriu el pla de treball.
@@ -2015,10 +2019,40 @@ class PlaTreball extends Objecte
 	}
 
 	/**
+	 * Crea la SQL per al calendari del curs.
+	 * @param integer $CursId Identificador del curs.
+     * @return string Sentència SQL.
+	 */
+	private function CreaSQLCurs(int $CursId) {
+		$SQL = " 
+			SELECT 
+				UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, 
+				UPE.nivell AS NivellUF, UPE.data_inici AS DataIniciUF, UPE.data_final AS DataFinalUF, 
+				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
+				CPE.nom AS NomCF, CPE.nom AS NomCF, CF.llei, 
+				CONCAT(AA.any_inici, '-', AA.any_final) AS AnyAcademic, 
+				0 AS nota1, 0 AS nota2, 0 AS nota3, 0 AS nota4, 0 AS nota5, 1 AS convocatoria, 
+				UPE.*, MPE.*, CPE.*, C.* 
+			FROM UNITAT_PLA_ESTUDI UPE 
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
+			LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id) 
+			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) 
+			WHERE C.curs_id=$CursId AND UPE.nivell<=C.nivell
+		";
+		return $SQL;
+	}
+	
+	/**
 	 * Carrega les dades d'una matrícula i les emmagatzema en l'atribut Registre.
 	 */
 	protected function Carrega() {
-		$SQL = Expedient::SQL($this->MatriculaId);
+//print($this->CursId);
+		if ($this->MatriculaId != -1)
+			$SQL = Expedient::SQL($this->MatriculaId);
+		else
+			$SQL = $this->CreaSQLCurs($this->CursId);
 //print($SQL);
 		$RecordSet = [];
 		$ResultSet = $this->Connexio->query($SQL);

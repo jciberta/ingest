@@ -296,6 +296,7 @@ class Curs extends Objecte
 			$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
 			$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
 			$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+			$frm->AfegeixOpcio('Calendari UF', 'Fitxa.php?accio=PlaTreballCalendari&CursId=', '', 'calendari.svg');
 		}
 		if ($this->Usuari->es_admin) {
 			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
