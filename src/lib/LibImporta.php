@@ -12,6 +12,7 @@
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibArray.php');
+require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/vendor/autoload.php');
 
@@ -21,25 +22,25 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  * Classe Importa.
  * Classe base de la quals descendeixen les importacions.
  */
-class Importa 
+class Importa extends Objecte 
 {
 	/**
 	* Connexió a la base de dades.
 	* @var object
 	*/    
-	public $Connexio;
+//	public $Connexio;
 
 	/**
 	* Usuari autenticat.
 	* @var object
 	*/    
-	public $Usuari;
+//	public $Usuari;
 	
 	/**
 	* Registre per a emmagatzemar el resultat d'un DataSet.
 	* @var object
 	*/    
-    private $Registre = null;
+//    private $Registre = null;
 	
 	/**
 	* Camps de la capçalera indexats per número.
@@ -58,10 +59,10 @@ class Importa
 	 * @param object $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
 	 */
-	function __construct($con, $user) {
+/*	function __construct($con, $user) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
-	}	
+	}*/	
 } 
 
 /**
@@ -1136,7 +1137,7 @@ class ImportaNotesMoodleServeiWeb extends ImportaNotes
 	}	
 	
 	private function CarregaAlumnes(int $CursId) {
-		$URL = MOODLE_URL.'/moodle/webservice/rest/server.php?wstoken='.MOODLE_WS_TOKEN.'&wsfunction=core_enrol_get_enrolled_users&moodlewsrestformat=json&courseid='.$CursId;
+		$URL = $this->Sistema->moodle_url.'/moodle/webservice/rest/server.php?wstoken='.$this->Sistema->moodle_ws_token.'&wsfunction=core_enrol_get_enrolled_users&moodlewsrestformat=json&courseid='.$CursId;
 //echo "URL: $URL<p>";
 	
 		$ch = curl_init();
@@ -1161,7 +1162,7 @@ class ImportaNotesMoodleServeiWeb extends ImportaNotes
 	}
 
 	private function CarregaNotesMoodle(int $CursId, int $CategoriaId) {
-		$URL = MOODLE_URL.'/moodle/webservice/rest/server.php?wstoken='.MOODLE_WS_TOKEN.'&wsfunction=gradereport_user_get_grade_items&moodlewsrestformat=json&courseid='.$CursId;
+		$URL = $this->Sistema->moodle_url.'/moodle/webservice/rest/server.php?wstoken='.$this->Sistema->moodle_ws_token.'&wsfunction=gradereport_user_get_grade_items&moodlewsrestformat=json&courseid='.$CursId;
 //echo "URL: $URL<p>";
 
 		$ch = curl_init();

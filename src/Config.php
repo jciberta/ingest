@@ -34,8 +34,8 @@ class Config {
 //define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
 
 // Credencials Moodle
-define('MOODLE_URL', '****');
-define('MOODLE_WS_TOKEN', '****');
+//define('MOODLE_URL', '****');
+//define('MOODLE_WS_TOKEN', '****');
 
 // API api.ipdata.co
 //define('IPDATA_API_KEY', '***');
