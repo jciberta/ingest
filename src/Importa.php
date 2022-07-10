@@ -18,6 +18,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -35,7 +36,7 @@ $accio = $_GET['accio'];
 switch ($accio) {
     case "ImportaNotesMoodleServeiWeb":
 		CreaIniciHTML($Usuari, "Importació de notes");
-		$ImportaNotes = new ImportaNotesMoodleServeiWeb($conn, $Usuari);
+		$ImportaNotes = new ImportaNotesMoodleServeiWeb($conn, $Usuari, $Sistema);
 		$ImportaNotes->UnitatPlaEstudiId = $_GET['UnitatPlaEstudiId'];
 		$ImportaNotes->Importa();
 		break;

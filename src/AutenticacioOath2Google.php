@@ -23,13 +23,23 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
+// Carreguem la configuració del sistema
+$SQL = "SELECT * FROM SISTEMA";
+$ResultSet = $conn->query($SQL);
+if ($ResultSet->num_rows == 0) 
+	die("El sistema no ha estat configurat.");
+$sistema = $ResultSet->fetch_object();
+
 // Objecte per usar l'API client de Google
 $google_client = new Google_Client();
 
 // Afegim les credencials
-$google_client->setClientId(GOOGLE_CLIENT_ID);
-$google_client->setClientSecret(GOOGLE_CLIENT_SECRET);
-$google_client->setRedirectUri(GOOGLE_REDIRECT_URI);
+$google_client->setClientId($sistema->google_client_id);
+$google_client->setClientSecret($sistema->google_client_secret);
+$google_client->setRedirectUri($sistema->google_redirect_uri);
+//$google_client->setClientId(GOOGLE_CLIENT_ID);
+//$google_client->setClientSecret(GOOGLE_CLIENT_SECRET);
+//$google_client->setRedirectUri(GOOGLE_REDIRECT_URI);
 
 // Àmbit del que volem obtenir informació
 $google_client->addScope('email');
@@ -90,11 +100,11 @@ if ($ResultSet->num_rows > 0) {
 	$log = new Registre($conn, $user);
 	
 	// Carreguem la configuració del sistema
-	$SQL = "SELECT * FROM SISTEMA";
+/*	$SQL = "SELECT * FROM SISTEMA";
 	$ResultSet = $conn->query($SQL);
 	if ($ResultSet->num_rows == 0) 
 		die("El sistema no ha estat configurat.");
-	$sistema = $ResultSet->fetch_object();
+	$sistema = $ResultSet->fetch_object();*/
 
 	// Carreguem els dies festius
 	$SQL = "SELECT * FROM FESTIU ORDER BY data";

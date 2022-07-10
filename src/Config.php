@@ -19,23 +19,23 @@ class Config {
 	const Demo           = False;
 	const Manteniment    = False;
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
-	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
+	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;
-	const AutenticacioGoogle = False;
+	const AutenticacioGoogle = True;
 }
 
-$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
+//$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
 
 // Credencials Google
-define('GOOGLE_CLIENT_ID', '***');
-define('GOOGLE_CLIENT_SECRET', '***');
-define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
+//define('GOOGLE_CLIENT_ID', '***');
+//define('GOOGLE_CLIENT_SECRET', '***');
+//define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
 
 // Credencials Moodle
-define('MOODLE_URL', '****');
-define('MOODLE_WS_TOKEN', '****');
+//define('MOODLE_URL', '****');
+//define('MOODLE_WS_TOKEN', '****');
 
 // API api.ipdata.co
 //define('IPDATA_API_KEY', '***');

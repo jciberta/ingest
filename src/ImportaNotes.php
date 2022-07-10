@@ -19,6 +19,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -69,7 +70,7 @@ if ($uploadOk == 0) {
 $inputFileName = INGEST_DATA.'/upload/'.$_FILES["Fitxer"]["name"];
 $UnitatPlaEstudiId = $_POST['UnitatPlaEstudiId'];
 
-$ImportaNotes = new ImportaNotesMoodleFitxer($conn, $Usuari);
+$ImportaNotes = new ImportaNotesMoodleFitxer($conn, $Usuari, $Sistema);
 $ImportaNotes->UnitatPlaEstudiId = $UnitatPlaEstudiId;
 $ImportaNotes->Importa($inputFileName);
 
