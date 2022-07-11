@@ -2153,13 +2153,14 @@ class PlaTreball extends Objecte
 			$Retorn .= CreaTaula1($Dades);		
 			$Retorn .= '<BR>';
 		}
-		
-		// Botó d'impressió
+
+		// Botons
 		echo '<span style="float:right;">';
-		echo '<a href="Fitxa.php?accio=PlaTreballCalendari&Id='.$this->MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Calendari</a>&nbsp';
+		$URL = GeneraURL('Fitxa.php?accio=PlaTreballCalendari&Id='.$this->MatriculaId);
+		echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Calendari</a>&nbsp';
 		echo '<a href="#" onclick="print();" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Imprimeix</a>';
 		echo '</span>';
-		
+
 		return $Retorn;
 	}
 
@@ -2237,6 +2238,18 @@ class PlaTreball extends Objecte
 class PlaTreballCalendari extends PlaTreball
 {
 	/**
+	 * Data més petita.
+	 * @var date
+	 */
+    private $DataMin = '2999-12-31';
+
+	/**
+	 * Data més gran.
+	 * @var date
+	 */
+    private $DataMax = '0000-00-00';
+	
+	/**
 	 * Escriu el pla de treball.
 	 */
 	public function EscriuHTML() {
@@ -2248,11 +2261,12 @@ class PlaTreballCalendari extends PlaTreball
 			'<link href="vendor/visjs/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css"/>'
 		);
 		$this->Carrega();
+		$this->CalculaIntervalDates();
 		echo $this->GeneraTitol();
 		echo $this->GeneraLiniaTemps();
 		CreaFinalHTML();
 	}
-	
+
 	/**
 	 * Genera la capçalera del pla de treball.
 	 * @return string HTML amb la capçalera del pla de treball.
@@ -2290,6 +2304,24 @@ class PlaTreballCalendari extends PlaTreball
 		else 
 			return '';
 	}
+
+	/**
+	 * Calcula l'interval de dates.
+	 * Nota: Store it in YYYY-MM-DD and then string comparison will work because '1' > '0', etc.
+	 */
+	private function CalculaIntervalDates() {
+		foreach($this->Registre as $MP) {
+			foreach($MP->UF as $UF) {
+//echo $UF->DataInici.'<br>';
+				if ($UF->DataInici != null)
+					$this->DataMin = min($this->DataMin, getdate(strtotime($UF->DataInici)));
+				if ($UF->DataFinal != null)
+					$this->DataMax = max($this->DataMax, getdate(strtotime($UF->DataFinal)));
+			}
+		}
+echo 'DataMin'.$this->DataMin.'<br>';
+echo 'DataMax'.$this->DataMax.'<br>';
+	}
 	
 	/**
 	 * Genera el calendari de les UF (línia de temps).
@@ -2301,6 +2333,7 @@ class PlaTreballCalendari extends PlaTreball
 		$Retorn .= '<script>';
 		$Retorn .= 'var groups = new vis.DataSet([';
 		$Grup = '';
+print_h($this->Registre);		
 		foreach($this->Registre as $MP) {
 			$Grup .= "{id: ".$this->NumeroModul($MP->CodiMP).", content: '".$MP->CodiMP."',";
 			$Grup .= "subgroupStack:{'nostack': false, 'stack': true}},"; // Afegir subgrups per controlar la funció "stack" a cada grup.
