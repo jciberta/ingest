@@ -36,10 +36,10 @@ $google_client = new Google_Client();
 // Afegim les credencials
 $google_client->setClientId($sistema->google_client_id);
 $google_client->setClientSecret($sistema->google_client_secret);
-$google_client->setRedirectUri($sistema->google_redirect_uri);
+//$google_client->setRedirectUri($sistema->google_redirect_uri);
 //$google_client->setClientId(GOOGLE_CLIENT_ID);
 //$google_client->setClientSecret(GOOGLE_CLIENT_SECRET);
-//$google_client->setRedirectUri(GOOGLE_REDIRECT_URI);
+$google_client->setRedirectUri(GOOGLE_REDIRECT_URI);
 
 // Àmbit del que volem obtenir informació
 $google_client->addScope('email');
