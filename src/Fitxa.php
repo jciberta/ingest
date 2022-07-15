@@ -27,6 +27,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -50,7 +51,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Curs';
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
@@ -83,7 +84,7 @@ switch ($accio) {
 		$Id = !array_key_exists("Id", $_GET) ? -1 : $_GET['Id'];
 //		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Tutor';
 		$frm->Taula = 'TUTOR';
 		$frm->ClauPrimaria = 'tutor_id';
@@ -114,7 +115,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Any acadèmic';
 		$frm->Taula = 'ANY_ACADEMIC';
 		$frm->ClauPrimaria = 'any_academic_id';
@@ -137,7 +138,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Equip';
 		$frm->Taula = 'EQUIP';
 		$frm->ClauPrimaria = 'equip_id';
@@ -168,7 +169,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 
-		$frm = new ProfessorsEquip($conn, $Usuari);
+		$frm = new ProfessorsEquip($conn, $Usuari, $Sistema);
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;
@@ -248,15 +249,18 @@ switch ($accio) {
 		
         break;
     case "PlaTreball":
-		$MatriculaId = empty($_GET) ? -1 : $_GET['Id'];
-		if ($MatriculaId == -1)
+		$MatriculaId = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		$CursId = (array_key_exists('CursId', $_GET)) ? $_GET['CursId'] : -1; 
+		if ($MatriculaId == -1 && $CursId == -1)
 			header("Location: Surt.php");
 
 		$mat = new Matricula($conn, $Usuari);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
-			$frm = new PlaTreball($conn, $Usuari, $MatriculaId);
+			$frm = new PlaTreball($conn, $Usuari, $Sistema);
+			$frm->MatriculaId = $MatriculaId;
+			$frm->CursId = $CursId;
 			$frm->EscriuHTML();
 		}
 		else
@@ -272,7 +276,7 @@ switch ($accio) {
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
-			$frm = new PlaTreballCalendari($conn, $Usuari);
+			$frm = new PlaTreballCalendari($conn, $Usuari, $Sistema);
 			$frm->MatriculaId = $MatriculaId;
 			$frm->CursId = $CursId;
 			$frm->EscriuHTML();
@@ -285,7 +289,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
-		$Material = new Material($conn, $Usuari);
+		$Material = new Material($conn, $Usuari, $Sistema);
 		$Material->Id = $Id;
 		$Material->EscriuFormulariFitxa();
         break;
@@ -294,7 +298,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
-		$TipusMaterial = new TipusMaterial($conn, $Usuari);
+		$TipusMaterial = new TipusMaterial($conn, $Usuari, $Sistema);
 		$TipusMaterial->Id = $Id;
 		$TipusMaterial->EscriuFormulariFitxa();
         break;
@@ -303,7 +307,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
-		$ReservaMaterial = new ReservaMaterial($conn, $Usuari);
+		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->Id = $Id;
 		$ReservaMaterial->EscriuFormulariFitxa();
         break;

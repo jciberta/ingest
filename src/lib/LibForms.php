@@ -112,63 +112,51 @@ class Form extends Objecte
 	const offNO_TITOL = 4;      // Indica que no es vol la 1a columna.
 
 	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-//	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-//	public $Usuari;
-
-	/**
-	* Títol del formulari.
-	* @var string
-	*/    
+	 * Títol del formulari.
+	 * @var string
+	 */    
     public $Titol = '';
 
 	/**
-	* Subtítol del formulari.
-	* @var string
-	*/    
+	 * Subtítol del formulari.
+	 * @var string
+	 */    
     public $SubTitol = '';
 
 	/**
-	* Taula principal.
-	* @var string
-	*/    
+	 * Taula principal.
+	 * @var string
+	 */    
     public $Taula = '';	
 
 	/**
-	* Clau primària de la taula. Es permet que sigui múltiple.
-	* @var string
-	*/    
+	 * Clau primària de la taula. Es permet que sigui múltiple.
+	 * @var string
+	 */    
     public $ClauPrimaria = '';	
 
 	/**
-	* Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
-	* @var object
-	*/    
+	 * Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
+	 * @var object
+	 */    
 //    public $Registre = NULL;
 
 	/**
-	* Fitxers JavaScript.
-	* @var array
-	*/    
+	 * Fitxers JavaScript.
+	 * @var array
+	 */    
     protected $FitxerJS = [];	
 
 	/**
-	* Codi JavaScript que s'afegirà la funció $(document).ready.
-	* @var string
-	*/    
+	 * Codi JavaScript que s'afegirà la funció $(document).ready.
+	 * @var string
+	 */    
     protected $DocumentReady = '';
 
 	/**
-	* Indica si un formulari s'hi permet realitzar canvis o no.
-	* @var boolean
-	*/    
+	 * Indica si un formulari s'hi permet realitzar canvis o no.
+	 * @var boolean
+	 */    
     public $NomesLectura = False; 
 
 	/**
@@ -1349,7 +1337,7 @@ class FormRecerca extends Form
 	/**
 	 * Genera la part oculta per emmagatzemar valors.
 	 */
-	private function GeneraPartOculta() {
+	protected function GeneraPartOculta() {
 		$sRetorn = "";
 		$FormSerialitzat = serialize($this);
 		$FormSerialitzatEncriptat = Encripta($FormSerialitzat);
@@ -1692,6 +1680,110 @@ class FormRecerca extends Form
 		return $Retorn;
 	 }
 } 
+
+/**
+ * Classe FormRecercaQBE.
+ * Classe per als formularis de recerca QBE (Query By Example).
+ */
+class FormRecercaQBE extends FormRecerca 
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
+		echo '<script language="javascript" src="js/Forms.js?v1.12" type="text/javascript"></script>';
+		for($i = 1; $i <= count($this->FitxerJS); $i++) 
+			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+		// Inicialització de l'ajuda
+		// https://getbootstrap.com/docs/4.0/components/popovers/
+		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+		echo $this->GeneraSubTitol();
+		echo $this->GeneraMissatges();
+		echo $this->GeneraTaula();
+		CreaFinalHTML();
+	}
+	
+	/**
+	 * Crea la nova SQL a partir de les propietats SQL i FiltreText.
+     * @return string Sentència SQL.
+	 */
+	public function CreaSQL($PARAM = []) {
+		$Where = '';
+		if (count($PARAM)>2) {
+			$keys = array_keys($PARAM);
+			for ($i=0; $i<count($PARAM); $i++) {
+				if ($PARAM[$keys[$i]] != '')
+					$Where .= " AND ".$keys[$i]."='".$PARAM[$keys[$i]]."'";
+			}
+		}
+		$SQL = 'SELECT * FROM '.$this->Taula.' WHERE (0=0) '.$Where;
+		return $SQL;
+	}
+	
+	/**
+	 * Genera una taula amb el resultat de la SQL.
+     * @return string Taula amb les dades.
+	 */
+	public function GeneraTaula($PARAM = []) {
+		$aClauPrimaria = explode(',', $this->ClauPrimaria);
+		$Taula = $this->Taula;
+
+		$sRetorn = '<DIV id=taula>';
+		$SQL = $this->CreaSQL($PARAM);
+//print "<br>$SQL<br>";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$sRetorn .= '<input type=hidden id=accio name=accio value="Taula">';
+			$sRetorn .= '<input type=hidden id=taula name=taula value="'.$Taula.'">';
+			$sRetorn .= "<TABLE id='TaulaQBE'>";
+			$PrimerCop = True;
+			while($row = $ResultSet->fetch_assoc()) {
+				$keys = array_keys($row);
+				if ($PrimerCop) {
+					// Capçalera de la taula
+					$sRetorn .= "<THEAD>";
+					for ($i=0; $i<count($keys); $i++) {
+						$sRetorn .= "<TH>".$keys[$i]."</TH>";
+					}
+					$sRetorn .= "</THEAD>";
+					// Camps per filtrar, estil QBE
+					for ($i=0; $i<count($keys); $i++) {
+						$Valor = (isset($PARAM) && array_key_exists($keys[$i], $PARAM)) ? $PARAM[$keys[$i]] : '';
+						$sRetorn .= '<TD><input type="text" name="'.$keys[$i].'" value="'.$Valor.'" size="1px" style="width:100%"></TD>';
+					}
+					// Botó per filtrar
+					$sRetorn .= '<TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnFiltra" name="btnFiltra" onclick="FiltraQBE(this);">Filtra</a></TD>';
+					$PrimerCop = False;
+				}
+				$sRetorn .= "<TR>";
+				for ($i=0; $i<count($keys); $i++) {
+					$sRetorn .= "<TD>".utf8_encode($row[$keys[$i]])."</TD>";
+				}
+				$ClauPrimaria = implode(",", $aClauPrimaria);
+				if ($ClauPrimaria != '') {
+					// Si hi ha clau primària, es pot editar i esborrar
+					$sRetorn .= "<TD>";
+					$ClauPrimaria = implode(",", $aClauPrimaria);
+					$aValor = [];
+					for ($i=0; $i<count($aClauPrimaria); $i++)
+						array_push($aValor, $row[$aClauPrimaria[$i]]);
+					$Valor = implode(",", $aValor);
+					$URL = GeneraURL($this->URLEdicio."$Valor");
+					$sRetorn .= "<A href=$URL><IMG src=img/edit.svg></A>&nbsp&nbsp";
+					$Funcio = 'SuprimeixRegistre("'.$Taula.'", "'.$ClauPrimaria.'", "'.$Valor.'");';
+					$sRetorn .= "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
+					$sRetorn .= "</TD>";
+				}
+				$sRetorn .= "</TR>";
+			}
+			$sRetorn .= "</TABLE>";
+			$sRetorn .= $this->GeneraPartOculta();
+		}
+		$sRetorn .= '</DIV>';
+		return $sRetorn;
+	}
+}
 
 /**
  * Classe FormFitxa.

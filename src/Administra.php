@@ -19,6 +19,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -34,7 +35,8 @@ if (isset($_POST) && !empty($_POST))
 	$PARAM = $_POST;
 else
 	$PARAM = $_GET;
-//print_r($PARAM);
+echo '<br>';
+//print_h($PARAM);
 //exit;
 
 $accio = (isset($PARAM) && array_key_exists('accio', $PARAM)) ? $PARAM['accio'] : 'BaseDades';
@@ -68,82 +70,31 @@ switch ($accio) {
 
 		break;
     case "Taula":
-		CreaIniciHTML($Usuari, 'Administració');
 		$Taula = $PARAM['taula'];
 		
 		// Metadades
-		echo "Metadades taula <B>$Taula</B><BR><BR>";
+		$SubTitol = "Metadades taula <B>$Taula</B><BR><BR>";
 		$Metadades = $Administracio->ObteMetadades($Taula);
+//print_h($Metadades);
+//exit;
 		$ClauPrimaria = $Administracio->ClauPrimariaDesDeMetadades($Metadades);
 		$aClauPrimaria = explode(",", $ClauPrimaria);
-		echo $Administracio->CreaTaulaMetadades($Metadades);
+		$SubTitol .= $Administracio->CreaTaulaMetadades($Metadades);
 
 		// Dades
-		echo "<BR>Taula <B>$Taula</B><BR><BR>";
-		$Where = '';
-		if (count($PARAM)>2) {
-			$keys = array_keys($PARAM);
-			for ($i=2; $i<count($PARAM); $i++) {
-				if ($PARAM[$keys[$i]] != '')
-					$Where .= " AND ".$keys[$i]."='".$PARAM[$keys[$i]]."'";
-			}
-		}
-		$SQL = 'SELECT * FROM '.$Taula.' WHERE (0=0) '.$Where;
-//print_r($SQL);	
-		$ResultSet = $conn->query($SQL);
-		if ($ResultSet->num_rows > 0) {
-			echo '<form action="Administra.php" method="post" id="AdministraTaula">';
-			echo '<input type=hidden id=accio name=accio value="'.$accio.'">';
-			echo '<input type=hidden id=taula name=taula value="'.$Taula.'">';
-			echo "<TABLE>";
-			$PrimerCop = True;
-			while($row = $ResultSet->fetch_assoc()) {
-				$keys = array_keys($row);
-				if ($PrimerCop) {
-					// Capçalera de la taula
-					echo "<THEAD>";
-					for ($i=0; $i<count($keys); $i++) {
-						echo "<TH>".$keys[$i]."</TH>";
-					}
-					echo "</THEAD>";
-					// Camps per filtrar, estil QBE
-					for ($i=0; $i<count($keys); $i++) {
-						$Valor = (isset($PARAM) && array_key_exists($keys[$i], $PARAM)) ? $PARAM[$keys[$i]] : '';
-						echo '<TD><input type="text" name="'.$keys[$i].'" value="'.$Valor.'" size="1px" style="width:100%"></TD>';
-					}
-					// Botó per filtrar
-					echo '<TD><button class="btn btn-primary active" type="submit" form="AdministraTaula" value="Submit">Filtra</button></TD>';
-					$PrimerCop = False;
-				}
-				echo "<TR>";
-				for ($i=0; $i<count($keys); $i++) {
-					echo "<TD>".utf8_encode($row[$keys[$i]])."</TD>";
-				}
-				$ClauPrimaria = implode(",", $aClauPrimaria);
-				if ($ClauPrimaria != '') {
-//print_r($ClauPrimaria);					
-					// Si hi ha clau primària, es pot editar i esborrar
-					echo "<TD>";
-					$ClauPrimaria = implode(",", $aClauPrimaria);
-					$aValor = [];
-					for ($i=0; $i<count($aClauPrimaria); $i++)
-						array_push($aValor, $row[$aClauPrimaria[$i]]);
-					$Valor = implode(",", $aValor);
-	
-					$URL = GeneraURL("Administra.php?accio=EditaTaula&Taula=$Taula&Clau=$ClauPrimaria&Valor=$Valor");
-					echo "<A href=$URL><IMG src=img/edit.svg></A>&nbsp&nbsp";
-//					echo "<A href='Administra.php?accio=EditaTaula&Taula=$Taula&Clau=".$ClauPrimaria."&Valor=".$Valor."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
-					//$Funcio = 'SuprimeixRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", '.$row[$this->ClauPrimaria].');';
-					$Funcio = '';
-					echo "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
-					echo "</TD>";
-				}
-				echo "</TR>";
-			}
-			echo "</TABLE>";
-			echo '</form>';
-		}
-		$ResultSet->close();
+		$SubTitol .= "<BR>Taula <B>$Taula</B><BR><BR>";
+		$SQL = 'SELECT * FROM '.$Taula.' WHERE (0=0) ';
+
+		$frm = new FormRecercaQBE($conn, $Usuari, $Sistema);
+		$frm->Titol = "Administració";
+		$frm->SubTitol = $SubTitol;
+		$frm->SQL = $SQL;
+		$frm->Taula = $Taula;
+		$frm->ClauPrimaria = $ClauPrimaria;
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = "Administra.php?accio=EditaTaula&Taula=$Taula&Clau=$ClauPrimaria&Valor=";
+		$frm->PermetSuprimir = True;
+		$frm->EscriuHTML();
 		break;
 	case "EditaTaula":
 		$Taula = $PARAM['Taula'];

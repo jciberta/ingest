@@ -15,31 +15,31 @@ require_once(ROOT.'/lib/LibForms.php');
 /**
  * Classe que encapsula les utilitats per a l'administració.
  */
-class Administracio 
+class Administracio extends Objecte
 {
 	/**
 	* Connexió a la base de dades.
 	* @access public 
 	* @var object
 	*/    
-	public $Connexio;
+//	public $Connexio;
 
 	/**
 	* Usuari autenticat.
 	* @access public 
 	* @var object
 	*/    
-	public $Usuari;
+//	public $Usuari;
 
 	/**
 	 * Constructor de l'objecte.
 	 * @param object $conn Connexió a la base de dades.
 	 * @param object $user Usuari de l'aplicació.
 	 */
-	function __construct($con, $user) {
+/*	function __construct($con, $user) {
 		$this->Connexio = $con;
 		$this->Usuari = $user;
-	}
+	}*7
 
 	/**
 	 * Obté les metadades d'una taula.

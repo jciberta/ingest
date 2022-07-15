@@ -42,6 +42,16 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$frm->Filtre->JSON = $filtre; 
 		print $frm->GeneraTaula();
 	}
+	else if ($_REQUEST['accio'] == 'FiltraQBE') {
+		$params = $_REQUEST['params'];
+		parse_str($params, $aParams);
+//print_r($aParams);
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		print $frm->GeneraTaula($aParams);
+	}
 	else if ($_REQUEST['accio'] == 'OrdenaColumna') {
 		$camp = $_REQUEST['camp'];
 		$sentit = $_REQUEST['sentit'];

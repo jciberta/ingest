@@ -102,6 +102,48 @@ console.log('-> ActualitzaTaula');
 }
 
 /**
+ * FiltraQBE
+ * @param element Botó que ha fet la crida.
+ */
+function FiltraQBE(element) { 
+console.log('-> FiltraQBE');
+	var TaulaQBE = document.getElementById('TaulaQBE');
+//console.log('TaulaQBE');
+//console.dir(TaulaQBE);
+
+	var inputs, index, params = '';
+	inputs = TaulaQBE.getElementsByTagName('input');
+	for (index = 0; index < inputs.length; ++index) {
+		params += inputs[index].name + "=" + (inputs[index].value).replace(' ', '+') + "&";
+	}
+	if (params.length>0)
+		params = params.slice(0, -1); // Treiem el darrer &
+	params = params.trim();
+console.log('params: ' + params);
+
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
+//console.dir(frm);
+//console.dir(sFrm);
+
+	$.ajax( {
+		type: 'POST',
+		url: 'lib/LibForms.ajax.php',
+		data:{
+			'accio': 'FiltraQBE',
+			'params': params,
+			'frm': sFrm
+		},
+        success: function(data) {
+            $('#taula').html(data);
+        }, 
+		error: function(data) {
+			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+		}
+    } );
+}
+
+/**
  * CreaFiltreJSON
  * A partir d'un element DIV que conté el filtre obté les dades del filtre en format JSON.
  * @param filtre Element DIV que conté el filtre.
