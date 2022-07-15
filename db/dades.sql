@@ -660,3 +660,17 @@ UPDATE CURS SET data_final = '2023-05-31' WHERE curs_id>=49;
 call CopiaTutors(4, 5);
 call CopiaProgramacions(4, 5);
 
+-- CopiaEquips 
+-- NOTA: PROFESSOR_EQUIP mirar la diferència entre equip_id dels diferents anys acadèmics
+INSERT INTO EQUIP (any_academic_id, tipus, nom, cap, familia_fp_id)
+SELECT 5, tipus, nom, cap, familia_fp_id FROM EQUIP WHERE any_academic_id=4;
+
+INSERT INTO PROFESSOR_EQUIP (professor_id, equip_id)
+SELECT PEQ.professor_id, PEQ.equip_id+4 FROM PROFESSOR_EQUIP PEQ
+LEFT JOIN EQUIP EQ ON (EQ.equip_id=PEQ.equip_id)
+WHERE any_academic_id=4;
+
+
+
+
+
