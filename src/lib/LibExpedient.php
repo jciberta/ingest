@@ -1984,28 +1984,16 @@ class ActaPDF extends DocumentPDF
 class PlaTreball extends Objecte
 {
 	/**
-	* Identificador de la matrícula.
-	* @var integer
-	*/
+	 * Identificador de la matrícula.
+	 * @var integer
+	 */
 	public $MatriculaId = -1;
 
 	/**
-	* Identificador del curs.
-	* @var integer
-	*/
-	public $CursId = -1;
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
-	 * @param objecte $user Usuari.
+	 * Identificador del curs.
+	 * @var integer
 	 */
-/*	function __construct($conn, $user) {
-		parent::__construct($conn);
-
-		$this->Connexio = $conn;
-		$this->Usuari = $user;
-	}*/
+	public $CursId = -1;
 	
 	/**
 	 * Escriu el pla de treball.
@@ -2109,18 +2097,21 @@ class PlaTreball extends Objecte
 	 * @return string Sentència SQL.
 	 */
 	protected function CreaSQLTitol() {
-		return '
-			SELECT 
-				M.matricula_id,
-				CPE.nom AS NomCF, CPE.nom AS NomCF, 
-				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
-				CPE.*, C.*, AA.* 
-			FROM MATRICULA M
-			LEFT JOIN CURS C ON (C.curs_id=M.curs_id) 
-			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
-			LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
-			LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id)
-			WHERE M.matricula_id='.$this->MatriculaId;
+		if ($this->MatriculaId != -1)
+			return '
+				SELECT 
+					M.matricula_id,
+					CPE.nom AS NomCF, CPE.nom AS NomCF, 
+					U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
+					CPE.*, C.*, AA.* 
+				FROM MATRICULA M
+				LEFT JOIN CURS C ON (C.curs_id=M.curs_id) 
+				LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
+				LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id)
+				LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id)
+				WHERE M.matricula_id='.$this->MatriculaId;
+		else
+			return ' SELECT * FROM CURS WHERE curs_id='.$this->CursId;
 	}
 
 	/**
@@ -2134,30 +2125,38 @@ class PlaTreball extends Objecte
 			if (!$ResultSet)
 				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
-			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
+			die("<BR><b>ERROR GeneraTitol</b>. Causa: ".$e->getMessage());
 		}
 		$Retorn = '';
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
-			$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
-			if ($this->Usuari->es_admin) {
-				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+			if ($this->MatriculaId != -1) {
+				$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+				if ($this->Usuari->es_admin) {
+					$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+				}
+				$Dades = array(
+					'Alumne' => utf8_encode($NomComplet),
+					'Cicle Formatiu' => utf8_encode($row["NomCF"]),
+					'Curs' => $row["any_inici"].'-'.$row["any_final"]
+				);
+				if ($this->Usuari->es_admin)
+					$Dades = array("Id" => $row["matricula_id"]) + $Dades;
+				$Retorn .= CreaTaula1($Dades);	
 			}
-			$Dades = array(
-				'Alumne' => utf8_encode($NomComplet),
-				'Cicle Formatiu' => utf8_encode($row["NomCF"]),
-				'Curs' => $row["any_inici"].'-'.$row["any_final"]
-			);
-			if ($this->Usuari->es_admin)
-				$Dades = array("Id" => $row["matricula_id"]) + $Dades;
-			$Retorn .= CreaTaula1($Dades);		
+			else {
+				$Retorn .= '<b>'.CodificaUTF8($row["nom"]).'</b>';
+				$Retorn .= '<BR>';
+			}
 			$Retorn .= '<BR>';
 		}
 
 		// Botons
 		echo '<span style="float:right;">';
-		$URL = GeneraURL('Fitxa.php?accio=PlaTreballCalendari&Id='.$this->MatriculaId);
-		echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Calendari</a>&nbsp';
+		if ($this->MatriculaId != -1) {
+			$URL = GeneraURL('Fitxa.php?accio=PlaTreballCalendari&Id='.$this->MatriculaId);
+			echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Calendari</a>&nbsp';
+		}
 		echo '<a href="#" onclick="print();" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Imprimeix</a>';
 		echo '</span>';
 
@@ -2238,18 +2237,6 @@ class PlaTreball extends Objecte
 class PlaTreballCalendari extends PlaTreball
 {
 	/**
-	 * Data més petita.
-	 * @var date
-	 */
-    private $DataMin = '2999-12-31';
-
-	/**
-	 * Data més gran.
-	 * @var date
-	 */
-    private $DataMax = '0000-00-00';
-	
-	/**
 	 * Escriu el pla de treball.
 	 */
 	public function EscriuHTML() {
@@ -2261,7 +2248,6 @@ class PlaTreballCalendari extends PlaTreball
 			'<link href="vendor/visjs/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css"/>'
 		);
 		$this->Carrega();
-		$this->CalculaIntervalDates();
 		echo $this->GeneraTitol();
 		echo $this->GeneraLiniaTemps();
 		CreaFinalHTML();
@@ -2278,16 +2264,27 @@ class PlaTreballCalendari extends PlaTreball
 			if (!$ResultSet)
 				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
-			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
+			die("<BR><b>ERROR GeneraTitol</b>. Causa: ".$e->getMessage());
 		}
 		$Retorn = '';
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
-			$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
-			if ($this->Usuari->es_admin) {
-				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+			if ($this->MatriculaId != -1) {
+				$NomComplet = trim($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]);
+				if ($this->Usuari->es_admin) {
+					$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+				}
+				$Retorn .= '<b>'.CodificaUTF8($NomComplet).'</b>, '.CodificaUTF8($row["NomCF"]).' ('.$row["any_inici"].'-'.$row["any_final"].')';
 			}
-			$Retorn .= '<b>'.CodificaUTF8($NomComplet).'</b>, '.CodificaUTF8($row["NomCF"]).' ('.$row["any_inici"].'-'.$row["any_final"].')';
+			else {
+				$Retorn .= '<b>'.CodificaUTF8($row["nom"]).'</b>';
+				
+				// Botons
+				$Retorn .= '<span style="float:right;">';
+				$URL = GeneraURL('Fitxa.php?accio=PlaTreball&CursId='.$this->CursId);
+				$Retorn .= '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnImprimeix">Pla de treball</a>';
+				$Retorn .= '</span>';				
+			}
 			$Retorn .= '<BR>';
 		}
 		return $Retorn;
@@ -2306,24 +2303,6 @@ class PlaTreballCalendari extends PlaTreball
 	}
 
 	/**
-	 * Calcula l'interval de dates.
-	 * Nota: Store it in YYYY-MM-DD and then string comparison will work because '1' > '0', etc.
-	 */
-	private function CalculaIntervalDates() {
-		foreach($this->Registre as $MP) {
-			foreach($MP->UF as $UF) {
-//echo $UF->DataInici.'<br>';
-				if ($UF->DataInici != null)
-					$this->DataMin = min($this->DataMin, getdate(strtotime($UF->DataInici)));
-				if ($UF->DataFinal != null)
-					$this->DataMax = max($this->DataMax, getdate(strtotime($UF->DataFinal)));
-			}
-		}
-echo 'DataMin'.$this->DataMin.'<br>';
-echo 'DataMax'.$this->DataMax.'<br>';
-	}
-	
-	/**
 	 * Genera el calendari de les UF (línia de temps).
 	 * @return string HTML de línia de temps.
 	 */
@@ -2333,7 +2312,7 @@ echo 'DataMax'.$this->DataMax.'<br>';
 		$Retorn .= '<script>';
 		$Retorn .= 'var groups = new vis.DataSet([';
 		$Grup = '';
-print_h($this->Registre);		
+//print_h($this->Registre);		
 		foreach($this->Registre as $MP) {
 			$Grup .= "{id: ".$this->NumeroModul($MP->CodiMP).", content: '".$MP->CodiMP."',";
 			$Grup .= "subgroupStack:{'nostack': false, 'stack': true}},"; // Afegir subgrups per controlar la funció "stack" a cada grup.
@@ -2387,14 +2366,11 @@ print_h($this->Registre);
 				stack: true,
 				horizontalScroll: true,
 				zoomKey: 'ctrlKey',
-				maxHeight: 500,
-				start: new Date(2021, 8, 1),
-				end: new Date(2022, 5, 30),
 				editable: false,
 				orientation: 'top'
 			};
 		";
-		
+
 		// Línia del temps
 		$Retorn .= "
 			var container = document.getElementById('visualization');
