@@ -1476,7 +1476,7 @@ class Alumne extends Usuari
 		$MatriculaId = $this->ObteMatriculaActiva($this->Usuari->usuari_id);
 
 		// Pla de treball. Només es veu a l'avaluació ordinària
-/*		if ($this->EsAvaluacioOrdinariaCursActual($this->Usuari->usuari_id)) {
+		if ($this->EsAvaluacioOrdinariaCursActual($this->Usuari->usuari_id)) {
 			$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
@@ -1485,7 +1485,7 @@ class Alumne extends Usuari
 			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 			echo '    </div>';
 			echo '  </div>';
-		}*/
+		}
 
 		// Expedient. Només es veu quan els butlletins estan oberts
 		if ($MatriculaId > 0) {
