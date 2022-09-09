@@ -10,7 +10,7 @@
  */
 
 class Config {
-	const Versio         = '1.8';
+	const Versio         = '1.9';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
