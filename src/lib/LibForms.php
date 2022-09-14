@@ -2503,7 +2503,7 @@ class FormFitxa extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.7" type="text/javascript"></script>'.PHP_EOL;
+		echo '<script language="javascript" src="js/Forms.js?v1.8" type="text/javascript"></script>'.PHP_EOL;
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>'.PHP_EOL;
 
@@ -2531,7 +2531,8 @@ class FormFitxa extends Form
 		// *[style] means that you allow for all the accepted tags the attribute style
 		$config->set(
 			'HTML.Allowed', 
-			'a[href|title|target],img[title|src|alt],em,strong,cite,blockquote,code,
+			'a[href|title|target],img[title|src|alt],
+			 b,i,u,em,strong,cite,blockquote,code,
 			 ul,ol,li,dl,dt,dd,
 			 p,br,
 			 h1,h2,h3,h4,h5,h6,
