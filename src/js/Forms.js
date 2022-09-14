@@ -384,27 +384,30 @@ console.log(jsonDetalls);
 			'detalls': jsonDetalls
 		},
         success: function(data) {
-			$('#btnDesa').hide();
 			i = data.indexOf('ERROR DesaFitxa');
 			if (i > -1) {
-				$('#MissatgeError').html('Hi ha hagut un error en desar les dades.' + data);
-				$('#MissatgeError').show();
+				bootbox.alert({
+					message: 'Hi ha hagut un error en desar les dades:<p>' + data + "<p>Contacteu amb l'administrador.",
+					centerVertical: true,
+					locale: 'ca'
+				});
 			}
 			else {
-				$('#MissatgeCorrecte').show();
-				$('#MissatgeTorna').show();
+				bootbox.alert({
+					message: "Les dades s'han desat correctament.",
+					centerVertical: true,
+					locale: 'ca'
+				});
 console.log('data:');
 console.dir(data);
-//				$('#debug').html('Dades rebudes:<br><pre>' + escapeHTML(JSON.stringify(data)) + '</pre>');
-				$('#debug').html('Dades rebudes:<br><pre>'+ JSON.stringify(data))+'</pre>';
-//var text = document.createTextNode(JSON.stringify(data));
-//console.dir(text);
-				//$('#debug').html(text.data);
 			}
         }, 
 		error: function(data) {
-			$('#MissatgeError').show();
-			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+			bootbox.alert({
+				message: 'Hi ha hagut un error. Dades rebudes:<p> '+ JSON.stringify(data) + "<p>Contacteu amb l'administrador.",
+				centerVertical: true,
+				locale: 'ca'
+			});			
 		}
     } );
 }
