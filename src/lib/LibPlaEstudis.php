@@ -534,7 +534,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 
 		if ($this->FamiliaFPId != -1) {
 			// És cap de departament
-			$frm->Filtre->AfegeixLlista('estat', 'Estat', 60, Array('', 'E', 'D' , 'A'), Array('Tots', 'Elaboració', 'Revisió cap departament', 'Acceptada'));
+			$frm->Filtre->AfegeixLlista('estat', 'Estat', 60, Array('', 'E', 'D' , 'A'), Array('Tots', 'Elaboració', 'Revisió cap departament', 'Acceptada'), [], 'D');
 		}
 		
 		$frm->EscriuHTML();
