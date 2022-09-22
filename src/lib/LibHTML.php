@@ -498,18 +498,20 @@ class Menu
 		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>'.PHP_EOL;
 		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">'.PHP_EOL;
 		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
-		$Retorn .= Menu::Separador();
+//		$Retorn .= Menu::Separador();
 		if ($Usuari->es_cap_estudis) {
-			$Retorn .= Menu::Opcio('Canvia a professor', 'CanviaRol.php');
-			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Canvia a professor', 'Canvia.php?accio=CanviaRolAProfessor');
 		}
 		if ($Usuari->es_admin) {
+			$Retorn .= Menu::Opcio('Canvia usuari', 'Canvia.php?accio=SeleccionaUsuari');
+			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
 			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}
+		$Retorn .= Menu::Separador();
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
 		$Retorn .= Menu::Tanca();
 		$Retorn .= '		</ul>'.PHP_EOL;
