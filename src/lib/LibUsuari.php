@@ -621,7 +621,7 @@ class Professor extends Usuari
 						$aGrupsTutoria = explode(',', $GrupsTutoria);
 						foreach($aGrupsTutoria as $Grup) {
 							$URL = GeneraURL('Fitxa.php?accio=ExpedientSagaAvaluacio&Id='.$row['curs_id'].','.$Grup);
-							echo CreaTargeta($row['CodiCF'].$row['nivell'].' '.$Grup, $row['NomCF'], $URL);
+							echo CreaTargeta($row['CodiCF'].$row['nivell'].' '.$Grup, utf8_encode($row['NomCF']), $URL);
 						}
 					}
 				}
