@@ -80,13 +80,13 @@ update USUARI set cognom2="Pujol" where mod(usuari_id,7)=4 and usuari_id>1;
 update USUARI set cognom2="Coma" where mod(usuari_id,7)=5 and usuari_id>1;
 update USUARI set cognom2="Tuc" where mod(usuari_id,7)=6 and usuari_id>1;
 
-update USUARI set username=lower(concat(left(nom, 1), cognom1)) where es_professor=1;
-update USUARI set username=replace(username, "à", "a") where es_professor=1;
-update USUARI set username=replace(username, "á", "a") where es_professor=1;
-update USUARI set username=replace(username, "é", "e") where es_professor=1;
-update USUARI set username=replace(username, "í", "i") where es_professor=1;
-update USUARI set username=replace(username, "ó", "o") where es_professor=1;
-update USUARI set username=replace(username, "ñ", "n") where es_professor=1;
+update USUARI set username=lower(concat(left(nom, 1), cognom1)) where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "à", "a") where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "á", "a") where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "é", "e") where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "í", "i") where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "ó", "o") where es_professor=1 and usuari_id>1;
+update USUARI set username=replace(username, "ñ", "n") where es_professor=1 and usuari_id>1;
 
 update USUARI set email=concat(username,'@gmail.com') where usuari_id>0;
 update USUARI set email_ins=concat(username,'@inspalamos.cat') where usuari_id>0;
@@ -114,4 +114,4 @@ update NOTES set nota3=truncate(1+3*rand(),0) where notes_id>0 and nota3<5;
 update NOTES set nota4=truncate(1+3*rand(),0) where notes_id>0 and nota4<5;
 update NOTES set nota5=truncate(1+3*rand(),0) where notes_id>0 and nota5<5;
 
-delete from REGISTRE;
+delete from REGISTRE where registre_id>0;
