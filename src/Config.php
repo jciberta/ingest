@@ -14,7 +14,7 @@ class Config {
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
-	const Password       = 'root';
+	const Password       = 'r00t!!!!';
 	const Debug          = True; // Si està activat mostrara més informació.
 	const Demo           = False;
 	const Manteniment    = False;
