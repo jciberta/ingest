@@ -1188,7 +1188,8 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			SELECT 
 				U.usuari_id, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, U.codi 
 			FROM USUARI U
-			WHERE LEFT(U.codi, 3)='$CodiCiclePlaEstudi' AND usuari_bloquejat <> 1
+			WHERE (LEFT(U.codi, 3)='$CodiCiclePlaEstudi' OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')
+			AND usuari_bloquejat <> 1
 			ORDER BY U.codi;		
 		";
 	}
@@ -1240,7 +1241,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
 			LEFT JOIN USUARI U ON (PUF.professor_id=U.usuari_id) 
 			WHERE any_academic_id=$AnyAcademicId
-			AND LEFT(U.codi, 3)='$CodiCiclePlaEstudi'
+			AND (LEFT(U.codi, 3)='$CodiCiclePlaEstudi' OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')			
 			ORDER BY U.codi;		
 		";
 	}	
