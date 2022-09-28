@@ -99,7 +99,7 @@ update USUARI set nom_complet=NULL where usuari_id>0;
 update USUARI set nacionalitat=NULL where usuari_id>0;
 
 /* Data naixement */
-update USUARI set data_naixement=concat(year(data_naixement), '-', truncate(1+11*rand(),0), '-', truncate(1+30*rand(),0)) where data_naixement is not null and usuari_id>1;
+update USUARI set data_naixement=concat(year(data_naixement), '-', truncate(1+11*rand(),0), '-', truncate(1+27*rand(),0)) where data_naixement is not null and usuari_id>1;
 
 /* Notes */
 update NOTES set nota1=truncate(5+4*rand(),0) where notes_id>0 and nota1>=5;
