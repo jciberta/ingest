@@ -1140,10 +1140,11 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 //		$this->AnyAcademicId = $aAnys[0][0]; 
 		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
-		
+
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, codi FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "codi");
 		$Retorn .= $this->CreaLlista('CPE.codi', 'Cicle', 100, 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD', 'IAB'), 
-			array('APD', 'CAI', 'DAM', 'FIP', 'SMX', 'FPB', 'HBD', 'IAB'),
+			$aCicles[1], 
+			$aCicles[1], 
 			$this->CodiCiclePlaEstudi, 
 			'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		return $Retorn;
@@ -1312,15 +1313,19 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 					$row = $Cicles->UF[$i][$j];
 					$sRetorn .= "<TR>";
 
-					if ($row["CodiMP"] != $ModulAnterior)
-						$sRetorn .= "<TD width=300>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+					if ($row["CodiMP"] != $ModulAnterior) {
+						$sRetorn .= "<TD width=300>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
+						if ($this->Usuari->es_admin)
+							$sRetorn .= " [".$row["modul_pla_estudi_id"]."]";
+						$sRetorn .= "</TD>";
+					}
 					else 
 						$sRetorn .= "<TD width=300></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
 					$sRetorn .= "<TD width=300>".utf8_encode($row["NomUF"]);
 					if ($this->Usuari->es_admin)
-						$sRetorn .= " (".$row["unitat_pla_estudi_id"].")";
+						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
 
 					foreach ($this->ProfessorUF as $PUF) {
