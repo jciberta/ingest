@@ -1210,7 +1210,8 @@ class FormRecerca extends Form
 					else {
 						$sValor = $row[$data];
 //						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
-						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+						//$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+						$sRetorn .= "<TD>".$sValor."</TD>";
 					}
 				}
 				$sRetorn .= "<TD>";
