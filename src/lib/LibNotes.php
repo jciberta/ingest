@@ -790,7 +790,7 @@ class Notes extends Form
 			$Color = 'color:white;';
 		}				
 		else if ($row["Convocatoria"] == 4) {
-			// Nota en 5a convocatòria
+			// Nota en 4a convocatòria
 			$BackgroundColor = 'background-color:orange;';
 			//$Color = 'color:white;';
 		}				
