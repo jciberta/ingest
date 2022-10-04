@@ -88,4 +88,53 @@ function ResultSetAJSON($ResultSet)
 	return $JSON;
 }
 
+/**
+ * Classe que encapsula les utilitats per al maneig de la DB.
+ */
+class DB
+{
+	/**
+	 * Carrega un registre d'una taula de la base de dades.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $Camp Nom del camp.
+	 * @param string $Valor Valor del camp.
+	 * @param int $Tipus Tipus d'objecte que retorna (1: objecte, 2: array associatiu)
+	 * @return mixed Registre de la taula.
+	 */
+	public static function CarregaRegistre($Connexio, $Taula, $Camp, $Valor, $Tipus = 1)
+	{
+		$Retorn = NULL;
+		$SQL = "SELECT * FROM $Taula WHERE $Camp='$Valor'";
+		try {
+			$ResultSet = $Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception('<p>'.$this->Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
+		} catch (Exception $e) {
+			die("<p><b>ERROR CarregaRegistre</b>. Causa:</p>".$e->getMessage());
+		}	
+		if ($ResultSet->num_rows > 0) {
+			switch ($Tipus) {
+				case 1:
+					$Retorn = $ResultSet->fetch_object();
+					break;
+				case 2:
+					$Retorn = $ResultSet->fetch_assoc();
+					break;
+			}
+		}	
+		return $Retorn;
+	}
+	
+	public static function CarregaRegistreObj($Connexio, $Taula, $Camp, $Valor)
+	{
+		return self::CarregaRegistre($Connexio, $Taula, $Camp, $Valor, 1);
+	}
+
+	public static function CarregaRegistreAss($Connexio, $Taula, $Camp, $Valor)
+	{
+		return self::CarregaRegistre($Connexio, $Taula, $Camp, $Valor, 2);
+	}
+}
+
 ?>

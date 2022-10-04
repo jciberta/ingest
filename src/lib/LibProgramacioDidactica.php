@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/lib/LibDate.php');
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/vendor/autoload.php');
 
@@ -519,6 +520,8 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php"); */
 		
+		$Registre = DB::CarregaRegistreObj($this->Connexio, 'MODUL_PLA_ESTUDI', 'modul_pla_estudi_id', $this->Id);
+		
 		$this->CarregaAnyAcademic($this->Id);
 		$this->CarregaDiesFestius();
 
@@ -541,6 +544,11 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 
 		$frm->Pestanya("Recursos");
 		$frm->AfegeixTextRic('recursos', '', 500, 300);
+
+		if ($Registre->es_fct) {
+			$frm->Pestanya("Planificació");
+			$frm->AfegeixTextRic('planificacio', '', 500, 300);
+		}
 		
 		$frm->DetallsEnPestanyes = true;
 		$frm->Pestanya("Unitats formatives", true);

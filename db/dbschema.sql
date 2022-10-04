@@ -171,7 +171,11 @@ CREATE TABLE MODUL_PLA_ESTUDI
     especialitat VARCHAR(20),
     cos CHAR(1),
     es_fct BIT,
-	estat CHAR(1) NOT NULL DEFAULT 'E', /* Elaboració, Departament, esTudis, Acceptada */
+	estat CHAR(1) NOT NULL DEFAULT 'E', /* Elaboració, Departament, Acceptada */
+	metodologia TEXT,
+	criteris_avaluacio TEXT,
+	recursos TEXT,
+	planificacio TEXT,
 
     CONSTRAINT ModulPlaEstudiPK PRIMARY KEY (modul_pla_estudi_id),
     CONSTRAINT MPE_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id),
