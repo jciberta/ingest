@@ -111,11 +111,6 @@ Search.appendIndex(
             "summary": "Genera\u0020una\u0020p\u00E0gina\u0020amb\u0020les\u0020estad\u00EDstiques\u0020d\u0027un\u0020o\u0020m\u00E9s\u0020cursos\u0020indicats\u0020per\u0020una\u0020SQL.",
             "url": "classes/Curs.html#method_GeneraEstadistiques"
         },                {
-            "fqsen": "\\Curs\u003A\u003A\u0024Registre",
-            "name": "Registre",
-            "summary": "Registre\u0020carregat\u0020amb\u0020CarregaRegistre.",
-            "url": "classes/Curs.html#property_Registre"
-        },                {
             "fqsen": "\\Curs\u003A\u003A\u0024NomesProfessor",
             "name": "NomesProfessor",
             "summary": "Indica\u0020que\u0020nom\u00E9s\u0020\u00E9s\u0020professor\u0020i\u0020no\u0020admin,\u0020ni\u0020cap\u0020d\u0027estudis.",
@@ -185,6 +180,11 @@ Search.appendIndex(
             "name": "ResultSetAJSON",
             "summary": "ResultSetAJSON",
             "url": "namespaces/default.html#function_ResultSetAJSON"
+        },                {
+            "fqsen": "\\DB",
+            "name": "DB",
+            "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020de\u0020la\u0020DB.",
+            "url": "classes/DB.html"
         },                {
             "fqsen": "\\Expedient",
             "name": "Expedient",
@@ -451,15 +451,10 @@ Search.appendIndex(
             "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020del\u0020pla\u0020de\u0020treball.",
             "url": "classes/PlaTreball.html"
         },                {
-            "fqsen": "\\PlaTreball\u003A\u003ACarrega\u0028\u0029",
-            "name": "Carrega",
-            "summary": "Carrega\u0020les\u0020dades\u0020d\u0027una\u0020matr\u00EDcula\u0020i\u0020les\u0020emmagatzema\u0020en\u0020l\u0027atribut\u0020Registre.",
-            "url": "classes/PlaTreball.html#method_Carrega"
-        },                {
-            "fqsen": "\\PlaTreball\u003A\u003ACreaSQLTitol\u0028\u0029",
-            "name": "CreaSQLTitol",
-            "summary": "Crea\u0020la\u0020sent\u00E8ncia\u0020SQL\u0020per\u0020recuperar\u0020les\u0020dades\u0020de\u0020la\u0020cap\u00E7alera.",
-            "url": "classes/PlaTreball.html#method_CreaSQLTitol"
+            "fqsen": "\\PlaTreball\u003A\u003ACreaSQLCurs\u0028\u0029",
+            "name": "CreaSQLCurs",
+            "summary": "Crea\u0020la\u0020SQL\u0020per\u0020al\u0020calendari\u0020del\u0020curs.",
+            "url": "classes/PlaTreball.html#method_CreaSQLCurs"
         },                {
             "fqsen": "\\PlaTreball\u003A\u003AGeneraTitol\u0028\u0029",
             "name": "GeneraTitol",
@@ -476,10 +471,25 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PlaTreball.html#method_GeneraModal"
         },                {
-            "fqsen": "\\PlaTreball\u003A\u003A\u0024MatriculaId",
-            "name": "MatriculaId",
-            "summary": "Identificador\u0020de\u0020la\u0020matr\u00EDcula.",
-            "url": "classes/PlaTreball.html#property_MatriculaId"
+            "fqsen": "\\PlaTreballCalendari",
+            "name": "PlaTreballCalendari",
+            "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020del\u0020calendari\u0020del\u0020pla\u0020de\u0020treball.",
+            "url": "classes/PlaTreballCalendari.html"
+        },                {
+            "fqsen": "\\PlaTreballCalendari\u003A\u003AGeneraTitol\u0028\u0029",
+            "name": "GeneraTitol",
+            "summary": "Genera\u0020la\u0020cap\u00E7alera\u0020del\u0020pla\u0020de\u0020treball.",
+            "url": "classes/PlaTreballCalendari.html#method_GeneraTitol"
+        },                {
+            "fqsen": "\\PlaTreballCalendari\u003A\u003ADataJS\u0028\u0029",
+            "name": "DataJS",
+            "summary": "",
+            "url": "classes/PlaTreballCalendari.html#method_DataJS"
+        },                {
+            "fqsen": "\\PlaTreballCalendari\u003A\u003AGeneraLiniaTemps\u0028\u0029",
+            "name": "GeneraLiniaTemps",
+            "summary": "Genera\u0020el\u0020calendari\u0020de\u0020les\u0020UF\u0020\u0028l\u00EDnia\u0020de\u0020temps\u0029.",
+            "url": "classes/PlaTreballCalendari.html#method_GeneraLiniaTemps"
         },                {
             "fqsen": "\\Objecte",
             "name": "Objecte",
@@ -561,11 +571,6 @@ Search.appendIndex(
             "summary": "Genera\u0020el\u0020filtre\u0020del\u0020formulari\u0020si\u0020n\u0027hi\u0020ha.",
             "url": "classes/FormRecerca.html#method_GeneraFiltre"
         },                {
-            "fqsen": "\\FormRecerca\u003A\u003AGeneraPartOculta\u0028\u0029",
-            "name": "GeneraPartOculta",
-            "summary": "Genera\u0020la\u0020part\u0020oculta\u0020per\u0020emmagatzemar\u0020valors.",
-            "url": "classes/FormRecerca.html#method_GeneraPartOculta"
-        },                {
             "fqsen": "\\FormRecerca\u003A\u003AGeneraModalInformatiu\u0028\u0029",
             "name": "GeneraModalInformatiu",
             "summary": "Genera\u0020la\u0020part\u0020del\u0020modal\u0020per\u0020a\u0020informacions\u0020v\u00E0ries.",
@@ -576,10 +581,25 @@ Search.appendIndex(
             "summary": "Genera\u0020les\u0020opcions\u0020per\u0020a\u0020cada\u0020registre.",
             "url": "classes/FormRecerca.html#method_GeneraOpcions"
         },                {
+            "fqsen": "\\FormRecerca\u003A\u003APermetEditarRegistre\u0028\u0029",
+            "name": "PermetEditarRegistre",
+            "summary": "",
+            "url": "classes/FormRecerca.html#method_PermetEditarRegistre"
+        },                {
+            "fqsen": "\\FormRecerca\u003A\u003AMostraOpcioAJAX\u0028\u0029",
+            "name": "MostraOpcioAJAX",
+            "summary": "",
+            "url": "classes/FormRecerca.html#method_MostraOpcioAJAX"
+        },                {
             "fqsen": "\\FormRecerca\u003A\u003A\u0024Opcions",
             "name": "Opcions",
             "summary": "Opcions\u0020per\u0020a\u0020cada\u0020registre.\u0020Estan\u0020incloses\u0020les\u0020opcions\u0020AJAX.",
             "url": "classes/FormRecerca.html#property_Opcions"
+        },                {
+            "fqsen": "\\FormRecercaQBE",
+            "name": "FormRecercaQBE",
+            "summary": "Classe\u0020FormRecercaQBE.",
+            "url": "classes/FormRecercaQBE.html"
         },                {
             "fqsen": "\\FormFitxa",
             "name": "FormFitxa",
@@ -625,6 +645,11 @@ Search.appendIndex(
             "name": "GeneraTorna",
             "summary": "Genera\u0020el\u0020bot\u00F3\u0020i\u0020l\u0027acci\u00F3\u0020de\u0020tornar\u0020enrera\u0020\u0028cap\u0020a\u0020la\u0020llista\u0029.",
             "url": "classes/FormFitxa.html#method_GeneraTorna"
+        },                {
+            "fqsen": "\\FormFitxa\u003A\u003AGeneraDocumentReady\u0028\u0029",
+            "name": "GeneraDocumentReady",
+            "summary": "Genera\u0020les\u0020accions\u0020JavaScript\u0020a\u0020fer\u0020quan\u0020el\u0020document\u0020est\u00E0\u0020a\u0020punt.",
+            "url": "classes/FormFitxa.html#method_GeneraDocumentReady"
         },                {
             "fqsen": "\\FormFitxa\u003A\u003A\u0024Camps",
             "name": "Camps",
@@ -755,6 +780,11 @@ Search.appendIndex(
             "name": "CreaIniciHTML_BootstrapStarterTemplate",
             "summary": "CreaIniciHTML_BootstrapStarterTemplate",
             "url": "namespaces/default.html#function_CreaIniciHTML_BootstrapStarterTemplate"
+        },                {
+            "fqsen": "\\CreaIniciHTML_JS_CSS\u0028\u0029",
+            "name": "CreaIniciHTML_JS_CSS",
+            "summary": "CreaIniciHTML_Notes",
+            "url": "namespaces/default.html#function_CreaIniciHTML_JS_CSS"
         },                {
             "fqsen": "\\CreaIniciHTML_Notes\u0028\u0029",
             "name": "CreaIniciHTML_Notes",
@@ -918,8 +948,68 @@ Search.appendIndex(
         },                {
             "fqsen": "\\ImportaMatricula\u003A\u003A\u0024Mat",
             "name": "Mat",
-            "summary": "Objete\u0020per\u0020a\u0020fer\u0020les\u0020matriculacions.",
+            "summary": "Objecte\u0020per\u0020a\u0020fer\u0020les\u0020matriculacions.",
             "url": "classes/ImportaMatricula.html#property_Mat"
+        },                {
+            "fqsen": "\\ImportaNotes",
+            "name": "ImportaNotes",
+            "summary": "Classe\u0020ImportaNotes.",
+            "url": "classes/ImportaNotes.html"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleFitxer",
+            "name": "ImportaNotesMoodleFitxer",
+            "summary": "Classe\u0020ImportaNotes.",
+            "url": "classes/ImportaNotesMoodleFitxer.html"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleFitxer\u003A\u003ACarregaNotesMoodle\u0028\u0029",
+            "name": "CarregaNotesMoodle",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleFitxer.html#method_CarregaNotesMoodle"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleFitxer\u003A\u003ATraspassaNotes\u0028\u0029",
+            "name": "TraspassaNotes",
+            "summary": "Traspassa\u0020les\u0020notes\u0020importades\u0020al\u0020registre\u0020carregat\u0020de\u0020la\u0020base\u0020de\u0020dades.",
+            "url": "classes/ImportaNotesMoodleFitxer.html#method_TraspassaNotes"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleFitxer\u003A\u003AObteId\u0028\u0029",
+            "name": "ObteId",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleFitxer.html#method_ObteId"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleFitxer\u003A\u003AObteNota\u0028\u0029",
+            "name": "ObteNota",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleFitxer.html#method_ObteNota"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb",
+            "name": "ImportaNotesMoodleServeiWeb",
+            "summary": "Classe\u0020ImportaNotes.",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb\u003A\u003ACarregaAlumnes\u0028\u0029",
+            "name": "CarregaAlumnes",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html#method_CarregaAlumnes"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb\u003A\u003ACarregaNotesMoodle\u0028\u0029",
+            "name": "CarregaNotesMoodle",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html#method_CarregaNotesMoodle"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb\u003A\u003ATraspassaNotes\u0028\u0029",
+            "name": "TraspassaNotes",
+            "summary": "Traspassa\u0020les\u0020notes\u0020importades\u0020al\u0020registre\u0020carregat\u0020de\u0020la\u0020base\u0020de\u0020dades.",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html#method_TraspassaNotes"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb\u003A\u003ABuscaId\u0028\u0029",
+            "name": "BuscaId",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html#method_BuscaId"
+        },                {
+            "fqsen": "\\ImportaNotesMoodleServeiWeb\u003A\u003AObteNota\u0028\u0029",
+            "name": "ObteNota",
+            "summary": "",
+            "url": "classes/ImportaNotesMoodleServeiWeb.html#method_ObteNota"
         },                {
             "fqsen": "\\getUserIP\u0028\u0029",
             "name": "getUserIP",
@@ -1146,6 +1236,31 @@ Search.appendIndex(
             "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020del\u0020pla\u0020d\u0027estudis.",
             "url": "classes/PlaEstudisCicle.html"
         },                {
+            "fqsen": "\\PlaEstudisModulRecerca",
+            "name": "PlaEstudisModulRecerca",
+            "summary": "Classe\u0020que\u0020encapsula\u0020el\u0020formulari\u0020de\u0020recerca\u0020dels\u0020MP\u0020del\u0020pla\u0020d\u0027estudis.",
+            "url": "classes/PlaEstudisModulRecerca.html"
+        },                {
+            "fqsen": "\\PlaEstudisModulRecerca\u003A\u003ACreaSQLCapDepartament\u0028\u0029",
+            "name": "CreaSQLCapDepartament",
+            "summary": "Crea\u0020la\u0020sent\u00E8ncia\u0020SQL\u0020per\u0020al\u0020cap\u0020de\u0020departament.",
+            "url": "classes/PlaEstudisModulRecerca.html#method_CreaSQLCapDepartament"
+        },                {
+            "fqsen": "\\PlaEstudisModulRecerca\u003A\u003ACreaSQLMostraTot\u0028\u0029",
+            "name": "CreaSQLMostraTot",
+            "summary": "Crea\u0020la\u0020sent\u00E8ncia\u0020SQL\u0020per\u0020a\u0020mostrar\u0020les\u0020programacions\u0020acceptades.",
+            "url": "classes/PlaEstudisModulRecerca.html#method_CreaSQLMostraTot"
+        },                {
+            "fqsen": "\\PlaEstudisModulRecerca\u003A\u003ACreaSQLProfessor\u0028\u0029",
+            "name": "CreaSQLProfessor",
+            "summary": "Crea\u0020la\u0020sent\u00E8ncia\u0020SQL\u0020per\u0020al\u0020professor.",
+            "url": "classes/PlaEstudisModulRecerca.html#method_CreaSQLProfessor"
+        },                {
+            "fqsen": "\\PlaEstudisModulRecerca\u003A\u003AGeneraFiltreCicleFormatiu\u0028\u0029",
+            "name": "GeneraFiltreCicleFormatiu",
+            "summary": "",
+            "url": "classes/PlaEstudisModulRecerca.html#method_GeneraFiltreCicleFormatiu"
+        },                {
             "fqsen": "\\PlaEstudisUnitatRecerca",
             "name": "PlaEstudisUnitatRecerca",
             "summary": "Classe\u0020que\u0020encapsula\u0020el\u0020formulari\u0020de\u0020recerca\u0020de\u0020les\u0020UF\u0020del\u0020pla\u0020d\u0027estudis.",
@@ -1175,6 +1290,11 @@ Search.appendIndex(
             "name": "GeneraSeccio",
             "summary": "Genera\u0020la\u0020secci\u00F3\u0020especificada\u0020de\u0020la\u0020programaci\u00F3\u0020did\u00E0ctica.",
             "url": "classes/ProgramacioDidactica.html#method_GeneraSeccio"
+        },                {
+            "fqsen": "\\ProgramacioDidactica\u003A\u003AFormataTaula\u0028\u0029",
+            "name": "FormataTaula",
+            "summary": "",
+            "url": "classes/ProgramacioDidactica.html#method_FormataTaula"
         },                {
             "fqsen": "\\ProgramacioDidacticaRecerca",
             "name": "ProgramacioDidacticaRecerca",
@@ -1306,9 +1426,14 @@ Search.appendIndex(
             "summary": "JSONEncodeUTF8Especial",
             "url": "namespaces/default.html#function_JSONEncodeUTF8"
         },                {
+            "fqsen": "\\CodificaUTF8_no\u0028\u0029",
+            "name": "CodificaUTF8_no",
+            "summary": "CodificaUTF8\nCodifica\u0020un\u0020text\u0020en\u0020UTF8.",
+            "url": "namespaces/default.html#function_CodificaUTF8_no"
+        },                {
             "fqsen": "\\CodificaUTF8\u0028\u0029",
             "name": "CodificaUTF8",
-            "summary": "CodificaUTF8",
+            "summary": "CodificaUTF8\nCodifica\u0020un\u0020text\u0020en\u0020UTF8.",
             "url": "namespaces/default.html#function_CodificaUTF8"
         },                {
             "fqsen": "\\TextAMySQL\u0028\u0029",
@@ -1510,6 +1635,36 @@ Search.appendIndex(
             "name": "Progenitor",
             "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020dels\u0020pares.",
             "url": "classes/Progenitor.html"
+        },                {
+            "fqsen": "\\TipusMaterial",
+            "name": "TipusMaterial",
+            "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020del\u0020tipus\u0020de\u0020material.",
+            "url": "classes/TipusMaterial.html"
+        },                {
+            "fqsen": "\\TipusMaterial\u003A\u003ACreaSQL\u0028\u0029",
+            "name": "CreaSQL",
+            "summary": "Crea\u0020la\u0020SQL\u0020pel\u0020formulari\u0020de\u0020la\u0020recerca\u0020de\u0020material.",
+            "url": "classes/TipusMaterial.html#method_CreaSQL"
+        },                {
+            "fqsen": "\\Material",
+            "name": "Material",
+            "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020del\u0020material.",
+            "url": "classes/Material.html"
+        },                {
+            "fqsen": "\\Material\u003A\u003ACreaSQL\u0028\u0029",
+            "name": "CreaSQL",
+            "summary": "Crea\u0020la\u0020SQL\u0020pel\u0020formulari\u0020de\u0020la\u0020recerca\u0020de\u0020material.",
+            "url": "classes/Material.html#method_CreaSQL"
+        },                {
+            "fqsen": "\\ReservaMaterial",
+            "name": "ReservaMaterial",
+            "summary": "Classe\u0020que\u0020encapsula\u0020les\u0020utilitats\u0020per\u0020al\u0020maneig\u0020de\u0020les\u0020reserves\u0020de\u0020material.",
+            "url": "classes/ReservaMaterial.html"
+        },                {
+            "fqsen": "\\ReservaMaterial\u003A\u003ACreaSQL\u0028\u0029",
+            "name": "CreaSQL",
+            "summary": "Crea\u0020la\u0020SQL\u0020pel\u0020formulari\u0020de\u0020la\u0020recerca\u0020de\u0020material.",
+            "url": "classes/ReservaMaterial.html#method_CreaSQL"
         },                {
             "fqsen": "\\",
             "name": "\\",

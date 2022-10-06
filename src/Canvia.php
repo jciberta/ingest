@@ -3,7 +3,7 @@
 /** 
  * Canvia.php
  *
- * Utilitat per canviar d'usuari (administrador) o de rol (direcció, cap d'estudis).
+ * Utilitat per canviar d'usuari (administrador) o de rol (direcciÃ³, cap d'estudis).
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
