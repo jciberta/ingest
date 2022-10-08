@@ -109,7 +109,7 @@ class DB
 		try {
 			$ResultSet = $Connexio->query($SQL);
 			if (!$ResultSet)
-				throw new Exception('<p>'.$this->Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
+				throw new Exception('<p>'.$Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
 		} catch (Exception $e) {
 			die("<p><b>ERROR CarregaRegistre</b>. Causa:</p>".$e->getMessage());
 		}	
@@ -126,11 +126,27 @@ class DB
 		return $Retorn;
 	}
 	
+	/**
+	 * Carrega un registre d'una taula de la base de dades i el retorna com a objecte.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $Camp Nom del camp.
+	 * @param string $Valor Valor del camp.
+	 * @return mixed Registre de la taula.
+	 */
 	public static function CarregaRegistreObj($Connexio, $Taula, $Camp, $Valor)
 	{
 		return self::CarregaRegistre($Connexio, $Taula, $Camp, $Valor, 1);
 	}
 
+	/**
+	 * Carrega un registre d'una taula de la base de dades i el retorna com a array associatiu.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $Camp Nom del camp.
+	 * @param string $Valor Valor del camp.
+	 * @return mixed Registre de la taula.
+	 */
 	public static function CarregaRegistreAss($Connexio, $Taula, $Camp, $Valor)
 	{
 		return self::CarregaRegistre($Connexio, $Taula, $Camp, $Valor, 2);
