@@ -146,7 +146,7 @@ switch ($accio) {
 		$frm->Id = $Id;
 		
 		$SQL = 'SELECT AA.any_academic_id, AA.nom '.
-			' FROM ANY_ACADEMIC AA ';
+			' FROM ANY_ACADEMIC AA ORDER BY AA.nom DESC ';
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "any_academic_id", "nom");
 		$frm->AfegeixLlista('any_academic_id', 'Any', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLlista('tipus', 'Tipus', 30, array("DP", "ED", "CM"), array("Departament", "Equip docent", "Comissió"));

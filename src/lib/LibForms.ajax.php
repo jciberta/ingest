@@ -37,7 +37,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; // La connexiÃ³ MySQL no es serialitza/deserialitza bÃ©
 		$frm->FiltreText = utf8_decode($cerca); 
 		$frm->Filtre->JSON = $filtre; 
 		print $frm->GeneraTaula();
@@ -49,7 +49,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; // La connexiÃ³ MySQL no es serialitza/deserialitza bÃ©
 		print $frm->GeneraTaula($aParams);
 	}
 	else if ($_REQUEST['accio'] == 'OrdenaColumna') {
@@ -60,7 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; // La connexiÃ³ MySQL no es serialitza/deserialitza bÃ©
 		$frm->FiltreText = utf8_decode($cerca); 
 		$frm->Filtre->JSON = $filtre; 
 		$frm->Ordre = $camp.' '.$sentit; 
@@ -73,7 +73,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; // La connexiÃ³ MySQL no es serialitza/deserialitza bÃ©
 
 		// Esborrem el registre
 		$SQL = "DELETE FROM $Taula WHERE $ClauPrimaria='$Valor'";
@@ -93,10 +93,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzatEncriptat = $_REQUEST['frm'];
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm->Connexio = $conn; // La connexiÃ³ MySQL no es serialitza/deserialitza bÃ©
 		
 		// Afegim el registre
-		// ! Falta: si la clau no és autoincrement
+		// ! Falta: si la clau no Ã©s autoincrement
 		$SQL = "INSERT INTO $Taula ($CampMestre, $CampDetall) VALUES ($ValorMestre, $ValorDetal)";
 		$frm->Connexio->query($SQL);
 		
@@ -127,12 +127,12 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else {
 		if ($CFG->Debug)
-			print "Acció no suportada. Valor de $_POST: ".json_encode($_POST);
+			print "AcciÃ³ no suportada. Valor de $_POST: ".json_encode($_POST);
 		else
-			print "Acció no suportada.";
+			print "AcciÃ³ no suportada.";
 	}
 }
 else 
-    print "ERROR. No hi ha POST o no hi ha acció.";
+    print "ERROR. No hi ha POST o no hi ha acciÃ³.";
 
 ?>

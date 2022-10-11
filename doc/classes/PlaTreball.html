@@ -100,7 +100,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1982</span>
+    <span class="phpdocumentor-element-found-in__line">1984</span>
 
     </aside>
 
@@ -121,13 +121,6 @@
 
 <dl class="phpdocumentor-table-of-contents">
                     <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a href="classes/PlaTreball.html#property_MatriculaId">$MatriculaId</a>
-    <span>
-                        &nbsp;: int            </span>
-</dt>
-<dd>Identificador de la matrícula.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/Objecte.html#property_Registre">$Registre</a>
     <span>
                         &nbsp;: object            </span>
@@ -135,18 +128,11 @@
 <dd>Registre per a emmagatzemar el resultat d&#039;un DataSet.</dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a href="classes/PlaTreball.html#method_Carrega">Carrega()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Carrega les dades d&#039;una matrícula i les emmagatzema en l&#039;atribut Registre.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a href="classes/PlaTreball.html#method_CreaSQLTitol">CreaSQLTitol()</a>
+    <a href="classes/PlaTreball.html#method_CreaSQLCurs">CreaSQLCurs()</a>
     <span>
                                 &nbsp;: string    </span>
 </dt>
-<dd>Crea la sentència SQL per recuperar les dades de la capçalera.</dd>
+<dd>Crea la SQL per al calendari del curs.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
     <a href="classes/PlaTreball.html#method_GeneraModal">GeneraModal()</a>
@@ -188,39 +174,6 @@
             -private
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="property_MatriculaId">
-        $MatriculaId
-        <a href="classes/PlaTreball.html#property_MatriculaId" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">1988</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Identificador de la matrícula.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-        <span class="phpdocumentor-signature__type">int</span>
-    <span class="phpdocumentor-signature__name">$MatriculaId</span>
-     = <span class="phpdocumentor-signature__default-value">-1</span></code>
-
-    
-    
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="property_Registre">
         $Registre
         <a href="classes/Objecte.html#property_Registre" class="headerlink"><i class="fas fa-link"></i></a>
@@ -230,7 +183,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibForms.php"><a href="files/src-lib-libforms.html"><abbr title="src/lib/LibForms.php">LibForms.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">47</span>
+    <span class="phpdocumentor-element-found-in__line">61</span>
 
     </aside>
 
@@ -260,58 +213,37 @@
             -private
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_Carrega">
-        Carrega()
-        <a href="classes/PlaTreball.html#method_Carrega" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_CreaSQLCurs">
+        CreaSQLCurs()
+        <a href="classes/PlaTreball.html#method_CreaSQLCurs" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2019</span>
+    <span class="phpdocumentor-element-found-in__line">2014</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Carrega les dades d&#039;una matrícula i les emmagatzema en l&#039;atribut Registre.</p>
+        <p class="phpdocumentor-summary">Crea la SQL per al calendari del curs.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
-                <span class="phpdocumentor-signature__name">Carrega</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">CreaSQLCurs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$CursId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     
-    
-    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$CursId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Identificador del curs.</p>
+</section>
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -private
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_CreaSQLTitol">
-        CreaSQLTitol()
-        <a href="classes/PlaTreball.html#method_CreaSQLTitol" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">2074</span>
+            </dd>
+            </dl>
 
-    </aside>
-
-        <p class="phpdocumentor-summary">Crea la sentència SQL per recuperar les dades de la capçalera.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-                <span class="phpdocumentor-signature__name">CreaSQLTitol</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
-
-    
-    
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -335,7 +267,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2162</span>
+    <span class="phpdocumentor-element-found-in__line">2200</span>
 
     </aside>
 
@@ -395,7 +327,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2132</span>
+    <span class="phpdocumentor-element-found-in__line">2170</span>
 
     </aside>
 
@@ -430,7 +362,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/lib/LibExpedient.php"><a href="files/src-lib-libexpedient.html"><abbr title="src/lib/LibExpedient.php">LibExpedient.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2093</span>
+    <span class="phpdocumentor-element-found-in__line">2121</span>
 
     </aside>
 
