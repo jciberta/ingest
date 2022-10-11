@@ -40,14 +40,22 @@ switch ($accio) {
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
-		$frm->Titol = "Professors";
+		$frm->Titol = "Usuaris";
 		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, usuari_bloquejat '.
-			' FROM USUARI WHERE es_professor=1 ORDER BY cognom1, cognom2, nom';
+			' FROM USUARI ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->AfegeixOpcio('Canvia', 'Canvia.php?accio=CanviaAUsuari&Id=');
+		
+		// Repensar!
+		$frm->Filtre->AfegeixCheckBox('es_professor', 'Professors', True);
+		$frm->Filtre->AfegeixCheckBox('es_alumne', 'Alumnes', True);
+		$frm->Filtre->AfegeixCheckBox('es_pare', 'Pares', True);
+		
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 		$frm->EscriuHTML();
         break;	

@@ -336,9 +336,9 @@ class Form extends Objecte
 			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
 
 		$sNom = 'chb_' . $Nom;
-		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		$sRetorn = '<TD><label for='.$sNom.'>'.$Titol.'</label>&nbsp;</TD>';
 //		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="checkbox" name="chb_'.$sNom.'" '.$TextValor.$Requerit.'></TD>';
-		$sRetorn .= '<TD><input type="checkbox" name="'.$sNom.'" '.$TextValor.$Requerit.$NomesLectura.$onChange.'></TD>';
+		$sRetorn .= '<TD><input type="checkbox" name="'.$sNom.'" '.$TextValor.$Requerit.$NomesLectura.$onChange.'>&nbsp;&nbsp;&nbsp;</TD>';
 		return $sRetorn;
 	}	
 
