@@ -206,7 +206,7 @@ class Avaluacio
 			echo "Curs: <B>".utf8_encode($row->nom)."</B>";
 			
 			if ($row->estat == Curs::Tancat) {
-				echo " Avaluació: <img src=img/colorT.png> <B>Tancada</B>";
+				echo " Avaluació: <img src=img/curs/colorT.png> <B>Tancada</B>";
 			}
 			else {
 				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
