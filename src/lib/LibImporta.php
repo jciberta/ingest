@@ -25,24 +25,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 class Importa extends Objecte 
 {
 	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-//	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-//	public $Usuari;
-	
-	/**
-	* Registre per a emmagatzemar el resultat d'un DataSet.
-	* @var object
-	*/    
-//    private $Registre = null;
-	
-	/**
 	* Camps de la capçalera indexats per número.
 	* @var array
 	*/    
@@ -53,16 +35,6 @@ class Importa extends Objecte
 	* @var array
 	*/    
     protected $CampsNom = [];	
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn Connexió a la base de dades.
-	 * @param object $user Usuari de l'aplicació.
-	 */
-/*	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}*/	
 } 
 
 /**
@@ -86,20 +58,6 @@ class ImportaUsuaris extends Importa
 	* @access public
 	*/    
     public $Modalitat = self::tiSAGA;
-
-	/**
-	* Camps de la capçalera indexats per número.
-	* @access protected
-	* @var array
-	*/    
-//    protected $Camps = [];	
-
-	/**
-	* Camps de la capçalera indexats per nom.
-	* @access protected
-	* @var array
-	*/    
-//    protected $CampsNom = [];	
 
 	/**
 	 * Tracta la primera línia on hi ha la capçalera de les dades.
@@ -814,29 +772,26 @@ class ImportaMatricula extends Importa
 	* @var array
 	*/    
 	private static $CURSOS = array(
-		'CFPM IC10 A' => 38, // SMX2
-		'CFPM IC10 B' => 38, // SMX2
-		'CFPM IC10 C' => 37, // SMX1
-		'CFPM IC10 D' => 37, // SMX1
-		'CFPM IC10 E' => 37, // SMX1 
-		'CFPS ICB0 A' => 39, // DAM1
-		'CFPS ICB0 B' => 40, // DAM2
-		'CFPM SA20 A' => 41, // FIP1
-		'CFPM SA20 B' => 41, // FIP1
-		'CFPM SA20 C' => 42, // FIP2
-		'CFPM SC10 A' => 43, // APD1
-		'CFPM SC10 B' => 43, // APD1
-		'CFPM SC10 C' => 44, // APD2
-		'CFPM 1601 A' => 45, // CAI1
-		'CFPM 1601 B' => 45, // CAI1
-		'CFPM 1601 C' => 45, // CAI1 
-		'CFPM 1601 D' => 45, // CAI1 
-		'CFPM 1601 E' => 45, // CAI1 
-		'CFPM 1601 F' => 46, // CAI2 FCT
-		'CFPB IC10'   => 47, // FPB1
-		'CFPS SAH0 A' => 48, // HBD1
-		'CFPS SAH0 B' => 48  // HBD1
-	);
+		'CFPM IC10 A' => 65, // SMX2
+		'CFPM IC10 B' => 64, // SMX1
+		'CFPM IC10 C' => 64, // SMX1
+		'CFPM IC10 D' => 64, // SMX1
+		'CFPS ICB0 A' => 66, // DAM1
+		'CFPS ICB0 B' => 67, // DAM2
+		// 'CFPM SA20 A' => 41, // FIP1
+		// 'CFPM SA20 B' => 41, // FIP1
+		// 'CFPM SA20 C' => 42, // FIP2
+		'CFPM SC10 A' => 70, // APD1
+		'CFPM SC10 B' => 71, // APD2
+		// 'CFPM 1601 A' => 45, // CAI1
+		// 'CFPM 1601 B' => 45, // CAI1
+		// 'CFPM 1601 C' => 45, // CAI1
+		// 'CFPM 1601 D' => 45, // CAI1
+		'CFPM 1601 E' => 73, // CAI2 FCT
+		// 'CFPB IC10'   => 47, // FPB1
+		'CFPS SAH0 A' => 76, // HBD1
+		'CFPS SAH0 B' => 77  // HBD1
+	);	
 
 	/**
 	* Objecte per a fer les matriculacions.
