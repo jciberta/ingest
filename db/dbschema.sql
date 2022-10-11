@@ -513,14 +513,20 @@ CREATE TABLE MATERIAL
     /* M */
     material_id INT NOT NULL,
     tipus_material_id INT NOT NULL,
+    familia_fp_id INT;
+    responsable_id INT NOT NULL;
     nom VARCHAR(200) NOT NULL,
 	codi VARCHAR(15) NOT NULL,
     descripcio TEXT,
+    ambit VARCHAR(50);
+    ubicacio VARCHAR(100);	
     data_compra DATE,
     es_obsolet BIT NOT NULL DEFAULT 0,
 	
 	CONSTRAINT MaterialPK PRIMARY KEY (material_id),
-	CONSTRAINT M_TipusMaterialFK FOREIGN KEY (tipus_material_id) REFERENCES TIPUS_MATERIAL(tipus_material_id)
+	CONSTRAINT M_TipusMaterialFK FOREIGN KEY (tipus_material_id) REFERENCES TIPUS_MATERIAL(tipus_material_id),
+	CONSTRAINT M_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id),
+	CONSTRAINT M_UsuariFK FOREIGN KEY (responsable_id) REFERENCES USUARI(usuari_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE RESERVA_MATERIAL

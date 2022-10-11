@@ -2192,7 +2192,11 @@ class FormFitxa extends Form
 	 * @return string Valor que conté.
 	 */
 	private function ValorCampData(string $camp) {
-		return ' value="'.MySQLAData($this->Registre[$camp]).'" ';
+		if ($this->Registre == null)
+			$Retorn = '';
+		else 
+			$Retorn = ' value="'.MySQLAData($this->Registre[$camp]).'" ';
+		return $Retorn;
 	}
 	
 	/**
@@ -2214,7 +2218,11 @@ class FormFitxa extends Form
 	 * @return string Valor que conté.
 	 */
 	private function ValorCampCheckBox(string $camp) {
-		return ($this->Registre[$camp]) ? ' value=1 checked ' : ' value=0 ';
+		if ($this->Registre == null)
+			$Retorn = ' value=0 ';
+		else 
+			$Retorn = ($this->Registre[$camp]) ? ' value=1 checked ' : ' value=0 ';
+		return $Retorn;
 	}
 
 	/**

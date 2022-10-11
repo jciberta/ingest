@@ -82,8 +82,8 @@ class Material extends Objecte
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'MATERIAL';
 		$frm->ClauPrimaria = 'material_id';
-		$frm->Camps = 'material_id, Tipus, codi, nom, data_compra, bool:es_obsolet';
-		$frm->Descripcions = 'Id, Tipus, Codi, Nom, Data compra, Obsolet';
+		$frm->Camps = 'codi, nom, Tipus, Familia, Responsable, ambit, ubicacio, data_compra, bool:es_obsolet';
+		$frm->Descripcions = 'Codi, Nom, Tipus, Familia, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
 		if ($this->Usuari->es_admin) {
 			$frm->PermetEditar = true;
 			$frm->URLEdicio = 'Fitxa.php?accio=Material';
@@ -98,9 +98,11 @@ class Material extends Objecte
 	 */
 	private function CreaSQL() {
 		$SQL = "
-			SELECT M.*, TM.nom AS Tipus
+			SELECT M.*, TM.nom AS Tipus, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS Responsable, FFP.nom AS Familia
 			FROM MATERIAL M 
 			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id) 
+			LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=M.familia_fp_id) 
+			LEFT JOIN USUARI U ON (U.usuari_id=M.responsable_id) 
 			WHERE (0=0) 
 		";
 		return $SQL;
@@ -116,6 +118,10 @@ class Material extends Objecte
 		$frm->AfegeixText('codi', 'Codi', 50, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('tipus_material_id', 'Classificació', 100, 'Recerca.php?accio=TipusMaterial', 'TIPUS_MATERIAL', 'tipus_material_id', 'nom');
+		$frm->AfegeixLookUp('familia_fp_id', 'Família FP', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
+		$frm->AfegeixLookUp('responsable_id', 'Responsable', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
+		$frm->AfegeixText('ambit', 'Àmbit', 100);
+		$frm->AfegeixText('ubicacio', 'Ubicació', 100);
 		$frm->AfegeixData('data_compra', 'Data compra');
 		$frm->AfegeixCheckBox('es_obsolet', 'Obsolet');
 		$frm->EscriuHTML();

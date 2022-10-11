@@ -288,7 +288,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
 		$Material = new Material($conn, $Usuari, $Sistema);
 		$Material->Id = $Id;
 		$Material->EscriuFormulariFitxa();
@@ -297,7 +297,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
 		$TipusMaterial = new TipusMaterial($conn, $Usuari, $Sistema);
 		$TipusMaterial->Id = $Id;
 		$TipusMaterial->EscriuFormulariFitxa();
@@ -306,7 +306,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
 		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->Id = $Id;
 		$ReservaMaterial->EscriuFormulariFitxa();
