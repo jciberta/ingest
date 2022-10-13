@@ -10,6 +10,7 @@
  */
 
 require_once('../Config.php');
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
@@ -78,6 +79,19 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		// Esborrem el registre
 		$SQL = "DELETE FROM $Taula WHERE $ClauPrimaria='$Valor'";
 		$frm->Connexio->query($SQL);
+		print $frm->GeneraTaula();
+	}
+	else if ($_REQUEST['accio'] == 'DuplicaRegistre') {
+		$Taula = $_REQUEST['taula'];
+		$ClauPrimaria = $_REQUEST['clau_primaria'];
+		$Valor = $_REQUEST['valor'];
+		$CampCopia = $_REQUEST['camp_copia'];
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		// Dupliquem el registre
+		DB::DuplicaRegistre($conn, $Taula, $ClauPrimaria, $Valor, $CampCopia);
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'AfegeixDetall') {

@@ -966,6 +966,12 @@ class FormRecerca extends Form
 	* @var boolean
 	*/    
     public $PermetSuprimir = False; 
+
+	/**
+	* Permet duplicar un registre.
+	* @var boolean
+	*/    
+    public $PermetDuplicar = False; 
 	
 	/**
 	* Opcions per a cada registre. Estan incloses les opcions AJAX.
@@ -1224,6 +1230,15 @@ class FormRecerca extends Form
 					$sRetorn .= "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
 //					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
 				}
+
+
+				if ($this->Modalitat == self::mfLLISTA && $this->PermetDuplicar) {
+					$Funcio = 'DuplicaRegistre("'.$this->Taula.'", "'.$this->ClauPrimaria.'", "'.$row[$this->ClauPrimaria].'");';
+					$sRetorn .= "<A href=# onClick='".$Funcio."'><IMG src=img/copy.svg></A>&nbsp&nbsp";
+//					$sRetorn .= "<IMG src=img/delete.svg>&nbsp&nbsp";
+				}
+
+
 				$sRetorn .= "</TD>";
 				if ($this->Modalitat == self::mfLLISTA && $this->ClauPrimaria != '')
 //print_h($row);					
@@ -1376,7 +1391,7 @@ class FormRecerca extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		// Inicialització de l'ajuda

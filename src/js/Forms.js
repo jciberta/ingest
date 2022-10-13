@@ -335,6 +335,52 @@ function SuprimeixRegistre(Taula, ClauPrimaria, Valor) {
 }
 
 /**
+ * DuplicaRegistre
+ * Duplica un registre d'una taula.
+ * @param Taula Taula de la que es vol eliminar el registre.
+ * @param ClauPrimaria Clau primària de la taula.
+ * @param Valor valor de la clau primària del registre que es vol esborrar.
+ * @param CampCopia Nom del camp que es vol que aparegui el text "(còpia)" al final.
+ */
+function DuplicaRegistre(Taula, ClauPrimaria, Valor, CampCopia) { 
+	bootbox.confirm({
+		message: "Esteu segur que voleu duplicar el registre?",
+		buttons: {
+			cancel: {
+				label: 'Cancel·la'
+			},
+			confirm: {
+				label: 'Duplica',
+			}
+		},
+		callback: function (result) {
+			if (result) {
+				var frm = document.getElementById('frm');
+				var sFrm = frm.value;	
+				$.ajax( {
+					type: 'POST',
+					url: 'lib/LibForms.ajax.php',
+					data:{
+						'accio': 'DuplicaRegistre',
+						'taula': Taula,
+						'clau_primaria': ClauPrimaria,
+						'valor': Valor,
+						'camp_copia': CampCopia,
+						'frm': sFrm
+					},
+					success: function(data) {
+						$('#taula').html(data);
+					}, 
+					error: function(data) {
+						$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
+					}
+				});		
+			}
+		}
+	});	
+}
+
+/**
  * DesaFitxa
  * @param element Botó que desa la fitxa.
  */

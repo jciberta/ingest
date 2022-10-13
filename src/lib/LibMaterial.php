@@ -88,6 +88,8 @@ class Material extends Objecte
 			$frm->PermetEditar = true;
 			$frm->URLEdicio = 'Fitxa.php?accio=Material';
 			$frm->PermetAfegir = true;
+			$frm->PermetSuprimir = true;
+			$frm->PermetDuplicar = true;
 		}
 		$frm->EscriuHTML();
 	}

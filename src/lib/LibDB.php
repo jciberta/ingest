@@ -151,6 +151,76 @@ class DB
 	{
 		return self::CarregaRegistre($Connexio, $Taula, $Camp, $Valor, 2);
 	}
+
+	/**
+	 * Obté les metadades d'una taula.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula.
+	 * @return array Metadades de la taula.
+	 */
+	public static function ObteMetadades($Connexio, string $Taula): array {
+		$Retorn = [];
+		$SQL = 'DESCRIBE '.$Taula;
+		$ResultSet = $Connexio->query($SQL);
+		while($row = $ResultSet->fetch_assoc()) {
+			array_push($Retorn, $row);
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Obté la clau primària a partir de les metadades d'una taula.
+	 * @param array Metadades de la taula.
+	 * @return string Clau primària. Si n'hi ha més d'una, es separen per comes.
+	 */
+	public static function ClauPrimariaDesDeMetadades(array $Metadades): string {
+		$aClauPrimaria = [];
+		for ($i=0; $i<count($Metadades); $i++) {
+			$row = $Metadades[$i];
+			if ($row['Key'] == 'PRI') 
+				array_push($aClauPrimaria, $row['Field']);
+		}
+		$Retorn = implode(",", $aClauPrimaria);
+		return $Retorn;
+	}
+	
+	/**
+	 * Duplica un registre d'una taula de la base de dades.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $ClauPrimaria Nom del camp de la clau primària.
+	 * @param string $Valor Valor del camp de la clau primària.
+	 * @param string $CampCopia Nom del camp que es vol que aparegui el text "(còpia)" al final. No implementat!
+	 */
+	public static function DuplicaRegistre($Connexio, $Taula, $ClauPrimaria, $Valor, $CampCopia = '')
+	{
+		$Metadades = self::ObteMetadades($Connexio, $Taula);
+		$AutoIncrement = False;
+		$aCamps = [];
+		for ($i=0; $i<count($Metadades); $i++) {
+			$row = $Metadades[$i];
+			if ($row['Key'] == 'PRI') 
+				$AutoIncrement = ($row['Extra'] == 'auto_increment');
+			else
+				array_push($aCamps, $row['Field']);
+		}
+		$Camps = implode(",", $aCamps);
+
+		if ($AutoIncrement) 
+			$SQL = "INSERT INTO $Taula ($Camps) SELECT $Camps FROM $Taula WHERE $ClauPrimaria=$Valor";
+		else
+			$SQL = "
+				INSERT INTO $Taula ($ClauPrimaria,$Camps) 
+				SELECT (SELECT MAX($ClauPrimaria)+1 FROM $Taula),$Camps FROM $Taula WHERE $ClauPrimaria=$Valor";
+
+		try {
+			$ResultSet = $Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception('<p>'.$Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
+		} catch (Exception $e) {
+			die("<p><b>ERROR DuplicaRegistre</b>. Causa:</p>".$e->getMessage());
+		}	
+	}
 }
 
 ?>
