@@ -52,9 +52,11 @@ switch ($accio) {
 		$frm->AfegeixOpcio('Canvia', 'Canvia.php?accio=CanviaAUsuari&Id=');
 		
 		// Repensar!
-		$frm->Filtre->AfegeixCheckBox('es_professor', 'Professors', True);
+/*		$frm->Filtre->AfegeixCheckBox('es_professor', 'Professors', True);
 		$frm->Filtre->AfegeixCheckBox('es_alumne', 'Alumnes', True);
 		$frm->Filtre->AfegeixCheckBox('es_pare', 'Pares', True);
+		$frm->Filtre->AfegeixCheckBox('es_administratiu', 'Administratius', True);
+*/
 		
 		$frm->Filtre->AfegeixLlista('usuari_bloquejat', 'Bloquejat', 30, array('', '0', '1'), array('Tots', 'No bloquejat', 'Bloquejat'));
 		$frm->EscriuHTML();

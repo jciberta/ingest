@@ -182,9 +182,10 @@ class Usuari extends Objecte
 			//$frm->SaltaColumna();
 			$frm->AfegeixCheckBox('es_tutor', "És tutor?");
 			$frm->AfegeixCheckBox('es_professor', "És professor?", [FormFitxa::offAL_COSTAT]);
-			$frm->AfegeixCheckBox('es_alumne', "És alumne?", [FormFitxa::offAL_COSTAT]);
+			$frm->AfegeixCheckBox('es_administratiu', "És administratiu?", [FormFitxa::offAL_COSTAT]);
 			//$frm->SaltaColumna();
-			$frm->AfegeixCheckBox('es_pare', "És pare?");
+			$frm->AfegeixCheckBox('es_alumne', "És alumne?");
+			$frm->AfegeixCheckBox('es_pare', "És pare?", [FormFitxa::offAL_COSTAT]);
 			//$frm->FinalitzaColumnes();
 
 		}
@@ -1773,7 +1774,7 @@ class Orla extends Form
 class Progenitor extends Usuari
 {
 	/**
-	 * Genera i escriu l'escriptori del professor.
+	 * Genera i escriu l'escriptori del progenitor.
 	 */
 	public function Escriptori() {
 		// Els pares només poden veure el PDF de les notes dels seus fills

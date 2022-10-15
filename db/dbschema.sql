@@ -92,6 +92,7 @@ CREATE TABLE USUARI
     es_admin           BIT NOT NULL DEFAULT 0,
     es_direccio        BIT NOT NULL DEFAULT 0,
     es_cap_estudis     BIT NOT NULL DEFAULT 0,
+    es_administratiu   BIT NOT NULL DEFAULT 0,
     es_cap_departament BIT NOT NULL DEFAULT 0,
     es_tutor           BIT NOT NULL DEFAULT 0,
     es_professor       BIT NOT NULL DEFAULT 0,

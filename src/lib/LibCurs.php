@@ -287,24 +287,33 @@ class Curs extends Objecte
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'curs/color', 'png', Curs::LlegendaEstat());
-		if (!$this->NomesProfessor) {
-			$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
-			$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
+		
+		// Opcions
+		if ($this->Usuari->es_administratiu) {
+			// Usuari administratiu
+			$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
 		}
-		$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		if (!$this->NomesProfessor) {
-			$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
-			$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
-			$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
-			$frm->AfegeixOpcio('Calendari UF', 'Fitxa.php?accio=PlaTreballCalendari&CursId=', '', 'calendari.svg');
-		}
-		if ($this->Usuari->es_admin) {
-			$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
-		}
-		if (!$this->NomesProfessor) {
-			$frm->PermetEditar = True;
-			$frm->URLEdicio = 'Fitxa.php?accio=Curs';
-			$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+		else {
+			// Resta d'usuaris
+			if (!$this->NomesProfessor) {
+				$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
+				$frm->AfegeixOpcio('Grups', 'Grups.php?CursId=');
+			}
+			$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
+			if (!$this->NomesProfessor) {
+				$frm->AfegeixOpcio('Avaluació', 'Avaluacio.php?CursId=');
+				$frm->AfegeixOpcio('Butlletins en PDF', 'GeneraExpedientsPDF.php?CursId=', '', 'pdf.png');
+				$frm->AfegeixOpcio('Estadístiques', 'Estadistiques.php?accio=EstadistiquesNotesCurs&CursId=', '', 'pie.svg');
+				$frm->AfegeixOpcio('Calendari UF', 'Fitxa.php?accio=PlaTreballCalendari&CursId=', '', 'calendari.svg');
+			}
+			if ($this->Usuari->es_admin) {
+				$frm->AfegeixOpcioAJAX('[EliminaMatricula]', 'EliminaMatriculaCurs');
+			}
+			if (!$this->NomesProfessor) {
+				$frm->PermetEditar = True;
+				$frm->URLEdicio = 'Fitxa.php?accio=Curs';
+				$frm->PermetAfegir = ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis);
+			}
 		}
 
 		// Filtre

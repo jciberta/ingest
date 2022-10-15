@@ -53,6 +53,10 @@ else if ($Usuari->es_pare) {
 	$Progenitor = new Progenitor($conn, $Usuari);
 	$Progenitor->Escriptori();	
 }
+else if ($Usuari->es_administratiu) {
+	$curs = new Curs($conn, $Usuari, $Sistema);
+	$curs->EscriuFormulariRecera();
+}
 
 echo '</div>';
 echo "<DIV id=debug></DIV>";
