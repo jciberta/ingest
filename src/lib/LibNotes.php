@@ -1368,8 +1368,10 @@ class Notes extends Form
 	 */				
 	public function ExportaCSVRegistre($RegistreNotes, $handle, $Nivell, int $Tipus=self::teULTIMA_NOTA, string $filename="export.csv", string $delimiter=";")
 	{
-		// Mòduls
+		// Mòduls (1a línia)
 		$aNotes = [];
+		array_push($aNotes, '');
+		array_push($aNotes, '');
 		array_push($aNotes, '');
 		array_push($aNotes, '');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
@@ -1381,10 +1383,12 @@ class Notes extends Form
 //print('<hr>');
 //exit;
 
-		// Unitats formatives
+		// Unitats formatives (2a línia)
 		$aNotes = [];
 		array_push($aNotes, '');
 		array_push($aNotes, '');
+		array_push($aNotes, 'G');
+		array_push($aNotes, 'T');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
 			array_push($aNotes, utf8_encode($row["CodiUF"]));
@@ -1403,6 +1407,8 @@ class Notes extends Form
 		// Notes
 		for($i = 0; $i < count($RegistreNotes->UF); $i++) {
 			$RegistreAlumne = $RegistreNotes->UF[$i];
+//print_h($RegistreNotes->Alumne[$i]);
+//exit;
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$aNotes = [];
 				$Document = $RegistreNotes->Alumne[$i]['document'];
@@ -1410,6 +1416,8 @@ class Notes extends Form
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
 				//$Nom = utf8_encode($Nom);
 				array_push($aNotes, $Nom);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['Grup']);
+				array_push($aNotes, $RegistreNotes->Alumne[$i]['GrupTutoria']);
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];
 //print_r($row);
@@ -1441,21 +1449,30 @@ class Notes extends Form
 		// Estadístiques UF
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		$aNotes = [];
+		array_push($aNotes, '');
 		array_push($aNotes, utf8_decode('Alumnes aprovats'));
+		array_push($aNotes, '');
+		array_push($aNotes, '');
         for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
             $euf = $aEstadistiquesUF[$i];
             array_push($aNotes, $euf->AlumnesAprovats);
         }
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
+		array_push($aNotes, '');
 		array_push($aNotes, utf8_decode('Alumnes aprovats convocatòries anteriors'));
+		array_push($aNotes, '');
+		array_push($aNotes, '');
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			array_push($aNotes, $euf->AlumnesAprovatsConvocatoriaAnterior);
 		}
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
+		array_push($aNotes, '');
 		array_push($aNotes, utf8_decode('% aprovats convocatòria actual'));
+		array_push($aNotes, '');
+		array_push($aNotes, '');
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
 			array_push($aNotes, str_replace('.', ',', $euf->PercentatgeAprovats));
@@ -1532,18 +1549,22 @@ class Notes extends Form
 		// Mòduls
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiMP"]));
-			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encode($row["CodiMP"]));
+			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
 		// UFs
+		$sheet->setCellValueByColumnAndRow(1, $y, 'DNI');
+		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumne');
+		$sheet->setCellValueByColumnAndRow(3, $y, 'Grup');
+		$sheet->setCellValueByColumnAndRow(4, $y, 'Tutoria');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 3, $y, utf8_encode($row["CodiUF"]));
-			$cellStyle = $Columnes[$j + 2].$y;
+			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encode($row["CodiUF"]));
+			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
@@ -1564,10 +1585,12 @@ class Notes extends Form
 				$Nom = utf8_encode($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
 				//$Nom = utf8_encode($Nom);
 				$sheet->setCellValueByColumnAndRow(2, $y, $Nom);
+				$sheet->setCellValueByColumnAndRow(3, $y, $RegistreNotes->Alumne[$i]['Grup']);
+				$sheet->setCellValueByColumnAndRow(4, $y, $RegistreNotes->Alumne[$i]['GrupTutoria']);
 				$sheet->getStyle('B'.$y)->getFont()->getColor()->setARGB('ff007bff');
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];
-					$cellStyle = $Columnes[$j + 2].$y;
+					$cellStyle = $Columnes[$j + 4].$y;
 					switch ($Tipus) {
 						case Notes::teULTIMA_NOTA:
 							$UltimaNota = UltimaNota($row);
@@ -1598,7 +1621,7 @@ class Notes extends Form
 						} else if ($row["Orientativa"]) {
 							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffffff00');
 						}
-						$sheet->setCellValueByColumnAndRow($j + 3, $y, $UltimaNota);
+						$sheet->setCellValueByColumnAndRow($j + 5, $y, $UltimaNota);
 					}
 				}
 				$Estadistiques = [$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals, 
@@ -1609,7 +1632,7 @@ class Notes extends Form
 				$RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses, 
 				number_format($RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades/$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals*100, 2)];
 				for($j = 0; $j < count($Estadistiques); $j++) {
-					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 3, $y, $Estadistiques[$j]);
+					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 5, $y, $Estadistiques[$j]);
 					$cellStyle = $Columnes[$j + count($RegistreAlumne) + 2].$y;
 					$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 				}
@@ -1630,28 +1653,28 @@ class Notes extends Form
 		//Estadístiques UF
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		
-		$sheet->setCellValueByColumnAndRow(1, $y, 'Alumnes aprovats');
+		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumnes aprovats');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovats);
+			$sheet->setCellValueByColumnAndRow($i + 5, $y, $euf->AlumnesAprovats);
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
-		$sheet->setCellValueByColumnAndRow(1, $y, 'Alumnes aprovats convocatòries anteriors');
+		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumnes aprovats convocatòries anteriors');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 3, $y, $euf->AlumnesAprovatsConvocatoriaAnterior);
+			$sheet->setCellValueByColumnAndRow($i + 5, $y, $euf->AlumnesAprovatsConvocatoriaAnterior);
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
-		$sheet->setCellValueByColumnAndRow(1, $y, '% aprovats convocatòria actual');
+		$sheet->setCellValueByColumnAndRow(2, $y, '% aprovats convocatòria actual');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 3, $y, str_replace('.', ',', $euf->PercentatgeAprovats));
+			$sheet->setCellValueByColumnAndRow($i + 5, $y, str_replace('.', ',', $euf->PercentatgeAprovats));
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
