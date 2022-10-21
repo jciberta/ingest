@@ -257,7 +257,9 @@ switch ($accio) {
 		$mat = new Matricula($conn, $Usuari);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
-		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+		$objUsuari = new Usuari($conn, $Usuari);
+
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId) || ($objUsuari->EsProgenitor($AlumneId))) {
 			$frm = new PlaTreball($conn, $Usuari, $Sistema);
 			$frm->MatriculaId = $MatriculaId;
 			$frm->CursId = $CursId;
@@ -275,7 +277,8 @@ switch ($accio) {
 		$mat = new Matricula($conn, $Usuari);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
-		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId)) {
+		$objUsuari = new Usuari($conn, $Usuari);
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId) || ($objUsuari->EsProgenitor($AlumneId))) {
 			$frm = new PlaTreballCalendari($conn, $Usuari, $Sistema);
 			$frm->MatriculaId = $MatriculaId;
 			$frm->CursId = $CursId;

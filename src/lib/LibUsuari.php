@@ -1777,11 +1777,14 @@ class Progenitor extends Usuari
 	 * Genera i escriu l'escriptori del progenitor.
 	 */
 	public function Escriptori() {
-		// Els pares només poden veure el PDF de les notes dels seus fills
+		// Els pares només poden veure dels seus fills:
+		// - el PDF de les notes quan estigui disponible
+		// - El pla de treball  
 		CreaIniciHTML($this->Usuari, '');
 		$SQL = ' SELECT '.
 			' 	U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			'   M.matricula_id AS MatriculaId'.
+			'   M.matricula_id AS MatriculaId, '.
+			'   C.avaluacio '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
@@ -1795,15 +1798,15 @@ class Progenitor extends Usuari
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
-				$URL = GeneraURL('ExpedientPDF.php?MatriculaId='.$row['MatriculaId']);
-				echo '  <div class="card">';
-				echo '    <div class="card-body">';
-				echo '      <h5 class="card-title">Expedient</h5>';
 				$NomComplet = trim(trim($row['NomAlumne']).' '.trim($row['Cognom1Alumne']).' '.trim($row['Cognom2Alumne']));
-				echo '      <p class="card-text">'.utf8_encode($NomComplet).'</p>';
-				echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-				echo '    </div>';
-				echo '  </div>';
+				$MatriculaId = $row['MatriculaId'];
+				// Pla de treball. Només es veu a l'avaluació ordinària
+				if ($row['avaluacio'] == 'ORD') {
+					$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
+					echo CreaTargeta('Pla de treball', utf8_encode($NomComplet), $URL);
+				}				
+				$URL = GeneraURL('ExpedientPDF.php?MatriculaId='.$row['MatriculaId']);
+				echo CreaTargeta('Expedient', utf8_encode($NomComplet), $URL);
 				$row = $ResultSet->fetch_assoc();
 			}
 		}
