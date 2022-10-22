@@ -681,6 +681,13 @@ class Professor extends Usuari
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&MostraTot=1&ProfId='.$this->Usuari->usuari_id);
 		echo CreaTargeta('Programacions', 'Totes les programacions', $URL);
 
+		// Pedaç temporal
+		if (str_starts_with($this->Usuari->codi, 'SMX')) {
+			// Material
+			$URL = GeneraURL('Recerca.php?accio=Material');
+			echo CreaTargeta('Material', 'Inventari', $URL);
+		}
+
 		echo '</div>';
 		echo '<h3>Informes</h3>';
 		echo '<div class="card-columns" style="column-count:6">';
