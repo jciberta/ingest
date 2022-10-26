@@ -67,6 +67,10 @@ class SQL {
 		$this->SQL = TrimX($sSQL);
 		if (substr(strtoupper($this->SQL), 0, 6) != "SELECT")
 			throw new Exception("La classe SQL només manipula SELECT.");
+		
+		$this->SQL = str_replace(array("\t"), array(" "), $this->SQL);
+		$this->SQL = str_replace(array("\n"), array(" "), $this->SQL);
+		
 		$this->Parteix();
 	}	
 
@@ -96,6 +100,9 @@ class SQL {
 		}
 		else {
 			$this->Select = substr($SQL, 0, $iFrom);
+//print('<hr>');
+//print($this->Select);
+//print('<hr>');
 			$this->Select = trim(substr($this->Select, 6));
 			if ($iWhere == 0) {
 				// No hi ha WHERE
@@ -133,8 +140,9 @@ class SQL {
 	 */
 	private function CreaCampAlies() {
 		$this->CampAlies = array();
+//print('<hr>');
 //print($this->Select);
-
+//print('<hr>');
 		// $aCamps = explode(',', $this->Select); -> No funciona com a parser, separa també les comes de dins les funcions
 		$Select = $this->Select;
 		$aCamps = [];
