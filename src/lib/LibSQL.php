@@ -117,6 +117,12 @@ class SQL {
 			}
 		}
 		$this->CreaCampAlies();
+/*print('<hr>');
+print('<b>SELECT</b>: '.$this->Select.'<br>');
+print('<b>FROM</b>:   '.$this->From.'<br>');
+print('<b>WHERE</b>:  '.$this->Where.'<br>');
+print('<b>ORDER</b>:  '.$this->Order.'<br>');
+print('<hr>');*/	
 	}
 
 	/**

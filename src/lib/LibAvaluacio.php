@@ -15,25 +15,13 @@ require_once(ROOT.'/lib/LibCurs.php');
 /**
  * Classe que encapsula les utilitats per a l'avaluació.
  */
-class Avaluacio 
+class Avaluacio extends Objecte
 {
 	// Estat de l'avaluació
 	const Ordinaria = 'ORD';
 	const ExtraOrdinaria = 'EXT';
 	const Tancada = 'TAN';
 	
-	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-	public $Usuari;
-
 	/**
 	* Avaluació
 	* @var string
@@ -52,22 +40,6 @@ class Avaluacio
 	*/    
 	private $Curs;
 
-	/**
-	* Registre de la base de dades que conté les dades d'una avaluació.
-	* @var object
-	*/    
-    private $Registre = NULL;
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn Connexió a la base de dades.
-	 * @param object $user Usuari de l'aplicació.
-	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}
-	
 	/**
 	 * Crea la SQL per obtenir les dades de l'avaluació.
 	 * @param integer $id Identificador del curs.
@@ -90,17 +62,13 @@ class Avaluacio
 	private function CreaSQLAvaluacions() {
 		$SQL = ' SELECT '.
 			'   C.curs_id, '.
-			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) grups_tutoria, ".
+			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) AS grups_tutoria, ".
 			'   C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
 			'   CASE WHEN C.estat = "T" THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre '.
 			' FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers '.
 			" RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1 ".
-
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-
-//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
-//			' WHERE AA.actual=1 '.
 			' ORDER by C.curs_id, C.grups_tutoria ';
 		return $SQL;
 	}
@@ -353,9 +321,10 @@ class Avaluacio
 		//$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Avaluacions';
 		$frm->SQL = utf8_decode($SQL);
+//print("<br><br><br><br><br><br><hr>$SQL<hr>");
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id, grups_tutoria';
-		$frm->Camps = 'codi, grups_tutoria, NomCurs, nivell, Any, avaluacio, trimestre';
+		$frm->Camps = 'codi, NomCurs, grups_tutoria, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Grup, Nivell, Any, Avaluació, Trimestre';
 		
 		$frm->AfegeixOpcio('Avaluació', 'Fitxa.php?accio=ExpedientSagaAvaluacio&Id=');
@@ -363,7 +332,7 @@ class Avaluacio
 		
 		// Filtre
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->Filtre->AfegeixLlista('CPE.any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 
 		$frm->EscriuHTML();
 	}

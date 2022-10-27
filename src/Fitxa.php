@@ -219,7 +219,7 @@ switch ($accio) {
 		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 		
-		$av = new Avaluacio($conn, $Usuari);
+		$av = new Avaluacio($conn, $Usuari, $Sistema);
 		$aMatricules = $av->LlistaMatricules($CursIdGrup);
 //print_h($aMatricules);
 //exit;

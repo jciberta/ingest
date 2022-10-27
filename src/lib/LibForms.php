@@ -765,7 +765,9 @@ class Filtre
 	 * @return string HTML del filtre.
 	 */
 	public function CreaFiltre(): string {
-		$Retorn = '<DIV id=filtre>';
+		$Retorn = PHP_EOL;
+		$Retorn .= '<!-- INICI Filtre -->'.PHP_EOL;
+		$Retorn .= '<DIV id=filtre>'.PHP_EOL;
 		foreach($this->Camps as $Valor) {
 			switch ($Valor->Tipus) {
 				case Form::tcESPAI:
@@ -812,7 +814,9 @@ exit;*/
 					break;
 			}			
 		}
-		$Retorn .= '</DIV><P/>';
+		$Retorn .= '</DIV><P/>'.PHP_EOL;
+		$Retorn .= '<!-- FINAL Filtre -->'.PHP_EOL;
+		$Retorn .= PHP_EOL;
 		$this->CreaFiltreJSON();
 		return $Retorn;
 	}
@@ -1062,7 +1066,7 @@ class FormRecerca extends Form
 			}
 			$sRetorn .= ' ORDER BY '.$this->EliminaTipusPredefinit($this->Ordre);
 		}
-//print $sRetorn;		
+//print "<hr>SQL<br>$sRetorn<hr>";		
 		return $sRetorn;
 	}
 
@@ -1174,7 +1178,16 @@ class FormRecerca extends Form
 			for ($i=0; $i<count($aDescripcions); $i++) {
 				$sValor = $aDescripcions[$i];
 				$Ordenacio = $this->CreaFletxaOrdenacio($aCamps[$i]);
-				$sRetorn .= "<TH>".$sValor."&nbsp;".$Ordenacio."</TH>";
+				
+				$ColSpan = "";
+				if (($this->Usuari->es_admin) && ($i == 0)) {
+					$aClauPrimaria = explode(',', $this->ClauPrimaria);
+					$c = count($aClauPrimaria);
+					if ($c > 1)
+						$ColSpan = " colspan=$c";
+				}
+				
+				$sRetorn .= "<TH$ColSpan>".$sValor."&nbsp;".$Ordenacio."</TH>";
 			}
 			$sRetorn .= '<TH></TH>';
 			if ($this->Modalitat == self::mfLLISTA) 
