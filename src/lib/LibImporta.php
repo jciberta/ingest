@@ -778,17 +778,15 @@ class ImportaMatricula extends Importa
 		'CFPM IC10 D' => 64, // SMX1
 		'CFPS ICB0 A' => 66, // DAM1
 		'CFPS ICB0 B' => 67, // DAM2
-		// 'CFPM SA20 A' => 41, // FIP1
-		// 'CFPM SA20 B' => 41, // FIP1
-		// 'CFPM SA20 C' => 42, // FIP2
+		'CFPM SA20 A' => 68, // FIP1
+		'CFPM SA20 B' => 69, // FIP2
 		'CFPM SC10 A' => 70, // APD1
 		'CFPM SC10 B' => 71, // APD2
-		// 'CFPM 1601 A' => 45, // CAI1
-		// 'CFPM 1601 B' => 45, // CAI1
-		// 'CFPM 1601 C' => 45, // CAI1
-		// 'CFPM 1601 D' => 45, // CAI1
+		'CFPM 1601 A' => 72, // CAI1
+		'CFPM 1601 B' => 72, // CAI1
+		'CFPM 1601 C' => 72, // CAI1
+		'CFPM 1601 J' => 72, // CAI1
 		'CFPM 1601 E' => 73, // CAI2 FCT
-		// 'CFPB IC10'   => 47, // FPB1
 		'CFPS SAH0 A' => 76, // HBD1
 		'CFPS SAH0 B' => 77  // HBD1
 	);	
