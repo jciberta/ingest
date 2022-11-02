@@ -1505,7 +1505,15 @@ class Acta extends Form
 				}
 				$k++;
 			}
-			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.' '.'</TD>'; // TODO
+			
+			// Si no arriba a 8, omplim la resta
+			for($j = $k; $j <=8; $j++) {
+				$HTML .= '<TD rowspan="3" width="'.($Amplada[2*$k+1]).'"></TD>';
+				$HTML .= '<TD rowspan="3" width="'.($Amplada[2*$k+2]).'"></TD>';
+			}
+			
+			// TODO: Finalitza el cicle
+			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.' '.'</TD>';
 			$HTML .= '</TR>';
 
 			// Fem els 8 primers mòduls/UF
@@ -1529,37 +1537,53 @@ class Acta extends Form
 			}
 			$HTML .= '</TR>';
 			
-			// Fem els 9+ primers mòduls
-			$k = 1;
-			$HTML .= '<TR>';
-			foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
-				if ($k >= 9) {
-					$HTML .= '<TD width="'.($Amplada[2*$k+1-16]).'">'.$CodiMP.'</TD>';
-					$HTML .= '<TD width="'.($Amplada[2*$k+2-16]).'">'.$this->ObteNotaModulAlumne($a, $CodiMP).'</TD>'; 
-				}
-				$k++;
-			}
-			$HTML .= '</TR>';
+			
+//print_h(count($this->RegistrePlaEstudis));	
+//exit;		
 
-			// Fem els 9+ primers mòduls/UF
-			$k = 1;
-			$HTML .= '<TR>';
-			foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
-				if ($k >= 9) {
-					$HTML .= '<TD width="'.($Amplada[2*$k+1-16]).'">';
-					foreach ($Modul->Unitats as $CodiUF => $Unitat) {
-						$HTML .= $CodiUF.'<BR>';
+			if (count($this->RegistrePlaEstudis) > 8) {
+
+				// Fem els 9+ primers mòduls
+				$k = 1;
+				$HTML .= '<TR>';
+				foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
+					if ($k >= 9) {
+						$HTML .= '<TD width="'.($Amplada[2*$k+1-16]).'">'.$CodiMP.'</TD>';
+						$HTML .= '<TD width="'.($Amplada[2*$k+2-16]).'">'.$this->ObteNotaModulAlumne($a, $CodiMP).'</TD>'; 
 					}
-					$HTML .= '</TD>';
-					$HTML .= '<TD width="'.($Amplada[2*$k+2-16]).'">';
-					foreach ($Modul->Unitats as $CodiUF => $Unitat) {
-						$HTML .= $this->ObteNotaAlumne($a, $CodiMP, $CodiUF).'<BR>';
-					}
-					$HTML .= '</TD>';
+					$k++;
 				}
-				$k++;
+				$HTML .= '</TR>';
+
+				// Fem els 9+ primers mòduls/UF
+				$k = 1;
+				$HTML .= '<TR>';
+				foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
+					if ($k >= 9) {
+						$HTML .= '<TD width="'.($Amplada[2*$k+1-16]).'">';
+						foreach ($Modul->Unitats as $CodiUF => $Unitat) {
+							$HTML .= $CodiUF.'<BR>';
+						}
+						$HTML .= '</TD>';
+						$HTML .= '<TD width="'.($Amplada[2*$k+2-16]).'">';
+						foreach ($Modul->Unitats as $CodiUF => $Unitat) {
+							$HTML .= $this->ObteNotaAlumne($a, $CodiMP, $CodiUF).'<BR>';
+						}
+						$HTML .= '</TD>';
+					}
+					$k++;
+				}
+				$HTML .= '</TR>';
+
 			}
-			$HTML .= '</TR>';			
+			else {
+				$HTML .= '<TR>';
+				foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
+					$HTML .= '<TD width="'.($Amplada[2*$k+1]).'"></TD>';
+					$HTML .= '<TD width="'.($Amplada[2*$k+2]).'"></TD>';
+				}
+				$HTML .= '</TR>';
+			}
 			$HTML .= '</TABLE>';
 			
 			if (($i % 2 == 1) || ($i+1 == count($ra))) {
@@ -1744,15 +1768,21 @@ class Acta extends Form
 
 		// set image scale factor
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);		
-		
-		
 
+//print("GeneraTaulaNotes");
+		
 		$this->GeneraTaulaNotes($pdf);
+//print(GeneraTaulaSignatures);
 		$this->GeneraTaulaSignatures($pdf);
 		
+//print("Nom");
 		// Close and output PDF document
 		$Nom = 'Acta '.str_replace('/', '-', $this->Registre->CursAcademic).' '.$this->Registre->Avaluacio.' '.$this->Registre->NomCicleFormatiu;
 		$Nom = Normalitza($Nom);		
+
+//print("$Nom");
+//exit;
+
 		// Clean any content of the output buffer
 		ob_end_clean();
 		$pdf->Output($Nom.'.pdf', 'I');
