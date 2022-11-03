@@ -1440,6 +1440,23 @@ class Acta extends Form
 	}
 
 	/**
+	 * Indica si l'alumne finalitza el cicle, és a dir, si té totes les UF superades.
+	 * @param object $a Alumne.
+     * @return bool Cert si l'alumne finalitza el cicle.
+	 */
+	private function FinalitzaCicle($a): bool {
+		$Retorn = True;
+		foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
+			foreach ($Modul->Unitats as $CodiUF => $Unitat) {
+				$Nota = $this->ObteNotaAlumne($a, $CodiMP, $CodiUF);
+				if ($Nota < 5 || $Nota == '') 
+					$Retorn = False;
+			}
+		}
+		return $Retorn;
+	}
+
+	/**
 	 * Genera la part de la taula de notes del PDF.
 	 * NOTA: El valor dels atributs HTML ha d'anar entre "", sinó no funciona!
 	 */
@@ -1513,7 +1530,8 @@ class Acta extends Form
 			}
 			
 			// TODO: Finalitza el cicle
-			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.' '.'</TD>';
+			$FinalitzaCicle = ($this->FinalitzaCicle($a)) ? 'Sí' : '';
+			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.$FinalitzaCicle.'</TD>';
 			$HTML .= '</TR>';
 
 			// Fem els 8 primers mòduls/UF
@@ -1838,10 +1856,10 @@ class ActaPDF extends DocumentPDF
 	* Codi XTEC del cicle.
 	* @var string
 	*/
-
 	public $CodiXTEC = '';				
+
 	/**
-	* Grau: Bàsic, Mig, Superior (GB, GM, GS).
+	* Grau: Bàsic, Mig, Superior, Especialització (GB, GM, GS, CE).
 	* @var string
 	*/
 	public $Grau = ''; 				
@@ -1899,7 +1917,23 @@ class ActaPDF extends DocumentPDF
 
         $this->SetFont('helvetica', '', 9);
 		$this->SetX($this->original_lMargin);
-		$this->writeHTML('<B>Acta de qualificacions de mòduls i unitats formatives de cicle formatiu de grau mitjà</B>', False);
+		switch ($this->Grau) {
+			case 'GB':
+				$Text = '<B>Acta de qualificacions de mòduls i unitats formatives de cicle formatiu de grau bàsic</B>';
+				break;
+			case 'GM':
+				$Text = '<B>Acta de qualificacions de mòduls i unitats formatives de cicle formatiu de grau mitjà</B>';
+				break;
+			case 'GS':
+				$Text = '<B>Acta de qualificacions de mòduls i unitats formatives de cicle formatiu de grau superior</B>';
+				break;
+			case 'CE':
+				$Text = "<B>Acta de qualificacions de mòduls i unitats formatives de curs d'especialització</B>";
+				break;
+			default:
+				$Text = '';
+		}
+		$this->writeHTML($Text, False);
 
 		$Avaluacio = ($this->Avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
 		$this->SetX($this->original_lMargin+150);
