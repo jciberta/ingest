@@ -664,21 +664,17 @@ class Notes extends Form
 
 		$NotesAlumne = $Notes->Alumne[$i];
 		$Id = 'grd'.$IdGraella.'_TotalHores_'.$i;
-//		$Retorn .= '<TD id="'.$Id.'" style="text-align:center;color:grey">'.$Hores.'</TD>';
 		$Retorn .= '<TD width=50 id="'.$Id.'" style="text-align:center;color:grey">'.$NotesAlumne['Estadistiques']->HoresAprovades.'</TD>';
 		$Id = 'grd'.$IdGraella.'_TotalPercentatge_'.$i;
 		$TotalPercentatge = $NotesAlumne['Estadistiques']->HoresAprovades/$NotesAlumne['Estadistiques']->HoresTotals*100;
 		$Color = (($TotalPercentatge>=60 && $Nivell==1) ||($TotalPercentatge>=100 && $Nivell==2)) ? ';background-color:lightgreen' : '';
 		$Retorn .= '<TD width=75 id="'.$Id.'" style="text-align:center'.$Color.'">'.number_format($TotalPercentatge, 2).'&percnt;</TD>';
-		//if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
 
 		// Estadístiques alumne
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
 			$Retorn .= "<TD width=150 style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->UFSuspeses."</TD>";
 			$Retorn .= "<TD width=150 style='text-align:center;color:grey;'>".$NotesAlumne['Estadistiques']->NotaMitjana."</TD>";
 		}
-//		else
-//			$Retorn .= "<TD></TD><TD></TD>";
 		if ($this->Usuari->es_admin && $this->Administracio) {
 			$onClick = "AugmentaConvocatoriaFila($i, $IdGraella)";
 			$Retorn .= "<TD><A href=# onclick='".$onClick."'>[PassaConv]</A></TD>";
@@ -688,12 +684,9 @@ class Notes extends Form
 		$Retorn .= "</TR>";
 
 		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
-		//if ($Hores == $TotalHores)
-		//	$class .= ' Aprovat100';
-		//$style = ($Hores == $TotalHores) ? " style='display:none' " : "";
 		if ($bConvocatoriesAnteriors)
 			$class .= ' ConvocatoriesAnteriors';
-		$style = ($bConvocatoriesAnteriors || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
+		$style = (($bConvocatoriesAnteriors && $Avaluacio->Estat() != Avaluacio::Tancada) || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		

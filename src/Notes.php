@@ -127,18 +127,17 @@ $Tutoria = new GrupTutoria($conn, $Usuari);
 $TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
 echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" onclick="MostraBaixes(this);">Mostra baixes &nbsp';
-if ($Nivell == 2) {
-//	echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraGraellaNotes(this, 1);">Notes 1r &nbsp';
-//	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Notes 2n &nbsp';
-	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+if ($Avaluacio->Estat() != Avaluacio::Tancada) {
+	echo "<input type='checkbox' name='chbConvocatoriesAnteriors' onclick='MostraConvocatoriesAnteriors(this);'>Convocatòries anteriors";
 	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 }
+if ($Nivell == 2) {
+//	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+//	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
+}
 else {
-//	echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraGraellaNotes(this, 2);">Alumnes de 2n &nbsp';
-	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
-	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
+//	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+//	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 	echo $Grup->GeneraMostraGrup($CursId);
 	echo $Tutoria->GeneraMostraGrup($CursId);
 }
