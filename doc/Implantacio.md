@@ -7,7 +7,10 @@
 Dues carpetes principals:
 
   * Codi: /var/www/html
-  * Dades: /var/www/ingest-data
+  * Dades: /var/www/ingest-data (root/root 777)
+    *  /var/www/ingest-data/pdf (www-data/www-data 755)
+    *  /var/www/ingest-data/pix (www-data/www-data 755)
+    *  /var/www/ingest-data/upload (root/root 777)
 
 ### Crea versió
 
