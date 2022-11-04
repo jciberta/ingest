@@ -1,6 +1,8 @@
-# InGest
+# Guia d'estil
 
-## Documentació
+## Idioma
+
+## Documentació del codi
 
 ### Classes
 
