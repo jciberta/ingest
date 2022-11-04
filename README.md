@@ -10,4 +10,4 @@
 
 [Resolució d'errors](doc/ResolucioErrors.md)
 
-[Documentació](doc/Documentacio.md)
+[Guia d'estil](doc/Documentacio.md)
