@@ -3,7 +3,7 @@
 ## Idioma
 
   * L'idioma de l'aplicació web, el codi i la documentació és el català.
-  * [Guia d'estil de SoftCatalà](https://www.softcatala.org/guia-estil-de-softcatala/).
+  * [Guia d'estil de SoftCatalà](https://www.softcatala.org/guia-estil-de-softcatala/tota-la-guia/).
 
 ## Documentació del codi
 
