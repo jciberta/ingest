@@ -1,8 +1,6 @@
-# InGest
+# Entorn de desenvolupament
 
-## Entorn de desenvolupament
-
-### Linux
+## Linux
 
 ```
 apt update
@@ -52,7 +50,33 @@ Càrrega de dades:
 mysql -u root -p InGest < InGest.sql
 ```
 
-#### Composer
+### HTTPS
+
+```
+nano /etc/apache2/sites-available/default-ssl.conf
+    ...
+    SSLEngine On
+    SSLCertificateFile 
+    SSLCertificateKeyFile
+    ...
+a2enmod ssl
+a2ensite default-ssl
+service apache2 reload
+```
+
+Forçar HTTPS:
+
+```
+nano /etc/apache2/sites-available/000-default.conf
+    <VirtualHost *:80>
+        <Location "/">
+            Redirect permanent "https://%{HTTP_HOST}%{REQUEST_URI}"
+        </Location>
+    ...
+service apache2 restart
+```
+
+### Composer
 
 Instal·lació:
 ```
@@ -63,7 +87,7 @@ php -r "unlink('composer-setup.php');"
 mv composer.phar /usr/local/bin/composer
 ```
 
-#### PHPDocumentator
+### PHPDocumentator
 
 Instal·lació:
 ```
@@ -73,11 +97,11 @@ mv phpDocumentor.phar /usr/local/bin/phpdoc
 phpdoc --version
 ```
 
-### Windows
+## Windows
 
-#### XAMPP
+### XAMPP
 
-##### MariaDB
+#### MariaDB
 
 Actualització del password (es pot fer amb el mateix MySQL Workbench):
 
@@ -85,7 +109,7 @@ Actualització del password (es pot fer amb el mateix MySQL Workbench):
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('new_password');
 ```
 
-##### MySQL
+#### MySQL
 
 XAMPP - Replacing MariaDB with MySQL
 * https://odan.github.io/2017/08/13/xampp-replacing-mariadb-with-mysql.html
