@@ -1,5 +1,15 @@
 # Entorn de desenvolupament
 
+## Estructura
+
+Dues carpetes principals:
+
+  * Codi: /var/www/html
+  * Dades: /var/www/ingest-data (root/root 755)
+    *  /var/www/ingest-data/pdf (www-data/www-data 755)
+    *  /var/www/ingest-data/pix (www-data/www-data 755)
+    *  /var/www/ingest-data/upload (root/root 777)
+
 ## Linux
 
 ```
@@ -95,6 +105,27 @@ wget http://phpdoc.org/phpDocumentor.phar
 chmod +x phpDocumentor.phar
 mv phpDocumentor.phar /usr/local/bin/phpdoc
 phpdoc --version
+```
+
+### GIT
+
+git config --global user.name "nom"
+git config --global user.email "correu"
+
+### Entorn
+
+```
+mkdir /var/www/ingest-data/pdf -p
+mkdir /var/www/ingest-data/pix -p
+mkdir /var/www/ingest-data/upload -p
+chmod 755 /var/www/ingest-data/pdf
+chmod 755 /var/www/ingest-data/pix 
+chmod 777 /var/www/ingest-data/upload 
+chown www-data /var/www/ingest-data/pdf
+chown www-data /var/www/ingest-data/pix
+chgrp www-data /var/www/ingest-data/pdf
+chgrp www-data /var/www/ingest-data/pix
+ls -al /var/www/ingest-data
 ```
 
 ## Windows
