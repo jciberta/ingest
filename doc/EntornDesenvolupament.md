@@ -12,51 +12,27 @@ Dues carpetes principals:
 
 ## Linux
 
-```
-apt update
-apt install tasksel
-tasksel install lamp-server
-apt install php-zip php-mbstring
-service apache2 restart
-apt install mysql-workbench
-```
+### Requisits
 
-Password de MySQL (depenent versió Ubuntu):
-```
-mysql_secure_installation
-```
+  * Ubuntu 22.04
+  * Apache 2.4
+  * PHP 8.1
+  * MySQL 8.0
 
-Per a les versions noves de MariaDB (MariaDB 10.4.3 and later):
+### Instal·lació
 
 ```
-$ sudo mysql -u root 
-mysql> USE mysql;
-mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
-mysql> FLUSH PRIVILEGES;
-mysql> exit;
-$ service mysql restart
-```
+sudo apt update && sudo apt upgrade -y
+sudo apt install openssh-server zip
+sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-zip php-curl php-mbstring msttcorefonts
 
-Accés a BD (si no és té accés):
-```
-GRANT ALL PRIVILEGES ON InGest.* TO 'root'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-Connexió:
-```
+sudo mysql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'XXX';
+exit;
 mysql -u root -p
-mysql -u root -p -h 127.0.0.1 -P 3306
-```
-
-Còpia de seguretat:
-```
-mysqldump -u root -p --routines InGest > InGest.sql
-mysqldump -u root -p --routines InGest > "InGest_$(date +%F_%R).sql"
-```
-
-Càrrega de dades:
-```
+create database InGest;
+SET GLOBAL log_bin_trust_function_creators = 1;
+exit;
 mysql -u root -p InGest < InGest.sql
 ```
 
@@ -85,6 +61,67 @@ nano /etc/apache2/sites-available/000-default.conf
     ...
 service apache2 restart
 ```
+
+### Servidor de correu
+
+Relay amb GMail (http://www.lotar.altervista.org/wiki/en/how-to/sendmail-and-gmail-relay)
+
+```
+apt-get install sendmail mailutils
+cd /etc/mail
+cp sendmail.cf sendmail.cf.orig
+cp sendmail.mc sendmail.mc.orig
+mkdir -m 700 -p /etc/mail/auth
+nano /etc/mail/auth/auth-info
+    AuthInfo:smtp.gmail.com "U:SRVINGEST" "I:no.contesteu@inspalamos.cat" "P:XXX"
+cd /etc/mail/auth
+makemap hash auth-info < auth-info
+chmod 0600 /etc/mail/auth/*
+```
+
+Before the first MAILER_DEFINITIONS line:
+
+```
+nano /etc/mail/sendmail.mc
+    define(`SMART_HOST',`smtp.gmail.com')dnl
+    define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+    define(`ESMTP_MAILER_ARGS', `TCP $h 587')dnl
+    define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+    FEATURE(`authinfo',`hash /etc/mail/auth/auth-info')dnl
+    TRUST_AUTH_MECH(`EXTERNAL DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')
+cd /etc/mail
+m4 sendmail.mc > sendmail.cf
+service sendmail restart
+service sendmail status
+echo 'e-Mail TEST' | mail -s 'Backup SRVINGEST' test@inspalamos.cat
+```
+
+### Còpia de seguretat
+
+
+### Pàgina web
+
+Pàgina web inicial
+
+```
+nano /var/www/html/index.html
+
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="0; url=ingest/index.php">
+        <script type="text/javascript">
+            window.location.href = "ingest/index.php"
+        </script>
+        <title>Page Redirection</title>
+    </head>
+    <body>
+    </body>
+</html>
+
+```
+
 
 ### Composer
 
@@ -127,6 +164,32 @@ chgrp www-data /var/www/ingest-data/pdf
 chgrp www-data /var/www/ingest-data/pix
 ls -al /var/www/ingest-data
 ```
+
+### Altres
+
+Accés a BD (si no és té accés):
+```
+GRANT ALL PRIVILEGES ON InGest.* TO 'root'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Connexió:
+```
+mysql -u root -p
+mysql -u root -p -h 127.0.0.1 -P 3306
+```
+
+Còpia de seguretat:
+```
+mysqldump -u root -p --routines InGest > InGest.sql
+mysqldump -u root -p --routines InGest > "InGest_$(date +%F_%R).sql"
+```
+
+Càrrega de dades:
+```
+mysql -u root -p InGest < InGest.sql
+```
+
 
 ## Windows
 
