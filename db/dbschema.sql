@@ -258,6 +258,9 @@ CREATE TABLE NOTES
     nota3 INT CHECK (nota3 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
     nota4 INT CHECK (nota4 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)),
     nota5 INT CHECK (nota5 IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, 100, -100)), /* Gràcia */
+	nota_t1 INT, /* 1r trimestre */
+	nota_t2 INT, /* 2n trimestre */
+	nota_t3 INT, /* 3r trimestre */
     exempt BIT,
     convalidat BIT,
     junta BIT,
@@ -668,6 +671,7 @@ BEGIN
 END //
 DELIMITER ;
 
+
 /*
  * CreaPlaEstudisModul
  * Crea el pla d'estudis per a un mòdul (copiant unitats actives).
@@ -1071,5 +1075,28 @@ BEGIN
     
     RETURN Percentatge;  	
 	
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE TRIGGER AU_CopiaTrimestre AFTER UPDATE ON CURS FOR EACH ROW
+BEGIN
+    IF NEW.trimestre = 2 AND OLD.trimestre = 1 THEN
+        /* Pas del 1r trimestre al 2n */
+        UPDATE NOTES set nota_t1 = ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria) WHERE matricula_id IN (SELECT matricula_id FROM MATRICULA WHERE curs_id=OLD.curs_id);
+        INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
+            VALUES (1, 'Taula CURS', now(), '127.0.0.1', 'Trigger', CONCAT('Pas del 1r trimestre al 2n. curs_id=', OLD.curs_id));
+    ELSEIF NEW.trimestre = 3 AND OLD.trimestre = 2 THEN
+        /* Pas del 2n trimestre al 3r */
+        UPDATE NOTES set nota_t2 = ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria) WHERE matricula_id IN (SELECT matricula_id FROM MATRICULA WHERE curs_id=OLD.curs_id);
+        INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
+            VALUES (1, 'Taula CURS', now(), '127.0.0.1', 'Trigger', CONCAT('Pas del 2n trimestre al 3r. curs_id=', OLD.curs_id));
+	ELSEIF NEW.avaluacio = 'EXT' AND OLD.avaluacio = 'ORD' THEN
+        /* Pas del 3r trimestre a extraordinària */
+        UPDATE NOTES set nota_t3 = ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria) WHERE matricula_id IN (SELECT matricula_id FROM MATRICULA WHERE curs_id=OLD.curs_id);
+        INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
+            VALUES (1, 'Taula CURS', now(), '127.0.0.1', 'Trigger', CONCAT('Pas del 3r trimestre a extraordinària. curs_id=', OLD.curs_id));
+    END IF;
 END //
 DELIMITER ;
