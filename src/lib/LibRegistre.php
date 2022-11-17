@@ -55,8 +55,8 @@ class Registre {
 			"'".trim($this->Usuari->nom." ".$this->Usuari->cognom1." ".$this->Usuari->cognom2)."', ".
 			"'".date('Y-m-d H:i:s')."', ".
 			"'".getUserIP()."', ".
-			"'".utf8_decode($Seccio)."', ".
-			"'".utf8_decode($Missatge)."'".
+			"'".utf8_decodeX($Seccio)."', ".
+			"'".utf8_decodeX($Missatge)."'".
 			")";
 		$this->Connexio->query($SQL);
 	}

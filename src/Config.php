@@ -27,6 +27,17 @@ class Config {
 }
 
 
+// Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació)
+function utf8_encodeX($Text) {
+	return utf8_encode($Text);
+//	return $Text;
+}
+function utf8_decodeX($Text) {
+	return utf8_decode($Text);
+//	return $Text;
+}
+
+
 // Autenticació Google
 $Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
 define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');

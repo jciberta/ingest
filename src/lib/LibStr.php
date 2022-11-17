@@ -120,8 +120,8 @@ function JSONEncodeUTF8($row)
 {
 	$sRetorn = '{';
 	foreach($row as $clau => $valor) {
-		$sRetorn .= '"'.$clau.'":"'.utf8_encode($valor).'",';
-//		$sRetorn .= ''.$clau.':'.utf8_encode($valor).',';
+		$sRetorn .= '"'.$clau.'":"'.utf8_encodeX($valor).'",';
+//		$sRetorn .= ''.$clau.':'.utf8_encodeX($valor).',';
 	}
 	$sRetorn = substr($sRetorn, 0, -1);
 	$sRetorn .= '}';
@@ -157,14 +157,14 @@ function CodificaUTF8($text): string
 	$text =  ($text === null) ? '' : $text;
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 		// Linux
-		$text = utf8_encode($text);
+		$text = utf8_encodeX($text);
 	}		
 	else if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		// Windows
 		$Codificacio = mb_detect_encoding($text);
 //print "Codificacio: $Codificacio";
 		if (in_array($Codificacio, ['ASCII']))
-			$text = utf8_encode($text);
+			$text = utf8_encodeX($text);
 	}
 	return $text;
 }
@@ -183,7 +183,7 @@ function TextAMySQL($text)
 		$Retorn = 'NULL';
 	else {
 //		if (is_string($text))
-//			$text = utf8_encode($text);
+//			$text = utf8_encodeX($text);
 //			$text = CodificaUTF8($text);
 //print $text." -> CodificaUTF8(text): ".$text.'<BR>';
     	$Retorn = "'".str_replace("'", "''", $text)."'";

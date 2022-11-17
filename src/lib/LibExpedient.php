@@ -175,7 +175,7 @@ class Expedient extends Form
 			$Cognom2Alumne = $row["Cognom2Alumne"];
 			$Llei = $row["llei"];
 			$pdf->AnyAcademic = $row["AnyAcademic"];
-			$pdf->NomComplet = utf8_encode(trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne);
+			$pdf->NomComplet = utf8_encodeX(trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne);
 			$pdf->DNI = $row["DNI"];
 			$pdf->CicleFormatiu = $row["NomCF"];
 			$pdf->Grup = $row["Grup"];
@@ -187,7 +187,7 @@ class Expedient extends Form
 				if ($row["CodiMP"] != $ModulAnterior) {
 					$i++;
 					$Qualificacions[$i] = new stdClass();
-					$Qualificacions[$i]->Nom = utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
+					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
 					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
 						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_pla_estudi_id"]]);
@@ -200,8 +200,8 @@ class Expedient extends Form
 				$ModulAnterior = $row["CodiMP"];
 				$j++;
 				$Qualificacions[$i]->UF[$j] = new stdClass();
-				$Qualificacions[$i]->UF[$j]->Nom = utf8_encode($row["NomUF"]);
-				$Qualificacions[$i]->UF[$j]->Hores = utf8_encode($row["HoresUF"]);
+				$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
+				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
 				if ($row["Convocatoria"] == 0)
 					$Nota = 'A) '.NumeroANotaText(UltimaNota($row));
 				else {
@@ -282,15 +282,15 @@ class Expedient extends Form
 			}
 		}
 
-//		$pdf->Titol2(utf8_decode("Comentaris de l'avaluació"));
+//		$pdf->Titol2(utf8_decodeX("Comentaris de l'avaluació"));
 		$pdf->Titol2("Comentaris de l'avaluació");
 		$pdf->EscriuLinia("Sense comentaris");
 
 		$pdf->Titol2("Llegenda");
-//		$pdf->EscriuLinia(utf8_decode("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
+//		$pdf->EscriuLinia(utf8_decodeX("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
 		$pdf->EscriuLinia("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
 		if ($Llei == 'LO')
-//			$pdf->EscriuLinia(utf8_decode("L'anotació * identifica les qualificacions orientatives"));
+//			$pdf->EscriuLinia(utf8_decodeX("L'anotació * identifica les qualificacions orientatives"));
 			$pdf->EscriuLinia("L'anotació * identifica les qualificacions orientatives");
 
 		// Close and output PDF document
@@ -330,11 +330,11 @@ class Expedient extends Form
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			while ($row = $ResultSet->fetch_array()) {
-				$Nom = utf8_encode($row["codi"])."_".
+				$Nom = utf8_encodeX($row["codi"])."_".
 				$Sufix."_".
-				utf8_encode($row["cognom1"])."_".
-				utf8_encode($row["cognom2"])."_".
-				utf8_encode($row["NomAlumne"]);
+				utf8_encodeX($row["cognom1"])."_".
+				utf8_encodeX($row["cognom2"])."_".
+				utf8_encodeX($row["NomAlumne"]);
 				$Nom = Normalitza($Nom);
 				$Nom = str_replace(" ", "_", $Nom);
 				$Retorn .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
@@ -355,9 +355,9 @@ class Expedient extends Form
 
 	private function TextAvaluacio($Avaluacio, $Trimestre) {
 		if ($Avaluacio == 'ORD')
-			return utf8_decode('Ordinària ').Ordinal($Trimestre).' T';
+			return utf8_decodeX('Ordinària ').Ordinal($Trimestre).' T';
 		else if ($Avaluacio == 'EXT')
-			return utf8_decode('Extraordinària');
+			return utf8_decodeX('Extraordinària');
 		else
 			return '';
 	}
@@ -737,7 +737,7 @@ class ExpedientSaga extends Expedient
 		$Retorn .= '<TABLE style="color:white;" width="450px">';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Cicle Formatiu</B></TD>';
-		$Retorn .= '<TD>'.utf8_encode($this->RegistreAlumne->nom).'</TD>';
+		$Retorn .= '<TD>'.utf8_encodeX($this->RegistreAlumne->nom).'</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Grup classe</B></TD>';
@@ -745,7 +745,7 @@ class ExpedientSaga extends Expedient
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= '<TD><B>Alumne</TD>';
-		$Retorn .= '<TD>'.utf8_encode(trim($this->RegistreAlumne->Cognom1Alumne.' '.$this->RegistreAlumne->Cognom2Alumne).', '.$this->RegistreAlumne->NomAlumne).'</TD>';
+		$Retorn .= '<TD>'.utf8_encodeX(trim($this->RegistreAlumne->Cognom1Alumne.' '.$this->RegistreAlumne->Cognom2Alumne).', '.$this->RegistreAlumne->NomAlumne).'</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TR>';
 		$Retorn .= "<TD><B>Sessió d'avaluació</B></TD>";
@@ -833,8 +833,8 @@ class ExpedientSaga extends Expedient
 			if (($row["CodiMP"] != $ModulAnterior) && ($row["llei"])!='LG') {
 				// Fila corresponent al mòdul
 				$sRetorn .= '<TR class="tdContingut_001">';
-				$sRetorn .= '<TD class="llistat3">'.utf8_encode($row["CodiMP"]).'</TD>';
-				$sRetorn .= '<TD class="llistat3"><b>'.utf8_encode($row["CodiMP"].'. '.$row["NomMP"]).'</b></TD>';
+				$sRetorn .= '<TD class="llistat3">'.utf8_encodeX($row["CodiMP"]).'</TD>';
+				$sRetorn .= '<TD class="llistat3"><b>'.utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]).'</b></TD>';
 				$sRetorn .= '<TD class="llistat3">'.$row["HoresMP"].'</TD>';
 				$sRetorn .= $this->CreaCellaNotaModul($row["IdMP"], $i);
 				$i++;
@@ -844,7 +844,7 @@ class ExpedientSaga extends Expedient
 			// Fila corresponent a la UF
 			$sRetorn .= "<TR class='tdContingut_00101 Nivell".$row["NivellUF"]."'>";
 			$sRetorn .= "<TD class='llistat1'>"."</TD>";
-			$sRetorn .= "<TD class='llistat1' width=200>".utf8_encode($row["NomUF"])."</TD>";
+			$sRetorn .= "<TD class='llistat1' width=200>".utf8_encodeX($row["NomUF"])."</TD>";
 			$sRetorn .= "<TD class='llistat1' width=50>".$row["HoresUF"]."</TD>";
 			$sRetorn .= $this->CreaCellaNota($row, $i);
 			$i++;
@@ -958,7 +958,7 @@ class QualificacionsPDF extends DocumentPDF
 
 		$this->Titol2("Dades del centre");
 		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
-//		$this->Encolumna5(utf8_decode("Institut de Palamós"), "", "", "17005352", utf8_decode("Palamós"));
+//		$this->Encolumna5(utf8_decodeX("Institut de Palamós"), "", "", "17005352", utf8_decodeX("Palamós"));
 		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
 
 		$this->Titol2("Dades de l'alumne");
@@ -966,7 +966,7 @@ class QualificacionsPDF extends DocumentPDF
 		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
 
 		$this->Titol2("Dades dels estudis");
-//		$this->Encolumna5("Cicle formatiu", "", "", utf8_decode("Avaluació"), "");
+//		$this->Encolumna5("Cicle formatiu", "", "", utf8_decodeX("Avaluació"), "");
 		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
 		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
 
@@ -979,7 +979,7 @@ class QualificacionsPDF extends DocumentPDF
 			$HTML .= '<TD style="width:50%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-//			$HTML .= utf8_decode('<TD style="width:55%">Mòdul</TD>');
+//			$HTML .= utf8_decodeX('<TD style="width:55%">Mòdul</TD>');
 			$HTML .= '<TD style="width:55%">Mòdul</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
@@ -1004,7 +1004,7 @@ class QualificacionsPDF extends DocumentPDF
 			$HTML .= '<TD style="width:100%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-//			$HTML .= utf8_decode('<TD style="width:55%">Crèdit</TD>');
+//			$HTML .= utf8_decodeX('<TD style="width:55%">Crèdit</TD>');
 			$HTML .= '<TD style="width:55%">Crèdit</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
@@ -1018,7 +1018,7 @@ class QualificacionsPDF extends DocumentPDF
 		$HTML .= "<HR>";
 
 		$this->SetY(110);
-//		$this->writeHTML(utf8_encode($HTML), True, True);
+//		$this->writeHTML(utf8_encodeX($HTML), True, True);
 		$this->writeHTML($HTML, True, True);
     }
 
@@ -1030,7 +1030,7 @@ class QualificacionsPDF extends DocumentPDF
         $this->SetFont('helvetica', '', 8);
         // Page number
         $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
-//        $this->Cell(0, 10, utf8_encode('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+//        $this->Cell(0, 10, utf8_encodeX('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
         $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }
@@ -1247,8 +1247,8 @@ class Acta extends Form
 		
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_object();
-			$this->Registre->NomTutor = utf8_encode($row->NomTutor);
-			$this->Registre->NomDirector = utf8_encode($row->NomDirector);
+			$this->Registre->NomTutor = utf8_encodeX($row->NomTutor);
+			$this->Registre->NomDirector = utf8_encodeX($row->NomDirector);
 		}
 	}
 	
@@ -1278,7 +1278,7 @@ class Acta extends Form
 				// Primer cop, agafem les dades de la capçalera
 				$this->Registre->CursAcademic = $row->any_inici.'/'.$row->any_final;
 				$this->Registre->Avaluacio = $row->avaluacio;
-				$this->Registre->NomCicleFormatiu = utf8_encode($row->NomCicleFormatiu);
+				$this->Registre->NomCicleFormatiu = utf8_encodeX($row->NomCicleFormatiu);
 				$this->Registre->CodiXTEC = $row->codi_xtec;
 				$this->Registre->Grau = $row->grau;
 				$this->Registre->Llei = $row->llei;
@@ -1286,7 +1286,7 @@ class Acta extends Form
 			if ($row->AlumneId != $AlumneId) {
 				$Alumne = new stdClass();
 				$Alumne->RALC = $row->CodiAlumne;
-				$Alumne->Nom = utf8_encode($row->Cognom1Cognom2NomAlumne);
+				$Alumne->Nom = utf8_encodeX($row->Cognom1Cognom2NomAlumne);
 				switch ($row->tipus_document) {
 					case 'D': $Alumne->TipusDocument = 'DNI'; break;
 					case 'N': $Alumne->TipusDocument = 'NIE'; break;
@@ -1366,7 +1366,7 @@ class Acta extends Form
 		while ($row = $ResultSet->fetch_object()) {
 			if ($row->IdMP != $ModulId) {
 				$Modul = new stdClass();
-				$Modul->Nom = utf8_encode($row->NomMP);
+				$Modul->Nom = utf8_encodeX($row->NomMP);
 				
 //				$Modul->Nom = str_replace("'", "`", $Modul->Nom);
 				
@@ -1377,7 +1377,7 @@ class Acta extends Form
 			}
 			if ($row->IdUF != $UnitatId) {
 				$Unitat = new stdClass();
-				$Unitat->Nom = utf8_encode($row->NomUF);
+				$Unitat->Nom = utf8_encodeX($row->NomUF);
 
 //				$Unitat->Nom = str_replace("'", "`", $Modul->Nom);
 
@@ -1411,12 +1411,12 @@ class Acta extends Form
 			$this->NivellCurs = $row->NivellCurs;
 			if ($row->IdMP != $ModulId) {
 				$Modul = new stdClass();
-				$Modul->Nom = utf8_encode($row->NomMP);
+				$Modul->Nom = utf8_encodeX($row->NomMP);
 				$Modul->Professors = [];
 				$this->RegistreProfessors[$row->CodiMP] = $Modul; // Array associatiu
 				$ModulId = $row->IdMP;
 			}
-			$NomCognom1Cognom2 = utf8_encode($row->NomCognom1Cognom2);
+			$NomCognom1Cognom2 = utf8_encodeX($row->NomCognom1Cognom2);
 			if (!in_array($NomCognom1Cognom2, $Modul->Professors))
 				array_push($Modul->Professors, $NomCognom1Cognom2);
 		}
@@ -1653,7 +1653,7 @@ class Acta extends Form
 		$pdf->SetFont('helvetica', '', 7);
 
 		$pdf->SetY(65);
-//		$pdf->Titol2(utf8_decode("Signatures de l'equip docent dels mòduls"), 9);
+//		$pdf->Titol2(utf8_decodeX("Signatures de l'equip docent dels mòduls"), 9);
 		$pdf->Titol2("Signatures de l'equip docent dels mòduls", 9);
 		
 		$HTML = '';
@@ -2122,7 +2122,7 @@ class PlaTreball extends Objecte
 				$MP = new stdClass();
 				$MP->IdMP = $row['IdMP'];
 				$MP->CodiMP = $row['CodiMP'];
-				$MP->NomMP = utf8_encode($row['NomMP']);
+				$MP->NomMP = utf8_encodeX($row['NomMP']);
 				$MP->CriterisAvaluacio = $row['criteris_avaluacio'];
 				$MP->UF = [];
 				array_push($this->Registre, $MP);
@@ -2131,7 +2131,7 @@ class PlaTreball extends Objecte
 			}
 			$UF = new stdClass();
 			$UF->CodiUF = $row['CodiUF'];
-			$UF->NomUF = utf8_encode($row['NomUF']);
+			$UF->NomUF = utf8_encodeX($row['NomUF']);
 			$UF->HoresUF = $row['HoresUF'];
 			$UF->Convocatoria = $row['convocatoria'];
 			$UF->Orientativa = $row['orientativa'];
@@ -2200,8 +2200,8 @@ class PlaTreball extends Objecte
 					$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
 				}
 				$Dades = array(
-					'Alumne' => utf8_encode($NomComplet),
-					'Cicle Formatiu' => utf8_encode($row["NomCF"]),
+					'Alumne' => utf8_encodeX($NomComplet),
+					'Cicle Formatiu' => utf8_encodeX($row["NomCF"]),
 					'Curs' => $row["any_inici"].'-'.$row["any_final"]
 				);
 				if ($this->Usuari->es_admin)

@@ -110,7 +110,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		$Retorn .= Menu::Crea($Usuari);
 	}
 	$Retorn .= '      <div class="starter-template" style="padding:20px">';
-//	$Retorn .= '<H1>'.utf8_encode($Titol).'</H1>';
+//	$Retorn .= '<H1>'.utf8_encodeX($Titol).'</H1>';
 	$Retorn .= '<H1>'.$Titol.'</H1>';
 	return $Retorn;
 }
@@ -304,7 +304,7 @@ function CreaTaula1(array $Dades): string
 	foreach ($Dades as $key => $value) {
 		$Retorn .= "<tr>";
 		$Retorn .= "<td style='padding-right:10px;'>$key:<td>";
-		$Retorn .= "<td><b>".utf8_encode($value)."</b><td>";
+		$Retorn .= "<td><b>".utf8_encodeX($value)."</b><td>";
 		$Retorn .= "</tr>";
 	}
 	$Retorn .= '</table>';
@@ -492,7 +492,7 @@ class Menu
 		$Retorn .= '		</ul>';
 
 		// Menú usuari
-		$NomComplet = utf8_encode(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
+		$NomComplet = utf8_encodeX(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
 		$Retorn .= '		<ul class="navbar-nav">'.PHP_EOL;
 		$Retorn .= '		  <li class="nav-item dropdown">'.PHP_EOL;
 		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>'.PHP_EOL;

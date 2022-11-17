@@ -200,7 +200,7 @@ class Form extends Objecte
 			
 			$aCamps = explode(",", TrimXX($Camps));
 			for($i=0; $i < count($aCamps); $i++) {
-				$Retorn .= utf8_encode($row[$aCamps[$i]]).$Separador;
+				$Retorn .= utf8_encodeX($row[$aCamps[$i]]).$Separador;
 			}
 			$Retorn = substr($Retorn, 0, -strlen($Separador));
 		}
@@ -1229,7 +1229,7 @@ class FormRecerca extends Form
 					else {
 						$sValor = $row[$data];
 //						$sRetorn .= CodificaUTF8("<TD>".$sValor."</TD>");
-						$sRetorn .= utf8_encode("<TD>".$sValor."</TD>");
+						$sRetorn .= utf8_encodeX("<TD>".$sValor."</TD>");
 					}
 				}
 				$sRetorn .= "<TD>";
@@ -1288,7 +1288,7 @@ class FormRecerca extends Form
 			
 			$Retorn = '';
 			for($i=0; $i < count($acp); $i++) {
-				$Retorn .= utf8_encode($row[$acp[$i]]).',';
+				$Retorn .= utf8_encodeX($row[$acp[$i]]).',';
 			}
 			$Retorn = substr($Retorn, 0, -1); // Treiem la darrera coma
 			
@@ -1590,14 +1590,14 @@ class FormRecerca extends Form
 				$aExport = [];
 				if ($bPrimerRegistre) {
 					foreach ($row as $key => $value) {
-						array_push($aExport, utf8_encode($key));
+						array_push($aExport, utf8_encodeX($key));
 					}
 					fputcsv($handle, $aExport, $delimiter);
 					$bPrimerRegistre = False;
 					$aExport = [];
 				}					
 				foreach ($row as $key => $value) {
-					array_push($aExport, utf8_encode($value));
+					array_push($aExport, utf8_encodeX($value));
 				}
 				fputcsv($handle, $aExport, $delimiter);
 			}
@@ -1631,7 +1631,7 @@ class FormRecerca extends Form
 				if ($bPrimerRegistre) {
 					$x = 1;
 					foreach ($row as $key => $value) {
-						$sheet->setCellValueByColumnAndRow($x, $y, utf8_encode($key));
+						$sheet->setCellValueByColumnAndRow($x, $y, utf8_encodeX($key));
 						$x++;
 					}
 					$bPrimerRegistre = False;
@@ -1639,7 +1639,7 @@ class FormRecerca extends Form
 				}	
 				$x = 1;
 				foreach ($row as $key => $value) {
-					$sheet->setCellValueByColumnAndRow($x, $y, utf8_encode($value));
+					$sheet->setCellValueByColumnAndRow($x, $y, utf8_encodeX($value));
 					$x++;
 				}
 				$y++;
@@ -1786,7 +1786,7 @@ class FormRecercaQBE extends FormRecerca
 				}
 				$sRetorn .= "<TR>";
 				for ($i=0; $i<count($keys); $i++) {
-					$sRetorn .= "<TD>".utf8_encode($row[$keys[$i]])."</TD>";
+					$sRetorn .= "<TD>".utf8_encodeX($row[$keys[$i]])."</TD>";
 				}
 				$ClauPrimaria = implode(",", $aClauPrimaria);
 				if ($ClauPrimaria != '') {
@@ -2209,7 +2209,7 @@ class FormFitxa extends Form
 		if ($this->Registre == null)
 			$Retorn = '';
 		else 
-			$Retorn = ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+			$Retorn = ' value="'.utf8_encodeX($this->Registre[$camp]).'" ';
 		return $Retorn;
 	}
 
@@ -2236,7 +2236,7 @@ class FormFitxa extends Form
 	private function ValorCampPassword(string $camp) {
 		// Falta implementar!
 		return '*****';
-		//return ' value="'.utf8_encode($this->Registre[$camp]).'" ';
+		//return ' value="'.utf8_encodeX($this->Registre[$camp]).'" ';
 	}
 
 	/**
@@ -2648,7 +2648,7 @@ class FormFitxa extends Form
 						// Prevenció XSS amb htmlpurifier
 						$dirty_html = DesescapaDobleCometa($Valor->value);
 						$clean_html = $purifier->purify($dirty_html);	
-						$sValues .= TextAMySQL(utf8_encode($clean_html)).', ';
+						$sValues .= TextAMySQL(utf8_encodeX($clean_html)).', ';
 //print '<HR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //exit;
 						break;
@@ -2688,7 +2688,7 @@ class FormFitxa extends Form
 			}
 		}
 
-		$SQL = utf8_decode($SQL);
+		$SQL = utf8_decodeX($SQL);
 		if (Config::Debug)		
 			$Retorn .= '<BR><b>SQL</b>: '.$SQL;
 		
@@ -2947,7 +2947,7 @@ class FormFitxaDetall extends FormFitxa
 				switch (trim($aTipusCamps[$i])) {
 					case 'text':
 						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
-						$Valor = 'value="'.utf8_encode($row[$aCamps[$i]]).'" ';
+						$Valor = 'value="'.utf8_encodeX($row[$aCamps[$i]]).'" ';
 						$off = [self::offNO_TITOL];
 						if ($aPermisCamps[$i] == 'r')
 							array_push($off, self::offNOMES_LECTURA);

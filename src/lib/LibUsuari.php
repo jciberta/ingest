@@ -244,10 +244,10 @@ class Usuari extends Objecte
 				$URL = 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$rsMatricula->matricula_id;
 				if (Config::EncriptaURL)
 					$URL = GeneraURL($URL);
-				$Retorn .= "<A TARGET=_blank HREF='$URL'>".utf8_encode($rsMatricula->nom)."</A><br>";
+				$Retorn .= "<A TARGET=_blank HREF='$URL'>".utf8_encodeX($rsMatricula->nom)."</A><br>";
 			}
 			else
-				$Retorn .= utf8_encode($rsMatricula->nom).'<br>';
+				$Retorn .= utf8_encodeX($rsMatricula->nom).'<br>';
 		}		
 		return $Retorn.'<br>';;
 	}	
@@ -280,10 +280,10 @@ class Usuari extends Objecte
 				$URL = 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$rs->matricula_id;
 				if (Config::EncriptaURL)
 					$URL = GeneraURL($URL);
-				$Retorn .= "- <A TARGET=_blank HREF='$URL'>".utf8_encode($rs->NomCurs)."</A><br>";
+				$Retorn .= "- <A TARGET=_blank HREF='$URL'>".utf8_encodeX($rs->NomCurs)."</A><br>";
 			}
 			else
-				$Retorn .= utf8_encode($rs->NomCurs).'<br>';
+				$Retorn .= utf8_encodeX($rs->NomCurs).'<br>';
 		}		
 		return $Retorn.'<br>';;
 	}	
@@ -622,7 +622,7 @@ class Professor extends Usuari
 						$aGrupsTutoria = explode(',', $GrupsTutoria);
 						foreach($aGrupsTutoria as $Grup) {
 							$URL = GeneraURL('Fitxa.php?accio=ExpedientSagaAvaluacio&Id='.$row['curs_id'].','.$Grup);
-							echo CreaTargeta($row['CodiCF'].$row['nivell'].' '.$Grup, utf8_encode($row['NomCF']), $URL);
+							echo CreaTargeta($row['CodiCF'].$row['nivell'].' '.$Grup, utf8_encodeX($row['NomCF']), $URL);
 						}
 					}
 				}
@@ -809,13 +809,13 @@ class ProfessorsUF extends Form
 					$j = 0; 
 				}
 				if ($row["UnitatFormativaId"] == $UnitatFormativaId) {
-					$Cicles->UF[$i][$j-1]->NomComplet .= utf8_encode(', '.$row['Nom'].' '.$row['Cognom1'].' '.$row['Cognom2']);
+					$Cicles->UF[$i][$j-1]->NomComplet .= utf8_encodeX(', '.$row['Nom'].' '.$row['Cognom1'].' '.$row['Cognom2']);
 				}
 				else {
 					$UnitatFormativaId = $row['UnitatFormativaId'];
 					$Cicles->UF[$i][$j] = new stdClass();
 					$Cicles->UF[$i][$j]->Dades = $row;
-					$Cicles->UF[$i][$j]->NomComplet = utf8_encode($row['Nom'].' '.$row['Cognom1'].' '.$row['Cognom2']);
+					$Cicles->UF[$i][$j]->NomComplet = utf8_encodeX($row['Nom'].' '.$row['Cognom1'].' '.$row['Cognom2']);
 					$j++;
 				}
 				$row = $ResultSet->fetch_assoc();
@@ -832,7 +832,7 @@ class ProfessorsUF extends Form
 				$sRetorn .= '    <div class="card-header" id="'.$row['CodiCF'].'">';
 				$sRetorn .= '      <h5 class="mb-0">';
 				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$row['CodiCF'].'" aria-expanded="true" aria-controls="collapse'.$row['CodiCF'].'">';
-				$sRetorn .= utf8_encode($row['NomCF']);
+				$sRetorn .= utf8_encodeX($row['NomCF']);
 				$sRetorn .= '        </button>';
 				$sRetorn .= '      </h5>';
 				$sRetorn .= '    </div>';
@@ -852,11 +852,11 @@ class ProfessorsUF extends Form
 					$row = $Cicles->UF[$i][$j]->Dades;
 					$sRetorn .= "<TR>";
 					if ($row["CodiMP"] != $ModulAnterior)
-						$sRetorn .= "<TD>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+						$sRetorn .= "<TD>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
 					else 
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
-					$sRetorn .= "<TD>".utf8_encode($row["NomUF"])."</TD>";
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"])."</TD>";
 					$sRetorn .= "<TD>".$NomComplet."</TD>";
 					$sRetorn .= "</TR>";
 				}
@@ -1018,7 +1018,7 @@ class ProfessorsAssignacioUF extends Form
 			$j = 0;
 			$CicleFormatiuId = -1;
 			$row = $ResultSet->fetch_assoc();
-			$NomProfessor = utf8_encode($row["NomProfessor"]." ".$row["Cognom1Professor"]." ".$row["Cognom2Professor"]);
+			$NomProfessor = utf8_encodeX($row["NomProfessor"]." ".$row["Cognom1Professor"]." ".$row["Cognom2Professor"]);
 			while($row) {
 				if ($row["CicleFormatiuId"] != $CicleFormatiuId) {
 					$CicleFormatiuId = $row["CicleFormatiuId"];
@@ -1043,7 +1043,7 @@ class ProfessorsAssignacioUF extends Form
 				$sRetorn .= '    <div class="card-header" id="'.$row['CodiCF'].'">';
 				$sRetorn .= '      <h5 class="mb-0">';
 				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$row['CodiCF'].'" aria-expanded="true" aria-controls="collapse'.$row['CodiCF'].'">';
-				$sRetorn .= utf8_encode($row['NomCF']);
+				$sRetorn .= utf8_encodeX($row['NomCF']);
 				$sRetorn .= '        </button>';
 				$sRetorn .= '      </h5>';
 				$sRetorn .= '    </div>';
@@ -1062,12 +1062,12 @@ class ProfessorsAssignacioUF extends Form
 					$sRetorn .= "<TR>";
 
 					if ($row["CodiMP"] != $ModulAnterior)
-						$sRetorn .= "<TD>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+						$sRetorn .= "<TD>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
 					else 
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD>".utf8_encode($row["NomUF"]);
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]);
 					if ($this->Usuari->es_admin)
 						$sRetorn .= " (".$row["unitat_pla_estudi_id"].")";
 					$sRetorn .= "</TD>";
@@ -1219,7 +1219,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 				$Professor = new stdClass();
 				array_push($ProfessorUF, $Professor);
 				$Professor->Id = $row["usuari_id"];
-				$Professor->Nom = utf8_encode($row["NomCognom1Cognom2"]);
+				$Professor->Nom = utf8_encodeX($row["NomCognom1Cognom2"]);
 				$Professor->Codi = $row["codi"];
 				$row = $ResultSet->fetch_assoc();				
 			}
@@ -1322,7 +1322,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 					$sRetorn .= "<TR>";
 
 					if ($row["CodiMP"] != $ModulAnterior) {
-						$sRetorn .= "<TD width=300>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"]);
+						$sRetorn .= "<TD width=300>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
 						if ($this->Usuari->es_admin)
 							$sRetorn .= " [".$row["modul_pla_estudi_id"]."]";
 						$sRetorn .= "</TD>";
@@ -1331,7 +1331,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 						$sRetorn .= "<TD width=300></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD width=300>".utf8_encode($row["NomUF"]);
+					$sRetorn .= "<TD width=300>".utf8_encodeX($row["NomUF"]);
 					if ($this->Usuari->es_admin)
 						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
@@ -1719,7 +1719,7 @@ class Orla extends Form
 					$Retorn .= '</TR><TR>';
 					$i = 1;
 				}
-				$Nom = utf8_encode(trim($row->nom.'<br>'.$row->cognom1.' '.$row->cognom2));
+				$Nom = utf8_encodeX(trim($row->nom.'<br>'.$row->cognom1.' '.$row->cognom2));
 				$Fitxer = 'img/pix/'.$row->document.'.jpg';
 				if (!file_exists(ROOT.'/'.$Fitxer))
 					$Fitxer = 'img/nobody.png';
@@ -1810,10 +1810,10 @@ class Progenitor extends Usuari
 				// Pla de treball. Només es veu a l'avaluació ordinària
 				if ($row['avaluacio'] == 'ORD') {
 					$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
-					echo CreaTargeta('Pla de treball', utf8_encode($NomComplet), $URL);
+					echo CreaTargeta('Pla de treball', utf8_encodeX($NomComplet), $URL);
 				}				
 				$URL = GeneraURL('ExpedientPDF.php?MatriculaId='.$row['MatriculaId']);
-				echo CreaTargeta('Expedient', utf8_encode($NomComplet), $URL);
+				echo CreaTargeta('Expedient', utf8_encodeX($NomComplet), $URL);
 				$row = $ResultSet->fetch_assoc();
 			}
 		}

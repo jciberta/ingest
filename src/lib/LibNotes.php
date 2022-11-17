@@ -371,8 +371,8 @@ class Notes extends Form
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModulsId[$j] = $row["IdMP"];
-			$aModuls[$j] = utf8_encode($row["CodiMP"]);
-			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
+			$aModuls[$j] = utf8_encodeX($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encodeX($row["NomMP"]);
 		}
 		$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
@@ -395,9 +395,9 @@ class Notes extends Form
 				$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$aModulsId[$index]);
 				$MPId = $aModulsId[$index];
 				if ($Professor->TeMP($MPId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-					$TextModul = "<A target=_blank href=$Link>".utf8_encode($aOcurrenciesModuls[$i][0])."</A>";
+					$TextModul = "<A target=_blank href=$Link>".utf8_encodeX($aOcurrenciesModuls[$i][0])."</A>";
 				else
-					$TextModul = utf8_encode($aOcurrenciesModuls[$i][0]);
+					$TextModul = utf8_encodeX($aOcurrenciesModuls[$i][0]);
 				echo '<TD width='.($iOcurrencies*self::AMPLADA_UF).' colspan='.$iOcurrencies.' data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TD>';
 				$index += $iOcurrencies;
 			}
@@ -415,9 +415,9 @@ class Notes extends Form
 			$UFId = $row["unitat_pla_estudi_id"];
 			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a></TD>';
+				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'"><a target=_blank href="'.$Link.'">'.utf8_encodeX($row["CodiUF"]).'</a></TD>';
 			else
-				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.utf8_encode($row["CodiUF"]).'</TD>';
+				echo '<TD width='.self::AMPLADA_UF.' id="uf_'.$j.'" width=20 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">'.utf8_encodeX($row["CodiUF"]).'</TD>';
 		}
 		echo "<TD width=125 style='text-align:center' colspan=2>Hores</TD>";
 		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
@@ -499,8 +499,8 @@ class Notes extends Form
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModulsId[$j] = $row["IdMP"];
-			$aModuls[$j] = utf8_encode($row["CodiMP"]);
-			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
+			$aModuls[$j] = utf8_encodeX($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encodeX($row["NomMP"]);
 		}
 		$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
@@ -535,7 +535,7 @@ class Notes extends Form
 				else
 					$TextModul = $row["CodiMP"];
 
-				$TextMP = '<span data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomMP"]).'">'.$TextModul.'</span><br>';
+				$TextMP = '<span data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomMP"]).'">'.$TextModul.'</span><br>';
 				$IdMPAnt = $IdMP;
 			}
 			
@@ -544,9 +544,9 @@ class Notes extends Form
 			$UFId = $row["unitat_pla_estudi_id"];
 			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=$UFId");
 			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
-				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.$TextMP.'<a target=_blank href="'.$Link.'">'.utf8_encode($row["CodiUF"]).'</a><br>'.$row["Hores"].'</TH>';
+				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">'.$TextMP.'<a target=_blank href="'.$Link.'">'.utf8_encodeX($row["CodiUF"]).'</a><br>'.$row["Hores"].'</TH>';
 			else
-				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">'.$TextMP.utf8_encode($row["CodiUF"]).'<br>'.$row["Hores"].'</TH>';
+				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">'.$TextMP.utf8_encodeX($row["CodiUF"]).'<br>'.$row["Hores"].'</TH>';
 			array_push($aHores, $row["Hores"]);
 		}
 		echo "<TH width=100 style='text-align:center'>Hores<br>$TotalHores</TH>";
@@ -654,7 +654,7 @@ class Notes extends Form
 		$bConvocatoriesAnteriors = True;
 		$Color = ($row["BaixaMatricula"] == 1) ? ';color:lightgrey' : '';
 		$AlumneId = $row["AlumneId"];
-		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
+		$NomAlumne = utf8_encodeX(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 
 		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
 		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || ($Professor->Tutor == 1 && $this->Nivell == $Avaluacio->Nivell))
@@ -1386,7 +1386,7 @@ class Notes extends Form
 		array_push($aNotes, '');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			array_push($aNotes, utf8_encode($row["CodiMP"]));
+			array_push($aNotes, utf8_encodeX($row["CodiMP"]));
 		}
 		fputcsv($handle, $aNotes, $delimiter);
 //print_r($aNotes);
@@ -1401,7 +1401,7 @@ class Notes extends Form
 		array_push($aNotes, 'T');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			array_push($aNotes, utf8_encode($row["CodiUF"]));
+			array_push($aNotes, utf8_encodeX($row["CodiUF"]));
 		}
 		array_push($aNotes, 'HoresTotals');
 		array_push($aNotes, 'HoresFetes');
@@ -1424,7 +1424,7 @@ class Notes extends Form
 				$Document = $RegistreNotes->Alumne[$i]['document'];
 				array_push($aNotes, $Document);
 				$Nom = $RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne'];
-				//$Nom = utf8_encode($Nom);
+				//$Nom = utf8_encodeX($Nom);
 				array_push($aNotes, $Nom);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['Grup']);
 				array_push($aNotes, $RegistreNotes->Alumne[$i]['GrupTutoria']);
@@ -1460,7 +1460,7 @@ class Notes extends Form
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		$aNotes = [];
 		array_push($aNotes, '');
-		array_push($aNotes, utf8_decode('Alumnes aprovats'));
+		array_push($aNotes, utf8_decodeX('Alumnes aprovats'));
 		array_push($aNotes, '');
 		array_push($aNotes, '');
         for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
@@ -1470,7 +1470,7 @@ class Notes extends Form
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
 		array_push($aNotes, '');
-		array_push($aNotes, utf8_decode('Alumnes aprovats convocatòries anteriors'));
+		array_push($aNotes, utf8_decodeX('Alumnes aprovats convocatòries anteriors'));
 		array_push($aNotes, '');
 		array_push($aNotes, '');
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
@@ -1480,7 +1480,7 @@ class Notes extends Form
 		fputcsv($handle, $aNotes, $delimiter);
 		$aNotes = [];
 		array_push($aNotes, '');
-		array_push($aNotes, utf8_decode('% aprovats convocatòria actual'));
+		array_push($aNotes, utf8_decodeX('% aprovats convocatòria actual'));
 		array_push($aNotes, '');
 		array_push($aNotes, '');
 		for($i = 0; $i < count($aEstadistiquesUF); $i++) {
@@ -1559,7 +1559,7 @@ class Notes extends Form
 		// Mòduls
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encode($row["CodiMP"]));
+			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encodeX($row["CodiMP"]));
 			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -1573,7 +1573,7 @@ class Notes extends Form
 		$sheet->setCellValueByColumnAndRow(4, $y, 'Tutoria');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encode($row["CodiUF"]));
+			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encodeX($row["CodiUF"]));
 			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -1592,8 +1592,8 @@ class Notes extends Form
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$Document = $RegistreNotes->Alumne[$i]['document'];
 				$sheet->setCellValueByColumnAndRow(1, $y, $Document);
-				$Nom = utf8_encode($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
-				//$Nom = utf8_encode($Nom);
+				$Nom = utf8_encodeX($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
+				//$Nom = utf8_encodeX($Nom);
 				$sheet->setCellValueByColumnAndRow(2, $y, $Nom);
 				$sheet->setCellValueByColumnAndRow(3, $y, $RegistreNotes->Alumne[$i]['Grup']);
 				$sheet->setCellValueByColumnAndRow(4, $y, $RegistreNotes->Alumne[$i]['GrupTutoria']);
@@ -1707,7 +1707,7 @@ class Notes extends Form
 		for($i = 0; $i < count($Registre); $i++) {
 			$row = $Registre[$i];
 			
-//print_r(utf8_encode($row["NomAlumne"].' '.$row["Cognom1Alumne"].' '.$row["Cognom2Alumne"]).' '.$row["NivellMAT"].'<br>');	
+//print_r(utf8_encodeX($row["NomAlumne"].' '.$row["Cognom1Alumne"].' '.$row["Cognom2Alumne"]).' '.$row["NivellMAT"].'<br>');	
 //print_r('NivellMAT: '.$row["NivellMAT"].'<br>');	
 //echo "Nivell: $Nivell<br>";
 //print_r($row["Estadistiques"]);	
@@ -1765,7 +1765,7 @@ class Notes extends Form
 //print_r($ec);		
 //exit;
 		
-		$Retorn .= "<TR><TD style='background-color:black;color:white;' COLSPAN=3>".utf8_encode($objCurs->NomCurs)."</TD></TR>";
+		$Retorn .= "<TR><TD style='background-color:black;color:white;' COLSPAN=3>".utf8_encodeX($objCurs->NomCurs)."</TD></TR>";
 
 		$Retorn .= "<TR><TD>Nombre d'alumnes</TD><TD $style>".$ec->NumeroAlumnes."</TD><TD $style>100%</TD></TR>";
 		$Retorn .= "<TR><TD>Repetidors</TD><TD $style>".$ec->NumeroRepetidors."</TD><TD $style>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
@@ -1800,7 +1800,7 @@ echo "ec->UFTotals: ".$ec->UFTotals."<br>";
 		$ec = $this->CalculaEstadistiquesCurs($Nivell);
 		
 		$Id = $objCurs->curs_id;
-		$NomCurs = utf8_encode($objCurs->NomCurs);
+		$NomCurs = utf8_encodeX($objCurs->NomCurs);
 		$NomCurs = str_replace("'", "&quot;", $NomCurs);
 
 		$Retorn = "<div id='canvas-holder$Id' style='width:100%'>";
@@ -2029,8 +2029,8 @@ class NotesModul extends Notes
 		for($j = 0; $j < count($Notes->UF[0]); $j++) {
 			$row = $Notes->UF[0][$j];
 			$aModulsId[$j] = $row["IdMP"];
-			$aModuls[$j] = utf8_encode($row["CodiMP"]);
-			$aModulsNom[$j] = utf8_encode($row["NomMP"]);
+			$aModuls[$j] = utf8_encodeX($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encodeX($row["NomMP"]);
 		}
 		$aOcurrenciesModuls = Ocurrencies($aModuls);
 //print_r($aOcurrenciesModuls);
@@ -2046,7 +2046,7 @@ class NotesModul extends Notes
 		for($i = 0; $i < count($aOcurrenciesModuls); $i++) {
 			$iOcurrencies = $aOcurrenciesModuls[$i][1];
 			$TextModul = 'Qualificació de les unitats formatives del mòdul professional';
-			$TextModul .= '<br>'.utf8_encode($aOcurrenciesModuls[$i][0]);
+			$TextModul .= '<br>'.utf8_encodeX($aOcurrenciesModuls[$i][0]);
 			echo '<TH class="contingut" width='.($iOcurrencies*25).' colspan='.($iOcurrencies*2).' style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$aModulsNom[$index].'">'.$TextModul.'</TH>';
 			$index += $iOcurrencies;
 		}
@@ -2063,8 +2063,8 @@ class NotesModul extends Notes
 			$Link = GeneraURL('Importa.php?accio=ImportaNotesMoodleServeiWeb&UnitatPlaEstudiId='.$row["unitat_pla_estudi_id"]);			
 
 			echo '<TH class="contingut" width=20 colspan=2 style="text-align:center">';
-			echo '<SPAN data-toggle="tooltip" data-placement="top" title="'.utf8_encode($row["NomUF"]).'">';
-			echo utf8_encode($row["CodiUF"]).'&nbsp;&nbsp;';
+			echo '<SPAN data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">';
+			echo utf8_encodeX($row["CodiUF"]).'&nbsp;&nbsp;';
 			echo "</SPAN>";
 			echo '<SPAN data-toggle="tooltip" data-placement="top" title="Importa notes">';
 			echo "<A href=$Link><IMG src='img/backup.svg'></A>";
@@ -2130,7 +2130,7 @@ class NotesModul extends Notes
 //			return $Retorn;
 		$style = ($row["BaixaMatricula"] == 1) ? " style='display:none' " : "";
 		
-		$NomAlumne = utf8_encode(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
+		$NomAlumne = utf8_encodeX(trim($row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]).", ".$row["NomAlumne"]);
 		$Retorn .= "<TD $Class id='alumne_".$i."' style='text-align:left'>$NomAlumne</TD>";
 
 		//$Retorn .= "<TD></TD>";

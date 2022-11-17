@@ -45,7 +45,7 @@ if (!empty($_POST))
 				if ($ResultSet->num_rows > 0) {
 					$row = $ResultSet->fetch_object();
 					$rp->EscriuCapcalera();
-					$rp->EscriuFormulari(utf8_encode($row->nom), $DNI);
+					$rp->EscriuFormulari(utf8_encodeX($row->nom), $DNI);
 					$rp->EscriuMissatges();
 					$rp->EscriuPeu(False);
 				}

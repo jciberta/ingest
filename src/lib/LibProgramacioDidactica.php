@@ -254,7 +254,7 @@ class ProgramacioDidactica extends Form
 				$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
 				$cols = $row->getElementsByTagName('td'); 
 				for($i=0; $i<count($cols); $i++) {
-					$Valor = utf8_decode($cols->item($i)->nodeValue);
+					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
 					$sRetorn .= "<TH>$Valor</TH>";
 				}
 				$sRetorn .= "</TR>";
@@ -265,7 +265,7 @@ class ProgramacioDidactica extends Form
 				$sRetorn .= "<TR>";
 				$cols = $row->getElementsByTagName('td'); 
 				for($i=0; $i<count($cols); $i++) {
-					$Valor = utf8_decode($cols->item($i)->nodeValue);
+					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
 					$sRetorn .= "<TD>$Valor</TD>";
 				}
 				$sRetorn .= "</TR>";
@@ -802,7 +802,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 			$aColumnes = [];
 			$cols = $row->getElementsByTagName('td'); 
 			for($i=0; $i<count($cols); $i++) {
-				$Valor = utf8_decode($cols->item($i)->nodeValue);
+				$Valor = utf8_decodeX($cols->item($i)->nodeValue);
 				array_push($aColumnes, $Valor);
 			}
 			array_push($aFiles, $aColumnes);
@@ -900,19 +900,19 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 
 		$table->addRow();
 		$table->addCell(8*$Cm1)->addText("Nom del Cicle Formatiu:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
-		$table->addCell(8*$Cm1)->addText(utf8_encode($this->Registre->NomCF), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
+		$table->addCell(8*$Cm1)->addText(utf8_encodeX($this->Registre->NomCF), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
 		$table->addCell()->addText("Curs:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
-		$table->addCell()->addText(utf8_encode($this->Registre->NomAA), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
+		$table->addCell()->addText(utf8_encodeX($this->Registre->NomAA), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
 		$table->addCell()->addText("Codi del Mòdul Professional:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
-		$table->addCell()->addText(utf8_encode($this->Registre->CodiMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
+		$table->addCell()->addText(utf8_encodeX($this->Registre->CodiMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
 		$table->addCell()->addText("Títol del Mòdul Professional:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
-		$table->addCell()->addText(utf8_encode($this->Registre->NomMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
+		$table->addCell()->addText(utf8_encodeX($this->Registre->NomMP), $fontPrimeraPaginaEsquerra, $EsquerraInterliniat0);
 
 		$table->addRow();
 		$table->addCell()->addText("Professors:", $fontPrimeraPaginaEsquerra, $DretaInterliniat0);
@@ -954,7 +954,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		// https://www.php.net/manual/en/function.imagettfbbox.php
 		// Hi ha també imageftbbox
 		foreach ($aUF as $row) {
-			$NomUF = utf8_encode($row->nom);
+			$NomUF = utf8_encodeX($row->nom);
 			$bbox = imagettfbbox(16, 0, FONT_FILENAME_ARIAL, $NomUF);
 			$width = abs($bbox[0]) + abs($bbox[2]); // distance from left to right
 			$Max = max($Max, $width);
@@ -976,7 +976,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$cell = $table->addCell(2*$UnCm, $EstilGrisClar)->addText('Data fi', 'Negreta', 'Interliniat0');
 		foreach ($aUF as $row) {
 			$table->addRow();
-			$cell = $table->addCell(10*$Max, $Estil)->addText(utf8_encode($row->nom), null, 'Interliniat0');
+			$cell = $table->addCell(10*$Max, $Estil)->addText(utf8_encodeX($row->nom), null, 'Interliniat0');
 			$cell = $table->addCell(2*$UnCm, $Estil)->addText($row->hores, null, $CentratInterliniat0);
 			$cell = $table->addCell(2*$UnCm, $Estil)->addText(MySQLAData($row->data_inici), null, 'Interliniat0');
 			$cell = $table->addCell(2*$UnCm, $Estil)->addText(MySQLAData($row->data_final), null, 'Interliniat0');
@@ -1111,26 +1111,26 @@ class ResultatsAprenentatge extends Form
 							if ($ModulProfessionalId != -1)
 								$sRetorn .= '</ul>';
 							$Id = ($this->Usuari->es_admin) ? ' ['.$row->modul_professional_id.']' : '';
-//							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encode($row->NomMP).'</b>';
+//							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.utf8_encodeX($row->NomMP).'</b>';
 							$sRetorn .= '<li><b>'.$row->CodiMP.'. '.CodificaUTF8($row->NomMP).'</b>'.$Id;
 							$sRetorn .= '<ul>';
 							$ModulProfessionalId = $row->modul_professional_id;
 						}
 						$Id = ($this->Usuari->es_admin) ? ' ['.$row->unitat_formativa_id.']' : '';
-//						$sRetorn .= '<li><u>'.utf8_encode($row->NomUF).'</u>';
+//						$sRetorn .= '<li><u>'.utf8_encodeX($row->NomUF).'</u>';
 						$sRetorn .= '<li><u>'.CodificaUTF8($row->NomUF).'</u>'.$Id;
 						$sRetorn .= '<ul>';
 						$UnitatFormativaId = $row->unitat_formativa_id;
 					}
 					$Id = ($this->Usuari->es_admin) ? ' ['.$row->resultat_aprenentatge_id.']' : '';
-//					$sRetorn .= '<li>RA'.utf8_encode($row->ResultatAprenentatge);
+//					$sRetorn .= '<li>RA'.utf8_encodeX($row->ResultatAprenentatge);
 					$sRetorn .= '<li>RA'.CodificaUTF8($row->ResultatAprenentatge).$Id;
 					$sRetorn .= '<ul>';
 					$ResultatAprenentatgeId = $row->resultat_aprenentatge_id;
 				}
 				if ($row->CriteriAvaluacio != '')
 					$Id = ($this->Usuari->es_admin) ? ' ['.$row->criteri_avaluacio_id.']' : '';
-//					$sRetorn .= '<li>'.utf8_encode($row->CriteriAvaluacio);
+//					$sRetorn .= '<li>'.utf8_encodeX($row->CriteriAvaluacio);
 					$sRetorn .= '<li>'.CodificaUTF8($row->CriteriAvaluacio).$Id;
 			}
 		}

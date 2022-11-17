@@ -117,7 +117,7 @@ class ConsolaSQL extends Form
 						}
 						$Taula .= "<TR>";
 						for ($i=0; $i<count($keys); $i++)
-							$Taula .= "<TD>".utf8_encode($row[$keys[$i]])."</TD>";
+							$Taula .= "<TD>".utf8_encodeX($row[$keys[$i]])."</TD>";
 						$Taula .= "</TR>";
 					}
 					$Taula .= "</TABLE>";

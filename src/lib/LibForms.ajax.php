@@ -39,7 +39,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
-		$frm->FiltreText = utf8_decode($cerca); 
+		$frm->FiltreText = utf8_decodeX($cerca); 
 		$frm->Filtre->JSON = $filtre; 
 		print $frm->GeneraTaula();
 	}
@@ -62,7 +62,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
 		$frm = unserialize($FormSerialitzat);
 		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
-		$frm->FiltreText = utf8_decode($cerca); 
+		$frm->FiltreText = utf8_decodeX($cerca); 
 		$frm->Filtre->JSON = $filtre; 
 		$frm->Ordre = $camp.' '.$sentit; 
 		print $frm->GeneraTaula();

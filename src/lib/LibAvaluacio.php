@@ -140,10 +140,10 @@ class Avaluacio extends Objecte
 		$sRetorn = '';
 		if ($this->Registre != NULL) {
 			$row = $this->Registre;
-			echo "Any acadèmic: <B>".utf8_encode($row->AnyAcademic)."</B><br>";
-			echo "Curs: <B>".utf8_encode($row->nom)."</B><br>";
-			echo "Codi: <B>".utf8_encode($row->codi)."</B><br>";
-			echo "Nivell: <B>".utf8_encode($row->nivell)."</B><br>";
+			echo "Any acadèmic: <B>".utf8_encodeX($row->AnyAcademic)."</B><br>";
+			echo "Curs: <B>".utf8_encodeX($row->nom)."</B><br>";
+			echo "Codi: <B>".utf8_encodeX($row->codi)."</B><br>";
+			echo "Nivell: <B>".utf8_encodeX($row->nivell)."</B><br>";
 			echo "<BR>";
 			if ($row->estat == Curs::Tancat) {
 				echo "Avaluació: <B>El curs està tancat</B><br>";
@@ -152,7 +152,7 @@ class Avaluacio extends Objecte
 				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
 				echo "Avaluació: <B>".$Avaluacio."</B><br>";
 				if ($row->avaluacio == 'ORD')
-					echo "<div id='trimestre'>Trimestre: <B>".utf8_encode($row->trimestre)."</B></div>";
+					echo "<div id='trimestre'>Trimestre: <B>".utf8_encodeX($row->trimestre)."</B></div>";
 				echo '<div id="estat">Estat: '.Curs::TextEstat($row->estat).'</div>';
 				
 			}
@@ -171,7 +171,7 @@ class Avaluacio extends Objecte
 		$sRetorn = '<DIV id=desc>';
 		if ($this->Registre != NULL) {
 			$row = $this->Registre;
-			echo "Curs: <B>".utf8_encode($row->nom)."</B>";
+			echo "Curs: <B>".utf8_encodeX($row->nom)."</B>";
 			
 			if ($row->estat == Curs::Tancat) {
 				echo " Avaluació: <img src=img/curs/colorT.png> <B>Tancada</B>";
@@ -180,7 +180,7 @@ class Avaluacio extends Objecte
 				$Avaluacio = ($row->avaluacio == 'ORD') ? 'Ordinària' : 'Extraordinària';
 				echo " Avaluació: <B>".$Avaluacio."</B>";
 				if ($row->avaluacio == 'ORD')
-					echo " Trimestre: <B>".utf8_encode($row->trimestre)."</B>";
+					echo " Trimestre: <B>".utf8_encodeX($row->trimestre)."</B>";
 				$this->Avaluacio = $row->avaluacio;
 				echo " Estat: ".Curs::TextEstatColor($row->estat);
 			}
@@ -320,7 +320,7 @@ class Avaluacio extends Objecte
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		//$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Avaluacions';
-		$frm->SQL = utf8_decode($SQL);
+		$frm->SQL = utf8_decodeX($SQL);
 //print("<br><br><br><br><br><br><hr>$SQL<hr>");
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id, grups_tutoria';

@@ -79,7 +79,7 @@ if ($ResultSet->num_rows > 0) {
 	while($row) {
 //print_r($row);
 		echo '<TR>';
-		echo "<TD width=300 style='text-align:left'>".utf8_encode($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
+		echo "<TD width=300 style='text-align:left'>".utf8_encodeX($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
 		echo "<TD width=75 style='text-align:center'>".$row["grup"]."</TD>";
 		
 		foreach($aGrups as $item) {

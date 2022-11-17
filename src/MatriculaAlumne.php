@@ -106,13 +106,13 @@ if ($ButlletiVisible) {
 	if ($ResultSet->num_rows > 0) {
 		
 		$row = $ResultSet->fetch_assoc();
-		$NomComplet = trim(utf8_encode($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
+		$NomComplet = trim(utf8_encodeX($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
 		if ($Usuari->es_admin) {
 			$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
 			echo "Matrícula: <B>[$MatriculaId]</B>&nbsp;&nbsp;&nbsp;";
 		}
 		echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
-		echo 'Cicle: <B>'.utf8_encode($row["NomCF"]).'</B>';
+		echo 'Cicle: <B>'.utf8_encodeX($row["NomCF"]).'</B>';
 			
 		echo '<span style="float:right;">';
 		if ($nivell == 2) {
@@ -166,13 +166,13 @@ if ($ButlletiVisible) {
 		$j = 1;
 		while($row) {
 			echo "<TR class='Nivell".$row["NivellUF"]."'>";
-	//		echo "<TD>".utf8_encode($row["NomCF"])."</TD>";
+	//		echo "<TD>".utf8_encodeX($row["NomCF"])."</TD>";
 			if ($row["CodiMP"] != $ModulAnterior)
-				echo "<TD width=200>".utf8_encode($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+				echo "<TD width=200>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
 			else 
 				echo "<TD width=200></TD>";
 			$ModulAnterior = $row["CodiMP"];
-			echo "<TD width=200>".utf8_encode($row["NomUF"])."</TD>";
+			echo "<TD width=200>".utf8_encodeX($row["NomUF"])."</TD>";
 			echo "<TD width=50>".$row["NivellUF"]."</TD>";
 			echo "<TD width=50>".$row["HoresUF"]."</TD>";
 			$Baixa = ($row["Baixa"] == True);

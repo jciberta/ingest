@@ -220,7 +220,7 @@ class ImportaUsuaris extends Importa
 			" mare_id=".$IdMare.
 			" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 		$ResultSet = $this->Connexio->query($SQL);
 	}
 
@@ -264,7 +264,7 @@ class ImportaUsuaris extends Importa
 			" mare_id=".$IdMare.
 			" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 		$ResultSet = $this->Connexio->query($SQL);
 	}
 
@@ -294,7 +294,7 @@ class ImportaUsuaris extends Importa
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['T'.$Responsable.' PROVINCIA']]).
 				" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -322,7 +322,7 @@ class ImportaUsuaris extends Importa
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]).
 				" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -351,7 +351,7 @@ class ImportaUsuaris extends Importa
 				" provincia=".TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]).
 				" WHERE username='".$NIF."'";
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}
@@ -404,7 +404,7 @@ class ImportaUsuaris extends Importa
 				$IdPare.", ".
 				$IdMare;
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -456,7 +456,7 @@ class ImportaUsuaris extends Importa
 				$IdPare.", ".
 				$IdMare;
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -494,7 +494,7 @@ class ImportaUsuaris extends Importa
 				TextAMySQL($Linia[$this->CampsNom['T'.$Responsable.' MUNICIPI']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['T'.$Responsable.' PROVINCIA']]);
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -529,7 +529,7 @@ class ImportaUsuaris extends Importa
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 1']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 1']]);
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	
@@ -565,7 +565,7 @@ class ImportaUsuaris extends Importa
 				TextAMySQL($Linia[$this->CampsNom['MUNICIPI RESP. 2']]).", ".
 				TextAMySQL($Linia[$this->CampsNom['PROVÍNCIA RESP. 2']]);
 //print $SQL . ' <br>';		
-			$SQL = utf8_decode($SQL);
+			$SQL = utf8_decodeX($SQL);
 			$ResultSet = $this->Connexio->query($SQL);
 		}
 	}	

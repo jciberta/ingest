@@ -81,9 +81,9 @@ else {
 		echo '</THEAD>';
 		while($row = $ResultSet->fetch_assoc()) {
 			echo "<TR>";
-			echo utf8_encode("<TD>".$row["NomCF"]."</TD>");
-			echo utf8_encode("<TD>".$row["CodiMP"].'. '.$row["NomMP"]."</TD>");
-			echo utf8_encode("<TD>".$row["NomUF"]."</TD>");
+			echo utf8_encodeX("<TD>".$row["NomCF"]."</TD>");
+			echo utf8_encodeX("<TD>".$row["CodiMP"].'. '.$row["NomMP"]."</TD>");
+			echo utf8_encodeX("<TD>".$row["NomUF"]."</TD>");
 			echo "<TD>".$row["HoresUF"]."</TD>";
 			echo "</TR>";
 		}

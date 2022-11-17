@@ -109,7 +109,7 @@ class DocumentPDF extends TCPDF
 		$this->DesaFont();
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', '', $Mida); 
-//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Text), '', 0, 'L'); 
+//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encodeX($Text), '', 0, 'L'); 
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Text, '', 0, 'L'); 
 		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
@@ -126,7 +126,7 @@ class DocumentPDF extends TCPDF
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', $Mida); // Bold
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
-//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
+//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encodeX($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Titol, 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
@@ -143,7 +143,7 @@ class DocumentPDF extends TCPDF
 		$this->SetX($this->original_lMargin);
         $this->SetFont('helvetica', 'B', $Mida);
 		$this->SetLineStyle(array('width' => 0.85 / $this->k, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0));
-//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encode($Titol), 'B', 0, 'L'); // B: Bottom
+//		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, utf8_encodeX($Titol), 'B', 0, 'L'); // B: Bottom
 		$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Titol, 'B', 0, 'L'); // B: Bottom
 		$this->SetY($this->GetY() + $IncrementY);
 		$this->RestauraFont();
@@ -184,15 +184,15 @@ class DocumentPDF extends TCPDF
 		$this->writeHTML($Text5, False);
 
 /*		$this->SetX($this->original_lMargin);
-		$this->writeHTML(utf8_encode($Text1), False);
+		$this->writeHTML(utf8_encodeX($Text1), False);
 		$this->SetX($this->original_lMargin + 1*$Pas);
-		$this->writeHTML(utf8_encode($Text2), False);
+		$this->writeHTML(utf8_encodeX($Text2), False);
 		$this->SetX($this->original_lMargin + 2*$Pas);
-		$this->writeHTML(utf8_encode($Text3), False);
+		$this->writeHTML(utf8_encodeX($Text3), False);
 		$this->SetX($this->original_lMargin + 3*$Pas);
-		$this->writeHTML(utf8_encode($Text4), False);
+		$this->writeHTML(utf8_encodeX($Text4), False);
 		$this->SetX($this->original_lMargin + 4*$Pas);
-		$this->writeHTML(utf8_encode($Text5), False);
+		$this->writeHTML(utf8_encodeX($Text5), False);
 */
 		$this->SetY($this->GetY() + 6);
 	}

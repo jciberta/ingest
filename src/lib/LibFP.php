@@ -39,7 +39,7 @@ class CicleFormatiu
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$cf = $ResultSet->fetch_object();
-			$Retorn = utf8_encode($cf->nom);
+			$Retorn = utf8_encodeX($cf->nom);
 		}
 		return $Retorn;
 	}
@@ -54,7 +54,7 @@ class CicleFormatiu
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$cf = $ResultSet->fetch_object();
-			$Retorn = utf8_encode($cf->codi);
+			$Retorn = utf8_encodeX($cf->codi);
 		}
 		return $Retorn;
 	}

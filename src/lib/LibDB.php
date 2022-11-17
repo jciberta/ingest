@@ -55,7 +55,7 @@ function ObteCodiValorDesDeSQL($Connexio, $SQL, $CampCodi, $CampValor)
 		$i = 0;
 		while($row = $ResultSet->fetch_assoc()) {
 			$Codi[$i] = $row[$CampCodi];
-//			$Valor[$i] = utf8_encode($row[$CampValor]);
+//			$Valor[$i] = utf8_encodeX($row[$CampValor]);
 			$Valor[$i] = CodificaUTF8($row[$CampValor]);
 			$i++;
 		}

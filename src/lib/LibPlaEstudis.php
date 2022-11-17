@@ -77,7 +77,7 @@ abstract class PlaEstudis extends Form
 				$sRetorn .= "<TR>";
 				if ($bPrimer) {
 					$Id = ($this->Usuari->es_admin	) ? "[".$Modul->Registre->modul_pla_estudi_id."]" : "";
-					$sRetorn .= "<TD>".utf8_encode($CodiMP.'. '.$NomMP)." $Id</TD>";
+					$sRetorn .= "<TD>".utf8_encodeX($CodiMP.'. '.$NomMP)." $Id</TD>";
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMP."</TD>";
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMPSetmana."</TD>";
 					if ($this->Usuari->es_admin) {
@@ -94,7 +94,7 @@ abstract class PlaEstudis extends Form
 					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD><TD></TD>";
 				}
 				$Id = ($this->Usuari->es_admin	) ? "[".$Unitat->Registre->unitat_pla_estudi_id."]" : "";
-				$sRetorn .= "<TD>".utf8_encode($NomUF)." $Id</TD>";
+				$sRetorn .= "<TD>".utf8_encodeX($NomUF)." $Id</TD>";
 				$sRetorn .= "<TD>".$Unitat->Registre->HoresUF."</TD>";
 				if ($this->Usuari->es_admin) {
 					$URL = "FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=".$Unitat->Registre->unitat_pla_estudi_id;
@@ -121,7 +121,7 @@ abstract class PlaEstudis extends Form
 		$sRetorn .= '    <div class="card-header" id="'.$Codi.'">';
 		$sRetorn .= '      <h5 class="mb-0">';
 		$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$Codi.'" aria-expanded="true" aria-controls="collapse'.$Codi.'">';
-		$sRetorn .= utf8_encode($Nom);
+		$sRetorn .= utf8_encodeX($Nom);
 		$sRetorn .= '        </button>';
 		$sRetorn .= '      </h5>';
 		$sRetorn .= '    </div>';

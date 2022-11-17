@@ -281,7 +281,7 @@ class Curs extends Objecte
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Cursos';
-		$frm->SQL = utf8_decode($SQL);
+		$frm->SQL = utf8_decodeX($SQL);
 		$frm->Taula = 'CURS';
 		$frm->ClauPrimaria = 'curs_id';
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
