@@ -27,18 +27,9 @@ class Config {
 }
 
 
-// Credencials Google
-//define('GOOGLE_CLIENT_ID', '***');
-//define('GOOGLE_CLIENT_SECRET', '***');
+// Autenticació Google
 $Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
 define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
-
-// Credencials Moodle
-//define('MOODLE_URL', '****');
-//define('MOODLE_WS_TOKEN', '****');
-
-// API api.ipdata.co
-//define('IPDATA_API_KEY', '***');
 
 unset($CFG);
 global $CFG;

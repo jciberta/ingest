@@ -265,55 +265,66 @@ class Notes extends Form
 	const AMPLADA_GRUP = 25;
 	const AMPLADA_UF = 50;
 	const AMPLADA_HORA = 50;
+	
+	// Mètode congela files i columnes
+	const tcMetodeAntic = 1;
+	const tcDataTables = 2;
+	const tcMetodeDiv = 3;
 
 	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
+	 * Connexió a la base de dades.
+	 * @var object
+	 */    
 	public $Connexio;
 
 	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
+	 * Usuari autenticat.
+	 * @var object
+	 */    
 	public $Usuari;
 
 	/**
-	* Registre que conté les notes de 1r. Es carrega amb CarregaRegistre.
-	* @var object
-	*/    
+	 * Registre que conté les notes de 1r. Es carrega amb CarregaRegistre.
+	 * @var object
+	 */    
 	public $Registre1 = NULL;
 
 	/**
-	* Registre que conté les notes de 2n. Es carrega amb CarregaRegistre.
-	* @var object
-	*/    
+	 * Registre que conté les notes de 2n. Es carrega amb CarregaRegistre.
+	 * @var object
+	 */    
 	public $Registre2 = NULL;
 
 	/**
-	* Identificador del curs.
-	* @var object
-	*/    
+	 * Identificador del curs.
+	 * @var object
+	 */    
 	private $CursId = -1;
 
 	/**
-	* Indica si està activa l'administració avançada, amb més característiques:
-	* 	- Augmenta 1 convocatòria per alumne (per entrar notes anteriors).
-	* @var bool
-	*/    
+	 * Indica si està activa l'administració avançada, amb més característiques:
+	 * 	- Augmenta 1 convocatòria per alumne (per entrar notes anteriors).
+	 * @var bool
+	 */    
 	public $Administracio = false;
 
 	/**
-	* Nivell: 1r o 2n.
-	* @var int
-	*/    
+	 * Nivell: 1r o 2n.
+	 * @var int
+	 */    
 	private $Nivell = 0;
 
 	/**
-	* Identificador de la graella de notes.
-	* @var int
-	*/    
+	 * Identificador de la graella de notes.
+	 * @var int
+	 */    
 	private $IdGraella = -1;
+
+	/**
+	 * Mètode congela files i columnes.
+	 * @var int
+	 */    
+	public $MetodeCongelaFilesComunes = self::tcDataTables;
 
 	/**
 	 * Constructor de l'objecte.
@@ -579,10 +590,16 @@ class Notes extends Form
 	 * @return void.
 	 */
 	public function EscriuFormulari($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
-		if (Config::UsaDataTables) 
-			$this->EscriuFormulariDT($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
-		else
-			$this->EscriuFormulari1($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
+		switch ($this->MetodeCongelaFilesComunes) {
+			case self::tcMetodeAntic:
+				$this->EscriuFormulari1($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
+				break;
+			case self::tcDataTables:
+				$this->EscriuFormulariDT($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
+				break;
+			case self::tcMetodeDiv:
+				break;
+		}
 	}	
 
 	/**
@@ -827,7 +844,7 @@ class Notes extends Form
 	 * @return string Codi HTML.
 	 */
 	private function CreaTitolEstadistiquesUF($Titol): string {
-		if (Config::UsaDataTables) {
+		if ($this->MetodeCongelaFilesComunes == self::tcDataTables) {
 			$Retorn = '<TD style="text-align:left;">'.$Titol.'</TD>';
 			$Retorn .= '<TD></TD><TD></TD><TD></TD>';
 		}

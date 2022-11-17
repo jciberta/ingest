@@ -30,6 +30,8 @@ if ($conn->connect_error)
 
 RecuperaGET($_GET);
 
+$MetodeCongelaFilesComunes = (Config::UsaDataTables) ? Notes::tcDataTables : Notes::tcMetodeAntic;
+
 $CursId = $_GET['CursId'];
 $Curs = new Curs($conn, $Usuari);
 $Curs->CarregaRegistre($CursId);
@@ -61,9 +63,10 @@ echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript
 
 $Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
 
-if (Config::UsaDataTables) {
+//if (Config::UsaDataTables) {
+if ($MetodeCongelaFilesComunes == Notes::tcDataTables) {
 	echo "<script>";
-	//echo "alert('Hi!');";
+//echo "alert('Hi!');";
 	echo "$(document).ready(function() {";
 	echo "    var table = $('#TaulaNotes').DataTable( {";
 	echo "        scrollY: '500px',";
@@ -75,22 +78,8 @@ if (Config::UsaDataTables) {
 	echo "        paging: false,";
 	echo "        fixedColumns: {";
 	echo "            leftColumns: 1,";
-//	echo "            rightColumns: $Columnes";
 	echo "        }";
 	echo "	  } );";
-/*	echo "    var table = $('#TaulaNotes2').DataTable( {";
-	echo "        scrollY: '500px',";
-	echo "        scrollX: true,";
-	echo "        scrollCollapse: true,";
-	echo "		  searching: false,";
-	echo "		  ordering: false,";
-	echo "		  info: false,";
-	echo "        paging: false,";
-	echo "        fixedColumns: {";
-	echo "            leftColumns: 1,";
-//	echo "            rightColumns: $Columnes";
-	echo "        }";
-	echo "	  } );";*/
 	echo "} );";
 	echo "</script>";
 }
@@ -116,6 +105,7 @@ if ($Curs->Estat() == Curs::Actiu)
 		"Ctrl+rodeta_ratolí per fer zoom.</font></P>";
 
 $Notes = new Notes($conn, $Usuari);
+$Notes->MetodeCongelaFilesComunes = $MetodeCongelaFilesComunes;
 $Notes->CarregaRegistre($CursId, $Nivell);
 //echo $Notes->Estadistiques($CursId, $Nivell);
 //exit;
