@@ -10,7 +10,7 @@
  */
 
 class Config {
-	const Versio         = '1.11';
+	const Versio         = '1.12';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
@@ -27,7 +27,7 @@ class Config {
 }
 
 
-// Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació)
+// Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació UTF8)
 function utf8_encodeX($Text) {
 	return utf8_encode($Text);
 //	return $Text;
