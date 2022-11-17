@@ -1,22 +1,13 @@
-# InGest
+# Implantació
 
-## Implantació
-
-### Estructura
-
-Dues carpetes principals:
-
-  * Codi: /var/www/html
-  * Dades: /var/www/ingest-data
-
-### Crea versió
+## Crea versió
 
 ```
 git tag <nom>
 git push origin <nom>
 ```
 
-### Nova versió
+## Nova versió
 
 ```
 VERSIO=0.1
@@ -41,10 +32,11 @@ cd /var/www/html/ingest/img
 ln -s /var/www/ingest-data/pix pix
 ```
 
-### Altres
+## Altres
 
 How do I make Git ignore file mode (chmod) changes?
 ```
+git config --global --add safe.directory /var/www/html/InGest-vXXX/ingest
 git config core.fileMode false
 ```
 

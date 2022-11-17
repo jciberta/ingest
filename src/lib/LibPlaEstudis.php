@@ -173,7 +173,7 @@ class PlaEstudisAny extends PlaEstudis
 			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
 			WHERE any_academic_id=$AnyAcademicId
-			ORDER BY CPE.codi, MPE.codi, UPE.codi
+			ORDER BY CPE.codi, CPE.cicle_pla_estudi_id, MPE.codi, UPE.codi
 		";
 	}
 
@@ -193,7 +193,7 @@ class PlaEstudisAny extends PlaEstudis
 	 * @param integer $AnyAcademicId Identificador de l'any acadèmic.
 	 */				
 	protected function Carrega(int $AnyAcademicId) {
-		$CicleFormatiuId = -1;
+		$CiclePlaEstudiId = -1;
 		$ModulProfessionalId = -1;
 		$SQL = $this->CreaSQL($AnyAcademicId);
 //print_r($SQL);		
@@ -205,9 +205,9 @@ class PlaEstudisAny extends PlaEstudis
 			$j = -1;
 			$k = -1;
 			while($row = $ResultSet->fetch_object()) {
-				if ($row->cicle_formatiu_id !== $CicleFormatiuId) {
+				if ($row->cicle_pla_estudi_id !== $CiclePlaEstudiId) {
 					// Cicle nou
-					$CicleFormatiuId = $row->cicle_formatiu_id;
+					$CiclePlaEstudiId = $row->cicle_pla_estudi_id;
 					$i++;
 					$obj->Nivell1[$i] = new stdClass();
 					$obj->Nivell1[$i]->Registre = $row;
@@ -241,7 +241,7 @@ class PlaEstudisAny extends PlaEstudis
 		$sRetorn .= '<div class="accordion" id="accordionExample">';
 		for($i = 0; $i < count($obj->Nivell1); $i++) {
 			$Cicle = $obj->Nivell1[$i];
-			$CodiCF = $Cicle->Registre->CodiCF;
+			$CodiCF = $Cicle->Registre->CodiCF.$Cicle->Registre->cicle_pla_estudi_id;
 			$NomCF = $Cicle->Registre->NomCF;
 			$Taula = $this->GeneraTaula($Cicle);
 			$sRetorn .= $this->GeneraBlocAcordio($CodiCF, $NomCF, $Taula);
