@@ -72,10 +72,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraAcordio();
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaGrupProfessorsAssignacioUF') {
-		$sCodiCiclePlaEstudi = $_REQUEST['codi_cicle_pla_estudi'];
+		$CiclePlaEstudiId = $_REQUEST['codi_cicle_pla_estudi'];
 		$AnyAcademicId = $_REQUEST['any_academic_id'];
 		$frm = new GrupProfessorsAssignacioUF($conn, $Usuari);
-		$frm->CodiCiclePlaEstudi = $sCodiCiclePlaEstudi;
+		$frm->CiclePlaEstudiId = $CiclePlaEstudiId;
 		$frm->AnyAcademicId = $AnyAcademicId;
 		print $frm->GeneraAcordio();
 	}

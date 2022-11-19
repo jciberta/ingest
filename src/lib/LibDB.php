@@ -153,6 +153,52 @@ class DB
 	}
 
 	/**
+	 * Carrega un registre d'una taula de la base de dades.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $SQL Sentència SQL.
+	 * @param int $Tipus Tipus d'objecte que retorna (1: objecte, 2: array associatiu)
+	 * @return mixed Conjunt de registres de la taula.
+	 */
+	public static function CarregaConjuntRegistres($Connexio, $SQL, $Tipus = 1)
+	{
+		$Retorn = NULL;
+		//$SQL = "SELECT * FROM $Taula WHERE $Camp='$Valor'";
+		try {
+			$ResultSet = $Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception('<p>'.$Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
+		} catch (Exception $e) {
+			die("<p><b>ERROR CarregaConjuntRegistres</b>. Causa:</p>".$e->getMessage());
+		}	
+		if ($ResultSet->num_rows > 0) {
+			$Retorn = [];
+			switch ($Tipus) {
+				case 1:
+					while($row = $ResultSet->fetch_object()) 
+						array_push($Retorn, $row);
+//					$Retorn = $ResultSet->fetch_object();
+					break;
+				case 2:
+					while($row = $ResultSet->fetch_assoc()) 
+						array_push($Retorn, $row);
+//					$Retorn = $ResultSet->fetch_assoc();
+					break;
+			}
+		}	
+		return $Retorn;
+	}
+	
+	public static function CarregaConjuntRegistresObj($Connexio, $SQL)
+	{
+		return self::CarregaConjuntRegistres($Connexio, $SQL, 1);
+	}
+
+	public static function CarregaConjuntRegistresAss($Connexio, $SQL)
+	{
+		return self::CarregaConjuntRegistres($Connexio, $SQL, 2);
+	}
+
+	/**
 	 * Obté les metadades d'una taula.
 	 * @param object $Connexio Connexió a la base de dades.
 	 * @param string $Taula Taula.

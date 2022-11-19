@@ -60,16 +60,24 @@ class Avaluacio extends Objecte
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLAvaluacions() {
-		$SQL = ' SELECT '.
-			'   C.curs_id, '.
-			"   SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) AS grups_tutoria, ".
-			'   C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
-			'   CASE WHEN C.estat = "T" THEN "Tancada" WHEN C.avaluacio = "ORD" THEN "Ordinària" WHEN C.avaluacio = "EXT" THEN "Extraordinària" END AS avaluacio, CASE WHEN C.avaluacio = "ORD" THEN C.trimestre WHEN C.avaluacio = "EXT" THEN NULL END AS trimestre '.
-			' FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers '.
-			" RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1 ".
-			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-			' ORDER by C.curs_id, C.grups_tutoria ';
+		$SQL = "
+			SELECT
+				C.curs_id,
+				SUBSTRING_INDEX(SUBSTRING_INDEX(C.grups_tutoria, ',', numbers.n), ',', -1) AS grups_tutoria,
+				C.cicle_formatiu_id, C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, CONCAT(AA.any_inici,'-',AA.any_final) AS Any,
+				CASE WHEN C.estat = 'T' THEN 'Tancada' WHEN C.avaluacio = 'ORD' THEN 'Ordinària' WHEN C.avaluacio = 'EXT' THEN 'Extraordinària' END AS avaluacio, CASE WHEN C.avaluacio = 'ORD' THEN C.trimestre WHEN C.avaluacio = 'EXT' THEN NULL END AS trimestre,
+				CASE
+					WHEN CPE.grau = 'GB' THEN 1
+					WHEN CPE.grau = 'GM' THEN 2
+					WHEN CPE.grau = 'GS' THEN 3
+					WHEN CPE.grau = 'CE' THEN 4
+			    END AS Ordre
+			FROM (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) numbers
+			RIGHT JOIN CURS C ON CHAR_LENGTH(C.grups_tutoria)-CHAR_LENGTH(REPLACE(C.grups_tutoria, ',', ''))>=numbers.n-1
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
+			ORDER by Ordre, C.codi, C.grups_tutoria
+		";
 		return $SQL;
 	}
 	
