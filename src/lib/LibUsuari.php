@@ -1170,7 +1170,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$CiclePlaEstudiId = $this->CiclePlaEstudiId;
 		return "
 			SELECT 
-				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.unitat_formativa_id AS UnitatFormativaId, 
+				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.unitat_formativa_id AS UnitatFormativaId, UPE.nivell AS Nivell,
 				MPE.codi AS CodiMP, MPE.nom AS NomMP, 
 				CPE.nom AS NomCF, CPE.cicle_formatiu_id AS CicleFormatiuId, CPE.codi AS CodiCF, 
 				UPE.*, MPE.*, CPE.* 
@@ -1330,7 +1330,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 				$sRetorn .= "<TH width=300>Mòdul</TH>";
 				$sRetorn .= "<TH width=300>Unitat formativa</TH>"; 
 				foreach ($this->ProfessorUF as $PUF) {
-					$sRetorn .= '<TH width=40 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$PUF->Nom.'">'.$PUF->Codi.'</TH>'; 
+					$sRetorn .= '<TH width=40 class="small" style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$PUF->Nom.'">'.$PUF->Codi.'</TH>'; 
 				}
 				$sRetorn .= '</thead>';
 				$ModulAnterior = '';
@@ -1348,7 +1348,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 						$sRetorn .= "<TD width=300></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD width=300>".utf8_encodeX($row["NomUF"]);
+					$sRetorn .= "<TD width=300>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["Nivell"]).')';
 					if ($this->Usuari->es_admin)
 						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
