@@ -25,6 +25,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -152,10 +153,7 @@ switch ($accio) {
 		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookup('modul_professional_id', 'Mòdul professional', 200, 'FPRecerca.php?accio=ModulsProfessionals', 'MODUL_PROFESSIONAL', 'modul_professional_id', 'codi, nom', $Opcions);
 		$frm->AfegeixEnter('nivell', 'Nivell (1 o 2)', 10, $Opcions);
-//		$frm->AfegeixData('data_inici', 'Data inici');
-//		$frm->AfegeixData('data_final', 'Data final');
 		$frm->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
-//		$frm->AfegeixCheckBox('orientativa', 'És orientativa?');
 		$frm->AfegeixCheckBox('activa', 'Activa');		
 		$frm->EscriuHTML();
         break;
@@ -165,8 +163,6 @@ switch ($accio) {
 
 		$Professor = new Professor($conn, $Usuari);
 		$Professor->CarregaUFAssignades();
-//print_h($Professor);
-//exit;
 		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		
@@ -186,8 +182,6 @@ switch ($accio) {
 			|| $FamiliaFPId>0) {} // ToDo: Comprovar que la programació (mòdul) és de la família
 		else
 			header("Location: Surt.php");
-//		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-//			header("Location: Surt.php");
 		
 		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari);
 		$frm->Id = $Id;
@@ -197,19 +191,30 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-/*		$Professor = new Professor($conn, $Usuari);
-		$Professor->CarregaUFAssignades();
-//print_h($Professor);
-//exit;
-		if (!$Professor->TeMP($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
-*/
 		$PermisLectura = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || $Usuari->es_professor);
 		if (!$PermisLectura)
 			header("Location: Surt.php");
 
 		$frm = new ProgramacioDidactica($conn, $Usuari);
 		$frm->Id = $Id;
+		$frm->EscriuHTML();
+        break;
+	case "PreuMatricula":
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Permis = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		if (!$Permis)
+			header("Location: Surt.php");
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
+		$frm->Titol = 'Edició preus matrícula';
+		$frm->Taula = 'PREU_MATRICULA';
+		$frm->ClauPrimaria = 'preu_matricula_id';
+		$frm->Id = $Id;
+		$frm->AfegeixLookup('any_academic_id', 'Any acadèmic', 200, 'Recerca.php?accio=AnyAcademic', 'ANY_ACADEMIC', 'any_academic_id', 'any_inici, any_final', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLookup('cicle_formatiu_id', 'Cicle formatiu', 200, 'FPRecerca.php?accio=CiclesFormatius', 'CICLE_FORMATIU', 'cicle_formatiu_id', 'nom', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixEnter('nivell', 'Nivell', 10, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixReal('preu', 'Preu', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixEnter('numero_uf', 'Número UF', 20, [FormFitxa::offREQUERIT]);
 		$frm->EscriuHTML();
         break;
 }

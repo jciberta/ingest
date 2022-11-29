@@ -480,6 +480,11 @@ class Menu
 			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
 			$Retorn .= Menu::Tanca();
 
+			// Menú Secretaria
+			$Retorn .= Menu::Obre('Secretaria');
+			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
+			$Retorn .= Menu::Tanca();
+
 			// Menú Informes
 			$Retorn .= Menu::Obre('Informes');
 			$Retorn .= Menu::Opcio('Darrers accessos', 'UsuariRecerca.php?accio=UltimLogin');

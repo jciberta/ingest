@@ -29,12 +29,12 @@ class Config {
 
 // Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació UTF8)
 function utf8_encodeX($Text) {
-	return utf8_encode($Text);
-//	return $Text;
+	//return utf8_encode($Text);
+	return $Text;
 }
 function utf8_decodeX($Text) {
-	return utf8_decode($Text);
-//	return $Text;
+	//return utf8_decode($Text);
+	return $Text;
 }
 
 

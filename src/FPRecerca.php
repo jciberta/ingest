@@ -157,6 +157,33 @@ switch ($accio) {
 		$frm = new ContingutsUF($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
 		break;
+	case "PreuMatricula":
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Preus matrícula';
+		$frm->SQL = "
+			SELECT 
+				PM.*,
+				CF.nom AS NomCF
+			FROM PREU_MATRICULA PM
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=PM.cicle_formatiu_id)
+		";
+		$frm->Taula = 'PREU_MATRICULA';
+		$frm->ClauPrimaria = 'preu_matricula_id';
+		$frm->Camps = 'NomCF, nivell, nom, preu, numero_uf';
+		$frm->Descripcions = 'Cicle, Nivell, Nom, Preu, Número UF';
+		$frm->URLEdicio = 'FPFitxa.php?accio=PreuMatricula';
+		$frm->PermetEditar = ($Usuari->es_admin);
+		$frm->PermetAfegir = ($Usuari->es_admin);
+		$frm->PermetSuprimir = ($Usuari->es_admin);
+		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
+
+		$frm->EscriuHTML();
+        break;
 }
 
 ?>
