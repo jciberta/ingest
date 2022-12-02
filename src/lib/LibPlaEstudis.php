@@ -94,7 +94,7 @@ abstract class PlaEstudis extends Form
 					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD><TD></TD>";
 				}
 				$Id = ($this->Usuari->es_admin	) ? "[".$Unitat->Registre->unitat_pla_estudi_id."]" : "";
-				$sRetorn .= "<TD>".utf8_encodeX($NomUF)." $Id</TD>";
+				$sRetorn .= "<TD>".utf8_encodeX($NomUF).' ('.Ordinal($Unitat->Registre->nivell).')'." $Id</TD>";
 				$sRetorn .= "<TD>".$Unitat->Registre->HoresUF."</TD>";
 				if ($this->Usuari->es_admin) {
 					$URL = "FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=".$Unitat->Registre->unitat_pla_estudi_id;
@@ -165,7 +165,7 @@ class PlaEstudisAny extends PlaEstudis
 	protected function CreaSQL(int $AnyAcademicId): string {
 		return "
 			SELECT 
-				UPE.nom AS NomUF, UPE.codi AS CodiUF, UPE.hores AS HoresUF,
+				UPE.nom AS NomUF, UPE.codi AS CodiUF, UPE.hores AS HoresUF, UPE.nivell,
 				MPE.modul_pla_estudi_id, MPE.nom AS NomMP, MPE.codi AS CodiMP, MPE.hores AS HoresMP, MPE.hores_setmana AS HoresMPSetmana, 
 				CPE.nom AS NomCF, CPE.codi AS CodiCF, 
 				CPE.*, MPE.*, UPE.*
@@ -282,7 +282,7 @@ class PlaEstudisCicle extends PlaEstudis
 	protected function CreaSQL(int $CicleFormatiuId): string {
 		return "
 			SELECT 
-				UPE.nom AS NomUF, UPE.codi AS CodiUF, UPE.hores AS HoresUF,
+				UPE.nom AS NomUF, UPE.codi AS CodiUF, UPE.hores AS HoresUF, UPE.nivell,
 				MPE.nom AS NomMP, MPE.codi AS CodiMP, MPE.hores AS HoresMP, MPE.hores_setmana AS HoresMPSetmana, 
 				CPE.nom AS NomCF, CPE.codi AS CodiCF, 
 				AA.nom AS NomCurs,
@@ -367,6 +367,78 @@ class PlaEstudisCicle extends PlaEstudis
 		$sRetorn .= '</div>';
 		$sRetorn .= '</DIV>';
 		return $sRetorn;	
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de recerca dels cicles del pla d'estudis.
+ */
+class PlaEstudisCicleRecerca extends FormRecerca
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$Usuari = $this->Usuari;
+		$frm->Modalitat = $this->Modalitat;
+		$frm->Titol = "Plans d'estudis";
+		$frm->SQL = "
+			SELECT
+				CPE.cicle_pla_estudi_id, CPE.codi AS CodiCF, CPE.nom AS NomCF,
+				grau, codi_xtec,
+				CASE
+					WHEN CPE.grau = 'GB' THEN 1
+					WHEN CPE.grau = 'GM' THEN 2
+					WHEN CPE.grau = 'GS' THEN 3
+					WHEN CPE.grau = 'CE' THEN 4
+				END AS Ordre
+			FROM CICLE_PLA_ESTUDI CPE
+			ORDER BY Ordre
+		";
+/*		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+			// És professor
+			if ($Usuari->es_professor)
+				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
+					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+					' WHERE PUF.professor_id='.$Usuari->usuari_id.
+					' AND AA.actual=1 ';*/
+//print '<br><br><br>'.$frm->SQL;
+		$frm->Taula = 'CICLE_PLA_ESTUDI';
+		$frm->ClauPrimaria = 'cicle_pla_estudi_id';
+		$frm->Camps = 'CodiCF, NomCF, grau, codi_xtec';
+		$frm->Descripcions = 'Codi, Nom, Grau, Codi XTEC';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'FPFitxa.php?accio=PlaEstudisCicleFitxa';
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
+		}
+		$frm->EscriuHTML();
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de fitxa dels cicles del pla d'estudis.
+ */
+class PlaEstudisCicleFitxa extends FormFitxa
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$this->Titol = "Edició Cicle Pla d'estudis";
+		$this->Taula = 'CICLE_PLA_ESTUDI';
+		$this->ClauPrimaria = 'cicle_pla_estudi_id';
+
+		$this->AfegeixLookup('any_academic_id', 'Any acadèmic', 150, 'Recerca.php?accio=AnyAcademic', 'ANY_ACADEMIC', 'any_academic_id', 'any_inici, any_final');
+		$this->AfegeixLookup('cicle_formatiu_id', 'Cicle formatiu', 150, 'FPRecerca.php?accio=CiclesFormatius', 'CICLE_FORMATIU', 'cicle_formatiu_id', 'codi, nom');
+		$this->AfegeixText('codi', 'Codi', 20, [FormFitxa::offREQUERIT]);
+		$this->AfegeixText('nom', 'Nom', 150,[FormFitxa::offREQUERIT]);
+		$this->AfegeixText('codi_xtec', 'Codi XTEC', 20,[FormFitxa::offREQUERIT]);
+		$this->AfegeixLlista('grau', 'Grau', 50, array('GB', 'GM', 'GS', 'CE'), array('Grau bàsic', 'Grau mig', 'Grau superior', "Curs d'especialització"), [FormFitxa::offREQUERIT]);
+
+		parent::EscriuHTML();		
 	}
 }
 
@@ -606,6 +678,10 @@ class PlaEstudisUnitatRecerca extends FormRecerca
 		$frm->EscriuHTML();
 	}
 }
+
+
+//*** class PlaEstudisCicleFitxa extends FormFitxa
+
 
 /**
  * Classe que encapsula la fitxa de les UF del pla d'estudis.

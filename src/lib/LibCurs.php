@@ -148,7 +148,7 @@ class Curs extends Objecte
 				' ) ';
 		if ($CursId != -1)
 			$SQL .= ' AND C.curs_id='.$CursId;
-		$SQL .= ' ORDER BY Ordre, CPE.codi ';
+		$SQL .= ' ORDER BY Ordre, C.codi ';
 		return $SQL;
 	}
 
