@@ -122,12 +122,14 @@ if ($Avaluacio->Estat() != Avaluacio::Tancada) {
 	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 }
 if ($Nivell == 2) {
-//	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
-//	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
+	//echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
 }
 else {
-//	echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
-//	echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
+	//echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
+	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
+	echo '<input type="checkbox" name="chbAlumnesUFPendents" onclick="MostraAlumnesUFPendents(this);">Alumnes UF Pendents &nbsp';
+	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 	echo $Grup->GeneraMostraGrup($CursId);
 	echo $Tutoria->GeneraMostraGrup($CursId);
 }

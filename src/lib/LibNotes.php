@@ -701,8 +701,13 @@ class Notes extends Form
 		$Retorn .= "</TR>";
 
 		$class = 'Grup'.$row["Grup"].' Tutoria'.$row["GrupTutoria"];
+		
 		if ($bConvocatoriesAnteriors)
 			$class .= ' ConvocatoriesAnteriors';
+		
+		if ($TotalPercentatge==100)
+			$class .= ' NoAprovat100';
+		
 		$style = (($bConvocatoriesAnteriors && $Avaluacio->Estat() != Avaluacio::Tancada) || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
@@ -1139,7 +1144,7 @@ class Notes extends Form
 		$this->CursId = $CursId;
 		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
-//print_r($SQL);	
+print_r($SQL);	
 		$ResultSet = $this->Connexio->query($SQL);
 		if (!$ResultSet)
 			die("<b>ERROR</b>. SQL: ".$SQL); 
