@@ -1277,6 +1277,7 @@ class Acta extends Form
 			if ($AlumneId == -1) {
 				// Primer cop, agafem les dades de la capçalera
 				$this->Registre->CursAcademic = $row->any_inici.'/'.$row->any_final;
+				$this->Registre->NivellCurs = $row->NivellMAT;
 				$this->Registre->Avaluacio = $row->avaluacio;
 				$this->Registre->NomCicleFormatiu = utf8_encodeX($row->NomCicleFormatiu);
 				$this->Registre->CodiXTEC = $row->codi_xtec;
@@ -1750,6 +1751,7 @@ class Acta extends Form
 		$pdf->CursAcademic = $this->Registre->CursAcademic;
 		$pdf->Avaluacio = $this->Registre->Avaluacio;
 		$pdf->NomCicleFormatiu = $this->Registre->NomCicleFormatiu;
+		$pdf->NivellCurs = $this->Registre->NivellCurs;
 		$pdf->CodiXTEC = $this->Registre->CodiXTEC;
 		$pdf->Grau = $this->Registre->Grau;
 		$pdf->Llei = $this->Registre->Llei;
@@ -1788,18 +1790,13 @@ class Acta extends Form
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);		
 
 //print("GeneraTaulaNotes");
-		
 		$this->GeneraTaulaNotes($pdf);
 //print(GeneraTaulaSignatures);
 		$this->GeneraTaulaSignatures($pdf);
 		
-//print("Nom");
 		// Close and output PDF document
-		$Nom = 'Acta '.str_replace('/', '-', $this->Registre->CursAcademic).' '.$this->Registre->Avaluacio.' '.$this->Registre->NomCicleFormatiu;
+		$Nom = 'Acta '.str_replace('/', '-', $this->Registre->CursAcademic).' '.$this->Registre->Avaluacio.' '.$this->Registre->NomCicleFormatiu.' '.Ordinal($this->Registre->NivellCurs);
 		$Nom = Normalitza($Nom);		
-
-//print("$Nom");
-//exit;
 
 		// Clean any content of the output buffer
 		ob_end_clean();
@@ -1851,6 +1848,12 @@ class ActaPDF extends DocumentPDF
 	* @var string
 	*/
 	public $NomCicleFormatiu = '';
+
+	/**
+	 * Nivell del curs (1 o 2).
+	 * @var int
+	 */
+	public $NivellCurs = -1;	
 
 	/**
 	* Codi XTEC del cicle.
@@ -1969,7 +1972,7 @@ class ActaPDF extends DocumentPDF
 			default: $Llei = ''; break;
 		}
 		$Codi = 'CFP'.$this->Grau[1].' '.$this->CodiXTEC;
-		$Descripcio = $Codi.' '.$this->NomCicleFormatiu.' '.$Llei;
+		$Descripcio = $Codi.' '.$this->NomCicleFormatiu.' '.$Llei.' '.Ordinal($this->NivellCurs);
 		$this->writeHTML($Descripcio, False);
 		$this->SetX($this->original_lMargin + 210);
 		$this->writeHTML($Codi, False);		

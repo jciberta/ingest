@@ -95,7 +95,7 @@ console.log('sAnyAcademicId: ' + sAnyAcademicId);
 function ActualitzaTaulaGrupProfessorsAssignacioUF(element) { 
 console.log('-> ActualitzaTaulaGrupProfessorsAssignacioUF');
 	var sAnyAcademicId = document.getElementById('cmb_any_academic_id').value;	
-	var sCodiCiclePlaEstudi = document.getElementById('cmb_CPE.codi').value;	
+	var sCodiCiclePlaEstudi = document.getElementById('cmb_CPE.nom').value;	
 console.log('sAnyAcademicId: ' + sAnyAcademicId);	
 console.log('sCodiCiclePlaEstudi: ' + sCodiCiclePlaEstudi);	
 

@@ -41,34 +41,6 @@ class Curs extends Objecte
 	const COLOR_TANCAT = '#FF0000';
 	
 	/**
-	* Connexió a la base de dades.
-	* @access public 
-	* @var object
-	*/    
-//	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @access public 
-	* @var object
-	*/    
-//	public $Usuari;
-
-	/**
-	* Dades de l'aplicació.
-	* @access public 
-	* @var object
-	*/    
-//	public $Sistema;
-
-	/**
-	* Registre carregat amb CarregaRegistre.
-	* @access private
-	* @var object
-	*/    
-//	private $Registre = NULL;
-
-	/**
 	* Indica que només és professor i no admin, ni cap d'estudis...
 	* @var boolean
 	*/    
@@ -176,7 +148,7 @@ class Curs extends Objecte
 				' ) ';
 		if ($CursId != -1)
 			$SQL .= ' AND C.curs_id='.$CursId;
-		$SQL .= ' ORDER BY Ordre, CPE.codi ';
+		$SQL .= ' ORDER BY Ordre, C.codi ';
 		return $SQL;
 	}
 

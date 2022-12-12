@@ -798,12 +798,12 @@ class ProfessorsUF extends Form
 			$Cicles = new stdClass();
 			$i = -1; 
 			$j = 0;
-			$CicleFormatiuIdAnterior = -1;
+			$CiclePlaEstudiId = -1;
 			$UnitatFormativaId = -1;
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
-				if ($row["CicleFormatiuId"] != $CicleFormatiuIdAnterior) {
-					$CicleFormatiuIdAnterior = $row["CicleFormatiuId"];
+				if ($row["cicle_pla_estudi_id"] != $CiclePlaEstudiId) {
+					$CiclePlaEstudiId = $row["cicle_pla_estudi_id"];
 					$i++;
 					$Cicles->CF[$i] = $row;
 					$j = 0; 
@@ -828,15 +828,16 @@ class ProfessorsUF extends Form
 
 			for($i = 0; $i < count($Cicles->CF); $i++) {
 				$row = $Cicles->CF[$i];
+				$CodiCF = $row['CodiCF'].$row['cicle_pla_estudi_id'];
 				$sRetorn .= '  <div class="card">';
-				$sRetorn .= '    <div class="card-header" id="'.$row['CodiCF'].'">';
+				$sRetorn .= '    <div class="card-header" id="'.$CodiCF.'">';
 				$sRetorn .= '      <h5 class="mb-0">';
-				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$row['CodiCF'].'" aria-expanded="true" aria-controls="collapse'.$row['CodiCF'].'">';
+				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$CodiCF.'" aria-expanded="true" aria-controls="collapse'.$CodiCF.'">';
 				$sRetorn .= utf8_encodeX($row['NomCF']);
 				$sRetorn .= '        </button>';
 				$sRetorn .= '      </h5>';
 				$sRetorn .= '    </div>';
-				$sRetorn .= '    <div id="collapse'.$row['CodiCF'].'" class="collapse" aria-labelledby="'.$row['CodiCF'].'" data-parent="#accordionExample">';
+				$sRetorn .= '    <div id="collapse'.$CodiCF.'" class="collapse" aria-labelledby="'.$CodiCF.'" data-parent="#accordionExample">';
 				$sRetorn .= '      <div class="card-body">';
 
 				$sRetorn .= '<TABLE class="table table-striped table-sm table-hover">';
@@ -856,7 +857,7 @@ class ProfessorsUF extends Form
 					else 
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
-					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"])."</TD>";
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["nivell"]).')'."</TD>";
 					$sRetorn .= "<TD>".$NomComplet."</TD>";
 					$sRetorn .= "</TR>";
 				}
@@ -891,7 +892,7 @@ class ProfessorsUF extends Form
 			LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
 			LEFT JOIN USUARI U ON (U.usuari_id=PUF.professor_id) 
 			WHERE any_academic_id=$AnyAcademicId
-			ORDER BY CPE.codi, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
+			ORDER BY CPE.codi, CPE.cicle_pla_estudi_id, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
 		";
 	}
 }
@@ -984,7 +985,7 @@ class ProfessorsAssignacioUF extends Form
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, "Assignació d'unitats formatives");
 		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
-		echo '<script language="javascript" src="js/Professor.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Professor.js?v1.2" type="text/javascript"></script>';
 		echo $this->GeneraFiltre();
 		echo '<P>';
 		echo $this->GeneraAcordio();
@@ -1016,12 +1017,12 @@ class ProfessorsAssignacioUF extends Form
 			$Cicles = new stdClass();
 			$i = -1; 
 			$j = 0;
-			$CicleFormatiuId = -1;
+			$CiclePlaEstudiId = -1;
 			$row = $ResultSet->fetch_assoc();
 			$NomProfessor = utf8_encodeX($row["NomProfessor"]." ".$row["Cognom1Professor"]." ".$row["Cognom2Professor"]);
 			while($row) {
-				if ($row["CicleFormatiuId"] != $CicleFormatiuId) {
-					$CicleFormatiuId = $row["CicleFormatiuId"];
+				if ($row["cicle_pla_estudi_id"] != $CiclePlaEstudiId) {
+					$CiclePlaEstudiId = $row["cicle_pla_estudi_id"];
 					$i++;
 					$Cicles->CF[$i] = $row;
 					$j = 0; 
@@ -1039,15 +1040,16 @@ class ProfessorsAssignacioUF extends Form
 
 			for($i = 0; $i < count($Cicles->CF); $i++) {
 				$row = $Cicles->CF[$i];
+				$CodiCF = $row['CodiCF'].$row['cicle_pla_estudi_id'];
 				$sRetorn .= '  <div class="card">';
-				$sRetorn .= '    <div class="card-header" id="'.$row['CodiCF'].'">';
+				$sRetorn .= '    <div class="card-header" id="'.$CodiCF.'">';
 				$sRetorn .= '      <h5 class="mb-0">';
-				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$row['CodiCF'].'" aria-expanded="true" aria-controls="collapse'.$row['CodiCF'].'">';
+				$sRetorn .= '        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse'.$CodiCF.'" aria-expanded="true" aria-controls="collapse'.$CodiCF.'">';
 				$sRetorn .= utf8_encodeX($row['NomCF']);
 				$sRetorn .= '        </button>';
 				$sRetorn .= '      </h5>';
 				$sRetorn .= '    </div>';
-				$sRetorn .= '    <div id="collapse'.$row['CodiCF'].'" class="collapse" aria-labelledby="'.$row['CodiCF'].'" data-parent="#accordionExample">';
+				$sRetorn .= '    <div id="collapse'.$CodiCF.'" class="collapse" aria-labelledby="'.$CodiCF.'" data-parent="#accordionExample">';
 				$sRetorn .= '      <div class="card-body">';
 
 				$sRetorn .= '<TABLE class="table table-striped table-sm table-hover">';
@@ -1067,9 +1069,9 @@ class ProfessorsAssignacioUF extends Form
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]);
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["nivell"]).')';
 					if ($this->Usuari->es_admin)
-						$sRetorn .= " (".$row["unitat_pla_estudi_id"].")";
+						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
 					$Checked = ($row["ProfessorUFId"] > 0)? ' checked ' : '';
 					$Nom = 'chbUFId_'.$row["unitat_pla_estudi_id"].'_'.$this->ProfessorId;
@@ -1110,7 +1112,7 @@ class ProfessorsAssignacioUF extends Form
 			LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id AND PUF.professor_id=$ProfessorId) 
 			LEFT JOIN USUARI U ON (U.usuari_id=$ProfessorId) 
 			WHERE any_academic_id=$AnyAcademicId
-			ORDER BY CPE.codi, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
+			ORDER BY CPE.codi, CPE.cicle_pla_estudi_id, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
 		";
 	}
 }
@@ -1121,21 +1123,21 @@ class ProfessorsAssignacioUF extends Form
 class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 {
 	/**
-	* Codi del cicle del pla d'estudi.
-	* @var integer
-	*/    
-    public $CodiCiclePlaEstudi = 'APD'; 
-	
+	 * Identificador del cicle del pla d'estudi.
+	 * @var integer
+	 */    
+    public $CiclePlaEstudiId = -1; 
+
 	/**
-	* Array que emmagatzema les dades dels professors.
-	* @var array
-	*/
+	 * Array que emmagatzema les dades dels professors.
+	 * @var array
+	 */
     private $ProfessorUF = [];
 
 	/**
-	* Array associatiu que emmagatzema els professors i les UF que fan.
-	* @var array
-	*/
+	 * Array associatiu que emmagatzema els professors i les UF que fan.
+	 * @var array
+	 */
     private $ProfessorUFAssoc = [];
 
 	/**
@@ -1145,15 +1147,15 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		$Retorn = '';
 		
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-//		$this->AnyAcademicId = $aAnys[0][0]; 
 		$this->AnyAcademicId = $this->Sistema->any_academic_id;
 		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 
-		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, codi FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "codi");
-		$Retorn .= $this->CreaLlista('CPE.codi', 'Cicle', 100, 
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY nom', "cicle_pla_estudi_id", "nom");
+		$this->CiclePlaEstudiId = $aCicles[0][0];
+		$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
+			$aCicles[0], 
 			$aCicles[1], 
-			$aCicles[1], 
-			$this->CodiCiclePlaEstudi, 
+			$aCicles[0][0], 
 			'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		return $Retorn;
 	}
@@ -1165,10 +1167,10 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 	 * @return string Sentència SQL.
 	 */
 	protected function CreaSQL(int $ProfessorId, int $AnyAcademicId): string {
-		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
+		$CiclePlaEstudiId = $this->CiclePlaEstudiId;
 		return "
 			SELECT 
-				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.unitat_formativa_id AS UnitatFormativaId, 
+				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.unitat_formativa_id AS UnitatFormativaId, UPE.nivell AS Nivell,
 				MPE.codi AS CodiMP, MPE.nom AS NomMP, 
 				CPE.nom AS NomCF, CPE.cicle_formatiu_id AS CicleFormatiuId, CPE.codi AS CodiCF, 
 				UPE.*, MPE.*, CPE.* 
@@ -1176,10 +1178,33 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
 			WHERE any_academic_id=$AnyAcademicId
-			AND LEFT(CPE.codi, 3)='$CodiCiclePlaEstudi'
+			AND CPE.cicle_pla_estudi_id=$CiclePlaEstudiId
 			ORDER BY CPE.codi, MPE.codi, UPE.codi
 		";
 	}
+	
+	private function WhereProfessorsCodiCicle($CiclePlaEstudiId): string {
+		$SQL = "
+			SELECT codi 
+			FROM CICLE_FORMATIU 
+			WHERE familia_fp_id IN (
+				SELECT CF.familia_fp_id
+				FROM CICLE_PLA_ESTUDI CPE
+				LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
+				WHERE CPE.cicle_pla_estudi_id=$CiclePlaEstudiId
+			)		
+		";
+		$aCodiProfessor = DB::CarregaConjuntRegistresAss($this->Connexio, $SQL);
+
+		$Retorn = '';
+		foreach ($aCodiProfessor as $CodiProfessor) {
+			$Retorn .= "LEFT(U.codi, 3)='" . $CodiProfessor['codi'] . "' OR ";
+		}
+		if ($Retorn != '')
+			$Retorn = substr($Retorn, 0, -3);
+		
+		return $Retorn;
+	}	
 
 	/**
 	 * Crea la sentència SQL per obtenir els professors.
@@ -1187,17 +1212,13 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 	 */
 	private function CreaSQLProfessor(): string {
 		$AnyAcademicId = $this->AnyAcademicId;
-		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
-		// Pedaç
-		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB') || ($CodiCiclePlaEstudi == 'IAB'))
-			$CodiCiclePlaEstudi = 'SMX';
-		if ($CodiCiclePlaEstudi == 'FIP')
-			$CodiCiclePlaEstudi = 'CAI';
+		$CiclePlaEstudiId = $this->CiclePlaEstudiId;
+		$WhereProfessorsCodiCicle = $this->WhereProfessorsCodiCicle($CiclePlaEstudiId);
 		return "
 			SELECT 
 				U.usuari_id, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, U.codi 
 			FROM USUARI U
-			WHERE (LEFT(U.codi, 3)='$CodiCiclePlaEstudi' OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')
+			WHERE ($WhereProfessorsCodiCicle OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')
 			AND usuari_bloquejat <> 1
 			ORDER BY U.codi;		
 		";
@@ -1234,12 +1255,8 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 	 */
 	private function CreaSQLProfessorUF(): string {
 		$AnyAcademicId = $this->AnyAcademicId;
-		$CodiCiclePlaEstudi = $this->CodiCiclePlaEstudi;
-		// Pedaç
-		if (($CodiCiclePlaEstudi == 'DAM') || ($CodiCiclePlaEstudi == 'FPB') || ($CodiCiclePlaEstudi == 'IAB'))
-			$CodiCiclePlaEstudi = 'SMX';
-		if ($CodiCiclePlaEstudi == 'FIP')
-			$CodiCiclePlaEstudi = 'CAI';
+		$CiclePlaEstudiId = $this->CiclePlaEstudiId;
+		$WhereProfessorsCodiCicle = $this->WhereProfessorsCodiCicle($CiclePlaEstudiId);
 		return "
 			SELECT 
 				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomCognom1Cognom2, U.codi, 
@@ -1250,7 +1267,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
 			LEFT JOIN USUARI U ON (PUF.professor_id=U.usuari_id) 
 			WHERE any_academic_id=$AnyAcademicId
-			AND (LEFT(U.codi, 3)='$CodiCiclePlaEstudi' OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')			
+			AND ($WhereProfessorsCodiCicle OR LEFT(U.codi, 3)='FOL' OR LEFT(U.codi, 2)='AN')			
 			ORDER BY U.codi;		
 		";
 	}	
@@ -1313,7 +1330,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 				$sRetorn .= "<TH width=300>Mòdul</TH>";
 				$sRetorn .= "<TH width=300>Unitat formativa</TH>"; 
 				foreach ($this->ProfessorUF as $PUF) {
-					$sRetorn .= '<TH width=40 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$PUF->Nom.'">'.$PUF->Codi.'</TH>'; 
+					$sRetorn .= '<TH width=40 class="small" style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$PUF->Nom.'">'.$PUF->Codi.'</TH>'; 
 				}
 				$sRetorn .= '</thead>';
 				$ModulAnterior = '';
@@ -1331,7 +1348,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 						$sRetorn .= "<TD width=300></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD width=300>".utf8_encodeX($row["NomUF"]);
+					$sRetorn .= "<TD width=300>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["Nivell"]).')';
 					if ($this->Usuari->es_admin)
 						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
