@@ -446,6 +446,7 @@ class Menu
 			$Retorn .= Menu::Opcio('Unitats formatives', 'FPRecerca.php?accio=UnitatsFormativesCF');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::ObreSubMenu("Plans d'estudis");
+			$Retorn .= Menu::Opcio("Pla d'estudis", 'FPRecerca.php?accio=PlaEstudisCicleRecerca');
 			$Retorn .= Menu::Opcio("Pla d'estudis per any", 'FPRecerca.php?accio=PlaEstudisAny');
 			$Retorn .= Menu::Opcio("Pla d'estudis per cicle", 'FPRecerca.php?accio=PlaEstudisCicle');
 			$Retorn .= Menu::Opcio("Unitats formatives del pla d'estudis", 'FPRecerca.php?accio=PlaEstudisUnitat');

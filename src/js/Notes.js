@@ -118,6 +118,17 @@ function MostraConvocatoriesAnteriors(obj) {
 }
 
 /**
+ * MostraAlumnesUFPendents
+ * Mostra/Oculta els alumnes que ho tenen UF Pendents i estan matriculats.
+ * @param obj Objecte que ha provocat la crida.
+ */
+function MostraAlumnesUFPendents(obj,id) {
+	// Seleccionem els alumnes que ho tenen UF Pendents i estan matriculats.
+	var tr = $('tr.NoAprovat100');
+	(obj.checked) ? tr.hide() : tr.show();
+}
+
+/**
  * MostraGrup
  * Mostra/Oculta els alumnes d'un grup
  * @param obj Objecte que ha provocat la crida.

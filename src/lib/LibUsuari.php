@@ -857,7 +857,7 @@ class ProfessorsUF extends Form
 					else 
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
-					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"])."</TD>";
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["nivell"]).')'."</TD>";
 					$sRetorn .= "<TD>".$NomComplet."</TD>";
 					$sRetorn .= "</TR>";
 				}
@@ -1069,9 +1069,9 @@ class ProfessorsAssignacioUF extends Form
 						$sRetorn .= "<TD></TD>";
 					$ModulAnterior = $row["CodiMP"];
 
-					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]);
+					$sRetorn .= "<TD>".utf8_encodeX($row["NomUF"]).' ('.Ordinal($row["nivell"]).')';
 					if ($this->Usuari->es_admin)
-						$sRetorn .= " (".$row["unitat_pla_estudi_id"].")";
+						$sRetorn .= " [".$row["unitat_pla_estudi_id"]."]";
 					$sRetorn .= "</TD>";
 					$Checked = ($row["ProfessorUFId"] > 0)? ' checked ' : '';
 					$Nom = 'chbUFId_'.$row["unitat_pla_estudi_id"].'_'.$this->ProfessorId;

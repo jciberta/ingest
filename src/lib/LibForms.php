@@ -769,6 +769,7 @@ class Filtre
 		$Retorn .= '<!-- INICI Filtre -->'.PHP_EOL;
 		$Retorn .= '<DIV id=filtre>'.PHP_EOL;
 		foreach($this->Camps as $Valor) {
+			$Retorn .= '&nbsp;&nbsp;';
 			switch ($Valor->Tipus) {
 				case Form::tcESPAI:
 					break;

@@ -52,7 +52,7 @@ switch ($accio) {
 		if ($NomesLectura)
 			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Edició famílies';
 		$frm->Taula = 'FAMILIA_FP';
 		$frm->ClauPrimaria = 'familia_fp_id';
@@ -67,7 +67,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php");
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Edició CF';
 		$frm->Taula = 'CICLE_FORMATIU';
 		$frm->ClauPrimaria = 'cicle_formatiu_id';
@@ -88,7 +88,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php");
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Edició MP';
 		$frm->Taula = 'MODUL_PROFESSIONAL';
 		$frm->ClauPrimaria = 'modul_professional_id';
@@ -111,7 +111,7 @@ switch ($accio) {
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php");
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = "Edició MP Pla d'estudis";
 		$frm->Taula = 'MODUL_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
@@ -133,7 +133,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 		
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		$Professor->CarregaUFAssignades();
 		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
@@ -143,7 +143,7 @@ switch ($accio) {
 		if ($NomesLectura)
 			array_push($Opcions, FormFitxa::offNOMES_LECTURA);
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Edició UF';
 		$frm->Taula = 'UNITAT_FORMATIVA';
 		$frm->ClauPrimaria = 'unitat_formativa_id';
@@ -161,12 +161,12 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		$Professor->CarregaUFAssignades();
 		if (!$Professor->TeUF($Id) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");
 		
-		$frm = new PlaEstudisUnitatFitxa($conn, $Usuari);
+		$frm = new PlaEstudisUnitatFitxa($conn, $Usuari, $Sistema);
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;
@@ -183,7 +183,7 @@ switch ($accio) {
 		else
 			header("Location: Surt.php");
 		
-		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari);
+		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari, $Sistema);
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;
@@ -195,7 +195,16 @@ switch ($accio) {
 		if (!$PermisLectura)
 			header("Location: Surt.php");
 
-		$frm = new ProgramacioDidactica($conn, $Usuari);
+		$frm = new ProgramacioDidactica($conn, $Usuari, $Sistema);
+		$frm->Id = $Id;
+		$frm->EscriuHTML();
+        break;
+    case "PlaEstudisCicleFitxa":
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Permis = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		if (!$Permis)
+			header("Location: Surt.php");
+		$frm = new PlaEstudisCicleFitxa($conn, $Usuari, $Sistema);
 		$frm->Id = $Id;
 		$frm->EscriuHTML();
         break;
@@ -216,7 +225,7 @@ switch ($accio) {
 		$frm->AfegeixReal('preu', 'Preu', 20, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixEnter('numero_uf', 'Número UF', 20, [FormFitxa::offREQUERIT]);
 		$frm->EscriuHTML();
-        break;
+		break;
 }
 
 ?>
