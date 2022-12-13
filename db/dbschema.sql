@@ -1079,7 +1079,16 @@ END //
 DELIMITER ;
 
 
-DELIMITER //
+DELIMITER //CREATE DEFINER=`root`@`localhost` TRIGGER `AU_ActualitzaHoresMPE` AFTER UPDATE ON `UNITAT_PLA_ESTUDI` FOR EACH ROW BEGIN
+IF OLD.hores <> new.hores THEN
+ SET @new_hores = NEW.hores;
+ SET @old_hores = OLD.hores;
+ SET @old_modul_pla_estudi_id = OLD.modul_pla_estudi_id;
+ SET @old_unitat_pla_estudi_id = OLD.unitat_pla_estudi_id;
+ UPDATE `MODUL_PLA_ESTUDI` SET `hores` = (SELECT SUM(hores) FROM UNITAT_PLA_ESTUDI WHERE modul_pla_estudi_id = @old_modul_pla_estudi_id)  WHERE (`modul_pla_estudi_id` = @old_modul_pla_estudi_id);
+ INSERT INTO ZECHO_LOG (categoria,detall_categoria,descripcio,datal) VALUES ('TRIGGER','UNITAT_PLA_ESTUDI_AFTER_UPDATE',CONCAT('UpdateHoresUPEid:',@old_unitat_pla_estudi_id,':',@new_hores,'->',@old_hores),NOW());
+END IF;
+END
 CREATE TRIGGER AU_CopiaTrimestre AFTER UPDATE ON CURS FOR EACH ROW
 BEGIN
     IF NEW.trimestre = 2 AND OLD.trimestre = 1 THEN
@@ -1098,5 +1107,19 @@ BEGIN
         INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
             VALUES (1, 'Taula CURS', now(), '127.0.0.1', 'Trigger', CONCAT('Pas del 3r trimestre a extraordinària. curs_id=', OLD.curs_id));
     END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` TRIGGER `AU_ActualitzaHoresMPE` AFTER UPDATE ON `UNITAT_PLA_ESTUDI` FOR EACH ROW BEGIN
+IF OLD.hores <> new.hores THEN
+ SET @new_hores = NEW.hores;
+ SET @old_hores = OLD.hores;
+ SET @old_modul_pla_estudi_id = OLD.modul_pla_estudi_id;
+ SET @old_unitat_pla_estudi_id = OLD.unitat_pla_estudi_id;
+ UPDATE `MODUL_PLA_ESTUDI` SET `hores` = (SELECT SUM(hores) FROM UNITAT_PLA_ESTUDI WHERE modul_pla_estudi_id = @old_modul_pla_estudi_id)  WHERE (`modul_pla_estudi_id` = @old_modul_pla_estudi_id);
+ INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
+	VALUES (1,'Taula UNITAT_PLA_ESTUDI',NOW(),'127.0.0.1','Trigger', CONCAT('AU_ActualitzaHoresMPE RegistreId:',@old_unitat_pla_estudi_id,' Valor:',@new_hores,'->',@old_hores));
+END IF;
 END //
 DELIMITER ;
