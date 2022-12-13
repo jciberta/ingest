@@ -8,7 +8,7 @@ CREATE TABLE PREU_MATRICULA
     preu_matricula_id INT NOT NULL AUTO_INCREMENT,
     any_academic_id INT NOT NULL,
     cicle_formatiu_id INT NOT NULL,
-    nivell INT CHECK (nivell IN (1, 2)),
+    nivell INT CHECK (nivell IN (0, 1, 2)),
     nom VARCHAR(20) NOT NULL,
     preu REAL NOT NULL,
     numero_uf INT NOT NULL,
