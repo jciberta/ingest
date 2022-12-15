@@ -24,7 +24,7 @@ Dues carpetes principals:
 ```
 sudo apt update && sudo apt upgrade -y
 sudo apt install openssh-server zip
-sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-zip php-curl php-xml php-mbstring msttcorefonts
+sudo apt install apache2 mysql-server php libapache2-mod-php php-mysql php-cli php-zip php-curl php-xml php-gd php-mbstring msttcorefonts
 
 sudo mysql
 ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'XXX';
