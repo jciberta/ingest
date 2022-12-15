@@ -138,6 +138,7 @@ CREATE TABLE SISTEMA
 	nom VARCHAR(100), /* Nom institut */ 
 	any_academic_id INT NOT NULL,
     director_id INT NOT NULL,
+    versio_db VARCHAR(5),
 	
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id)		
