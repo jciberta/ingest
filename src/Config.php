@@ -19,7 +19,7 @@ class Config {
 	const Demo           = False;
 	const Manteniment    = False;
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
-	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
+	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const UsaDataTables  = True;
@@ -29,11 +29,9 @@ class Config {
 
 // Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació UTF8)
 function utf8_encodeX($Text) {
-	//return utf8_encode($Text);
 	return $Text;
 }
 function utf8_decodeX($Text) {
-	//return utf8_decode($Text);
 	return $Text;
 }
 
