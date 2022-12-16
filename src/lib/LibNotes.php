@@ -1144,7 +1144,7 @@ class Notes extends Form
 		$this->CursId = $CursId;
 		
 		$SQL = $this->CreaSQL($CursId, $Nivell);
-print_r($SQL);	
+//print_r($SQL);	
 		$ResultSet = $this->Connexio->query($SQL);
 		if (!$ResultSet)
 			die("<b>ERROR</b>. SQL: ".$SQL); 
