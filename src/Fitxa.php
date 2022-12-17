@@ -314,6 +314,12 @@ switch ($accio) {
 		$ReservaMaterial->Id = $Id;
 		$ReservaMaterial->EscriuFormulariFitxa();
         break;
+    case "PerfilAlumne":
+		if (!$Usuari->es_alumne)
+			header("Location: Surt.php");
+		$Alumne = new Alumne($conn, $Usuari, $Sistema);
+		$Alumne->Perfil();
+        break;
 	case "Altre":
         break;
 }

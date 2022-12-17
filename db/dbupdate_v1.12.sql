@@ -2,6 +2,26 @@
 Actualització de la DB a partir de la versió 1.12
 */
 
+CREATE TABLE BORSA_TREBALL
+(
+    /* BT */
+    borsa_treball_id INT NOT NULL AUTO_INCREMENT,
+    cicle_formatiu_id INT NOT NULL,
+    data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    empresa VARCHAR(100) NOT NULL,
+    contacte VARCHAR(100),	
+    telefon VARCHAR(25),  
+    poblacio VARCHAR(120),
+    email VARCHAR(100), 
+    web VARCHAR(100), 
+	decripcio TEXT,
+    ip VARCHAR(15),
+	publicat BIT NOT NULL DEFAULT 0,
+	
+    CONSTRAINT BorsaTreballPK PRIMARY KEY (borsa_treball_id),
+    CONSTRAINT BT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
+)
+
 CREATE TABLE PREU_MATRICULA 
 (
     /* PM */
@@ -33,7 +53,9 @@ CREATE TABLE BONIFICACIO_MATRICULA
     CONSTRAINT BM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+ALTER TABLE SISTEMA ADD gestor_borsa_treball_id INT;
 ALTER TABLE SISTEMA ADD versio_db VARCHAR(5);
+ALTER TABLE USUARI ADD inscripcio_borsa_treball BIT NOT NULL DEFAULT 1;
 
 
 DELIMITER //
@@ -51,4 +73,4 @@ END //
 DELIMITER ;
 
 
-UPDATE SISTEMA SET versio_db='1.12';
+UPDATE SISTEMA SET versio_db='1.13';

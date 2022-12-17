@@ -99,6 +99,7 @@ CREATE TABLE USUARI
     es_alumne          BIT NOT NULL DEFAULT 0,
     es_pare            BIT NOT NULL DEFAULT 0,
     permet_tutor       BIT NOT NULL DEFAULT 0,
+	inscripcio_borsa_treball BIT NOT NULL DEFAULT 1,
     titol_angles       VARCHAR(5),
     perfil_aicle       BIT DEFAULT 0,
     imposa_canvi_password BIT,
@@ -138,6 +139,7 @@ CREATE TABLE SISTEMA
 	nom VARCHAR(100), /* Nom institut */ 
 	any_academic_id INT NOT NULL,
     director_id INT NOT NULL,
+    gestor_borsa_treball_id INT,
     versio_db VARCHAR(5),
 	
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
@@ -548,6 +550,26 @@ CREATE TABLE RESERVA_MATERIAL
 	CONSTRAINT RM_MaterialFK FOREIGN KEY (material_id) REFERENCES MATERIAL(material_id),
     CONSTRAINT RM_UsuariFK FOREIGN KEY (usuari_id) REFERENCES USUARI(usuari_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE BORSA_TREBALL
+(
+    /* BT */
+    borsa_treball_id INT NOT NULL AUTO_INCREMENT,
+    cicle_formatiu_id INT NOT NULL,
+    data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    empresa VARCHAR(100) NOT NULL,
+    contacte VARCHAR(100),	
+    telefon VARCHAR(25),  
+    poblacio VARCHAR(120),
+    email VARCHAR(100), 
+    web VARCHAR(100), 
+	decripcio TEXT,
+    ip VARCHAR(15),
+	publicat BIT NOT NULL DEFAULT 0,
+	
+    CONSTRAINT BorsaTreballPK PRIMARY KEY (borsa_treball_id),
+    CONSTRAINT BT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
+)
 
 CREATE TABLE PREU_MATRICULA 
 (

@@ -505,6 +505,9 @@ class Menu
 		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">'.PHP_EOL;
 		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
 //		$Retorn .= Menu::Separador();
+		if ($Usuari->es_alumne) {
+			$Retorn .= Menu::Opcio('Perfil', 'Fitxa.php?accio=PerfilAlumne');
+		}
 		if ($Usuari->es_cap_estudis) {
 			$Retorn .= Menu::Opcio('Canvia a professor', 'Canvia.php?accio=CanviaRolAProfessor');
 		}

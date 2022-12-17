@@ -192,6 +192,7 @@ class Usuari extends Objecte
 		if ($this->Registre->es_alumne) {
 			$frm->Pestanya('Expedient');
 			$frm->AfegeixHTML($this->Matricules($UsuariId), 'Matrícules');
+			$frm->AfegeixCheckBox('inscripcio_borsa_treball', "Inscripció borsa treball");
 		}
 		if ($this->Registre->es_pare) {
 			$frm->Pestanya('Fills');
@@ -1554,7 +1555,24 @@ class Alumne extends Usuari
 		}		
 		return $bRetorn;
 	}
-	
+
+	/**
+	 * Genera i escriu la fitxa del perfil de l'alumne.
+	 */
+	public function Perfil() {
+		$frm = new FormFitxa($this->Connexio, $this->Usuari);
+		$frm->Titol = 'Perfil';
+		$frm->Taula = 'USUARI';
+		$frm->ClauPrimaria = 'usuari_id';
+		$frm->Id = $this->Usuari->usuari_id;
+		$frm->AfegeixText('username', 'Usuari', 100, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('nom', 'Nom', 100, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('cognom1', '1r cognom', 100, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('cognom2', '2n cognom', 100, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('email', 'Correu electrònic', 100);
+		$frm->AfegeixCheckBox('inscripcio_borsa_treball', "Inscripció borsa treball");
+		$frm->EscriuHTML();
+	}		
 }
 
 /**
