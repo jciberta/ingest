@@ -23,7 +23,7 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+if (!$Usuari->es_admin && !$Usuari->era_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
 
 RecuperaGET($_GET);
@@ -41,12 +41,12 @@ switch ($accio) {
 			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Titol = "Usuaris";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, usuari_bloquejat '.
+		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, es_alumne, es_professor, es_pare, usuari_bloquejat '.
 			' FROM USUARI ORDER BY cognom1, cognom2, nom';
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
-		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi';
-		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi';
+		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi, bool:es_alumne, bool:es_professor, bool:es_pare';
+		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Correu, Correu INS, Codi, Alumne, Professor, Pare';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->AfegeixOpcio('Canvia', 'Canvia.php?accio=CanviaAUsuari&Id=');
@@ -69,11 +69,21 @@ switch ($accio) {
 		$ResultSet = $conn->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$user = $ResultSet->fetch_object();
+			$user->era_admin = ($Usuari->es_admin == 1) ? 1 : 0;
+			if ($user->era_admin) 
+				$user->admin = $Usuari;
 			$_SESSION['USUARI'] = serialize($user);
 			header("Location: Escriptori.php");
 		}
 		else 
 			header("Location: Surt.php");
+		break;
+	case "TornaAAdmin":
+		if (!$Usuari->era_admin)
+			header("Location: Surt.php");
+		$user = $Usuari->admin;
+		$_SESSION['USUARI'] = serialize($user);
+		header("Location: Escriptori.php");
 		break;
 }
 

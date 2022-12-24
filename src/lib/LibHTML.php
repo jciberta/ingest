@@ -520,6 +520,9 @@ class Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}
+		if (property_exists($Usuari, 'era_admin') && $Usuari->era_admin) {
+			$Retorn .= Menu::Opcio('Torna a admin', 'Canvia.php?accio=TornaAAdmin');
+		}
 		$Retorn .= Menu::Separador();
 		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
 		$Retorn .= Menu::Tanca();
