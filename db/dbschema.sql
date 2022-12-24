@@ -571,6 +571,25 @@ CREATE TABLE BORSA_TREBALL
     CONSTRAINT BT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
 )
 
+CREATE TABLE OBJECTIU_CONTINGUT
+(
+    /* OC LOGSE
+       Objectius terminals (O)
+       Continguts de fets, conceptes i sistemes conceptuals (F)
+       Continguts de procediments (P)
+       Continguts d'actituds (A)
+       Activitats formatives (M)
+       Criteris d'avaluació (V)
+    */
+    objectiu_contingut_id INT NOT NULL,
+    modul_professional_id INT NOT NULL,
+    tipus CHAR(1) NOT NULL CHECK (tipus IN ('O', 'F', 'P', 'A', 'M', 'V')),
+    descripcio VARCHAR(500) NOT NULL,
+
+    CONSTRAINT ObjectiuContingutPK PRIMARY KEY (objectiu_contingut_id),
+    CONSTRAINT OC_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE PREU_MATRICULA 
 (
     /* PM */
