@@ -569,7 +569,7 @@ CREATE TABLE BORSA_TREBALL
 	
     CONSTRAINT BorsaTreballPK PRIMARY KEY (borsa_treball_id),
     CONSTRAINT BT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE OBJECTIU_CONTINGUT
 (

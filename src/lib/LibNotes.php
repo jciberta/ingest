@@ -1708,7 +1708,8 @@ class Notes extends Form
 		
 		$Registre = ($Nivell == 1) ? $this->Registre1->Alumne : $this->Registre2->Alumne;
 		
-		
+//print_h($Registre);
+//exit;		
 		for($i = 0; $i < count($Registre); $i++) {
 			$row = $Registre[$i];
 			
@@ -1776,7 +1777,10 @@ class Notes extends Form
 		$Retorn .= "<TR><TD>Repetidors</TD><TD $style>".$ec->NumeroRepetidors."</TD><TD $style>".number_format($ec->NumeroRepetidors/$ec->NumeroAlumnes*100, 2)."%</TD></TR>";
 		$Retorn .= "<TR><TD>Total UF's</TD><TD $style>".$ec->UFTotals."</TD><TD $style>100%</TD></TR>";
 //echo "ec->UFTotals: ".$ec->UFTotals."<br>";		
-		$Retorn .= "<TR><TD>UF's avaluades</TD><TD $style>".$ec->UFFetes."</TD><TD $style>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."%</TD></TR>";
+
+		$Pecentatge = ($ec->UFTotals == 0) ? '-' : number_format($ec->UFFetes/$ec->UFTotals*100, 2).'%';
+		$Retorn .= "<TR><TD>UF's avaluades</TD><TD $style>".$ec->UFFetes."</TD><TD $style>$Pecentatge</TD></TR>";
+//		$Retorn .= "<TR><TD>UF's avaluades</TD><TD $style>".$ec->UFFetes."</TD><TD $style>".number_format($ec->UFFetes/$ec->UFTotals*100, 2)."</TD></TR>";
 		//$Retorn .= "<TR><TD>&nbsp;</TD><TD></TD></TR>";
 
 		$Retorn .= "<TR><TD></TD><TD $style>Alumnes</TD><TD $style>%</TD></TR>";
