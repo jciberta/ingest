@@ -484,6 +484,7 @@ class Menu
 			// Menú Secretaria
 			$Retorn .= Menu::Obre('Secretaria');
 			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
+			$Retorn .= Menu::Opcio('Bonificacions matrícula', 'FPRecerca.php?accio=BonificacioMatricula');
 			$Retorn .= Menu::Tanca();
 
 			// Menú Informes

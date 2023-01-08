@@ -188,6 +188,29 @@ switch ($accio) {
 
 		$frm->EscriuHTML();
         break;
+	case "BonificacioMatricula":
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Bonificacions matrícula';
+		$frm->SQL = "
+			SELECT 
+				BM.*,
+				UF.nom AS NomUF
+			FROM BONIFICACIO_MATRICULA BM
+			LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=BM.unitat_formativa_id)
+		";
+		$frm->Taula = 'BONIFICACIO_MATRICULA';
+		$frm->ClauPrimaria = 'bonificacio_matricula_id';
+		$frm->Camps = 'nom, valor, tipus, NomUF';
+		$frm->Descripcions = 'Nom, Valor, Tipus, Unitat formativa';
+		$frm->URLEdicio = 'FPFitxa.php?accio=BonificacioMatricula';
+		$frm->PermetEditar = ($Usuari->es_admin);
+		$frm->PermetAfegir = ($Usuari->es_admin);
+		$frm->PermetSuprimir = ($Usuari->es_admin);
+		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		$frm->EscriuHTML();
+        break;
 }
 
 ?>

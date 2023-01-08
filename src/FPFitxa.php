@@ -226,6 +226,23 @@ switch ($accio) {
 		$frm->AfegeixEnter('numero_uf', 'Número UF', 20, [FormFitxa::offREQUERIT]);
 		$frm->EscriuHTML();
 		break;
+	case "BonificacioMatricula":
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Permis = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
+		if (!$Permis)
+			header("Location: Surt.php");
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
+		$frm->Titol = 'Edició bonificacions matrícula';
+		$frm->Taula = 'BONIFICACIO_MATRICULA';
+		$frm->ClauPrimaria = 'bonificacio_matricula_id';
+		$frm->Id = $Id;
+		$frm->AfegeixLookup('any_academic_id', 'Any acadèmic', 200, 'Recerca.php?accio=AnyAcademic', 'ANY_ACADEMIC', 'any_academic_id', 'any_inici, any_final', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixReal('valor', 'Valor', 20, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLlista('tipus', 'Tipus', 30, array('P', 'E'), array('Percentatge', 'Euro'), [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLookup('unitat_formativa_id', 'Unitat formativa', 200, 'FPRecerca.php?accio=UnitatsFormativesCF', 'UNITAT_FORMATIVA', 'unitat_formativa_id', 'nom', [FormFitxa::offREQUERIT]);
+		$frm->EscriuHTML();
+		break;
 }
 
 ?>
