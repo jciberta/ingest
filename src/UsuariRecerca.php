@@ -14,6 +14,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibCurs.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -266,6 +267,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "UltimLogin":
+		// Visible per: admin, direcció, cap d'estudis i tutors (només el seu curs)
 		$NomesProfessor = ($Usuari->es_professor && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis);			
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
@@ -274,19 +276,26 @@ switch ($Accio) {
 		$Where = ($CursId > 0) ? ' AND C.curs_id='.$CursId : '';
 		if ($NomesProfessor)			
 			$Where .= ' AND C.curs_id IN ( '.
+			' SELECT DISTINCT C.curs_id FROM TUTOR T '.
+			' LEFT JOIN CURS C ON (C.curs_id=T.curs_id) '.
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
+			' WHERE T.professor_id='.$Usuari->usuari_id.
+			' AND CPE.any_academic_id='.$Sistema->any_academic_id.
+			' ) ';
+/*			$Where .= ' AND C.curs_id IN ( '.
 			' SELECT DISTINCT C.curs_id FROM PROFESSOR_UF PUF '.
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
 			' WHERE professor_id='.$Usuari->usuari_id.		
-			' ) ';
+			' ) '; */
 		$SQL = ' SELECT '.
 			' 	U.usuari_id AS UsuariId, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS NomAlumne, U.username, '.
 			' 	Edat(U.data_naixement) AS edat, U.data_ultim_login AS UltimLoginAlumne, '.
 			' 	UP.username AS NIFPare, FormataCognom1Cognom2Nom(UP.nom, UP.cognom1, UP.cognom2) AS NomResp1, UP.data_ultim_login AS UltimLoginPare,'.
 			' 	UM.username AS NIFMare, FormataCognom1Cognom2Nom(UM.nom, UM.cognom1, UM.cognom2) AS NomResp2, UM.data_ultim_login AS UltimLoginMare,'.
-			' 	M.matricula_id, M.grup, '.
+			' 	M.matricula_id, M.grup_tutoria, '.
 			' 	C.codi, C.curs_id AS CursId, C.nom AS NomCurs, C.nivell, M.baixa '.
 			' FROM USUARI U '.
 			' LEFT JOIN USUARI UP ON (UP.usuari_id=U.pare_id) '.
@@ -296,13 +305,14 @@ switch ($Accio) {
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE U.es_alumne=1 '.$Where.
-			' AND AA.actual=1 '.
+//			' AND AA.actual=1 '.
+			' AND AA.any_academic_id='.$Sistema->any_academic_id.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
 //print "<br><br><br><br><br>SQL: $SQL";
 		$frm->SQL = $SQL;
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'UsuariId';
-		$frm->Camps = 'NomAlumne, UltimLoginAlumne, edat, codi, nivell, grup, NomResp1, UltimLoginPare, NomResp2, UltimLoginMare';
+		$frm->Camps = 'NomAlumne, UltimLoginAlumne, edat, codi, nivell, grup_tutoria, NomResp1, UltimLoginPare, NomResp2, UltimLoginMare';
 		$frm->Descripcions = 'Alumne, Últim login, Edat, Curs, Nivell, Grup, Nom resp1, Últim login, Nom resp2, Últim login';
 
 		// Filtre
@@ -314,7 +324,10 @@ switch ($Accio) {
 				$frm->Filtre->AfegeixLlista('CursId', 'Curs', 100, $aCurs[0], $aCurs[1]);
 			}
 		}
-		$frm->Filtre->AfegeixLlista('grup', 'Grup', 30, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'));
+		$GrupTutoria = new GrupTutoria($conn, $Usuari, $Sistema);
+		$aGrupTutoria = $GrupTutoria->ObteGrupsAnyActual(); 
+		array_unshift($aGrupTutoria, '');
+		$frm->Filtre->AfegeixLlista('grup_tutoria', 'Grup', 30, $aGrupTutoria, $aGrupTutoria);
 
 		$frm->EscriuHTML();
         break;

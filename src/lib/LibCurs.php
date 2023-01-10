@@ -360,36 +360,8 @@ class Curs extends Objecte
 /**
  * Classe que encapsula les utilitats per al maneig dels grups-classe.
  */
-class GrupClasse 
+class GrupClasse extends Objecte
 {
-	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-	public $Usuari;
-	
-	/**
-	* Registre de la base de dades que conté les dades d'una matrícula.
-	* @var array
-	*/    
-    private $Registre = [];
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn Connexió a la base de dades.
-	 * @param object $user Usuari de l'aplicació.
-	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}
-
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
@@ -401,26 +373,6 @@ class GrupClasse
 			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
-	/**
-	 * Carrega els diferents grups-classe d'un curs i els emmagatzema en l'atribut Registre.
-     * @param int $CursId Identificador del curs.
-	 */
-	/*public function Carrega(int $CursId) {
-		$SQL = " SELECT DISTINCT grup ".
-			" FROM MATRICULA M ".
-			" WHERE curs_id=$CursId ".
-			" ORDER BY grup ";	
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {		
-			$row = $ResultSet->fetch_object();
-			while($row) {
-				if ($row->grup != '')
-					array_push($this->Registre, $row->grup);
-				$row = $ResultSet->fetch_object();
-			}
-		}
-	}*/
 	
 	/**
 	 * Genera un array amb els grups d'un curs.
@@ -476,36 +428,8 @@ class GrupClasse
 /**
  * Classe que encapsula les utilitats per al maneig dels grups de tutoria.
  */
-class GrupTutoria 
+class GrupTutoria extends Objecte
 {
-	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
-	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
-	public $Usuari;
-	
-	/**
-	* Registre de la base de dades que conté les dades d'una matrícula.
-	* @var array
-	*/    
-    private $Registre = [];
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn Connexió a la base de dades.
-	 * @param object $user Usuari de l'aplicació.
-	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}
-
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
@@ -533,12 +457,13 @@ class GrupTutoria
 	 * @return array Grups de l'any actual.
 	 */
 	public function ObteGrupsAnyActual(): array {
+		$AnyAcademicId = $this->Sistema->any_academic_id;
 		$SQL = " 
 			SELECT DISTINCT(grups_tutoria)
 			FROM CURS C
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) 
 			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) 
-			WHERE AA.actual=1 AND grups_tutoria IS NOT NULL
+			WHERE AA.any_academic_id=$AnyAcademicId AND grups_tutoria IS NOT NULL
 			";
 		$Grups = '';
 		$ResultSet = $this->Connexio->query($SQL);
