@@ -707,7 +707,7 @@ class Filtre
 	 * @param array $aCodis Codis de la llista. Per exemple: array(1, 2, 3, 4)
 	 * @param array $aValors Valors de la llista. Per exemple: array("foo", "bar", "hello", "world")
 	 * @param array $off Opcions del formulari.
-	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.
+	 * @param string $CodiSeleccionat Valor del codi per defecte del lookup.!!!!
 	 * @return void
 	 */
 	public function AfegeixLlista(string $camp, string $titol, int $longitud, array $aCodis, array $aValors, array $off = [], $CodiSeleccionat = '') {
@@ -1019,18 +1019,18 @@ class FormRecerca extends Form
 		// Filtre de paraules clau
 		if ($this->FiltreText != '') {
 			$obj = new SQL($sRetorn);
-//print_r('CampAlies: ');
-//print_h($obj->CampAlies);
-//print_r('<hr>');
+print_r('CampAlies: ');
+print_h($obj->CampAlies);
+print_r('<hr>');
 			$sWhere = '';
 			$aFiltreText = explode(" ", TrimX($this->FiltreText));
-//print_r('aFiltreText: ');
-//print_h($aFiltreText);
-//print_r('<hr>');
+print_r('aFiltreText: ');
+print_h($aFiltreText);
+print_r('<hr>');
 			$aCamps = explode(",", TrimXX($this->Camps));
-//print_r('aCamps: ');
-//print_h($aCamps);
-//print_r('<hr>');
+print_r('aCamps: ');
+print_h($aCamps);
+print_r('<hr>');
 			foreach ($aFiltreText as $sValor) {
 				$sWhere .= '(';
 				foreach ($aCamps as $sCamp) {

@@ -9,7 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once(ROOT.'/lib/LibForms.php');
+ require_once(ROOT.'/lib/LibForms.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig del tipus de material.
@@ -84,6 +84,21 @@ class Material extends Objecte
 		$frm->ClauPrimaria = 'material_id';
 		$frm->Camps = 'codi, nom, Tipus, Familia, Responsable, ambit, ubicacio, data_compra, bool:es_obsolet';
 		$frm->Descripcions = 'Codi, Nom, Tipus, Familia, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
+		
+		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
+		array_unshift($aTMaterials[0] , '');
+		array_unshift($aTMaterials[1] , 'Tots');
+		$frm->Filtre->AfegeixLlista('TM.tipus_material_id', 'Tipus', 32, $aTMaterials[0], $aTMaterials[1]);
+		$aFamilia = ObteCodiValorDesDeSQL($this->Connexio,'SELECT ffp.familia_fp_id as familiafp_id, ffp.nom as familia from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY familia, familiafp_id', "familiafp_id", "familia");
+		array_unshift($aFamilia[0] , '');
+		array_unshift($aFamilia[1] , 'Tots');
+		$frm->Filtre->AfegeixLlista('FFP.familia_fp_id', 'Familia', 50, $aFamilia[0], $aFamilia[1]);
+		$aResponsable = ObteCodiValorDesDeSQL($this->Connexio,'SELECT u.usuari_id as responsable_id, concat(u.nom," ",u.cognom1," ",u.cognom2) as responsable from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY responsable, responsable_id', "responsable_id", "responsable");
+		array_unshift($aResponsable[0] , '');
+		array_unshift($aResponsable[1] , 'Tots');
+		$frm->Filtre->AfegeixLlista('U.usuari_id', 'Responsable', 60, $aResponsable[0], $aResponsable[1]);
+		$frm->Filtre->AfegeixLlista('M.es_obsolet', 'Obsolet', 15, array('', '0', '1'), array('Tots', 'No', 'Si'));
+
 		if ($this->Usuari->es_admin) {
 			$frm->PermetEditar = true;
 			$frm->URLEdicio = 'Fitxa.php?accio=Material';
@@ -100,7 +115,9 @@ class Material extends Objecte
 	 */
 	private function CreaSQL() {
 		$SQL = "
-			SELECT 				M.material_id, M.codi AS codi, M.nom AS nom, M.ambit, M.ubicacio, M.data_compra, M.es_obsolet, 				TM.nom AS Tipus, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS Responsable, FFP.nom AS Familia
+			SELECT 
+				M.material_id, M.codi AS codi, M.nom AS nom, M.ambit, M.ubicacio, M.data_compra, M.es_obsolet, 
+				TM.nom AS Tipus, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS Responsable, FFP.nom AS Familia
 			FROM MATERIAL M 
 			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id) 
 			LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=M.familia_fp_id) 
