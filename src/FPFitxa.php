@@ -195,8 +195,11 @@ switch ($accio) {
 		if (!$PermisLectura)
 			header("Location: Surt.php");
 
-		$frm = new ProgramacioDidactica($conn, $Usuari, $Sistema);
-		$frm->Id = $Id;
+//		$frm = new ProgramacioDidactica($conn, $Usuari, $Sistema);
+//		$frm->Id = $Id;
+
+		$frm = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $Id);
+
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisCicleFitxa":

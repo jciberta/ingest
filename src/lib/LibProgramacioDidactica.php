@@ -18,9 +18,67 @@ use PhpOffice\PhpWord\Shared\Converter;
 use PhpOffice\PhpWord\Style\TablePosition;
 
 /**
+ * Factoria que genera l'objecte per a la programació didàctica depenent de la llei.
+ */
+class ProgramacioDidacticaFactory
+{
+	public static function Crea($conn, $user, $system, $Id) {
+		$Llei = self::ObteLlei($conn, $Id);
+		switch($Llei) {
+			case "LO":
+				$obj = new ProgramacioDidacticaLOE($conn, $user, $system);
+				break;
+			case "LG":
+				$obj = new ProgramacioDidacticaLOGSE($conn, $user, $system);
+				break;
+			default:
+				throw new Exception("ProgramacioDidacticaFactory: Llei no implementada");
+				break;
+		}
+		$obj->Id = $Id;
+		return $obj;		
+	}
+
+	public static function ObteLlei($conn, $Id) {
+		$SQL = "
+			SELECT CF.llei
+			FROM MODUL_PLA_ESTUDI MPE
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
+			WHERE modul_pla_estudi_id=$Id;
+		";
+		$aConjuntRegistres = DB::CarregaConjuntRegistres($conn, $SQL);
+		return $aConjuntRegistres[0]->llei;
+	}	
+}
+
+/**
+ * Factoria que genera l'objecte per a l'exportació de la programació didàctica en DOCX depenent de la llei.
+ */
+class ProgramacioDidacticaDOCXFactory extends ProgramacioDidacticaFactory
+{
+	public static function Crea($conn, $user, $system, $Id) {
+		$Llei = self::ObteLlei($conn, $Id);
+		switch($Llei) {
+			case "LO":
+				$obj = new ProgramacioDidacticaDOCXLOE($conn, $user, $system);
+				break;
+			case "LG":
+				$obj = new ProgramacioDidacticaDOCXLOGSE($conn, $user, $system);
+				break;
+			default:
+				throw new Exception("ProgramacioDidacticaDOCXFactory: Llei no implementada");
+				break;
+		}
+		$obj->Id = $Id;
+		return $obj;		
+	}
+}
+
+/**
  * Classe que encapsula el formulari de la programació didàctica.
  */
-class ProgramacioDidactica extends Form
+abstract class ProgramacioDidactica extends Form
 {
 	// Estats de la programació didàctica.
 	const epELABORACIO = 'E'; 		// Elaboració
@@ -45,10 +103,12 @@ class ProgramacioDidactica extends Form
 	);
 
 	/**
-	* Identificador del modul del pla d'estudi.
-	* @var integer
-	*/    
+	 * Identificador del modul del pla d'estudi.
+	 * @var integer
+	 */    
     public $Id = -1; 
+
+	abstract protected function GeneraSeccions();
 	
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
@@ -71,15 +131,11 @@ class ProgramacioDidactica extends Form
 		$this->Carrega();
 		echo $this->GeneraTitol();
 		echo '<ARTICLE class="sheet" lang="ca">';
-		echo $this->GeneraSeccio(self::pdESTRATEGIES);
-		echo $this->GeneraSeccio(self::pdCRITERIS);
-		echo $this->GeneraSeccio(self::pdRECURSOS);
-		echo $this->GeneraSeccio(self::pdSEQUENCIACIO);
-		echo $this->GeneraSeccio(self::pdUNITATS);
+		echo $this->GeneraSeccions();
 		echo '</ARTICLE>';
 		CreaFinalHTML();
 	}	
-
+	
 	/**
 	 * Crea la sentència SQL.
 	 * @param integer $ModulPlaEstudiId Identificador del mòdul del pla d'estudis.
@@ -161,7 +217,7 @@ class ProgramacioDidactica extends Form
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	private function GeneraSeccio($SeccioId) {
+	protected function GeneraSeccio($SeccioId) {
 		$sRetorn = "<DIV id=seccio$SeccioId>";
 		$sRetorn .= "<H2>".$SeccioId.". ".self::SECCIO[$SeccioId]."</H2>";
 		switch ($SeccioId) {
@@ -245,7 +301,7 @@ class ProgramacioDidactica extends Form
 		// Es suposa una única taula
 		$rows = $tables->item(0)->getElementsByTagName('tr'); 
 
-		$sRetorn .= "<TABLE BORDER=1'>";
+		$sRetorn .= "<TABLE BORDER=1>";
 		$PrimeraFila = true;
 		$aFiles = [];
 		foreach ($rows as $row) {
@@ -393,7 +449,8 @@ class ProgramacioDidactica extends Form
 	 * @param int $ModulId Identificador del modul del pla d'estudi.
 	 */				
 	public function ExportaDOCX(int $ModulId) {
-		$PDE = new ProgramacioDidacticaDOCX($this->Connexio, $this->Usuari);
+//		$PDE = new ProgramacioDidacticaDOCX($this->Connexio, $this->Usuari);
+		$PDE = ProgramacioDidacticaDOCXFactory::Crea($this->Connexio, $this->Usuari, $this->Sistema, $ModulId);
 		$PDE->EscriuDOCX($ModulId);
 	}	
 	
@@ -429,6 +486,30 @@ class ProgramacioDidactica extends Form
 				return '';
 		}
 	}	
+}
+
+/**
+ * Classe que encapsula el formulari de la programació didàctica LOE.
+ */
+class ProgramacioDidacticaLOE extends ProgramacioDidactica
+{
+	protected function GeneraSeccions() {
+		echo $this->GeneraSeccio(self::pdESTRATEGIES);
+		echo $this->GeneraSeccio(self::pdCRITERIS);
+		echo $this->GeneraSeccio(self::pdRECURSOS);
+		echo $this->GeneraSeccio(self::pdSEQUENCIACIO);
+		echo $this->GeneraSeccio(self::pdUNITATS);	
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de la programació didàctica LOGSE.
+ */
+class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
+{
+	protected function GeneraSeccions() {
+		throw new Exception("ProgramacioDidacticaLOGSE->GeneraSeccions. No implementat");
+	}
 }
 
 /**
@@ -616,8 +697,11 @@ class ProgramacioDidacticaFitxa extends FormRecerca
  * https://github.com/PHPOffice/PHPWord
  * https://phpword.readthedocs.io/en/latest/
  */
-class ProgramacioDidacticaDOCX extends ProgramacioDidactica
+abstract class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 {
+	abstract protected function GeneraSeccionsDOCX($section);
+	protected function GeneraSeccions() {} // No cal implementació.
+
 	/**
 	 * Genera el contingut DOCX de la programació didàctica.
 	 * @param int $ModulId Identificador del modul del pla d'estudi.
@@ -655,7 +739,9 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$this->GeneraPortada($phpWord, $section);
 		$this->GeneraIndex($phpWord, $section);
 
-		$section->addPageBreak();
+		$this->GeneraSeccionsDOCX($section);
+
+/*		$section->addPageBreak();
 		$section->addTextBreak(1);
 		$section->addTitle(self::pdESTRATEGIES.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
 		$html = $this->GeneraSeccioEstrategies();
@@ -682,6 +768,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$section->addTextBreak(1);
 		$section->addTitle(self::pdUNITATS.'. '.self::SECCIO[self::pdUNITATS], 1);
 		$this->GeneraSeccioUnitats($section);
+*/
 
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment;filename="test.docx"');		
@@ -725,7 +812,7 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 	 * @param object $section Secció del document de PHPWord.
 	 * @param string $html Fragment HTML per tractar.
 	 */
-	private function AfegeixHTML(&$section, $html) {
+	protected function AfegeixHTML(&$section, $html) {
 		// https://www.php.net/manual/en/migration70.new-features.php#migration70.new-features.null-coalesce-op
 		$html = $html ?? '';
 		
@@ -787,11 +874,17 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		// https://stackoverflow.com/questions/5645536/issue-with-using-domnode-attributes-with-attributes-that-have-multiple-words-in
 		$taula = str_replace('class=""""', '', $taula);
 //print htmlspecialchars($taula);
-//exit;		
+//exit;	
+
+		// Si hi ha TH, cal passar-los a TR
+		$taula = str_replace('<TH>', '<TD>', $taula);
+		$taula = str_replace('</TH>', '</TD>', $taula);
+	
 		$dom->loadHTML($taula); 
 		$dom->preserveWhiteSpace = false; 
-   
 		$tables = $dom->getElementsByTagName('table'); 
+//print_h($tables);
+//exit;
 
 		// Es suposa una única taula
 		$rows = $tables->item(0)->getElementsByTagName('tr'); 
@@ -810,9 +903,10 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 //print_h($aFiles);
 //exit;
 
-		// Calculem les mides màximes
+		// Calculem les mides màximes de cada columna
 		$aMax = [];
 		for($j=0; $j<count($aFiles[0]); $j++) {
+//		for($j=0; $j<$rows->length; $j++) {
 			$Max = 0;
 			for($i=0; $i<count($aFiles); $i++) {
 				$bbox = imagettfbbox(16, 0, FONT_FILENAME_ARIAL, $aFiles[$i][$j]);
@@ -1020,6 +1114,52 @@ class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 			}
 			$section->addTextBreak(2);
 		}
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOE en DOCX.
+ */
+class ProgramacioDidacticaDOCXLOE extends ProgramacioDidacticaDOCX
+{
+	protected function GeneraSeccionsDOCX($section) {
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdESTRATEGIES.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
+		$html = $this->GeneraSeccioEstrategies();
+		$this->AfegeixHTML($section, $html);
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdCRITERIS.'. '.self::SECCIO[self::pdCRITERIS], 1);
+		$html = $this->GeneraSeccioCriteris();
+		$this->AfegeixHTML($section, $html);
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdRECURSOS.'. '.self::SECCIO[self::pdRECURSOS], 1);
+		$html = $this->GeneraSeccioRecursos();
+		$this->AfegeixHTML($section, $html);
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdSEQUENCIACIO.'. '.self::SECCIO[self::pdSEQUENCIACIO], 1);
+		$this->GeneraSeccioSequenciacio($section);
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle(self::pdUNITATS.'. '.self::SECCIO[self::pdUNITATS], 1);
+		$this->GeneraSeccioUnitats($section);
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOGSE en DOCX.
+ */
+class ProgramacioDidacticaDOCXLOGSE extends ProgramacioDidacticaDOCX
+{
+	protected function GeneraSeccionsDOCX($section) {
+		throw new Exception("ProgramacioDidacticaLOGSE->GeneraSeccions. No implementat");
 	}
 }
 

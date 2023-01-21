@@ -18,6 +18,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -32,12 +33,12 @@ $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '
 
 switch ($Accio) {
 	case "EstadistiquesNotes":
-		$Curs = new Curs($conn, $Usuari);
+		$Curs = new Curs($conn, $Usuari, $Sistema);
 		echo $Curs->Estadistiques();
 		break;
 	case "EstadistiquesNotesCurs":
 		$CursId = $_GET['CursId'];
-		$Curs = new Curs($conn, $Usuari);
+		$Curs = new Curs($conn, $Usuari, $Sistema);
 		echo $Curs->EstadistiquesCurs($CursId);
 		break;
 }

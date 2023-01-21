@@ -26,6 +26,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -59,36 +60,37 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			$SQL = $_GET['SQL'];
 			$SQL = Desencripta($SQL);
 	//print('<B>SQL</B>: '.$SQL.'<BR>');		
-			$frm = new FormRecerca($conn, $Usuari);
+			$frm = new FormRecerca($conn, $Usuari, $Sistema);
 			$frm->ExportaCSV($SQL);
 			break;
 		case "ExportaXLSX":
 			$SQL = $_GET['SQL'];
 			$SQL = Desencripta($SQL);
 	//print('<B>SQL</B>: '.$SQL.'<BR>');		
-			$frm = new FormRecerca($conn, $Usuari);
+			$frm = new FormRecerca($conn, $Usuari, $Sistema);
 			$frm->ExportaXLSX($SQL);
 			break;
 		case "ExportaNotesCSV":
 			$CursId = $_GET['CursId'];
-			$Notes = new Notes($conn, $Usuari);
+			$Notes = new Notes($conn, $Usuari, $Sistema);
 			$Notes->ExportaCSV($CursId, Notes::teULTIMA_CONVOCATORIA);
 			//$Notes->ExportaCSV($CursId, Notes::teULTIMA_NOTA);
 			break;
 		case "ExportaNotesXLSX":
 			$CursId = $_GET['CursId'];
-			$Notes = new Notes($conn, $Usuari);
+			$Notes = new Notes($conn, $Usuari, $Sistema);
 			$Notes->ExportaXLSX($CursId, Notes::teULTIMA_CONVOCATORIA);
 			break;
 		case "ExportaProgramacioDidacticaDOCX":
 			$ModulId = $_GET['ModulId'];
 	//print('<B>SQL</B>: '.$SQL.'<BR>');
-			$PD = new ProgramacioDidactica($conn, $Usuari);
+//			$PD = new ProgramacioDidactica($conn, $Usuari);
+			$PD = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $ModulId);
 			$PD->ExportaDOCX($ModulId);
 			break;
 		case "ExportaProgramacioDidacticaODT":
 			$ModulId = $_GET['ModulId'];
-			$PD = new ProgramacioDidactica($conn, $Usuari);
+			$PD = new ProgramacioDidactica($conn, $Usuari, $Sistema);
 			$PD->ExportaODT($ModulId);
 			break;
 	}	
