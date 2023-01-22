@@ -5,6 +5,11 @@
  *
  * Accions AJAX per a la llibreria de la consola SQL.
  *
+ * Accés:
+ *   - Administrador
+ * Accions:
+ *   - ExecutaSQL
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -18,6 +23,9 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+
+if (!$Usuari->es_admin)
+	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 

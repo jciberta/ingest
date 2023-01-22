@@ -5,6 +5,12 @@
  *
  * Accions AJAX per a la llibreria de contrasenyes.
  *
+ * Accés:
+ *   - Tothom
+ * Accions:
+ *   - RecuperaPasswordProgenitor
+ *   - RecuperaPasswordAlumne
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -18,7 +24,7 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
-	if ($_REQUEST['accio'] == 'RecuperaPasswordTutor') {
+	if ($_REQUEST['accio'] == 'RecuperaPasswordProgenitor') {
 		$dni = $_REQUEST['dni'];
 		$dni_tutor = $_REQUEST['dni_tutor'];
 		$data_naixement = $_REQUEST['data_naixement'];
@@ -30,7 +36,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		
 		$Retorn = '';
 		if (ComprovaData($data_naixement)) {
-			$rc = new RecuperaPasswordTutor($conn);
+			$rc = new RecuperaPasswordProgenitor($conn);
 			$Retorn = $rc->Recupera($dni, $dni_tutor, $data_naixement);
 		}
 		print $Retorn;

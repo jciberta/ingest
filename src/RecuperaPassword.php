@@ -39,7 +39,7 @@ if (!empty($_POST))
 			if ($Mode == 'Tutor') {
 				$DNI = $_POST['dni'];
 				$DNI = filter_var($DNI, FILTER_SANITIZE_STRING);
-				$rp = new RecuperaPasswordTutor($conn);
+				$rp = new RecuperaPasswordProgenitor($conn);
 				$SQL = $rp->CreaSQL($DNI);
 				$ResultSet = $conn->query($SQL);
 				if ($ResultSet->num_rows > 0) {
