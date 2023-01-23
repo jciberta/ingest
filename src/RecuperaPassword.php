@@ -36,6 +36,9 @@ if (!empty($_POST))
 		{
 			$Mode = $_POST['Mode'];
 
+
+			//TODO: FILTER_SANITIZE_STRING is deprecated.
+
 			if ($Mode == 'Tutor') {
 				$DNI = $_POST['dni'];
 				$DNI = filter_var($DNI, FILTER_SANITIZE_STRING);
@@ -85,10 +88,12 @@ if (!empty($_POST))
 						$addKey = substr(md5(uniqid(rand(),1)),3,10);
 						$key = $key . $addKey;
 
-						$SQL = " INSERT INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) ". 
-							" VALUES ('$email', '$key', '$expDate') ";
+						$SQL = "INSTER INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) VALUES (?, ?, ?);";
+						$stmt = $conn->prepare($SQL);
+						$stmt->bind_param("sss", $email, $key, $expDate);
+						$stmt->execute();
 //print_r($SQL);
-						if (!$conn->query($SQL))
+						if (!$stmt)
 							throw new Exception($conn->error.'. SQL: '.$SQL);
 
 						$output ="<p>Cliqueu a l'enllaç següent per reiniciar la vostra contrasenya.</p>";
@@ -173,10 +178,13 @@ else if (!empty($_GET))
 		$key = $_GET["key"];
 		$email = $_GET["email"];
 		$curDate = date("Y-m-d H:i:s");
-		$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau='".$key."' and email='".$email."'";
+		$SQL = "SLECT * FROM PASSWORD_RESET_TEMP WHERE clau = ? and email = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("ss", $key, $email);
+		$stmt->execute();
 //echo "SQL: $SQL<br>";
 
-		$ResultSet = $conn->query($SQL);
+		$ResultSet = $stmt->get_result();
 //print_r($ResultSet);
 		if ($ResultSet->num_rows < 1) {
 			$error .= "L'enllaç és invàlid o ha caducat. Assegureu-vos que heu copiat la URL del correu electrònic correctament, 
@@ -202,6 +210,3 @@ else if (!empty($_GET))
 }
 else 
 	PaginaHTMLMissatge("Error", "Accés incorrecte a aquesta pàgina.");
-
-?>
-
