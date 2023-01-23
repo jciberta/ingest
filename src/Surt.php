@@ -37,6 +37,7 @@ if ($conn->connect_error)
 $log = new Registre($conn, $Usuari);
 $log->Escriu(Registre::AUTH, 'Sortida del sistema');
 
+session_unset();
 session_destroy();
 header('Location: index.php');
 
