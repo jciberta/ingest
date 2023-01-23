@@ -32,7 +32,7 @@ RecuperaGET($_GET);
 
 $MetodeCongelaFilesComunes = (Config::UsaDataTables) ? Notes::tcDataTables : Notes::tcMetodeAntic;
 
-$CursId = $_GET['CursId'];
+$CursId = mysqli_real_escape_string($conn, $_GET['CursId']);
 $Curs = new Curs($conn, $Usuari);
 $Curs->CarregaRegistre($CursId);
 $CicleId = $Curs->ObteCicleFormatiuId();
