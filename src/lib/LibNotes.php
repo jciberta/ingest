@@ -1875,13 +1875,7 @@ class Notes extends Form
  * Classe que encapsula les utilitats per al maneig de les notes del mòdul.
  */
 class NotesModul extends Notes 
-{
-	/**
-	* Registre carregat amb CarregaRegistre.
-	* @var object
-	*/    
-	private $Registre = NULL;
-	
+{	
 	/**
 	* Identificador del mòdul professional.
 	* @var integer
