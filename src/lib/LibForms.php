@@ -481,7 +481,7 @@ class Form extends Objecte
 		$TextValor = '';
 		switch ($Calcul) {
 			case Form::tccEDAT:
-				$diff = date_diff(date_create("now"), date_create($Valor));
+				$diff = date_diff(date_create("now"), date_create($Valor ?? ''));
 				$TextValor = $diff->format("%y");
 //print("Edat: $TextValor<hr>");
 				break;
