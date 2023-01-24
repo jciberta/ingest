@@ -48,7 +48,7 @@ function RecuperaGET(&$GET) {
 /**
  * Genera la URL en funció de si cal encriptar els paràmetres o no.
  * @param string $URL URL a generar.
- * @return URL generada.
+ * @return string URL generada.
  */
 function GeneraURL(string $URL): string {
 	return (Config::EncriptaURL) ? EncriptaURL($URL) : $URL;
