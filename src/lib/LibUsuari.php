@@ -1474,7 +1474,7 @@ class ProfessorsEquip extends Objecte
 		$SQL = $this->CreaSQLProfessors($this->Id);
 		$ResultSet = $this->Connexio->query($SQL);
 		while($row = $ResultSet->fetch_object()) 
-			array_push($this->Professor, $row);
+			array_push($this->Professors, $row);
 	}
 
 	/**
