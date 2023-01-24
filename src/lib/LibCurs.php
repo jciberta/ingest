@@ -48,12 +48,12 @@ class Curs extends Objecte
 
 	/**
 	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari.
+	 * @param object $system Sistema.
 	 */
 	function __construct($con, $user, $system = null) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-		$this->Sistema = $system;
+		parent::__construct($con, $user, $system);
 		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);			
 	}	
 
@@ -62,13 +62,15 @@ class Curs extends Objecte
 	 * @param integer $Id Identificador del registre.
 	 */				
 	public function CarregaRegistre($Id) {
-		$SQL = "
-			SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
+		$SQL = "SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
 			FROM CURS C 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
 			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
-			WHERE curs_id=$Id";
-		$ResultSet = $this->Connexio->query($SQL);
+			WHERE curs_id = ?;";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param('i', $Id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 		if ($ResultSet->num_rows > 0) {
 			$this->Registre = $ResultSet->fetch_object();
 		}
@@ -368,7 +370,11 @@ class GrupClasse extends Objecte
 	 */				
 	public function Carrega(int $CursId) {
 		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
-		$ResultSet = $this->Connexio->query($SQL);
+		$SQL = "SELECT * FROM CURS WHERE curs_id = ?;";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $CursId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 		if ($ResultSet->num_rows > 0) {		
 			$this->Registre = $ResultSet->fetch_object();
 		}
@@ -381,7 +387,7 @@ class GrupClasse extends Objecte
 	 */
 	public function ObteGrups(int $CursId): array {
 		$this->Carrega($CursId);
-		return explode(',', $this->Registre->grups_classe);
+		return explode(',', $this->Registre->grups_classe ?? '');
 	}
 	
 	/**
@@ -430,6 +436,9 @@ class GrupClasse extends Objecte
  */
 class GrupTutoria extends Objecte
 {
+	function __construct($Connexio, $Usuari, $systema = null) {
+		parent::__construct($Connexio, $Usuari, $systema);
+	}
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
@@ -449,7 +458,7 @@ class GrupTutoria extends Objecte
 	 */
 	public function ObteGrups(int $CursId): array {
 		$this->Carrega($CursId);
-		return explode(',', $this->Registre->grups_tutoria);
+		return explode(',', $this->Registre->grups_tutoria ?? '');
 	}
 
 	/**
