@@ -40,7 +40,7 @@ if (!empty($_POST))
 						$errors = [];
 						//print_r($_POST['contrase nya1']);
 						if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
-							$SQL = "UPDATE USARI SET password = ?, imposa_canvi_password = 0 WHERE usuari_id = ?;";
+							$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE usuari_id = ?;";
 							$stmt = $conn->prepare($SQL);
 							$stmt->bind_param("si", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $Usuari->usuari_id);
 							$stmt->execute();
@@ -115,7 +115,7 @@ if (!empty($_POST))
 		}
 		catch (Exception $e) 
 		{
-			$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+			$Text = "[File: ".$e->getFile().", line ".$e->getLine()."]: ".$e->getMessage();
 			PaginaHTMLMissatge("Error", $Text);
 		}
 	}
