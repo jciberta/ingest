@@ -21,15 +21,14 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 RecuperaGET($_GET);
-
-// Comprovem que l'usuari té accés a aquesta pàgina.
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
 
 // Paràmetres de la URL (si n'hi ha).
 $CursId = (isset($_GET) && array_key_exists('CursId', $_GET)) ? $_GET['CursId'] : -1;
