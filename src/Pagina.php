@@ -36,6 +36,8 @@ $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
 switch ($accio) {
     case "QuantA":
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php");
 		CreaIniciHTML($Usuari, "Quant a...");
 		echo "Navegador: ".$_SERVER['HTTP_USER_AGENT']."<br>";
 		echo "Sistema operatiu: ".PHP_OS."<br>";

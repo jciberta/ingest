@@ -21,12 +21,12 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-	header("Location: Surt.php");
 
 if ((empty($_POST)) || (!isset($_POST['submit'])))
 	header("Location: Surt.php");
