@@ -37,15 +37,16 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Id = $_REQUEST['curs_id'];
 		$Estat = $_REQUEST['estat'];
 		// Canviem l'estat del curs
-		$SQL = 'UPDATE CURS SET estat="'.$Estat.'" WHERE curs_id='.$Id;
+		$SQL = "UPDATE CURS SET estat = ? WHERE curs_id = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("si", $Estat, $Id);
+		$stmt->execute();
 		/* PENDENT !!!
 		if ($Estat == 'J') {
 			// Calculem les notes del mòduls que no estan calculades
 			$Avaluacio = new Avaluacio($conn, $Usuari);
 			$Avaluacio->CalculaNotesModul($Id);
 		}*/
-		$conn->query($SQL);
-		//print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'PosaEstatTrimestre') {
 		$Id = $_REQUEST['curs_id'];
@@ -54,7 +55,10 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$EsborraOrientatives = ($_REQUEST['esborra_orientatives'] == 1);
 		// Canviem l'estat del curs
 		$SQL = 'UPDATE CURS SET trimestre="'.$Trimestre.'" WHERE curs_id='.$Id;
-		$conn->query($SQL);
+		$SQL = "UPDATE CURS SET trimestre = ? WHERE curs_id = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("si", $Trimestre, $Id);
+		$stmt->execute();
 		
 		if ($EsborraOrientatives) {
 			$Notes = new Notes($conn, $Usuari);

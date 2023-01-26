@@ -32,15 +32,15 @@ $CicleId = $_GET['CicleId'];
 
 CreaIniciHTML($Usuari, 'Alumnes cicle');
 
-$SQL = ' SELECT '.
-	' U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, M.curs_id, M.nivell, M.grup, M.alumne_id '.
-	' FROM MATRICULA M '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' WHERE M.cicle_formatiu_id='.$CicleId.
-	' ORDER BY nivell, grup';
+$SQL = "SELECT U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, M.curs_id, M.nivell, M.grup, M.alumne_id 
+FROM MATRICULA M 
+LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) 
+WHERE M.cicle_formatiu_id= ? ORDER BY nivell, grup";
 //print_r($SQL);
-
-$ResultSet = $conn->query($SQL);
+$stmt = $conn->prepare($SQL);
+$stmt->bind_param("i", $CicleId);
+$stmt->execute();
+$ResultSet = $stmt->get_result();
 
 if ($ResultSet->num_rows > 0) {
 	echo "<TABLE>";
@@ -54,7 +54,7 @@ if ($ResultSet->num_rows > 0) {
 		echo "<TD>".$row["nivell"]."</TD>";
 		echo "<TD>".$row["grup"]."</TD>";
 		echo "<TD>".utf8_encodeX($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"])."</TD>";
-		echo utf8_encodeX("<TD><A HREF=MatriculaAlumne.php?AlumneId=".$row["alumne_id"].">Matrícula</A></TD>");
+		echo utf8_encodeX("<TD><A HREF=MatriculaAlumne.php?AlumneId=".$row["alumne_id"].">Matrï¿½cula</A></TD>");
 		echo utf8_encodeX("<TD><A HREF=MatriculaAlumne.php?accio=MostraExpedient&AlumneId=".$row["alumne_id"].">Expedient</A></TD>");
 		echo "</TR>";
 	}
@@ -64,19 +64,3 @@ if ($ResultSet->num_rows > 0) {
 $ResultSet->close();
 
 $conn->close();
-
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

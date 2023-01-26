@@ -1044,14 +1044,7 @@ class Acta extends Form
 	 * Nivell del curs (1 o 2).
 	 * @var int
 	 */
-	private $NivellCurs = -1;	
-
-	/**
-	 * Registre de les dades de la capçalera.
-	 * @var object
-	 */
-	private $Registre = null;	
-
+	private $NivellCurs = -1;
 	/**
 	 * Registre de les dades dels alumnes.
 	 * @var array

@@ -32,22 +32,25 @@ if (!empty($_POST))
 					die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 				} 
 
-				$SQL = "SELECT * FROM USUARI WHERE username='". $_POST['usuari']."' AND NOT usuari_bloquejat=1 ";
-				$ResultSet = $conn->query($SQL);
+				$SQL = "SELECT * FROM USUARI WHERE username = ? AND NOT usuari_bloquejat=1;";
+				$stmt = $conn->prepare($SQL);
+				$stmt->bind_param("s", $_POST['usuari']);
+				$stmt->execute();
+				$ResultSet = $stmt->get_result();
 				if ($ResultSet->num_rows > 0) {
 					$user = $ResultSet->fetch_object();
 					$log = new Registre($conn, $user);
 					if (password_verify($_POST['password'], $user->password)) 
 					{
 						// Carreguem la configuració del sistema
-						$SQL = "SELECT * FROM SISTEMA";
+						$SQL = "SELECT * FROM SISTEMA;";
 						$ResultSet = $conn->query($SQL);
 						if ($ResultSet->num_rows == 0) 
 							die("El sistema no ha estat configurat.");
 						$sistema = $ResultSet->fetch_object();
 
 						// Carreguem els dies festius
-						$SQL = "SELECT * FROM FESTIU ORDER BY data";
+						$SQL = "SELECT * FROM FESTIU ORDER BY data;";
 						$ResultSet = $conn->query($SQL);
 						$festiu = [];
 						if ($ResultSet->num_rows > 0) {
@@ -68,8 +71,10 @@ if (!empty($_POST))
 						if ($user->imposa_canvi_password)
 							header('Location: CanviPassword.html');
 						else {
-							$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
-							$conn->query($SQL);	
+							$SQL = "UPDATE USUARI SET data_ultim_login = ?, ip_ultim_login = ? WHERE usuari_id = ?;";
+							$stmt = $conn->prepare($SQL);
+							$stmt->bind_param("ssi", date('Y-m-d H:i:s'), getUserIP(), $user->usuari_id);
+							$stmt->execute();
 
 							$log->Escriu(Registre::AUTH, 'Entrada al sistema');
 
@@ -107,7 +112,4 @@ if (!empty($_POST))
 else 
 {
 	PaginaHTMLMissatge("Error", "Accés incorrecte a aquesta pàgina.");
-} 
-
-?>
-
+}

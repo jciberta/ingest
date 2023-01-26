@@ -47,12 +47,17 @@ CreaIniciHTML($Usuari, 'Grups', True);
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
 
-$SQL = ' SELECT * FROM MATRICULA M '.
-	' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
-	' WHERE curs_id='.$CursId.
-	' ORDER BY U.cognom1, U.cognom2, U.nom ';
+$SQL = "SELECT * FROM MATRICULA M 
+				LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) 
+				WHERE curs_id = ? 
+				ORDER BY U.cognom1, U.cognom2, U.nom;
+			";
 
-$ResultSet = $conn->query($SQL);
+$stmt = $conn->prepare($SQL);
+$stmt->bind_param("i", $CursId);
+$stmt->execute();
+
+$ResultSet = $stmt->get_result();
 
 $GrupClasse = new GrupClasse($conn, $Usuari);
 $aGrups = $GrupClasse->ObteGrups($CursId);

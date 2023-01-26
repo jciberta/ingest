@@ -24,7 +24,7 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 // Carreguem la configuració del sistema
-$SQL = "SELECT * FROM SISTEMA";
+$SQL = "SELECT * FROM SISTEMA;";
 $ResultSet = $conn->query($SQL);
 if ($ResultSet->num_rows == 0) 
 	die("El sistema no ha estat configurat.");
@@ -88,13 +88,12 @@ if (!isset($_SESSION['access_token']))
 	   
 // Comprovem que l'usuari existeixi a la base de dades	
 // Disponible per al professorat i alumnat que s'ha identificat un primer cop amb usuari i contrasenya
-$SQL = "
-	SELECT *
-	FROM USUARI
-	WHERE email_ins='".$_SESSION['user_email_address']."' AND (es_professor=1 OR (es_alumne=1 AND imposa_canvi_password=0)) AND NOT usuari_bloquejat=1
-";
+$SQL = "SELECT * FROM USUARI WHERE email_ins = ? AND (es_professor=1 OR (es_alumne=1 AND imposa_canvi_password=0)) AND NOT usuari_bloquejat=1";
+$stmt = $conn->prepare($SQL);
+$stmt->bind_param("s", $_SESSION['user_email_address']);
+$stmt->execute();
 //echo $SQL;
-$ResultSet = $conn->query($SQL);
+$ResultSet = $stmt->get_result();
 if ($ResultSet->num_rows > 0) {
 	$user = $ResultSet->fetch_object();
 	$log = new Registre($conn, $user);
@@ -107,7 +106,7 @@ if ($ResultSet->num_rows > 0) {
 	$sistema = $ResultSet->fetch_object();*/
 
 	// Carreguem els dies festius
-	$SQL = "SELECT * FROM FESTIU ORDER BY data";
+	$SQL = "SELECT * FROM FESTIU ORDER BY data;";
 	$ResultSet = $conn->query($SQL);
 	$festiu = [];
 	if ($ResultSet->num_rows > 0) {
@@ -129,8 +128,11 @@ if ($ResultSet->num_rows > 0) {
 //print_h($google_client);
 //print_h(serialize($google_client));
 //exit;
-	$SQL = "UPDATE USUARI SET data_ultim_login='".date('Y-m-d H:i:s')."', ip_ultim_login='".getUserIP()."' WHERE usuari_id=".$user->usuari_id;
-	$conn->query($SQL);	
+	
+	$SQL = "UPDATE USUARI SET data_ultim_login = ?, ip_ultim_login = ? WHERE usuari_id = ?;";
+	$stmt = $conn->prepare($SQL);
+	$stmt->bind_param("ssi", date('Y-m-d H:i:s'), getUserIP(), $user->usuari_id);
+	$stmt->execute();
 
 	$log->Escriu(Registre::AUTH, 'Entrada al sistema');
 
