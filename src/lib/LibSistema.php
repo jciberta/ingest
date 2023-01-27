@@ -1,7 +1,7 @@
 <?php
 
 /** 
- * Libsistema.php
+ * LibSistema.php
  *
  * Llibreria d'utilitats del sistema.
  *

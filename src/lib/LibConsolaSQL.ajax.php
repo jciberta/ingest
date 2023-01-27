@@ -15,6 +15,7 @@
  */
 
 require_once('../Config.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibConsolaSQL.php');
@@ -24,8 +25,7 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
-if (!$Usuari->es_admin)
-	header("Location: ../Surt.php");
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
