@@ -134,16 +134,19 @@ CREATE TABLE ANY_ACADEMIC
 CREATE TABLE SISTEMA
 (
     /* S */
-	/* Ha de contenir un únic registre 	que conté la configuració */
+	/* Ha de contenir un únic registre que conté la configuració */
     sistema_id INT NOT NULL AUTO_INCREMENT,
 	nom VARCHAR(100), /* Nom institut */ 
 	any_academic_id INT NOT NULL,
     director_id INT NOT NULL,
     gestor_borsa_treball_id INT,
     versio_db VARCHAR(5),
-	
+    capcalera_login VARCHAR(1000),
+    peu_login VARCHAR(1000),
+
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
-    CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id)		
+    CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id),		
+    CONSTRAINT S_GestorBorsaTreballFK FOREIGN KEY (gestor_borsa_treball_id) REFERENCES USUARI(usuari_id)		
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE CICLE_PLA_ESTUDI
@@ -269,6 +272,12 @@ CREATE TABLE NOTES
     junta BIT,
     baixa BIT, /* Baixa d'una UF */
     convocatoria INT, /* 0 (aprovat), 1, 2, 3, 4, 5 */
+    comentari_trimestre1 VARCHAR(100),
+    comentari_trimestre2 VARCHAR(100),
+    comentari_trimestre3 VARCHAR(100),
+    comentari_ordinaria VARCHAR(100),
+    comentari_extraordinaria VARCHAR(100),
+    comentari_matricula_seguent VARCHAR(100),
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
