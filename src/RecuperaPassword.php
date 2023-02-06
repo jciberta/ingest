@@ -88,7 +88,7 @@ if (!empty($_POST))
 						$addKey = substr(md5(uniqid(rand(),1)),3,10);
 						$key = $key . $addKey;
 
-						$SQL = "INSTER INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) VALUES (?, ?, ?);";
+						$SQL = "INSERT INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) VALUES (?, ?, ?);";
 						$stmt = $conn->prepare($SQL);
 						$stmt->bind_param("sss", $email, $key, $expDate);
 						$stmt->execute();
@@ -142,7 +142,7 @@ if (!empty($_POST))
 							echo "Mailer Error: " . $mail->ErrorInfo;
 						} else {
 							echo "<br /><div>
-							<p>Se us  ha enviat un correu electrònic amb les instruccions per reiniciar la contrasenya.</p>
+							<p>Se us ha enviat un correu electrònic amb les instruccions per reiniciar la contrasenya.</p>
 							</div><br /><br />";
 						}
 						$rp->EscriuPeu(False);
@@ -178,7 +178,7 @@ else if (!empty($_GET))
 		$key = $_GET["key"];
 		$email = $_GET["email"];
 		$curDate = date("Y-m-d H:i:s");
-		$SQL = "SLECT * FROM PASSWORD_RESET_TEMP WHERE clau = ? and email = ?;";
+		$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau = ? and email = ?;";
 		$stmt = $conn->prepare($SQL);
 		$stmt->bind_param("ss", $key, $email);
 		$stmt->execute();
