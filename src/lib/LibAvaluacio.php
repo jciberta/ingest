@@ -364,7 +364,7 @@ class Avaluacio extends Objecte
 		// S'ha d'executar de forma atòmica
 		$this->Connexio->query('START TRANSACTION');
 		try {
-			$SQL = "UPDATE CURS SET avaluacio='EXT', estat='A' WHERE curs_id = ?;";
+			$SQL = "UPDATE CURS SET avaluacio='EXT', estat='A' WHERE curs_id=?;";
 			$Sentencia = $this->Connexio->prepare($SQL);
 			$Sentencia->bind_param('i', $id);
 			if (!$Sentencia->execute())
@@ -372,15 +372,15 @@ class Avaluacio extends Objecte
 			
 			// MySQL no deixa fer un UPDATE amb una subconsulta. Es soluciona amb un wrapper.
 			// https://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
-			$SQL = "UPDATE NOTES SET convocatoria = 0 
-			WHERE notes_id IN (
-				SELECT notes_id FROM (
-					SELECT N.notes_id FROM NOTES N 
-					LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
-					WHERE M.curs_id= ? 
-					AND ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria)>=5) AS TEMP
-				)
-			);";
+			$SQL = "UPDATE NOTES SET convocatoria=0 
+				WHERE notes_id IN (
+					SELECT notes_id FROM (
+						SELECT N.notes_id FROM NOTES N 
+						LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
+						WHERE M.curs_id=?
+						AND ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria)>=5
+					) AS TEMP
+				);";
 			$Sentencia = $this->Connexio->prepare($SQL);
 			$Sentencia->bind_param('i', $id);
 			if (!$Sentencia->execute())
@@ -388,14 +388,14 @@ class Avaluacio extends Objecte
 			
 			// Falta tractar les convocatòries de gràcia !!! (màxim 5)
 			$SQL = "UPDATE NOTES SET convocatoria=convocatoria+1 
-			WHERE notes_id IN (
-				SELECT notes_id FROM (
-					SELECT N.notes_id FROM NOTES N 
-					LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
-					WHERE M.curs_id= ? 
-					AND ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria)<5) AS TEMP
-				)
-			);";
+				WHERE notes_id IN (
+					SELECT notes_id FROM (
+						SELECT N.notes_id FROM NOTES N 
+						LEFT JOIN MATRICULA M ON (M.matricula_id=N.matricula_id) 
+						WHERE M.curs_id= ? 
+						AND ObteNotaConvocatoria(nota1, nota2, nota3, nota4, nota5, convocatoria)<5
+					) AS TEMP
+				);";
 			$Sentencia = $this->Connexio->prepare($SQL);
 			$Sentencia->bind_param('i', $id);
 			if (!$Sentencia->execute())
