@@ -158,7 +158,7 @@ if (!empty($_POST))
 		}
 		catch (Exception $e) 
 		{
-			$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+			$Text = "[File: ".$e->getFile().", line ".$e->getLine()."]: ".$e->getMessage();
 			PaginaHTMLMissatge("Error", $Text);
 		}
 	}
@@ -200,7 +200,7 @@ else if (!empty($_GET))
 				$cp = new CanviPassword();
 				$cp->EscriuCapcalera();
 				$cp->EscriuFormulari(False, $email, $key);
-				$cp->EscriuPeu(False);
+				$cp->EscriuPeu('', False);
 			} 
 			else {
 				PaginaHTMLMissatge("Enllaç caducat", "L'enllaç ha caducat. Esteu intentant usar un enllaç que només és vàlid 24 hores.");

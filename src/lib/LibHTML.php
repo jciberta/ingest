@@ -326,7 +326,7 @@ class Portal
 	/**
 	 * Escriu la capçalera de la pàgina web.
 	 */				
-	public function EscriuCapcalera(string $CapcaleraLogin) {
+	public function EscriuCapcalera(string $CapcaleraLogin = '') {
 		echo '<html>';
 		echo '<head>';
 		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';

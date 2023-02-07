@@ -173,7 +173,6 @@ class Curs extends Objecte
 			' FROM CURS C '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE AA.actual=1 ';
 		return $SQL;
 	}
@@ -301,8 +300,7 @@ class Curs extends Objecte
 	 * @param string $SQL Sentència SQL amb els cursos.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	private function GeneraEstadistiques(string $SQL): string
-	{
+	private function GeneraEstadistiques(string $SQL): string {
 		$Retorn = GeneraIniciHTML($this->Usuari, 'Estadístiques cursos');
 		$Retorn .= '<script language="javascript" src="vendor/Chart.min.js" type="text/javascript"></script>';
 		
@@ -341,8 +339,7 @@ class Curs extends Objecte
 	 * Genera una pàgina amb les estadístiques de les notes dels cursos actuals.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	public function Estadistiques()
-	{
+	public function Estadistiques() {
 		$SQL = $this->CreaSQLCursosActuals();
 		return $this->GeneraEstadistiques($SQL);
 	}
@@ -352,8 +349,7 @@ class Curs extends Objecte
 	 * @param integer $CursId Identificador del curs.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	public function EstadistiquesCurs(int $CursId)
-	{
+	public function EstadistiquesCurs(int $CursId) {
 		$SQL = $this->CreaSQL($CursId);
 		return $this->GeneraEstadistiques($SQL);
 	}
@@ -369,8 +365,7 @@ class GrupClasse extends Objecte
 	 * @param integer $Id Identificador del registre.
 	 */				
 	public function Carrega(int $CursId) {
-		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
-		$SQL = "SELECT * FROM CURS WHERE curs_id = ?;";
+		$SQL = "SELECT * FROM CURS WHERE curs_id=?;";
 		$stmt = $this->Connexio->prepare($SQL);
 		$stmt->bind_param("i", $CursId);
 		$stmt->execute();
