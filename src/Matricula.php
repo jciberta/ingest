@@ -60,23 +60,16 @@ else {
 	echo '</div>';
 	
 	// Llistem les UF del cicle/nivell
-	$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.* '.
-		' FROM UNITAT_FORMATIVA UF '.
-		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-		' WHERE C.curs_id='.$curs.
-		' AND C.nivell=UF.nivell '.
-		' ORDER BY MP.codi, UF.codi';
-
-	$SQL = "SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.*
-	FROM UNITAT_FORMATIVA UF
-	LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id)
-	LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
-	LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id)
-	WHERE C.curs_id = ?
-	AND C.nivell=UF.nivell
-	ORDER BY MP.codi, UF.codi;";
+	$SQL = '
+		SELECT 
+			UPE.nom AS NomUF, UPE.hores AS HoresUF, MPE.codi AS CodiMP, MPE.nom AS NomMP, CPE.nom AS NomCF, UPE.*, MPE.*, CPE.* 
+		FROM UNITAT_PLA_ESTUDI UPE
+		LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+		LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+		LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) 
+		WHERE C.curs_id=? AND C.nivell=UPE.nivell 
+		ORDER BY MPE.codi, UPE.codi;
+	';
 
 	$stmt = $conn->prepare($SQL);
 	$stmt->bind_param("i", $curs);
