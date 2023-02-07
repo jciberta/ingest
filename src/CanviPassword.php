@@ -42,7 +42,9 @@ if (!empty($_POST))
 						if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
 							$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE usuari_id = ?;";
 							$stmt = $conn->prepare($SQL);
-							$stmt->bind_param("si", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $Usuari->usuari_id);
+							$Password = password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT); // Evita "Notice: Only variables should be passed by reference"
+							$stmt->bind_param("si", $Password, $Usuari->usuari_id);
+//							$stmt->bind_param("si", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $Usuari->usuari_id);
 							$stmt->execute();
 							$stmt->close();
 							//print_r($SQL);
