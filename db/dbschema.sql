@@ -228,9 +228,12 @@ CREATE TABLE CURS
 	data_final DATE,
     grups_classe VARCHAR(100),
     grups_tutoria VARCHAR(100),
-	avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
+    avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
     trimestre INT NOT NULL DEFAULT 1, /* 1, 2, 3 */
     estat char(1) NOT NULL DEFAULT 'A', /* Actiu, Junta, Inactiu, Obertura, Tancat */
+    data_inici DATE,
+    data_final DATE,    
+    data_tancament DATETIME,
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
     CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
