@@ -53,8 +53,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Trimestre = $_REQUEST['trimestre'];
 		$Trimestre = $_REQUEST['trimestre'];
 		$EsborraOrientatives = ($_REQUEST['esborra_orientatives'] == 1);
-		// Canviem l'estat del curs
-		$SQL = 'UPDATE CURS SET trimestre="'.$Trimestre.'" WHERE curs_id='.$Id;
+		// Canviem l'estat del trimestre
 		$SQL = "UPDATE CURS SET trimestre = ? WHERE curs_id = ?;";
 		$stmt = $conn->prepare($SQL);
 		$stmt->bind_param("si", $Trimestre, $Id);
