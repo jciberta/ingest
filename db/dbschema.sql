@@ -984,8 +984,6 @@ BEGIN
     UPDATE NOTES SET convocatoria=0 
         WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)>=5;
 
-    UPDATE NOTES SET convocatoria=convocatoria+1 
-        WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)<5 AND UltimaNota(notes_id)!=-1 AND nota1 IS NOT NULL;
 END //
 DELIMITER ;
 
