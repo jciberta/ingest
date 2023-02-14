@@ -2,18 +2,31 @@
 Actualització de la DB a partir de la versió 1.13
 */
 
-ALTER TABLE NOTES ADD comentari_trimestre1 VARCHAR(100);
-ALTER TABLE NOTES ADD comentari_trimestre2 VARCHAR(100);
-ALTER TABLE NOTES ADD comentari_trimestre3 VARCHAR(100);
-ALTER TABLE NOTES ADD comentari_ordinaria VARCHAR(100);
-ALTER TABLE NOTES ADD comentari_extraordinaria VARCHAR(100);
-ALTER TABLE NOTES ADD comentari_matricula_seguent VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_trimestre1 VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_trimestre2 VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_trimestre3 VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_ordinaria VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_extraordinaria VARCHAR(100);
+ALTER TABLE MATRICULA ADD comentari_matricula_seguent VARCHAR(100);
 
 ALTER TABLE SISTEMA ADD clickedu_api_key VARCHAR(100);
 ALTER TABLE SISTEMA ADD clickedu_id int;
 ALTER TABLE SISTEMA ADD clickedu_secret VARCHAR(100);
 ALTER TABLE SISTEMA ADD capcalera_login VARCHAR(1000);
 ALTER TABLE SISTEMA ADD peu_login VARCHAR(1000);
+
+CREATE TABLE PROPOSTA_MATRICULA
+(
+    /* PM */
+    proposta_matricula_id INT NOT NULL AUTO_INCREMENT,
+    matricula_id INT NOT NULL,
+    unitat_formativa_id INT NOT NULL, 
+	baixa BIT NOT NULL DEFAULT 0,
+	
+    CONSTRAINT PropostaMatriculaPK PRIMARY KEY (proposta_matricula_id),
+    CONSTRAINT PM_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
+    CONSTRAINT PM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP PROCEDURE CopiaNotesAnteriorMatricula;
 
