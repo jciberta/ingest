@@ -21,7 +21,7 @@ formCerca.addEventListener("submit", prevent, true)
 
 let timeout = null
 
-cerca.addEventListener("keyup", (e) => {
+cerca.addEventListener("keyup", () => {
   clearTimeout(timeout)
   timeout = setTimeout(() => {
     if (cerca.value.length > 0) {
@@ -78,7 +78,7 @@ function carregaOfertes() {
         $("#llista-ofertes").html(data)
       }
     },
-    error: (error) => {
+    error: () => {
       $("#llista-ofertes").html(`<tr><td colspan="5" class="text-center">No s'han trobat dades</td></tr>`)
     },
     complete: () => {
@@ -128,7 +128,7 @@ function carregaCicles() {
     success: (data) => {
       $("#inputCicle").html(data)
     },
-    error: (error) => {
+    error: () => {
       $("#inputCicle").html(`<option selected>Escull...</option>`)
     }
   })

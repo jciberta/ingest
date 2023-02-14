@@ -68,7 +68,7 @@ class BorsaTreball extends Objecte
     $output = "";
 
     while ($row = $resultSet->fetch_assoc()) {
-      if ($row["publicat"] == 1) {
+      if ($row["publicat"] === 1) {
         $data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
         $output .= "
         <tr>
@@ -114,7 +114,7 @@ class BorsaTreball extends Objecte
     $output = "";
 
     while ($row = $resultSet->fetch_assoc()) {
-      if ($row["publicat"] == 1) {
+      if ($row["publicat"] === 1) {
         $data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
         $output .= "
         <tr>
