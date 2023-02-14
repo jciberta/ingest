@@ -9,6 +9,9 @@ ALTER TABLE NOTES ADD comentari_ordinaria VARCHAR(100);
 ALTER TABLE NOTES ADD comentari_extraordinaria VARCHAR(100);
 ALTER TABLE NOTES ADD comentari_matricula_seguent VARCHAR(100);
 
+ALTER TABLE SISTEMA ADD clickedu_api_key VARCHAR(100);
+ALTER TABLE SISTEMA ADD clickedu_id int;
+ALTER TABLE SISTEMA ADD clickedu_secret VARCHAR(100);
 ALTER TABLE SISTEMA ADD capcalera_login VARCHAR(1000);
 ALTER TABLE SISTEMA ADD peu_login VARCHAR(1000);
 
