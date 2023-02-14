@@ -17,6 +17,7 @@
 
 require_once('../Config.php');
 require_once(ROOT . '/lib/LibBorsaTreball.php');
+require_once(ROOT . '/lib/LibUsuari.php');
 
 session_start();
 
@@ -26,7 +27,16 @@ if ($con->connect_error) {
   die("Connection failed: " . $con->connect_error);
 }
 
-$BorsaTreball = new BorsaTreball($con);
+$Usuari = null;
+$BorsaTreball = null;
+
+if (isset($_SESSION['USUARI'])) {
+  $Usuari = unserialize($_SESSION['USUARI']);
+  $Professor = new Professor($con, $Usuari);
+  $BorsaTreball = new BorsaTreball($con, $Usuari, null, $Professor);
+} else {
+  $BorsaTreball = new BorsaTreball($con);
+}
 
 if (isset($_POST["accio"])) {
   $accio = mysqli_real_escape_string($con, $_POST["accio"]);
@@ -46,6 +56,9 @@ if (isset($_POST["accio"])) {
       break;
     case "filtrarOfertes":
       filtrarOfertes($BorsaTreball, $con);
+      break;
+    case "editaOferta":
+      mostraOferta($BorsaTreball, $con);
       break;
   }
 } else {
@@ -106,3 +119,5 @@ function filtrarOfertes($BorsaTreball, $con)
     echo json_encode(array("error" => "No s'han trobat totes les dades de l'oferta"));
   }
 }
+
+

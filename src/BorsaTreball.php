@@ -124,75 +124,126 @@ echo $BorsaTreball->creaCapcelera();
 
 <!-- Modal nova oferta -->
 <div class="modal fade" id="modalNovaOferta" tabindex="-1" role="dialog" aria-labelledby="modalNovaOfertaLabel">
-  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered"">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
     <div class=" modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="modalNovaOfertaLabel">Nova oferta</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      <div class="container-fluid">
-        <div class="alert alert-danger fade show visually-hidden" role="alert" id="modalError">
-          <span id="modalErrorMessage"></span>
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNovaOfertaLabel">Nova oferta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="alert alert-danger fade show visually-hidden" role="alert" id="modalError">
+            <span id="modalErrorMessage"></span>
+          </div>
+          <form class="row g-3">
+            <div class="form-group">
+              <label class="form-label" for="inputCicle">Cicle</label>
+              <select id="inputCicle" class="form-select">
+                <option selected hidden>Escull...</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label" for="inputEmpresa">Empresa</label>
+                <input type="text" class="form-control" id="inputEmpresa">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="inputContacte">Contacte</label>
+                <input type="text" class="form-control" id="inputContacte">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label" for="inputTelefon">Telèfon</label>
+                <input type="tel" class="form-control" id="inputTelefon" pattern="[0-9]{9}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="inputPoblacio">Població</label>
+                <input type="text" class="form-control" id="inputPoblacio">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label" for="inputCorreu">Correu</label>
+                <input type="email" class="form-control" id="inputCorreu">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="inputWeb">Web</label>
+                <input type="text" class="form-control" id="inputWeb">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="inputDescripcio">Descripció</label>
+              <textarea class="form-control" id="inputDescripcio" rows="3"></textarea>
+            </div>
+          </form>
         </div>
-        <form class="row g-3">
-          <div class="form-group">
-            <label class="form-label" for="inputCicle">Cicle</label>
-            <select id="inputCicle" class="form-select">
-              <option selected hidden>Escull...</option>
-            </select>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label class="form-label" for="inputEmpresa">Empresa</label>
-              <input type="text" class="form-control" id="inputEmpresa">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label" for="inputContacte">Contacte</label>
-              <input type="text" class="form-control" id="inputContacte">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label class="form-label" for="inputTelefon">Telèfon</label>
-              <input type="tel" class="form-control" id="inputTelefon" pattern="[0-9]{9}">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label" for="inputPoblacio">Població</label>
-              <input type="text" class="form-control" id="inputPoblacio">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label class="form-label" for="inputCorreu">Correu</label>
-              <input type="email" class="form-control" id="inputCorreu">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label" for="inputWeb">Web</label>
-              <input type="text" class="form-control" id="inputWeb">
-            </div>
-          </div>
-          <div>
-            <label class="form-label" for="inputDescripcio">Descripció</label>
-            <textarea class="form-control" id="inputDescripcio" rows="3"></textarea>
-          </div>
-        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelaNovaOferta()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+          </svg>
+          Tancar
+        </button>
+        <button type="button" class="btn btn-primary" id="guardarOferta" onclick="guardarNovaOferta()">
+          <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalLoading" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+          </svg>
+          <span id="guardarOfertaText">Guardar</span>
+        </button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelaNovaOferta()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
-        </svg>
-        Tancar
-      </button>
-      <button type="button" class="btn btn-primary" id="guardarOferta" onclick="guardarNovaOferta()">
-        <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalLoading" aria-hidden="true"></span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-        </svg>
-        <span id="guardarOfertaText">Guardar</span>
-      </button>
+  </div>
+</div>
+
+<!-- Modal editar oferta -->
+<div class="modal fade" id="modalEditaOferta" tabindex="-1" aria-labelledby="modalEditaOfertaLabel">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditaOfertaLabel">Oferta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="spinner-border text-primary text-center" role="status" id="modalEditLoading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="container">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title" id="modalEditaOfertaEmpresa"></h4>
+              <h6 class="card-subtitle mb-2 text-muted">
+                <span id="modalEditaOfertaPoblacio"></span>
+                -
+                <span id="modalEditaOfertaCicle"></span>
+              </h6>
+              <div class="card-text">
+                <h5>Contacte</h5>
+                <p>
+                  <span id="modalEditaOfertaTelefon"></span>
+                  -
+                  <span id="modalEditaOfertaEmail"></span>
+                </p>
+              </div>
+              <div class="mb-2 form-group">
+                <h5>Descripció</h5>
+                <textarea class="form-control" id="modalEditaOfertaDescripcio" rows="10" readonly></textarea>
+              </div>
+              <a href="#" class="btn btn-primary" target="_blank" id="modalEditaOfertaWeb">Visitar web</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+          </svg>
+          Tancar
+        </button>
+      </div>
     </div>
   </div>
 </div>

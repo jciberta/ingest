@@ -455,6 +455,8 @@ class Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');
 			$Retorn .= Menu::Opcio('Avaluacions', 'Recerca.php?accio=Avaluacio');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio("Borsa Treball", 'BorsaTreball.php');
 			$Retorn .= Menu::Tanca();
 
 			// Menú Centre

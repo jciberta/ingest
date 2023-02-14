@@ -196,3 +196,97 @@ function cancelaNovaOferta() {
   $("#inputDescripcio").val("")
   $("#inputWeb").val("")
 }
+
+function editaOferta(id) {
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "editaOferta",
+      id: id
+    },
+    beforeSend: () => {
+      $("#modalEditLoading").removeClass("visually-hidden")
+    },
+    success: (data) => {
+      $("#modalEditaOfertaEmpresa").html(data[0].empresa)
+      $("#modalEditaOfertaCicle").html(data[0].nom_cicle)
+      $("#modalEditaOfertaDescripcio").html(data[0].descripcio)
+      $("#modalEditaOfertaPoblacio").html(data[0].poblacio)
+      $("#modalEditaOfertaWeb").attr("href", data[0].web)
+      $("#modalEditaOfertaEmail").html(data[0].email)
+      $("#modalEditaOfertaTelefon").html(data[0].telefon)
+      $(".modal-footer").append(`
+        <button type="button" class="btn btn-danger" onclick="eliminaOferta(${id})">Eliminar</button>
+        <button type="button" class="btn btn-primary" onclick="publicaOferta(${id})">Publica</button>
+      `)
+    },
+    error: (error) => {
+      console.log(`Ajax error -> ${error}`)
+    },
+    complete: () => {
+      $("#modalEditLoading").addClass("visually-hidden")
+    }
+  })
+}
+
+function eliminaOferta(id) {
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "eliminaOferta",
+      id: id
+    },
+    beforeSend: () => {
+      $("#modalEditLoading").removeClass("visually-hidden")
+    },
+    success: (data) => {
+      if (data.status == "ok") {
+        $("#modalEditaOferta").modal("toggle")
+        carregaOfertes()
+      } else {
+        $("#modalEditErrorMessage").html(data.missatge)
+        $("#modalEditError").removeClass("visually-hidden")
+      }
+    },
+    error: (error) => {
+      console.log(`Ajax error -> ${error}`)
+    },
+    complete: () => {
+      $("#modalEditLoading").addClass("visually-hidden")
+    }
+  })
+}
+
+function publicaOferta(id) {
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "publicaOferta",
+      id: id
+    },
+    beforeSend: () => {
+      $("#modalEditLoading").removeClass("visually-hidden")
+    },
+    success: (data) => {
+      if (data.status == "ok") {
+        $("#modalEditaOferta").modal("toggle")
+        carregaOfertes()
+      } else {
+        $("#modalEditErrorMessage").html(data.missatge)
+        $("#modalEditError").removeClass("visually-hidden")
+      }
+    },
+    error: (error) => {
+      console.log(`Ajax error -> ${error}`)
+    },
+    complete: () => {
+      $("#modalEditLoading").addClass("visually-hidden")
+    }
+  })
+}
