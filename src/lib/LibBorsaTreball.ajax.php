@@ -33,36 +33,36 @@ if (isset($_POST["accio"])) {
 
   switch ($accio) {
     case "carregaOfertes":
-      echo $BorsaTreball->consultaOfertes();
+      echo $BorsaTreball->ConsultaOfertes();
       break;
     case "mostraOferta":
-      mostraOferta($BorsaTreball, $con);
+      MostraOferta($BorsaTreball, $con);
       break;
     case "carregaCicles":
-      echo $BorsaTreball->consultaCiclesFormatius();
+      echo $BorsaTreball->ConsultaCiclesFormatius();
       break;
     case "guardarNovaOferta":
-      guardarNovaOferta($BorsaTreball, $con);
+      GuardarNovaOferta($BorsaTreball, $con);
       break;
     case "filtrarOfertes":
-      filtrarOfertes($BorsaTreball, $con);
+      FiltrarOfertes($BorsaTreball, $con);
       break;
   }
 } else {
   echo json_encode(array("error" => "No s'ha trobat l'acció"));
 }
 
-function mostraOferta($BorsaTreball, $con)
+function MostraOferta($BorsaTreball, $con)
 {
   if (isset($_POST["id"])) {
     $id = mysqli_real_escape_string($con, $_POST["id"]);
-    echo $BorsaTreball->consultaOferta($id);
+    echo $BorsaTreball->ConsultaOferta($id);
   } else {
     echo json_encode(array("error" => "No s'ha trobat l'id de l'oferta"));
   }
 }
 
-function guardarNovaOferta($BorsaTreball, $con)
+function GuardarNovaOferta($BorsaTreball, $con)
 {
   if (isset($_POST["empresa"]) && isset($_POST["cicle"]) && isset($_POST["contacte"]) && isset($_POST["telefon"]) && isset($_POST["poblacio"]) && isset($_POST["correu"]) && isset($_POST["descripcio"]) && isset($_POST["web"])) {
     $empresa = mysqli_real_escape_string($con, $_POST["empresa"]);
@@ -78,6 +78,14 @@ function guardarNovaOferta($BorsaTreball, $con)
       die(json_encode(array("error" => 404, "missatge" => "No s'han trobat totes les dades de l'oferta")));
     }
 
+    if(!is_numeric($cicle) || !preg_match('/^[0-9]+$/', $cicle)) {
+      die(json_encode(array("error" => 404, "missatge" => "No s'ha seleccionat cap cicle formatiu")));
+    }
+
+    if(!is_numeric($telefon)) {
+      die(json_encode(array("error" => 404, "missatge" => "El telèfon només pot contenir números")));
+    }
+
     if (strlen($telefon) > 9 || strlen($telefon) < 9) {
       die(json_encode(array("error" => 404, "missatge" => "El telèfon ha de tenir 9 dígits")));
     }
@@ -86,22 +94,22 @@ function guardarNovaOferta($BorsaTreball, $con)
       die(json_encode(array("error" => 404, "missatge" => "El correu electrònic no és vàlid")));
     }
 
-    if (!filter_var($web, FILTER_VALIDATE_URL)) {
+    if(!preg_match('/[a-zA-Z0-9-\.]+\.[a-z]{2,4}/', $web)) {
       die(json_encode(array("error" => 404, "missatge" => "La web no és vàlida")));
     }
 
-    echo $BorsaTreball->guardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
+    echo $BorsaTreball->GuardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
   } else {
     echo json_encode(array("error" => "No s'han trobat totes les dades de l'oferta"));
   }
 }
 
-function filtrarOfertes($BorsaTreball, $con)
+function FiltrarOfertes($BorsaTreball, $con)
 {
   if (isset($_POST["cerca"])) {
     $cerca = mysqli_real_escape_string($con, $_POST["cerca"]);
 
-    echo $BorsaTreball->filtrarOfertes($cerca);
+    echo $BorsaTreball->FiltrarOfertes($cerca);
   } else {
     echo json_encode(array("error" => "No s'han trobat totes les dades de l'oferta"));
   }
