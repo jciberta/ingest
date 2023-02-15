@@ -583,7 +583,7 @@ CREATE TABLE BORSA_TREBALL
     poblacio VARCHAR(120),
     email VARCHAR(100), 
     web VARCHAR(100), 
-	decripcio TEXT,
+	descripcio TEXT,
     ip VARCHAR(15),
 	publicat BIT NOT NULL DEFAULT 0,
 	
