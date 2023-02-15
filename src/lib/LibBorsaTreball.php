@@ -207,7 +207,7 @@ class BorsaTreball extends Objecte
    * @param string $Titol
    * @return string HTML amb la capçalera
    */
-  public function creaCapcelera($Titol = 'Borsa de treball'): string
+  public function creaCapcalera($Titol = 'Borsa de treball'): string
   {
     $Retorn = '<!doctype html>' . PHP_EOL;
     $Retorn .= '<html>' . PHP_EOL;
@@ -218,7 +218,7 @@ class BorsaTreball extends Objecte
     $Retorn .= '	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">' . PHP_EOL;
     $Retorn .= '</head>' . PHP_EOL;
     $Retorn .= '<body>' . PHP_EOL;
-    $Retorn .= '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+/*    $Retorn .= '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                   <div class="container-fluid">
                     <a class="navbar-brand" href="#">InGest</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -235,7 +235,7 @@ class BorsaTreball extends Objecte
                       </ul>
                     </div>
                   </div>
-                </nav>';
+                </nav>';*/
     $Retorn .= '<div class="starter-template" style="padding:20px">';
     $Retorn .= '<h1>' . $Titol . '</h1>';
     return $Retorn;
