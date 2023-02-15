@@ -15,7 +15,7 @@ require_once('lib/LibBorsaTreball.php');
 
 $BorsaTreball = new BorsaTreball();
 
-echo $BorsaTreball->creaCapcalera();
+echo $BorsaTreball->CreaCapcalera();
 ?>
 
 <div class="container-fluid mb-4">
@@ -199,5 +199,5 @@ echo $BorsaTreball->creaCapcalera();
 </div>
 
 <?php
-echo $BorsaTreball->creaFooter();
+echo $BorsaTreball->CreaFooter();
 ?>
