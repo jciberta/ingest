@@ -40,7 +40,7 @@ class BorsaTreball extends Objecte
    * Retorna la informació de totes les famílies de formació professional
    * @return string HTML amb la informació de les famílies
    */
-  public function consultaCiclesFormatius(): string
+  public function ConsultaCiclesFormatius(): string
   {
     $stmt = $this->Connexio->prepare("SELECT cf.nom, cf.cicle_formatiu_id FROM cicle_formatiu cf INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id;");
 
@@ -63,7 +63,7 @@ class BorsaTreball extends Objecte
    * Retorna la informació de totes les ofertes de la borsa de treball
    * @return string HTML amb la informació de les ofertes
    */
-  public function consultaOfertes(): string
+  public function ConsultaOfertes(): string
   {
     $stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM borsa_treball bt INNER JOIN cicle_formatiu cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id;");
 
@@ -105,7 +105,7 @@ class BorsaTreball extends Objecte
    * @return string HTML amb la informació de les ofertes
    */
 
-  public function filtrarOfertes($filtre): string
+  public function FiltrarOfertes($filtre): string
   {
     $stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM borsa_treball bt INNER JOIN cicle_formatiu cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id WHERE fp.nom LIKE ? OR cf.nom LIKE ? OR bt.empresa LIKE ? OR bt.contacte LIKE ? OR bt.poblacio LIKE ?;");
 
@@ -150,7 +150,7 @@ class BorsaTreball extends Objecte
    * @param int $id
    * @return string JSON amb la informació de l'oferta
    */
-  public function consultaOferta(int $id): string
+  public function ConsultaOferta(int $id): string
   {
     $stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM borsa_treball bt INNER JOIN cicle_formatiu cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id WHERE borsa_treball_id = ?;");
 
@@ -178,7 +178,7 @@ class BorsaTreball extends Objecte
    * @param string $web
    * @return string JSON amb el resultat de la operació
    */
-  public function guardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
+  public function GuardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
   {
     try {
 
@@ -207,7 +207,7 @@ class BorsaTreball extends Objecte
    * @param string $Titol
    * @return string HTML amb la capçalera
    */
-  public function creaCapcalera($Titol = 'Borsa de treball'): string
+  public function CreaCapcalera($Titol = 'Borsa de treball'): string
   {
     $Retorn = '<!doctype html>' . PHP_EOL;
     $Retorn .= '<html>' . PHP_EOL;
@@ -218,30 +218,12 @@ class BorsaTreball extends Objecte
     $Retorn .= '	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">' . PHP_EOL;
     $Retorn .= '</head>' . PHP_EOL;
     $Retorn .= '<body>' . PHP_EOL;
-/*    $Retorn .= '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                  <div class="container-fluid">
-                    <a class="navbar-brand" href="#">InGest</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/">Inici</a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link" href="/BorsaTreball.php">Borsa Treball</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </nav>';*/
     $Retorn .= '<div class="starter-template" style="padding:20px">';
     $Retorn .= '<h1>' . $Titol . '</h1>';
     return $Retorn;
   }
 
-  public function creaFooter()
+  public function CreaFooter()
   {
     echo "</div>" . PHP_EOL;
     echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>' . PHP_EOL;
@@ -263,7 +245,7 @@ class BorsaTreball extends Objecte
    * @param string $web
    * @throws Exception Si hi ha algun error al enviar el correu
    */
-  private function enviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
+  private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
   {
 
     $stmt = $this->Connexio->prepare("SELECT u.email FROM usuari u INNER JOIN sistema s ON u.usuari_id = s.gestor_borsa_treball_id;");
