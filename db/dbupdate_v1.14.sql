@@ -1,0 +1,1 @@
+ALTER TABLE table_name RENAME COLUMN decripcio TO descripcio;
