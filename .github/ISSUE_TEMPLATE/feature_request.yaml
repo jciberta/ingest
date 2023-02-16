@@ -26,5 +26,5 @@ body:
     attributes:
       label: "Heu comprovat si ja s'ha plantejat aquest problema?"
       options:
-        - label: No he trobat cap problema semblant
+        - label: "No he trobat cap problema semblant"
           required: true
