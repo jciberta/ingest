@@ -89,10 +89,10 @@ switch ($accio) {
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Mòduls professionals';
-		$frm->SQL = 'SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, MP.actiu, es_fct AS FCT, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP '.
-			' FROM MODUL_PROFESSIONAL MP '.
-			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-			' LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id) ';
+		$frm->SQL = "SELECT MP.modul_professional_id, MP.codi AS codi, MP.nom AS nom, hores, hores_setmana, MP.actiu, es_fct AS FCT, especialitat, cos, CF.codi AS CodiCF, CF.nom AS NomCF, FFP.nom AS NomFFP
+		FROM MODUL_PROFESSIONAL MP
+		LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id)
+		LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=CF.familia_fp_id);";
 		$frm->Taula = 'MODUL_PROFESSIONAL';
 		$frm->ClauPrimaria = 'modul_professional_id';
 		$frm->Camps = 'codi, nom, hores, hores_setmana, bool:FCT, especialitat, cos, CodiCF, NomCF, NomFFP, bool:actiu';

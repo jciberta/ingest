@@ -24,21 +24,21 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
 
 RecuperaGET($_GET);
 
 CreaIniciHTML($Usuari, 'Matrícula');
 
-$alumne = $_POST['lkh_alumne'];
-$curs = $_POST['cmb_curs'];
-$grup = $_POST['cmb_grup'];
-$GrupTutoria = $_POST['cmb_grup_tutoria'];
+$alumne = mysqli_real_escape_string($conn, $_POST['lkh_alumne']);
+$curs = mysqli_real_escape_string($conn, $_POST['cmb_curs']);
+$grup = mysqli_real_escape_string($conn, $_POST['cmb_grup']);
+$GrupTutoria = mysqli_real_escape_string($conn, $_POST['cmb_grup_tutoria']);
 
 if (($alumne == '') || ($curs == '')) {
 	echo '<div class="alert alert-danger" id="MissatgeError" role="alert">';
@@ -60,17 +60,22 @@ else {
 	echo '</div>';
 	
 	// Llistem les UF del cicle/nivell
-	$SQL = ' SELECT UF.nom AS NomUF, UF.hores AS HoresUF, MP.codi AS CodiMP, MP.nom AS NomMP, CF.nom AS NomCF, UF.*, MP.*, CF.* '.
-		' FROM UNITAT_FORMATIVA UF '.
-		' LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) '.
-		' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=MP.cicle_formatiu_id) '.
-		' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-		' WHERE C.curs_id='.$curs.
-		' AND C.nivell=UF.nivell '.
-		' ORDER BY MP.codi, UF.codi';
-//	print_r($SQL);
+	$SQL = '
+		SELECT 
+			UPE.nom AS NomUF, UPE.hores AS HoresUF, MPE.codi AS CodiMP, MPE.nom AS NomMP, CPE.nom AS NomCF, UPE.*, MPE.*, CPE.* 
+		FROM UNITAT_PLA_ESTUDI UPE
+		LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+		LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+		LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) 
+		WHERE C.curs_id=? AND C.nivell=UPE.nivell 
+		ORDER BY MPE.codi, UPE.codi;
+	';
 
-	$ResultSet = $conn->query($SQL);
+	$stmt = $conn->prepare($SQL);
+	$stmt->bind_param("i", $curs);
+	$stmt->execute();
+
+	$ResultSet = $stmt->get_result();
 	if ($ResultSet->num_rows > 0) {
 		echo '<TABLE class="table table-sm table-striped">';
 		echo '<THEAD class="thead-dark">';
@@ -93,5 +98,3 @@ else {
 }
 
 $conn->close();
-
-?>

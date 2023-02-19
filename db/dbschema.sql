@@ -134,16 +134,27 @@ CREATE TABLE ANY_ACADEMIC
 CREATE TABLE SISTEMA
 (
     /* S */
-	/* Ha de contenir un únic registre 	que conté la configuració */
+	/* Ha de contenir un únic registre que conté la configuració */
     sistema_id INT NOT NULL AUTO_INCREMENT,
 	nom VARCHAR(100), /* Nom institut */ 
 	any_academic_id INT NOT NULL,
     director_id INT NOT NULL,
     gestor_borsa_treball_id INT,
     versio_db VARCHAR(5),
-	
+    google_client_id VARCHAR(100),
+    google_client_secret VARCHAR(100),
+    moodle_url VARCHAR(100),
+    moodle_ws_token VARCHAR(100),
+    ipdata_api_key VARCHAR(100),
+    clickedu_api_key VARCHAR(100),
+    clickedu_id int,
+    clickedu_secret VARCHAR(100),
+    capcalera_login VARCHAR(1000),
+    peu_login VARCHAR(1000),
+
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
-    CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id)		
+    CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id),		
+    CONSTRAINT S_GestorBorsaTreballFK FOREIGN KEY (gestor_borsa_treball_id) REFERENCES USUARI(usuari_id)		
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE CICLE_PLA_ESTUDI
@@ -225,9 +236,12 @@ CREATE TABLE CURS
 	data_final DATE,
     grups_classe VARCHAR(100),
     grups_tutoria VARCHAR(100),
-	avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
+    avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
     trimestre INT NOT NULL DEFAULT 1, /* 1, 2, 3 */
     estat char(1) NOT NULL DEFAULT 'A', /* Actiu, Junta, Inactiu, Obertura, Tancat */
+    data_inici DATE,
+    data_final DATE,    
+    data_tancament DATETIME,
 
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
     CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
@@ -243,6 +257,12 @@ CREATE TABLE MATRICULA
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
     baixa BIT,
+    comentari_trimestre1 VARCHAR(100),
+    comentari_trimestre2 VARCHAR(100),
+    comentari_trimestre3 VARCHAR(100),
+    comentari_ordinaria VARCHAR(100),
+    comentari_extraordinaria VARCHAR(100),
+    comentari_matricula_seguent VARCHAR(100),
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
@@ -563,7 +583,7 @@ CREATE TABLE BORSA_TREBALL
     poblacio VARCHAR(120),
     email VARCHAR(100), 
     web VARCHAR(100), 
-	decripcio TEXT,
+	descripcio TEXT,
     ip VARCHAR(15),
 	publicat BIT NOT NULL DEFAULT 0,
 	
@@ -619,6 +639,19 @@ CREATE TABLE BONIFICACIO_MATRICULA
     CONSTRAINT BonificacioMatriculaPK PRIMARY KEY (bonificacio_matricula_id),
     CONSTRAINT BM_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT BM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE PROPOSTA_MATRICULA
+(
+    /* PM */
+    proposta_matricula_id INT NOT NULL AUTO_INCREMENT,
+    matricula_id INT NOT NULL,
+    unitat_formativa_id INT NOT NULL, 
+	baixa BIT NOT NULL DEFAULT 0,
+	
+    CONSTRAINT PropostaMatriculaPK PRIMARY KEY (proposta_matricula_id),
+    CONSTRAINT PM_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
+    CONSTRAINT PM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -972,8 +1005,6 @@ BEGIN
     UPDATE NOTES SET convocatoria=0 
         WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)>=5;
 
-    UPDATE NOTES SET convocatoria=convocatoria+1 
-        WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)<5 AND UltimaNota(notes_id)!=-1 AND nota1 IS NOT NULL;
 END //
 DELIMITER ;
 

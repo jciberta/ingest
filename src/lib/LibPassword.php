@@ -110,9 +110,9 @@ class RecuperaPasswordProfessor extends RecuperaPassword
 }
 
 /**
- * Classe que encapsula les utilitats per a la recuperació de la contrasenya del tutor.
+ * Classe que encapsula les utilitats per a la recuperació de la contrasenya del progenitor.
  */
-class RecuperaPasswordTutor extends RecuperaPassword
+class RecuperaPasswordProgenitor extends RecuperaPassword
 {
 	/**
 	 * Crea la SQL per recuperar un fill.

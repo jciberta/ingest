@@ -326,7 +326,7 @@ class Portal
 	/**
 	 * Escriu la capçalera de la pàgina web.
 	 */				
-	public function EscriuCapcalera() {
+	public function EscriuCapcalera(string $CapcaleraLogin = '') {
 		echo '<html>';
 		echo '<head>';
 		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
@@ -339,11 +339,7 @@ class Portal
 		echo '<div class="container">';
 		echo '	<div class="header clearfix">';
 		echo '		<nav>';
-		echo '		<ul class="nav nav-pills float-right">';
-		echo '			<li class="nav-item"><a class="nav-link" href="http://inspalamos.cat" target="_blank">Web</a></li>';
-		echo '			<li class="nav-item"><a class="nav-link" href="https://educaciodigital.cat/iespalamos/moodle/" target="_blank">Moodle</a></li>';
-		echo '			<li class="nav-item"><a class="nav-link" href="https://classroom.google.com" target="_blank">Classroom</a></li>';
-		echo '		</ul>';
+		echo $CapcaleraLogin;
 		echo '		</nav>';
 		echo '	</div>';
 	}
@@ -351,9 +347,9 @@ class Portal
 	/**
 	 * Escriu el peu de la pàgina web.
 	 */				
-	public function EscriuPeu(bool $bRecuperaContrasenya = True) {
+	public function EscriuPeu(string $Nom, bool $bRecuperaContrasenya = True) {
 		echo '	<footer class="footer">';
-		echo '	<p style="text-align:left;">Institut de Palamós';
+		echo '	<p style="text-align:left;">'.$Nom;
 		if ($bRecuperaContrasenya)
 			echo '		<span style="float:right;"><a href="RecuperaPassword.html">Recupera contrasenya</a></span>';
 		echo '	</p>';

@@ -58,7 +58,7 @@ class Objecte
 	* Registre per a emmagatzemar el resultat d'un DataSet.
 	* @var object
 	*/    
-    private $Registre = null;
+    public $Registre = null;
 	
 	/**
 	 * Constructor de l'objecte.
@@ -481,7 +481,7 @@ class Form extends Objecte
 		$TextValor = '';
 		switch ($Calcul) {
 			case Form::tccEDAT:
-				$diff = date_diff(date_create("now"), date_create($Valor));
+				$diff = date_diff(date_create("now"), date_create($Valor ?? ''));
 				$TextValor = $diff->format("%y");
 //print("Edat: $TextValor<hr>");
 				break;
@@ -1042,8 +1042,8 @@ class FormRecerca extends Form
 				$sWhere .= '(';
 				foreach ($aCamps as $sCamp) {
 					$sCamp = $this->EliminaTipusPredefinit($sCamp);
-					if (array_key_exists($sCamp, $obj->CampAlies) && ($obj->CampAlies[$sCamp] != ''))
-						$sWhere .= $obj->CampAlies[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
+					if (array_key_exists($sCamp, $obj->AliesCamp) && ($obj->AliesCamp[$sCamp] != ''))
+						$sWhere .= $obj->AliesCamp[$sCamp] . " LIKE '%" . $sValor . "%' OR ";
 					else
 						$sWhere .= $sCamp . " LIKE '%" . $sValor . "%' OR ";
 				}
@@ -3121,5 +3121,3 @@ class FormFitxaDetall extends FormFitxa
 		return $Retorn;
 	}
 }
-
-?>

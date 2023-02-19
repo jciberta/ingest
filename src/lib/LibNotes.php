@@ -37,8 +37,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  */
 function ObteTaulaNotesJSON($Connexio, $CicleId, $Nivell)
 {
-	$Notes = new Notes($conn, NULL);
-	$SQL = $Notes->CreaSQL($CursId, $Nivell);
+	$Notes = new Notes($Connexio, NULL);
+	$SQL = $Notes->CreaSQL($CicleId, $Nivell);
 
 	//return $SQL;
 	//print_r($SQL);
@@ -343,7 +343,7 @@ class Notes extends Form
 	 * Escriu el formulari corresponent a les notes d'un cicle i nivell (versió 1).
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
-	 * @param array $Notes Dades amb les notes.
+	 * @param object $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
 	 * @param object $Professor Objecte professor.
 	 * @param object $Avaluacio Objecte avaluació.
@@ -469,7 +469,7 @@ class Notes extends Form
 	 * Escriu el formulari corresponent a les notes d'un cicle i nivell (versió DataTables).
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
-	 * @param array $Notes Dades amb les notes.
+	 * @param object $Notes Dades amb les notes.
 	 * @param int $IdGraella Identificador de la graella de notes.
 	 * @param object $Professor Objecte professor.
 	 * @param object $Avaluacio Objecte avaluació.
@@ -1374,7 +1374,7 @@ class Notes extends Form
 	
 	/**
 	 * Exporta les notes d'un registre (corresponent a 1r o 2n).
-	 * @param string $RegistreNotes Registre de notes.
+	 * @param object $RegistreNotes Registre de notes.
 	 * @param resource $handle Identificador del fitxer.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
@@ -1551,7 +1551,7 @@ class Notes extends Form
 
 	/**
 	 * Exporta les notes d'un registre en format XLSX (corresponent a 1r o 2n).
-	 * @param string $RegistreNotes Registre de notes.
+	 * @param object $RegistreNotes Registre de notes.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @param int $Tipus Tipus d'exportació: última nota, última convocatòria.
 	 * @param string $filename Nom del fitxer.
@@ -1875,13 +1875,7 @@ class Notes extends Form
  * Classe que encapsula les utilitats per al maneig de les notes del mòdul.
  */
 class NotesModul extends Notes 
-{
-	/**
-	* Registre carregat amb CarregaRegistre.
-	* @var object
-	*/    
-	private $Registre = NULL;
-	
+{	
 	/**
 	* Identificador del mòdul professional.
 	* @var integer

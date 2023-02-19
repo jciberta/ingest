@@ -72,9 +72,9 @@ function Ordinal($Numero)
  * @param string $SQL Sentència SQL.
  * @param array $CampCodi Nom del camp del codi.
  * @param array $CampValor Nom del camp del valor.
- * @return void Array que conté 2 arrays (parell codi-valor).
+ * @return array Array que conté 2 arrays (parell codi-valor).
  */
-function Ocurrencies($array)
+function Ocurrencies($array): array
 {
 	$aRetorn = array();
 	$TextAnterior = '';

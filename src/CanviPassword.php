@@ -38,11 +38,16 @@ if (!empty($_POST))
 					// Canvi de la contrasenya a través de la contrasenya actual
 					if (($_POST['contrasenya1'] == $_POST['contrasenya2']) && ($_POST['contrasenya1'] != '')) {
 						$errors = [];
-	//print_r($_POST['contrase nya1']);
+						//print_r($_POST['contrase nya1']);
 						if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
-							$SQL = "UPDATE USUARI SET password='".password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT)."', imposa_canvi_password=0 WHERE usuari_id=". $Usuari->usuari_id;
-	//print_r($SQL);
-							$conn->query($SQL);	
+							$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE usuari_id = ?;";
+							$stmt = $conn->prepare($SQL);
+							$Password = password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT); // Evita "Notice: Only variables should be passed by reference"
+							$stmt->bind_param("si", $Password, $Usuari->usuari_id);
+//							$stmt->bind_param("si", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $Usuari->usuari_id);
+							$stmt->execute();
+							$stmt->close();
+							//print_r($SQL);
 							PaginaHTMLMissatge("Informació", "La contrasenya s'ha desat correctament.");
 							$log = new Registre($conn, $Usuari);
 							$log->Escriu(Registre::AUTH, 'Canvi de contrasenya');
@@ -61,13 +66,16 @@ if (!empty($_POST))
 			} 
 			else {
 				// Canvi de la contrasenya a través d'un email
-				$key = $_POST['clau'];
-				$email = $_POST['email'];
+				$key = mysqli_real_escape_string($conn, $_POST['clau']);
+				$email = mysqli_real_escape_string($conn, $_POST['email']);
 				
-				$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau='".$key."' and email='".$email."'";
+				$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau = ? and email = ?;";
+				$stmt = $conn->prepare($SQL);
+				$stmt->bind_param("ss", $key, $email);
+				$stmt->execute();
 //echo "SQL: $SQL<br>";
 
-				$ResultSet = $conn->query($SQL);
+				$ResultSet = $stmt->get_result();
 //print_r($ResultSet);
 				if ($ResultSet->num_rows < 1) {
 					PaginaHTMLMissatge("Enllaç invàlid", "L'enllaç és invàlid o ha caducat.");
@@ -82,10 +90,15 @@ if (!empty($_POST))
 							$errors = [];
 							if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
 								// Compte! Un email diferent per a cada usuari
-								$SQL = "UPDATE USUARI SET password='".password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT)."' WHERE email='$email'";
-								$conn->query($SQL);	
-								$SQL = "DELETE FROM PASSWORD_RESET_TEMP WHERE email='$email'";
-								$conn->query($SQL);	
+								$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE email = ?;";
+								$stmt = $conn->prepare($SQL);
+								$stmt->bind_param("ss", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $email);
+								$stmt->execute();
+								
+								$SQL = "DELETE FROM PASSWORD_RESET_TEMP WHERE email = ?;";
+								$stmt = $conn->prepare($SQL);
+								$stmt->bind_param("s", $email);
+								$stmt->execute();
 								PaginaHTMLMissatge("Informació", "La contrasenya s'ha desat correctament.");
 							}
 							else {
@@ -104,7 +117,7 @@ if (!empty($_POST))
 		}
 		catch (Exception $e) 
 		{
-			$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+			$Text = "[File: ".$e->getFile().", line ".$e->getLine()."]: ".$e->getMessage();
 			PaginaHTMLMissatge("Error", $Text);
 		}
 	}

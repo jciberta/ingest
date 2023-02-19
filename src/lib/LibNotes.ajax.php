@@ -5,6 +5,21 @@
  *
  * Accions AJAX per a la llibreria de notes.
  *
+ * Accés:
+ *   - Administrador, direcció, cap d'estudis, professor
+ * Accions:
+ *   - MarcaComNotaAnterior
+ *   - ActualitzaNota
+ *   - ActualitzaNotaModul
+ *   - ActualitzaTaulaNotes
+ *   - ActualitzaNotaRecuperacio
+ *   - ActualitzaConvalidacio
+ *   - AugmentaConvocatoria
+ *   - RedueixConvocatoria
+ *   - ConvocatoriaA0
+ *   - Desconvalida
+ *   - AugmentaConvocatoriaFila
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -15,7 +30,10 @@ require_once(ROOT.'/lib/LibNotes.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
-$Festiu = unserialize($_SESSION['FESTIU']);
+$Usuari = unserialize($_SESSION['USUARI']);
+
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -26,7 +44,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$nom = $_REQUEST['nom'];
 		$data = explode("_", $nom);
 		$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$data[1];	
-
 		try {
 			if (!$conn->query($SQL))
 				throw new Exception($conn->error.'. SQL: '.$SQL);
@@ -52,7 +69,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'ActualitzaNotaModul') {
 		$nom = $_REQUEST['nom'];
 		$data = explode("_", $nom);
-//		$mp = $_REQUEST['mp'];
 		$valor = $_REQUEST['valor'];
 		if (EsNotaValida($valor)) {
 			$NotaNumerica = NotaANumero($valor);
@@ -60,11 +76,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 				$SQL = 'INSERT INTO NOTES_MP (matricula_id, modul_professional_id, nota) VALUES ('.
 					$data[2].', '.
 					$data[3].', '.
-//					$mp.', '.
 					$NotaNumerica.
 				')';
-			
-			//SET nota'.$data[2].'='.$NotaNumerica.' WHERE notes_mp_id='.$data[1];	
 			}
 			else
 				$SQL = 'UPDATE NOTES_MP SET nota='.$NotaNumerica.' WHERE notes_mp_id='.$data[1];	
@@ -102,7 +115,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		if (EsNotaValida($valor)) {
 			$NotaNumerica = NotaANumero($valor);
 			$SQL = 'UPDATE NOTES SET convalidat=1, convocatoria=0, nota'.$data[2].'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
-			//$SQL = 'UPDATE NOTES SET nota'.($data[2]+1).'='.$NotaNumerica.' WHERE notes_id='.$data[1];	
 			$conn->query($SQL);
 			print $SQL;
 		} 

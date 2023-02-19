@@ -5,6 +5,14 @@
  *
  * Accions AJAX per a la llibreria d'usuaris.
  *
+ * Accés:
+ *   - Administrador, direcció, cap d'estudis
+ * Accions:
+ *   - MatriculaUF
+ *   - ConvalidaUF
+ *   - EliminaMatriculaCurs
+ *   - EliminaMatriculaAlumne
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -13,12 +21,14 @@ require_once('../Config.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibUsuari.php');
-//require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibMatricula.php');
-//require_once(ROOT.'/lib/LibExpedient.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
+	header("Location: ../Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
+
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);

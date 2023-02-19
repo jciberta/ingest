@@ -47,6 +47,9 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 		
+		if (!$Usuari->es_admin)
+			header("Location: Surt.php");
+
 		$Opcions = [FormFitxa::offREQUERIT];
 		$NomesLectura = !($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);
 		if ($NomesLectura)
@@ -195,8 +198,11 @@ switch ($accio) {
 		if (!$PermisLectura)
 			header("Location: Surt.php");
 
-		$frm = new ProgramacioDidactica($conn, $Usuari, $Sistema);
-		$frm->Id = $Id;
+//		$frm = new ProgramacioDidactica($conn, $Usuari, $Sistema);
+//		$frm->Id = $Id;
+
+		$frm = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $Id);
+
 		$frm->EscriuHTML();
         break;
     case "PlaEstudisCicleFitxa":

@@ -17,12 +17,12 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
+if (!$Usuari->es_admin)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-
-if (!$Usuari->es_admin)
-	header("Location: Surt.php");
 
 $frm = new ConsolaSQL($conn, $Usuari);
 $frm->EscriuHTML();

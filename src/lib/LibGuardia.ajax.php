@@ -5,8 +5,15 @@
  *
  * Accions AJAX per a la llibreria de guàrdies.
  *
+ * Accés:
+ *   - Administrador
+ * Accions:
+ *   - GeneraProperDia
+ *   - CanviaDia
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
+ * @deprecated
  */
 
 require_once('../Config.php');
@@ -15,6 +22,11 @@ require_once(ROOT.'/lib/LibGuardia.php');
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
+$Usuari = unserialize($_SESSION['USUARI']);
+
+if (!$Usuari->es_admin)
+	header("Location: ../Surt.php");
+
 $Festiu = unserialize($_SESSION['FESTIU']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);

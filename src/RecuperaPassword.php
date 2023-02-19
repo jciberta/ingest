@@ -36,10 +36,13 @@ if (!empty($_POST))
 		{
 			$Mode = $_POST['Mode'];
 
+
+			//TODO: FILTER_SANITIZE_STRING is deprecated.
+
 			if ($Mode == 'Tutor') {
 				$DNI = $_POST['dni'];
 				$DNI = filter_var($DNI, FILTER_SANITIZE_STRING);
-				$rp = new RecuperaPasswordTutor($conn);
+				$rp = new RecuperaPasswordProgenitor($conn);
 				$SQL = $rp->CreaSQL($DNI);
 				$ResultSet = $conn->query($SQL);
 				if ($ResultSet->num_rows > 0) {
@@ -85,10 +88,12 @@ if (!empty($_POST))
 						$addKey = substr(md5(uniqid(rand(),1)),3,10);
 						$key = $key . $addKey;
 
-						$SQL = " INSERT INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) ". 
-							" VALUES ('$email', '$key', '$expDate') ";
+						$SQL = "INSERT INTO PASSWORD_RESET_TEMP (email, clau, data_expiracio) VALUES (?, ?, ?);";
+						$stmt = $conn->prepare($SQL);
+						$stmt->bind_param("sss", $email, $key, $expDate);
+						$stmt->execute();
 //print_r($SQL);
-						if (!$conn->query($SQL))
+						if (!$stmt)
 							throw new Exception($conn->error.'. SQL: '.$SQL);
 
 						$output ="<p>Cliqueu a l'enllaç següent per reiniciar la vostra contrasenya.</p>";
@@ -137,7 +142,7 @@ if (!empty($_POST))
 							echo "Mailer Error: " . $mail->ErrorInfo;
 						} else {
 							echo "<br /><div>
-							<p>Se us  ha enviat un correu electrònic amb les instruccions per reiniciar la contrasenya.</p>
+							<p>Se us ha enviat un correu electrònic amb les instruccions per reiniciar la contrasenya.</p>
 							</div><br /><br />";
 						}
 						$rp->EscriuPeu(False);
@@ -153,7 +158,7 @@ if (!empty($_POST))
 		}
 		catch (Exception $e) 
 		{
-			$Text = "[File: ".getFile().", line ".$e->getLine()."]: ".$e->getMessage();
+			$Text = "[File: ".$e->getFile().", line ".$e->getLine()."]: ".$e->getMessage();
 			PaginaHTMLMissatge("Error", $Text);
 		}
 	}
@@ -173,10 +178,13 @@ else if (!empty($_GET))
 		$key = $_GET["key"];
 		$email = $_GET["email"];
 		$curDate = date("Y-m-d H:i:s");
-		$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau='".$key."' and email='".$email."'";
+		$SQL = "SELECT * FROM PASSWORD_RESET_TEMP WHERE clau = ? and email = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("ss", $key, $email);
+		$stmt->execute();
 //echo "SQL: $SQL<br>";
 
-		$ResultSet = $conn->query($SQL);
+		$ResultSet = $stmt->get_result();
 //print_r($ResultSet);
 		if ($ResultSet->num_rows < 1) {
 			$error .= "L'enllaç és invàlid o ha caducat. Assegureu-vos que heu copiat la URL del correu electrònic correctament, 
@@ -192,7 +200,7 @@ else if (!empty($_GET))
 				$cp = new CanviPassword();
 				$cp->EscriuCapcalera();
 				$cp->EscriuFormulari(False, $email, $key);
-				$cp->EscriuPeu(False);
+				$cp->EscriuPeu('', False);
 			} 
 			else {
 				PaginaHTMLMissatge("Enllaç caducat", "L'enllaç ha caducat. Esteu intentant usar un enllaç que només és vàlid 24 hores.");
@@ -202,6 +210,3 @@ else if (!empty($_GET))
 }
 else 
 	PaginaHTMLMissatge("Error", "Accés incorrecte a aquesta pàgina.");
-
-?>
-

@@ -145,7 +145,7 @@ print('<hr>');*/
      * @return void.
 	 */
 	private function CreaCampAlies() {
-		$this->CampAlies = array();
+		$this->AliesCamp = array();
 //print('<hr>');
 //print($this->Select);
 //print('<hr>');
@@ -180,7 +180,7 @@ print('<hr>');*/
 		foreach ($aCamps as $data) {
 			$i = strpos(strtoupper($data), ' AS ');
 			if ($i != 0)
-				$this->CampAlies[trim(substr($data, $i+4))] = trim(substr($data, 0, $i));
+				$this->AliesCamp[trim(substr($data, $i+4))] = trim(substr($data, 0, $i));
 		}
 	}
 
@@ -192,12 +192,10 @@ print('<hr>');*/
 	 */
 	public function ObteCampDesDeAlies($alies): string {
 		$Retorn = $alies;
-		foreach ($this->CampAlies as $key => $value) {
+		foreach ($this->AliesCamp as $key => $value) {
 			if ($key == $alies)
 				$Retorn = $value;
 		}
 		return $Retorn;
 	}
 }
-
-?>

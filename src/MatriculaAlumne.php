@@ -41,11 +41,11 @@ RecuperaGET($_GET);
 
 if (!empty($_POST)) {
 //	$alumne = $_POST['alumne'];
-	$MatriculaId = $_POST['MatriculaId'];
+	$MatriculaId = mysqli_real_escape_string($conn, $_POST['MatriculaId']);
 }
 else {
 //	$alumne = $_GET['AlumneId'];
-	$MatriculaId = $_GET['MatriculaId'];
+	$MatriculaId = mysqli_real_escape_string($conn, $_GET['MatriculaId']);
 }
 
 $Matricula = new Matricula($conn, $Usuari);

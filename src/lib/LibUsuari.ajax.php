@@ -5,6 +5,20 @@
  *
  * Accions AJAX per a la llibreria d'usuaris.
  *
+ * Accés:
+ *   - Administrador, direcció, cap d'estudis
+ * Accions:
+ *   - BloquejaUsuari
+ *   - BaixaMatricula
+ *   - ActualitzaTaulaProfessorsUF
+ *   - ActualitzaTaulaProfessorsAssignacioUF
+ *   - ActualitzaTaulaGrupProfessorsAssignacioUF
+ *   - AssignaUF
+ *   - AssignaGrup
+ *   - AssignaGrupTutoria
+ *   - CanviPassword
+ *   - ActualitzaTaulaOrla
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -18,6 +32,9 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -95,7 +112,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 			$conn->query($SQL);
 			print $SQL;
 		}
-	}	else if ($_REQUEST['accio'] == 'AssignaGrup') {
+	}	
+	else if ($_REQUEST['accio'] == 'AssignaGrup') {
 		$CursId = $_REQUEST['curs'];
 		$AlumneId = $_REQUEST['alumne'];
 		$Grup = $_REQUEST['grup'];

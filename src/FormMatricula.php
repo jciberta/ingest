@@ -19,12 +19,12 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error); 
-
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
 
 CreaIniciHTML($Usuari, 'Matriculació');
 echo '<script language="javascript" src="js/Forms.js?v1.5" type="text/javascript"></script>';
@@ -41,7 +41,7 @@ echo '</TR><TR>';
 //	' FROM CURS C'.
 //	' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 //	' WHERE actual=1';
-$SQL = 'SELECT * FROM CURS_ACTUAL';
+$SQL = "SELECT * FROM CURS_ACTUAL;";
 $aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 echo $frmMatricula->CreaLlista('curs', 'Curs', 1000, $aCurs[0], $aCurs[1]);
 echo '</TR><TR>';

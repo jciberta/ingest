@@ -25,7 +25,7 @@ abstract class PlaEstudis extends Form
 	* Registre carregat amb Carrega.
 	* @var object
 	*/    
-	protected $Registre = NULL;
+	/* protected $Registre = NULL; */
 	
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.

@@ -5,6 +5,13 @@
  *
  * Accions AJAX per a la llibreria d'avaluació.
  *
+ * Accés:
+ *   - Administrador, direcció, cap d'estudis
+ * Accions:
+ *   - PosaEstatCurs
+ *   - PosaEstatTrimestre
+ *   - TancaAvaluacio
+ *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -18,6 +25,9 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: ../Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
@@ -27,24 +37,27 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$Id = $_REQUEST['curs_id'];
 		$Estat = $_REQUEST['estat'];
 		// Canviem l'estat del curs
-		$SQL = 'UPDATE CURS SET estat="'.$Estat.'" WHERE curs_id='.$Id;
+		$SQL = "UPDATE CURS SET estat = ? WHERE curs_id = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("si", $Estat, $Id);
+		$stmt->execute();
 		/* PENDENT !!!
 		if ($Estat == 'J') {
 			// Calculem les notes del mòduls que no estan calculades
 			$Avaluacio = new Avaluacio($conn, $Usuari);
 			$Avaluacio->CalculaNotesModul($Id);
 		}*/
-		$conn->query($SQL);
-		//print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'PosaEstatTrimestre') {
 		$Id = $_REQUEST['curs_id'];
 		$Trimestre = $_REQUEST['trimestre'];
 		$Trimestre = $_REQUEST['trimestre'];
 		$EsborraOrientatives = ($_REQUEST['esborra_orientatives'] == 1);
-		// Canviem l'estat del curs
-		$SQL = 'UPDATE CURS SET trimestre="'.$Trimestre.'" WHERE curs_id='.$Id;
-		$conn->query($SQL);
+		// Canviem l'estat del trimestre
+		$SQL = "UPDATE CURS SET trimestre = ? WHERE curs_id = ?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("si", $Trimestre, $Id);
+		$stmt->execute();
 		
 		if ($EsborraOrientatives) {
 			$Notes = new Notes($conn, $Usuari);

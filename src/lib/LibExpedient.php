@@ -75,7 +75,7 @@ class Expedient extends Form
 			SELECT 
 				UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, UPE.data_inici AS DataIniciUF, UPE.data_final AS DataFinalUF,
 				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
-				CPE.nom AS NomCF, CPE.nom AS NomCF, 
+				CPE.cicle_pla_estudi_id AS IdCF, CPE.nom AS NomCF, CPE.nom AS NomCF, CPE.codi AS CodiCF,
 				CF.llei,
 				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, 
 				N.notes_id AS NotaId, N.baixa AS Baixa, N.convalidat AS Convalidat, N.nota1 AS Nota1, N.nota2 AS Nota2, N.nota3 AS Nota3, N.nota4 AS Nota4, N.nota5 AS Nota5, N.convocatoria AS Convocatoria, 
@@ -349,8 +349,8 @@ class Expedient extends Form
 	 * @param integer $Curs Identificador del curs.
 	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
 	 */
-	public function EscriuScript($Curs, $Sufix): string {
-		echo GeneraScript($Curs, $Sufix);
+	public function EscriuScript($Curs, $Sufix) {
+		echo $this->GeneraScript($Curs, $Sufix);
 	}
 
 	private function TextAvaluacio($Avaluacio, $Trimestre) {
@@ -482,7 +482,7 @@ class ExpedientSaga extends Expedient
 			if (!$ResultSet)
 				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 		} catch (Exception $e) {
-			die("<BR><b>ERROR GeneraTaula</b>. Causa: ".$e->getMessage());
+			die("<BR><b>ERROR Carrega</b>. Causa: ".$e->getMessage());
 		}
 		//$this->Registre = $ResultSet;
 		
@@ -813,8 +813,7 @@ class ExpedientSaga extends Expedient
 		$alumne = $this->Matricula->ObteAlumne();
 		$nivell = $this->Matricula->ObteNivell();
 
-		//$sRetorn .= '<div class="contingut" style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 696px;" id="content">';
-		$sRetorn .= '<div class="contingut" style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 650px; border: solid white 0px;" id="content">';
+		$sRetorn .= '<div class="contingut" style="padding-left: 20px; padding-right: 5px; background-color: rgb(141, 164, 160); overflow: auto; height: 500px; border: solid white 0px;" id="content">';
 
 		//$sRetorn .= '<table border=2 cellpadding=0 cellspacing=10 width="740px" style="padding:0px;border-color=yellow;" id="taula_43419445926">';
 		$sRetorn .= '<table width="740px" style="padding:0px;border-collapse:separate;">';
@@ -849,7 +848,6 @@ class ExpedientSaga extends Expedient
 			$sRetorn .= $this->CreaCellaNota($row, $i);
 			$i++;
 			$sRetorn .= "</TR>";
-		
 		}
 		
 		$sRetorn .= '</tbody>';
@@ -857,6 +855,157 @@ class ExpedientSaga extends Expedient
 		$sRetorn .= "<input type=hidden name=TempNota value=''>";
 		$sRetorn .= '</div>';
 
+		return $sRetorn;
+	}
+
+	/**
+	 * Genera el comentari de l'avaluació de notes de l'expedient.
+	 * @return string HTML del comentari.
+	 */
+	private function GeneraComentari(): string {
+		$MatriculaId = $this->MatriculaId;
+		$row = DB::CarregaRegistreObj($this->Connexio, 'MATRICULA', 'matricula_id', $MatriculaId);
+		$Valor = htmlspecialchars($row->comentari_matricula_seguent ?? '');
+		$Events = "onBlur='EnSortirCellaComentari(this);'";
+
+		$sRetorn = PHP_EOL;
+		$sRetorn .= '<div><br>'.PHP_EOL;
+		$sRetorn .= "	Comentari per a la matriculació del proper curs:<br>".PHP_EOL;
+		$sRetorn .= "	<input type=text name=Comentari_$MatriculaId value='$Valor' size=200 $Events>".PHP_EOL;
+		$sRetorn .= '</div>'.PHP_EOL;
+		return $sRetorn;
+	}
+
+	/**
+	 * Carrega les UF de 2n d'un determinat cicle formatiu.
+	 * @param int $IdCF Identificador del cicle formatiu.
+	 * @return array UF de 2n.
+	 */
+	private function CarregaUFSegon(int $IdCF): array {
+		$Retorn = [];
+		$SQL = "
+			SELECT 
+				UPE.unitat_pla_estudi_id AS IdUF, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.orientativa, UPE.nivell AS NivellUF, UPE.data_inici AS DataIniciUF, UPE.data_final AS DataFinalUF,
+				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
+				CPE.cicle_pla_estudi_id AS IdCF, CPE.nom AS NomCF, CPE.nom AS NomCF, CPE.codi AS CodiCF,
+				CF.llei,
+				UPE.*, MPE.*, CPE.*
+			FROM UNITAT_PLA_ESTUDI UPE
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
+			WHERE CPE.cicle_pla_estudi_id=? AND UPE.nivell=2
+			ORDER BY MPE.codi, UPE.codi
+		";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $IdCF);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		if (!$ResultSet)
+			throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		if ($ResultSet->num_rows > 0) {
+			while($row = $ResultSet->fetch_object()) {
+				array_push($Retorn, $row);
+			}
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Carrega els valors de les UF de 2n de la proposta de matrícula.
+	 * @param int $MatriculaId MatriculaId de la matrícula.
+	 * @return array Valors de les UF de 2n.
+	 */
+	private function CarregaUFSegonValors(int $MatriculaId): array {
+		$Retorn = [];
+		$SQL = "
+			SELECT proposta_matricula_id, matricula_id, unitat_formativa_id, baixa
+			FROM PROPOSTA_MATRICULA PM
+			WHERE PM.matricula_id=?
+		";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $MatriculaId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		if (!$ResultSet)
+			throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		if ($ResultSet->num_rows > 0) {
+			while($row = $ResultSet->fetch_object()) {
+				$Retorn[$row->unitat_formativa_id] = $row;
+				//array_push($Retorn, $row);
+			}
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Compara les UF de 2n si estan donades d'alta a la proposta de matrícula.
+	 * @param int $MatriculaId MatriculaId de la matrícula.
+	 * @param array $RegistreUFSegon UF de 2n.
+	 * @param array $RegistreUFSegonValors UF de 2n de la proposta.
+	 */
+	private function ComparaRegistreUFSegon(int $MatriculaId, array $RegistreUFSegon, array $RegistreUFSegonValors) {
+		foreach($RegistreUFSegon as $row) {
+			$IdUF = $row->unitat_formativa_id;
+			if (!array_key_exists($IdUF, $RegistreUFSegonValors)) {
+				$SQL = " INSERT INTO PROPOSTA_MATRICULA (matricula_id, unitat_formativa_id, baixa) VALUES (?, ?, 0)	";
+				$stmt = $this->Connexio->prepare($SQL);
+				$stmt->bind_param("ii", $MatriculaId, $row->unitat_formativa_id);
+				$stmt->execute();				
+			}
+		}
+	}
+
+	/**
+	 * Formata els valors de les UF de 2n per nivell MP/UF.
+	 * @param array $RegistreUFSegon UF de 2n.
+	 * @return array Valors de les UF de 2n formatats per nivell MP/UF.
+	 */
+	private function FormataUFsegon(array $RegistreUFSegon): array {
+		$Retorn = [];
+		$ModulAnterior = -1;
+		foreach($RegistreUFSegon as $row) {
+			if ($row->IdMP != $ModulAnterior) {
+				$IdMP = $row->IdMP;
+				$Retorn[$IdMP] = new stdClass();
+				$Retorn[$IdMP]->Codi = $row->CodiMP;
+				$Retorn[$IdMP]->Nom = $row->NomMP;
+				$Retorn[$IdMP]->UF = [];
+				$ModulAnterior = $IdMP;
+			}
+			$Retorn[$IdMP]->UF[$row->unitat_formativa_id] = $row;
+		}
+		return $Retorn;
+	}
+
+	/**
+	 * Genera la selecció d'UF de 2n per escollir.
+	 * @return string HTML del comentari.
+	 */
+	private function GeneraSeleccioUFSegon(): string {
+		$sRetorn = PHP_EOL;
+		$sRetorn .= '<div><br>'.PHP_EOL;
+		$sRetorn .= "	Proposta d'unitats formatives per cursar a 2n el proper curs:<br>".PHP_EOL;
+
+		$IdCF = $this->Registre[0]['IdCF'];
+		$MatriculaId = $this->MatriculaId;
+//print_h($IdCF);		
+		$RegistreUFSegon = $this->CarregaUFSegon($IdCF);
+		$RegistreUFSegonValors = $this->CarregaUFSegonValors($MatriculaId);
+		$this->ComparaRegistreUFSegon($MatriculaId, $RegistreUFSegon, $RegistreUFSegonValors);
+		$RegistreUFSegonValors = $this->CarregaUFSegonValors($MatriculaId); // Tornem a carregar per si no estaven donades d'alta
+		$RegistreUFSegon = $this->FormataUFsegon($RegistreUFSegon);
+
+		foreach($RegistreUFSegon as $MP) {
+			$sRetorn .= str_repeat('&nbsp', 4)."<b>".$MP->Codi." ".$MP->Nom."</b><br>".PHP_EOL;
+			foreach($MP->UF as $row) {
+				$Checked = ($RegistreUFSegonValors[$row->unitat_formativa_id]->baixa == 0) ? 'checked' : '';
+				$Events = "onClick='EnSortirCasellaUF2n(this);'";
+				$sRetorn .= str_repeat('&nbsp', 8)."<input type=checkbox name=chkUF_".$MatriculaId."_".$row->unitat_formativa_id." $Checked $Events>&nbsp;";
+				$sRetorn .= $row->CodiUF.' '.$row->NomUF.'<br>'.PHP_EOL;
+			}
+		}
+		$sRetorn .= '</div>'.PHP_EOL;
 		return $sRetorn;
 	}
 
@@ -876,8 +1025,9 @@ class ExpedientSaga extends Expedient
 		echo '<script language="javascript" src="js/Forms.js?v1.0" type="text/javascript"></script>';
 		echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
 		echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Expedient.js?v1.1" type="text/javascript"></script>';
 
-		echo '<div style="padding-left: 20px; padding-right: 5px; color: white; background-color: rgb(141, 164, 160); height: 750px;" id="content">';
+		echo '<div style="padding-left: 20px; padding-right: 5px; color: white; background-color: rgb(141, 164, 160); height: 650px;" id="content">';
 		echo '<div id="dades" style="display: block;">';
 
 		$this->Carrega();
@@ -886,10 +1036,17 @@ class ExpedientSaga extends Expedient
 
 		echo $this->GeneraTitol();
 		echo $this->GeneraTaula();
-		echo $this->GeneraPeu();
 
 		echo '</div>';
 		echo '</div>';
+
+		// Pedaç per proves. Només SMX1
+		if ($this->Registre[0]['CodiCF']=='SMX' && $this->Registre[0]['NivellUF']==1) {
+			echo $this->GeneraComentari();
+			echo $this->GeneraSeleccioUFSegon();
+		}
+		echo $this->GeneraPeu();
+
 		CreaFinalHTML();
 	}
 }
@@ -1044,14 +1201,7 @@ class Acta extends Form
 	 * Nivell del curs (1 o 2).
 	 * @var int
 	 */
-	private $NivellCurs = -1;	
-
-	/**
-	 * Registre de les dades de la capçalera.
-	 * @var object
-	 */
-	private $Registre = null;	
-
+	private $NivellCurs = -1;
 	/**
 	 * Registre de les dades dels alumnes.
 	 * @var array

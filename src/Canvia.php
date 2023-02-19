@@ -19,12 +19,12 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
+if (!$Usuari->es_admin && !$Usuari->era_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+	header("Location: Surt.php");
+
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
-
-if (!$Usuari->es_admin && !$Usuari->era_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
 
 RecuperaGET($_GET);
 $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : ''; 
@@ -41,8 +41,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Titol = "Usuaris";
-		$frm->SQL = 'SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, es_alumne, es_professor, es_pare, usuari_bloquejat '.
-			' FROM USUARI ORDER BY cognom1, cognom2, nom';
+		$frm->SQL = "SELECT usuari_id, username, nom, cognom1, cognom2, email, email_ins, codi, es_alumne, es_professor, es_pare, usuari_bloquejat FROM USUARI ORDER BY cognom1, cognom2, nom;";
 		$frm->Taula = 'USUARI';
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, email, email_ins, codi, bool:es_alumne, bool:es_professor, bool:es_pare';
@@ -64,9 +63,12 @@ switch ($accio) {
 	case "CanviaAUsuari":
 		if (!$Usuari->es_admin)
 			header("Location: Surt.php");
-		$Id = $_GET['Id'];
-		$SQL = "SELECT * FROM USUARI WHERE usuari_id=$Id";
-		$ResultSet = $conn->query($SQL);
+		$Id = mysqli_real_escape_string($conn, $_GET['Id']);
+		$SQL = "SELECT * FROM USUARI WHERE usuari_id=?;";
+		$stmt = $conn->prepare($SQL);
+		$stmt->bind_param("i", $Id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 		if ($ResultSet->num_rows > 0) {
 			$user = $ResultSet->fetch_object();
 			$user->era_admin = ($Usuari->es_admin == 1) ? 1 : 0;
@@ -86,5 +88,3 @@ switch ($accio) {
 		header("Location: Escriptori.php");
 		break;
 }
-
-?>

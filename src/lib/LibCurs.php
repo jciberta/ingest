@@ -48,12 +48,12 @@ class Curs extends Objecte
 
 	/**
 	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $conn Connexió a la base de dades.
+	 * @param object $user Usuari.
+	 * @param object $system Sistema.
 	 */
 	function __construct($con, $user, $system = null) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-		$this->Sistema = $system;
+		parent::__construct($con, $user, $system);
 		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);			
 	}	
 
@@ -62,13 +62,15 @@ class Curs extends Objecte
 	 * @param integer $Id Identificador del registre.
 	 */				
 	public function CarregaRegistre($Id) {
-		$SQL = "
-			SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
+		$SQL = "SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
 			FROM CURS C 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
 			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
-			WHERE curs_id=$Id";
-		$ResultSet = $this->Connexio->query($SQL);
+			WHERE curs_id = ?;";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param('i', $Id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 		if ($ResultSet->num_rows > 0) {
 			$this->Registre = $ResultSet->fetch_object();
 		}
@@ -171,7 +173,6 @@ class Curs extends Objecte
 			' FROM CURS C '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-//			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=C.any_academic_id) '.
 			' WHERE AA.actual=1 ';
 		return $SQL;
 	}
@@ -299,8 +300,7 @@ class Curs extends Objecte
 	 * @param string $SQL Sentència SQL amb els cursos.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	private function GeneraEstadistiques(string $SQL): string
-	{
+	private function GeneraEstadistiques(string $SQL): string {
 		$Retorn = GeneraIniciHTML($this->Usuari, 'Estadístiques cursos');
 		$Retorn .= '<script language="javascript" src="vendor/Chart.min.js" type="text/javascript"></script>';
 		
@@ -339,8 +339,7 @@ class Curs extends Objecte
 	 * Genera una pàgina amb les estadístiques de les notes dels cursos actuals.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	public function Estadistiques()
-	{
+	public function Estadistiques() {
 		$SQL = $this->CreaSQLCursosActuals();
 		return $this->GeneraEstadistiques($SQL);
 	}
@@ -350,8 +349,7 @@ class Curs extends Objecte
 	 * @param integer $CursId Identificador del curs.
 	 * @return string Codi HTML de la pàgina.
 	 */				
-	public function EstadistiquesCurs(int $CursId)
-	{
+	public function EstadistiquesCurs(int $CursId) {
 		$SQL = $this->CreaSQL($CursId);
 		return $this->GeneraEstadistiques($SQL);
 	}
@@ -367,8 +365,11 @@ class GrupClasse extends Objecte
 	 * @param integer $Id Identificador del registre.
 	 */				
 	public function Carrega(int $CursId) {
-		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
-		$ResultSet = $this->Connexio->query($SQL);
+		$SQL = "SELECT * FROM CURS WHERE curs_id=?;";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $CursId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 		if ($ResultSet->num_rows > 0) {		
 			$this->Registre = $ResultSet->fetch_object();
 		}
@@ -381,7 +382,7 @@ class GrupClasse extends Objecte
 	 */
 	public function ObteGrups(int $CursId): array {
 		$this->Carrega($CursId);
-		return explode(',', $this->Registre->grups_classe);
+		return explode(',', $this->Registre->grups_classe ?? '');
 	}
 	
 	/**
@@ -430,6 +431,9 @@ class GrupClasse extends Objecte
  */
 class GrupTutoria extends Objecte
 {
+	function __construct($Connexio, $Usuari, $systema = null) {
+		parent::__construct($Connexio, $Usuari, $systema);
+	}
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
@@ -449,7 +453,7 @@ class GrupTutoria extends Objecte
 	 */
 	public function ObteGrups(int $CursId): array {
 		$this->Carrega($CursId);
-		return explode(',', $this->Registre->grups_tutoria);
+		return explode(',', $this->Registre->grups_tutoria ?? '');
 	}
 
 	/**
