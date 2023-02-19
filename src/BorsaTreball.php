@@ -187,8 +187,8 @@ echo $BorsaTreball->CreaCapcalera();
           Tancar
         </button>
         <button type="button" class="btn btn-primary" id="guardarOferta" onclick="guardarNovaOferta()">
-          <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalLoading" aria-hidden="true"></span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+          <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalNovaOfertaLoading" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" id="modalNovaOfertaIcon" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
           </svg>
           <span id="guardarOfertaText">Guardar</span>
@@ -198,6 +198,75 @@ echo $BorsaTreball->CreaCapcalera();
   </div>
 </div>
 
+<!-- Modal editar oferta -->
+<div class="modal fade" id="modalEditaOferta" tabindex="-1" aria-labelledby="modalEditaOfertaLabel">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditaOfertaLabel">Oferta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="spinner-border text-primary text-center" role="status" id="modalEditaLoading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="container">
+          <div class="alert alert-danger fade show visually-hidden" role="alert" id="modalEditaError">
+            <span id="modalEditaErrorMessage"></span>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title" id="modalEditaOfertaEmpresa"></h4>
+              <h6 class="card-subtitle mb-2 text-muted">
+                <span id="modalEditaOfertaPoblacio"></span>
+                -
+                <span id="modalEditaOfertaCicle"></span>
+              </h6>
+              <div class="card-text">
+                <h5>Contacte</h5>
+                <p>
+                  <span id="modalEditaOfertaTelefon"></span>
+                  -
+                  <span id="modalEditaOfertaEmail"></span>
+                </p>
+              </div>
+              <div class="mb-2 form-group">
+                <h5>Descripció</h5>
+                <textarea class="form-control" id="modalEditaOfertaDescripcio" rows="10" readonly></textarea>
+              </div>
+              <a href="#" class="btn btn-primary" target="_blank" id="modalEditaOfertaWeb">Visitar web</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input hidden id="modalEditaOfertaId" />
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+          </svg>
+          Tanca
+        </button>
+        <button type="button" class="btn btn-danger" id="eliminaOferta" onclick="eliminaOferta()">
+          <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalEliminaLoading" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" id="modalEliminaIcon" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+          </svg>
+          <span id="eliminarOfertaText">Elimina</span>
+        </button>
+        <button type="button" class="btn btn-success" id="publicaOferta" onclick="publicaOferta()">
+          <span class="spinner-border spinner-border-sm visually-hidden" role="status" id="modalPublicaLoading" aria-hidden="true"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" id="modalPublicaIcon" class="bi bi-box-arrow-up" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
+            <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 1.707V10.5a.5.5 0 0 1-1 0V1.707L5.354 3.854a.5.5 0 1 1-.708-.708l3-3z" />
+          </svg>
+          <span id="publicaOfertaText">Publica</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <?php
 echo $BorsaTreball->CreaFooter();
 ?>

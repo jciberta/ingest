@@ -17,6 +17,8 @@
 
 require_once('../Config.php');
 require_once(ROOT . '/lib/LibBorsaTreball.php');
+require_once(ROOT . '/lib/LibUsuari.php');
+require_once(ROOT . '/lib/LibURL.php');
 
 session_start();
 
@@ -26,9 +28,16 @@ if ($con->connect_error) {
   die("Connection failed: " . $con->connect_error);
 }
 
-$BorsaTreball = new BorsaTreball($con);
+if (isset($_SESSION["USUARI"]) && isset($_SESSION["usuari_id"])) {
+  $usu = unserialize($_SESSION["USUARI"]);
+  $Usuari = new Usuari($con, $usu, null);
+  $Professor = new Professor($con, $Usuari, null);
+  $BorsaTreball = new BorsaTreball($con, $Usuari, null, $Professor);
+} else {
+  $BorsaTreball = new BorsaTreball($con);
+}
 
-if (isset($_POST["accio"])) {
+if (isset($_POST["accio"]) && !empty($_POST["accio"])) {
   $accio = mysqli_real_escape_string($con, $_POST["accio"]);
 
   switch ($accio) {
@@ -47,9 +56,34 @@ if (isset($_POST["accio"])) {
     case "filtrarOfertes":
       FiltrarOfertes($BorsaTreball, $con);
       break;
+    case "eliminaOferta":
+      EliminaOferta($BorsaTreball, $con);
+      break;
+    case "publicaOferta":
+      PublicaOferta($BorsaTreball, $con);
+      break;
   }
-} else {
-  echo json_encode(array("error" => "No s'ha trobat l'acció"));
+}
+
+if (isset($_GET) && !empty($_GET)) {
+  try {
+    RecuperaGET($_GET);
+    if (isset($_GET["accio"])) {
+      $accio = mysqli_real_escape_string($con, $_GET["accio"]);
+
+      switch ($accio) {
+        case "desubscriuBorsaTreball":
+          DesubscriuBorsaTreball($BorsaTreball, $con);
+          break;
+      }
+    }
+  } catch (Exception $e) {
+    if (Config::Debug) {
+      echo json_encode(array("status" => "error", "message" => $e->getMessage(), "trace" => $e->getTrace()));
+    } else {
+      echo json_encode(array("status" => "error", "message" => "Error al recuperar les dades"));
+    }
+  }
 }
 
 function MostraOferta($BorsaTreball, $con)
@@ -78,11 +112,11 @@ function GuardarNovaOferta($BorsaTreball, $con)
       die(json_encode(array("error" => 404, "missatge" => "No s'han trobat totes les dades de l'oferta")));
     }
 
-    if(!is_numeric($cicle) || !preg_match('/^[0-9]+$/', $cicle)) {
+    if (!is_numeric($cicle) || !preg_match('/^[0-9]+$/', $cicle)) {
       die(json_encode(array("error" => 404, "missatge" => "No s'ha seleccionat cap cicle formatiu")));
     }
 
-    if(!is_numeric($telefon)) {
+    if (!is_numeric($telefon)) {
       die(json_encode(array("error" => 404, "missatge" => "El telèfon només pot contenir números")));
     }
 
@@ -94,7 +128,7 @@ function GuardarNovaOferta($BorsaTreball, $con)
       die(json_encode(array("error" => 404, "missatge" => "El correu electrònic no és vàlid")));
     }
 
-    if(!preg_match('/[a-zA-Z0-9-\.]+\.[a-z]{2,4}/', $web)) {
+    if (!preg_match('/[a-zA-Z0-9-\.]+\.[a-z]{2,4}/', $web)) {
       die(json_encode(array("error" => 404, "missatge" => "La web no és vàlida")));
     }
 
@@ -112,5 +146,44 @@ function FiltrarOfertes($BorsaTreball, $con)
     echo $BorsaTreball->FiltrarOfertes($cerca);
   } else {
     echo json_encode(array("error" => "No s'han trobat totes les dades de l'oferta"));
+  }
+}
+
+function EliminaOferta($BorsaTreball, $con)
+{
+  if (isset($_POST["id"])) {
+    $id = mysqli_real_escape_string($con, $_POST["id"]);
+
+    echo $BorsaTreball->EliminaOferta($id);
+  } else {
+    echo json_encode(array("error" => "No s'ha trobat l'id de l'oferta"));
+  }
+}
+
+function PublicaOferta($BorsaTreball, $con)
+{
+  if (isset($_POST["id"])) {
+    $id = mysqli_real_escape_string($con, $_POST["id"]);
+
+    echo $BorsaTreball->PublicaOferta($id);
+  } else {
+    echo json_encode(array("error" => "No s'ha trobat l'id de l'oferta"));
+  }
+}
+
+function DesubscriuBorsaTreball($BorsaTreball, $con)
+{
+  if (isset($_GET["email"]) && isset($_GET["token"])) {
+    $email = mysqli_real_escape_string($con, $_GET["email"]);
+    $token = mysqli_real_escape_string($con, $_GET["token"]);
+
+    //TODO: Redirigir a l'usuari a una pagina de confirmació de desubscripció de la borsa de treball
+    if ($BorsaTreball->DesubscriuBorsaTreball($email, $token)) {
+      echo json_encode(array("success" => "S'ha desubscrit correctament de la borsa de treball"));
+    } else {
+      echo json_encode(array("error" => "No s'ha pogut desubscriure de la borsa de treball"));
+    }
+  } else {
+    echo json_encode(array("error" => "No s'ha trobat l'email o el token"));
   }
 }

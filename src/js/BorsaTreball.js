@@ -100,16 +100,26 @@ function mostraOferta(id) {
       $("#modalLoading").removeClass('visually-hidden')
     },
     success: (data) => {
-      $("#modalOfertaEmpresa").html(data[0].empresa)
-      $("#modalOfertaCicle").html(data[0].nom_cicle)
-      $("#modalOfertaDescripcio").html(data[0].descripcio)
-      $("#modalOfertaPoblacio").html(data[0].poblacio)
-      $("#modalOfertaWeb").attr("href", data[0].web)
-      $("#modalOfertaEmail").html(data[0].email)
-      $("#modalOfertaTelefon").html(data[0].telefon)
+      if (data !== null && data !== undefined && data.length > 0) {
+        $("#modalOfertaEmpresa").html(data[0].empresa)
+        $("#modalOfertaCicle").html(data[0].nom_cicle)
+        $("#modalOfertaDescripcio").html(data[0].descripcio)
+        $("#modalOfertaPoblacio").html(data[0].poblacio)
+        $("#modalOfertaWeb").attr("href", `https://${data[0].web}`)
+        $("#modalOfertaEmail").html(data[0].email)
+        $("#modalOfertaTelefon").html(data[0].telefon)
+      } else {
+        $("#modalOfertaEmpresa").html("No s'ha trobat l'empresa")
+        $("#modalOfertaCicle").html("No s'ha trobat el cicle")
+        $("#modalOfertaDescripcio").html("No s'ha trobat la descripció")
+        $("#modalOfertaPoblacio").html("No s'ha trobat la població")
+        $("#modalOfertaWeb").attr("href", "#")
+        $("#modalOfertaEmail").html("No s'ha trobat el correu")
+        $("#modalOfertaTelefon").html("No s'ha trobat el telèfon")
+      }
     },
     error: (error) => {
-      console.log(`Ajax error -> ${error}`)
+      console.log(JSON.parse(JSON.stringify(error)))
     },
     complete: () => {
       $("#modalLoading").addClass('visually-hidden')
@@ -152,7 +162,8 @@ function guardarNovaOferta() {
     },
     beforeSend: () => {
       $("#guardarOferta").prop("disabled", true)
-      $("#modalLoading").removeClass("visually-hidden")
+      $("#modalNovaOfertaLoading").removeClass("visually-hidden")
+      $("#modalNovaOfertaIcon").addClass("visually-hidden")
       $("#guardarOfertaText").html("Guardant...")
     },
     success: (data) => {
@@ -178,8 +189,131 @@ function guardarNovaOferta() {
     },
     complete: () => {
       $("#guardarOferta").prop('disabled', false)
-      $("#modalLoading").addClass('visually-hidden')
+      $("#modalNovaOfertaLoading").addClass('visually-hidden')
+      $("#modalNovaOfertaIcon").removeClass('visually-hidden')
       $("#guardarOfertaText").html("Guardar")
+    }
+  })
+}
+
+function mostraEditaOferta(id) {
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "mostraOferta",
+      id: id
+    },
+    beforeSend: () => {
+      $("#modalEditaLoading").removeClass('visually-hidden')
+    },
+    success: (data) => {
+      if (data !== null && data.length > 0) {
+        $("#modalEditaOfertaEmpresa").html(data[0].empresa)
+        $("#modalEditaOfertaCicle").html(data[0].nom_cicle)
+        $("#modalEditaOfertaDescripcio").html(data[0].descripcio)
+        $("#modalEditaOfertaPoblacio").html(data[0].poblacio)
+        $("#modalEditaOfertaWeb").attr("href", `https://${data[0].web}`)
+        $("#modalEditaOfertaEmail").html(data[0].email)
+        $("#modalEditaOfertaTelefon").html(data[0].telefon)
+        $("#modalEditaOfertaId").val(data[0].borsa_treball_id)
+      } else {
+        $("#modalEditaErrorMessage").html("No s'ha trobat l'oferta")
+        $("#modalEditaError").removeClass("visually-hidden")
+      }
+    },
+    error: (error) => {
+      console.log(JSON.parse(JSON.stringify(error)))
+    },
+    complete: () => {
+      $("#modalEditaLoading").addClass('visually-hidden')
+    }
+  })
+}
+
+function publicaOferta() {
+
+  if ($("#modalEditaOfertaId").val() == "" || $("#modalEditaOfertaId").val() == null) {
+    $("#modalEditaErrorMessage").html("No s'ha trobat l'oferta")
+    $("#modalEditaError").removeClass("visually-hidden")
+    return
+  }
+
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "publicaOferta",
+      id: $("#modalEditaOfertaId").val()
+    },
+    beforeSend: () => {
+      $("#publicaOferta").prop("disabled", true)
+      $("#modalPublicaLoading").removeClass("visually-hidden")
+      $("#modalPublicaIcon").addClass("visually-hidden")
+      $("#publicaOfertaText").html("Publicant...")
+    },
+    success: (data) => {
+      if (data.status == "ok") {
+        $("#modalEditaOferta").modal("toggle")
+        carregaOfertes()
+      } else {
+        $("#modalEditaErrorMessage").html(data.missatge)
+        $("#modalEditaError").removeClass("visually-hidden")
+      }
+    },
+    error: (error) => {
+      console.log(JSON.parse(JSON.stringify(error)))
+    },
+    complete: () => {
+      $("#publicaOferta").prop('disabled', false)
+      $("#modalPublicaLoading").addClass('visually-hidden')
+      $("#modalPublicaIcon").removeClass('visually-hidden')
+      $("#publicaOfertaText").html("Publicar")
+    }
+  })
+}
+
+function eliminaOferta() {
+
+  if ($("#modalEditaOfertaId").val() == "" || $("#modalEditaOfertaId").val() == null) {
+    $("#modalEditaErrorMessage").html("No s'ha trobat l'oferta")
+    $("#modalEditaError").removeClass("visually-hidden")
+    return
+  }
+
+  $.ajax({
+    url: "lib/LibBorsaTreball.ajax.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      accio: "eliminaOferta",
+      id: $("#modalEditaOfertaId").val()
+    },
+    beforeSend: () => {
+      $("#eliminaOferta").prop("disabled", true)
+      $("#modalEliminaLoading").removeClass("visually-hidden")
+      $("#modalEliminaIcon").addClass("visually-hidden")
+      $("#eliminaOfertaText").html("Eliminant...")
+    },
+    success: (data) => {
+      if (data.status == "ok") {
+        $("#modalEditaOferta").modal("toggle")
+        carregaOfertes()
+      } else {
+        $("#modalEditaErrorMessage").html(data.missatge)
+        $("#modalEditaError").removeClass("visually-hidden")
+      }
+    },
+    error: (error) => {
+      console.log(JSON.parse(JSON.stringify(error)))
+    },
+    complete: () => {
+      $("#eliminaOferta").prop('disabled', false)
+      $("#modalEliminaLoading").addClass('visually-hidden')
+      $("#modalEliminaIcon").removeClass('visually-hidden')
+      $("#eliminaOfertaText").html("Eliminar")
     }
   })
 }
