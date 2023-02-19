@@ -325,6 +325,11 @@ class Professor extends Usuari
 	*/    
 	public $Tutor = False;
 
+	function __construct($Connexio = null, $Usuari = null, $Sistema = null)
+	{
+		parent::__construct($Connexio, $Usuari, $Sistema);
+	}
+
 	/**
 	 * Carrega les UF assignades en un array.
 	 */
@@ -586,6 +591,28 @@ class Professor extends Usuari
 		$ResultSet->close();
 		return $Retorn;
 	}
+
+	/**
+	 * Comprova si és el gestor de la borsa de treball.
+	 * @return boolean Cert si és el gestor de la borsa de treball.
+	 */
+	public function EsGestorBorsa(): bool
+	{
+		$stmt = $this->Connexio->prepare("SELECT u.usuari_id FROM usuari u INNER JOIN sistema s ON u.usuari_id = s.gestor_borsa_treball_id;");
+
+		$stmt->execute();
+
+		$rs = $stmt->get_result();
+
+		$stmt->close();
+
+		if ($rs->num_rows > 0) {
+			$row = $rs->fetch_assoc();
+			return $row['usuari_id'] === $this->Usuari->Usuari->usuari_id;
+		} else {
+			return false;
+		}
+	}
 	
 	/**
 	 * Genera i escriu l'escriptori del professor.
@@ -745,7 +772,17 @@ class Professor extends Usuari
 		echo '      <p class="card-text">Orla alumnes</p>';
 		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 		echo '    </div>';
-		echo '  </div>';		
+		echo '  </div>';
+		
+		// Borsa treball
+		$URL = GeneraURL('BorsaTreball.php');
+		echo "  <div class='card'>";
+		echo "    <div class='card-body'>";
+		echo "      <h5 class='card-title'>Borsa</h5>";
+		echo "      <p class='card-text'>Borsa alumnes</p>";
+		echo "      <a href='$URL' class='btn btn-primary btn-sm'>Ves-hi</a>";
+		echo "    </div>";
+		echo "  </div>";
 	}
 }
 
@@ -1857,5 +1894,3 @@ class Progenitor extends Usuari
 		$ResultSet->close();
 	}
 }
-
-?>
