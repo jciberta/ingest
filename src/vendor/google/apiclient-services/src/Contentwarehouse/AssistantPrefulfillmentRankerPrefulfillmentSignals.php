@@ -19,11 +19,19 @@ namespace Google\Service\Contentwarehouse;
 
 class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
 {
-  public $calibratedParsingScore;
   /**
    * @var float
    */
-  public $calibratedParsingScoreFloat;
+  public $bindingSetAuis;
+  /**
+   * @var float
+   */
+  public $bindingSetPauis;
+  public $calibratedParsingScore;
+  /**
+   * @var bool
+   */
+  public $deepMediaDominant;
   /**
    * @var bool
    */
@@ -32,7 +40,14 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
    * @var float
    */
   public $effectiveArgSpanLength;
+  /**
+   * @var bool
+   */
+  public $fulfillableDominantMedia;
   public $groundabilityScore;
+  protected $groundingProviderFeaturesType = AssistantGroundingRankerGroundingProviderFeatures::class;
+  protected $groundingProviderFeaturesDataType = '';
+  public $groundingProviderFeatures;
   /**
    * @var float
    */
@@ -46,40 +61,76 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   /**
    * @var bool
    */
+  public $isFeasible;
+  /**
+   * @var int
+   */
+  public $kscorerRank;
+  protected $laaFeaturesType = AssistantGroundingRankerLaaFeatures::class;
+  protected $laaFeaturesDataType = '';
+  public $laaFeatures;
+  /**
+   * @var bool
+   */
   public $maskCandidateLevelFeatures;
+  public $maxHgrScoreAcrossBindingSets;
+  /**
+   * @var float
+   */
+  public $numAlternativeHypothesis;
   public $numConstraints;
-  /**
-   * @var float
-   */
-  public $numConstraintsFloat;
   public $numConstraintsSatisfied;
-  /**
-   * @var float
-   */
-  public $numConstraintsSatisfiedFloat;
   public $numGroundableArgs;
-  /**
-   * @var float
-   */
-  public $numGroundableArgsFloat;
   public $numGroundedArgs;
-  /**
-   * @var float
-   */
-  public $numGroundedArgsFloat;
   public $numVariables;
-  /**
-   * @var float
-   */
-  public $numVariablesFloat;
   public $numVariablesGrounded;
-  /**
-   * @var float
-   */
-  public $numVariablesGroundedFloat;
   public $pq2tVsAssistantIbstCosine;
   public $pq2tVsIbstCosine;
+  /**
+   * @var float
+   */
+  public $predictedIntentConfidence;
+  /**
+   * @var string
+   */
+  public $searchDispatch;
+  /**
+   * @var float
+   */
+  public $topHypothesisConfidence;
+  /**
+   * @var float
+   */
+  public $verticalConfidenceScore;
 
+  /**
+   * @param float
+   */
+  public function setBindingSetAuis($bindingSetAuis)
+  {
+    $this->bindingSetAuis = $bindingSetAuis;
+  }
+  /**
+   * @return float
+   */
+  public function getBindingSetAuis()
+  {
+    return $this->bindingSetAuis;
+  }
+  /**
+   * @param float
+   */
+  public function setBindingSetPauis($bindingSetPauis)
+  {
+    $this->bindingSetPauis = $bindingSetPauis;
+  }
+  /**
+   * @return float
+   */
+  public function getBindingSetPauis()
+  {
+    return $this->bindingSetPauis;
+  }
   public function setCalibratedParsingScore($calibratedParsingScore)
   {
     $this->calibratedParsingScore = $calibratedParsingScore;
@@ -89,18 +140,18 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
     return $this->calibratedParsingScore;
   }
   /**
-   * @param float
+   * @param bool
    */
-  public function setCalibratedParsingScoreFloat($calibratedParsingScoreFloat)
+  public function setDeepMediaDominant($deepMediaDominant)
   {
-    $this->calibratedParsingScoreFloat = $calibratedParsingScoreFloat;
+    $this->deepMediaDominant = $deepMediaDominant;
   }
   /**
-   * @return float
+   * @return bool
    */
-  public function getCalibratedParsingScoreFloat()
+  public function getDeepMediaDominant()
   {
-    return $this->calibratedParsingScoreFloat;
+    return $this->deepMediaDominant;
   }
   /**
    * @param bool
@@ -130,6 +181,20 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   {
     return $this->effectiveArgSpanLength;
   }
+  /**
+   * @param bool
+   */
+  public function setFulfillableDominantMedia($fulfillableDominantMedia)
+  {
+    $this->fulfillableDominantMedia = $fulfillableDominantMedia;
+  }
+  /**
+   * @return bool
+   */
+  public function getFulfillableDominantMedia()
+  {
+    return $this->fulfillableDominantMedia;
+  }
   public function setGroundabilityScore($groundabilityScore)
   {
     $this->groundabilityScore = $groundabilityScore;
@@ -137,6 +202,20 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getGroundabilityScore()
   {
     return $this->groundabilityScore;
+  }
+  /**
+   * @param AssistantGroundingRankerGroundingProviderFeatures
+   */
+  public function setGroundingProviderFeatures(AssistantGroundingRankerGroundingProviderFeatures $groundingProviderFeatures)
+  {
+    $this->groundingProviderFeatures = $groundingProviderFeatures;
+  }
+  /**
+   * @return AssistantGroundingRankerGroundingProviderFeatures
+   */
+  public function getGroundingProviderFeatures()
+  {
+    return $this->groundingProviderFeatures;
   }
   /**
    * @param float
@@ -185,6 +264,48 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   /**
    * @param bool
    */
+  public function setIsFeasible($isFeasible)
+  {
+    $this->isFeasible = $isFeasible;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsFeasible()
+  {
+    return $this->isFeasible;
+  }
+  /**
+   * @param int
+   */
+  public function setKscorerRank($kscorerRank)
+  {
+    $this->kscorerRank = $kscorerRank;
+  }
+  /**
+   * @return int
+   */
+  public function getKscorerRank()
+  {
+    return $this->kscorerRank;
+  }
+  /**
+   * @param AssistantGroundingRankerLaaFeatures
+   */
+  public function setLaaFeatures(AssistantGroundingRankerLaaFeatures $laaFeatures)
+  {
+    $this->laaFeatures = $laaFeatures;
+  }
+  /**
+   * @return AssistantGroundingRankerLaaFeatures
+   */
+  public function getLaaFeatures()
+  {
+    return $this->laaFeatures;
+  }
+  /**
+   * @param bool
+   */
   public function setMaskCandidateLevelFeatures($maskCandidateLevelFeatures)
   {
     $this->maskCandidateLevelFeatures = $maskCandidateLevelFeatures;
@@ -196,6 +317,28 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   {
     return $this->maskCandidateLevelFeatures;
   }
+  public function setMaxHgrScoreAcrossBindingSets($maxHgrScoreAcrossBindingSets)
+  {
+    $this->maxHgrScoreAcrossBindingSets = $maxHgrScoreAcrossBindingSets;
+  }
+  public function getMaxHgrScoreAcrossBindingSets()
+  {
+    return $this->maxHgrScoreAcrossBindingSets;
+  }
+  /**
+   * @param float
+   */
+  public function setNumAlternativeHypothesis($numAlternativeHypothesis)
+  {
+    $this->numAlternativeHypothesis = $numAlternativeHypothesis;
+  }
+  /**
+   * @return float
+   */
+  public function getNumAlternativeHypothesis()
+  {
+    return $this->numAlternativeHypothesis;
+  }
   public function setNumConstraints($numConstraints)
   {
     $this->numConstraints = $numConstraints;
@@ -203,20 +346,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getNumConstraints()
   {
     return $this->numConstraints;
-  }
-  /**
-   * @param float
-   */
-  public function setNumConstraintsFloat($numConstraintsFloat)
-  {
-    $this->numConstraintsFloat = $numConstraintsFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumConstraintsFloat()
-  {
-    return $this->numConstraintsFloat;
   }
   public function setNumConstraintsSatisfied($numConstraintsSatisfied)
   {
@@ -226,20 +355,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   {
     return $this->numConstraintsSatisfied;
   }
-  /**
-   * @param float
-   */
-  public function setNumConstraintsSatisfiedFloat($numConstraintsSatisfiedFloat)
-  {
-    $this->numConstraintsSatisfiedFloat = $numConstraintsSatisfiedFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumConstraintsSatisfiedFloat()
-  {
-    return $this->numConstraintsSatisfiedFloat;
-  }
   public function setNumGroundableArgs($numGroundableArgs)
   {
     $this->numGroundableArgs = $numGroundableArgs;
@@ -247,20 +362,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getNumGroundableArgs()
   {
     return $this->numGroundableArgs;
-  }
-  /**
-   * @param float
-   */
-  public function setNumGroundableArgsFloat($numGroundableArgsFloat)
-  {
-    $this->numGroundableArgsFloat = $numGroundableArgsFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumGroundableArgsFloat()
-  {
-    return $this->numGroundableArgsFloat;
   }
   public function setNumGroundedArgs($numGroundedArgs)
   {
@@ -270,20 +371,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   {
     return $this->numGroundedArgs;
   }
-  /**
-   * @param float
-   */
-  public function setNumGroundedArgsFloat($numGroundedArgsFloat)
-  {
-    $this->numGroundedArgsFloat = $numGroundedArgsFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumGroundedArgsFloat()
-  {
-    return $this->numGroundedArgsFloat;
-  }
   public function setNumVariables($numVariables)
   {
     $this->numVariables = $numVariables;
@@ -292,20 +379,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   {
     return $this->numVariables;
   }
-  /**
-   * @param float
-   */
-  public function setNumVariablesFloat($numVariablesFloat)
-  {
-    $this->numVariablesFloat = $numVariablesFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumVariablesFloat()
-  {
-    return $this->numVariablesFloat;
-  }
   public function setNumVariablesGrounded($numVariablesGrounded)
   {
     $this->numVariablesGrounded = $numVariablesGrounded;
@@ -313,20 +386,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getNumVariablesGrounded()
   {
     return $this->numVariablesGrounded;
-  }
-  /**
-   * @param float
-   */
-  public function setNumVariablesGroundedFloat($numVariablesGroundedFloat)
-  {
-    $this->numVariablesGroundedFloat = $numVariablesGroundedFloat;
-  }
-  /**
-   * @return float
-   */
-  public function getNumVariablesGroundedFloat()
-  {
-    return $this->numVariablesGroundedFloat;
   }
   public function setPq2tVsAssistantIbstCosine($pq2tVsAssistantIbstCosine)
   {
@@ -343,6 +402,62 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getPq2tVsIbstCosine()
   {
     return $this->pq2tVsIbstCosine;
+  }
+  /**
+   * @param float
+   */
+  public function setPredictedIntentConfidence($predictedIntentConfidence)
+  {
+    $this->predictedIntentConfidence = $predictedIntentConfidence;
+  }
+  /**
+   * @return float
+   */
+  public function getPredictedIntentConfidence()
+  {
+    return $this->predictedIntentConfidence;
+  }
+  /**
+   * @param string
+   */
+  public function setSearchDispatch($searchDispatch)
+  {
+    $this->searchDispatch = $searchDispatch;
+  }
+  /**
+   * @return string
+   */
+  public function getSearchDispatch()
+  {
+    return $this->searchDispatch;
+  }
+  /**
+   * @param float
+   */
+  public function setTopHypothesisConfidence($topHypothesisConfidence)
+  {
+    $this->topHypothesisConfidence = $topHypothesisConfidence;
+  }
+  /**
+   * @return float
+   */
+  public function getTopHypothesisConfidence()
+  {
+    return $this->topHypothesisConfidence;
+  }
+  /**
+   * @param float
+   */
+  public function setVerticalConfidenceScore($verticalConfidenceScore)
+  {
+    $this->verticalConfidenceScore = $verticalConfidenceScore;
+  }
+  /**
+   * @return float
+   */
+  public function getVerticalConfidenceScore()
+  {
+    return $this->verticalConfidenceScore;
   }
 }
 

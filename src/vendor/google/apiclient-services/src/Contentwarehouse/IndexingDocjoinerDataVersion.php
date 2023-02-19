@@ -21,36 +21,50 @@ class IndexingDocjoinerDataVersion extends \Google\Model
 {
   protected $acceleratedShoppingSignalType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $acceleratedShoppingSignalDataType = '';
+  public $acceleratedShoppingSignal;
+  protected $chromeCountsType = IndexingDocjoinerDataVersionVersionInfo::class;
+  protected $chromeCountsDataType = '';
+  public $chromeCounts;
+  protected $instantNavboostType = IndexingDocjoinerDataVersionVersionInfo::class;
+  protected $instantNavboostDataType = '';
+  public $instantNavboost;
   protected $localypType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $localypDataType = '';
+  public $localyp;
   /**
    * @var string
    */
   public $localypVersion;
   protected $modernFormatContentType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $modernFormatContentDataType = '';
+  public $modernFormatContent;
   /**
    * @var string
    */
   public $modernFormatContentVersion;
   protected $navboostType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $navboostDataType = '';
+  public $navboost;
   /**
    * @var string
    */
   public $navboostVersion;
   protected $rankembedType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $rankembedDataType = '';
+  public $rankembed;
   protected $universalFactsType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $universalFactsDataType = '';
+  public $universalFacts;
   protected $videoScoringSignalType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $videoScoringSignalDataType = '';
+  public $videoScoringSignal;
   /**
    * @var string
    */
   public $videoScoringSignalVersion;
   protected $voltType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $voltDataType = '';
+  public $volt;
   /**
    * @var string
    */
@@ -69,6 +83,34 @@ class IndexingDocjoinerDataVersion extends \Google\Model
   public function getAcceleratedShoppingSignal()
   {
     return $this->acceleratedShoppingSignal;
+  }
+  /**
+   * @param IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function setChromeCounts(IndexingDocjoinerDataVersionVersionInfo $chromeCounts)
+  {
+    $this->chromeCounts = $chromeCounts;
+  }
+  /**
+   * @return IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function getChromeCounts()
+  {
+    return $this->chromeCounts;
+  }
+  /**
+   * @param IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function setInstantNavboost(IndexingDocjoinerDataVersionVersionInfo $instantNavboost)
+  {
+    $this->instantNavboost = $instantNavboost;
+  }
+  /**
+   * @return IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function getInstantNavboost()
+  {
+    return $this->instantNavboost;
   }
   /**
    * @param IndexingDocjoinerDataVersionVersionInfo

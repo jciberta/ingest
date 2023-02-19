@@ -21,6 +21,7 @@ class GoogleCloudPaymentsResellerSubscriptionV1PromotionIntroductoryPricingDetai
 {
   protected $discountAmountType = GoogleCloudPaymentsResellerSubscriptionV1Amount::class;
   protected $discountAmountDataType = '';
+  public $discountAmount;
   /**
    * @var string
    */
@@ -29,6 +30,10 @@ class GoogleCloudPaymentsResellerSubscriptionV1PromotionIntroductoryPricingDetai
    * @var int
    */
   public $recurrenceCount;
+  /**
+   * @var string
+   */
+  public $regionCode;
 
   /**
    * @param GoogleCloudPaymentsResellerSubscriptionV1Amount
@@ -71,6 +76,20 @@ class GoogleCloudPaymentsResellerSubscriptionV1PromotionIntroductoryPricingDetai
   public function getRecurrenceCount()
   {
     return $this->recurrenceCount;
+  }
+  /**
+   * @param string
+   */
+  public function setRegionCode($regionCode)
+  {
+    $this->regionCode = $regionCode;
+  }
+  /**
+   * @return string
+   */
+  public function getRegionCode()
+  {
+    return $this->regionCode;
   }
 }
 

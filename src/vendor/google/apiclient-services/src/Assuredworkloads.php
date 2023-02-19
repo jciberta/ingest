@@ -27,7 +27,7 @@ use Google\Client;
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com/learnmoreurl" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -164,6 +164,16 @@ class Assuredworkloads extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
+                ],
+              ],
+            ],'mutatePartnerPermissions' => [
+              'path' => 'v1/{+name}:mutatePartnerPermissions',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
                 ],
               ],
             ],'patch' => [

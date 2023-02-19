@@ -31,6 +31,10 @@ class VideoContentSearchVideoAnchor extends \Google\Collection
   /**
    * @var string
    */
+  public $contextText;
+  /**
+   * @var string
+   */
   public $destinationUrl;
   /**
    * @var string
@@ -70,16 +74,20 @@ class VideoContentSearchVideoAnchor extends \Google\Collection
   public $mid;
   protected $namedEntityType = VideoContentSearchNamedEntity::class;
   protected $namedEntityDataType = 'array';
+  public $namedEntity;
   /**
    * @var float
    */
   public $precisionScore;
   protected $scoreInfoType = VideoContentSearchVideoAnchorScoreInfo::class;
   protected $scoreInfoDataType = '';
+  public $scoreInfo;
   protected $starburstFeaturesType = VideoContentSearchVisualFeatures::class;
   protected $starburstFeaturesDataType = '';
+  public $starburstFeatures;
   protected $thumbnailType = VideoContentSearchAnchorThumbnail::class;
   protected $thumbnailDataType = '';
+  public $thumbnail;
   /**
    * @var string
    */
@@ -90,6 +98,7 @@ class VideoContentSearchVideoAnchor extends \Google\Collection
   public $time;
   protected $tokenTimingInfoType = VideoContentSearchTokenTimingInfo::class;
   protected $tokenTimingInfoDataType = 'array';
+  public $tokenTimingInfo;
 
   /**
    * @param float
@@ -118,6 +127,20 @@ class VideoContentSearchVideoAnchor extends \Google\Collection
   public function getAnchorType()
   {
     return $this->anchorType;
+  }
+  /**
+   * @param string
+   */
+  public function setContextText($contextText)
+  {
+    $this->contextText = $contextText;
+  }
+  /**
+   * @return string
+   */
+  public function getContextText()
+  {
+    return $this->contextText;
   }
   /**
    * @param string

@@ -33,6 +33,7 @@ class NlpSemanticParsingDatetimeAbsoluteDateTime extends \Google\Model
   public $deleted11;
   protected $holidayType = NlpSemanticParsingDatetimeHoliday::class;
   protected $holidayDataType = '';
+  public $holiday;
   /**
    * @var int
    */
@@ -45,6 +46,10 @@ class NlpSemanticParsingDatetimeAbsoluteDateTime extends \Google\Model
    * @var bool
    */
   public $isBc;
+  /**
+   * @var string
+   */
+  public $meridiem;
   /**
    * @var int
    */
@@ -59,9 +64,11 @@ class NlpSemanticParsingDatetimeAbsoluteDateTime extends \Google\Model
   public $month;
   protected $nonGregorianDateType = NlpSemanticParsingDatetimeNonGregorianDate::class;
   protected $nonGregorianDateDataType = '';
+  public $nonGregorianDate;
   public $partialSecond;
   protected $propertiesType = NlpSemanticParsingDatetimeDateTimeProperty::class;
   protected $propertiesDataType = '';
+  public $properties;
   /**
    * @var string
    */
@@ -188,6 +195,20 @@ class NlpSemanticParsingDatetimeAbsoluteDateTime extends \Google\Model
   public function getIsBc()
   {
     return $this->isBc;
+  }
+  /**
+   * @param string
+   */
+  public function setMeridiem($meridiem)
+  {
+    $this->meridiem = $meridiem;
+  }
+  /**
+   * @return string
+   */
+  public function getMeridiem()
+  {
+    return $this->meridiem;
   }
   /**
    * @param int

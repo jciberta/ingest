@@ -20,19 +20,19 @@ namespace Google\Service\Contentwarehouse;
 class AssistantApiAppControlSupport extends \Google\Model
 {
   /**
-   * @var bool
+   * @var string
    */
   public $enabled;
 
   /**
-   * @param bool
+   * @param string
    */
   public function setEnabled($enabled)
   {
     $this->enabled = $enabled;
   }
   /**
-   * @return bool
+   * @return string
    */
   public function getEnabled()
   {

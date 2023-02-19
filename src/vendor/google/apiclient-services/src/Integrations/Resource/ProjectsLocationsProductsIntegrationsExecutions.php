@@ -27,7 +27,7 @@ use Google\Service\Integrations\GoogleCloudIntegrationsV1alphaListExecutionsResp
  * Typical usage is:
  *  <code>
  *   $integrationsService = new Google\Service\Integrations(...);
- *   $executions = $integrationsService->executions;
+ *   $executions = $integrationsService->projects_locations_products_integrations_executions;
  *  </code>
  */
 class ProjectsLocationsProductsIntegrationsExecutions extends \Google\Service\Resource
@@ -64,7 +64,9 @@ class ProjectsLocationsProductsIntegrationsExecutions extends \Google\Service\Re
     return $this->call('get', [$params], GoogleCloudIntegrationsV1alphaExecution::class);
   }
   /**
-   * Lists the status of the integration executions.
+   * Lists the results of all the integration executions. The response includes
+   * the same information as the [execution log](https://cloud.google.com
+   * /application-integration/docs/viewing-logs) in the Integration UI.
    * (executions.listProjectsLocationsProductsIntegrationsExecutions)
    *
    * @param string $parent Required. The parent resource name of the integration
@@ -94,7 +96,6 @@ class ProjectsLocationsProductsIntegrationsExecutions extends \Google\Service\Re
    * parameter_pair_value instead.
    * @opt_param string filterParams.startTime Start timestamp.
    * @opt_param string filterParams.taskStatuses List of possible task statuses.
-   * @opt_param string filterParams.triggerId Trigger id.
    * @opt_param string filterParams.workflowName Workflow name.
    * @opt_param string orderBy Optional. The results would be returned in order
    * you specified here. Currently supporting "last_modified_time" and

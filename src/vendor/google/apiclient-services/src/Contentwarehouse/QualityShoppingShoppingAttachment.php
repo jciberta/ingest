@@ -23,6 +23,10 @@ class QualityShoppingShoppingAttachment extends \Google\Collection
   /**
    * @var int
    */
+  public $datasetModelArticleScore;
+  /**
+   * @var int
+   */
   public $datasetModelBuyingGuideScore;
   /**
    * @var int
@@ -82,6 +86,7 @@ class QualityShoppingShoppingAttachment extends \Google\Collection
   public $multiProductScore;
   protected $productType = QualityShoppingShoppingAttachmentProduct::class;
   protected $productDataType = 'array';
+  public $product;
   /**
    * @var int
    */
@@ -95,6 +100,20 @@ class QualityShoppingShoppingAttachment extends \Google\Collection
    */
   public $singleProductScore;
 
+  /**
+   * @param int
+   */
+  public function setDatasetModelArticleScore($datasetModelArticleScore)
+  {
+    $this->datasetModelArticleScore = $datasetModelArticleScore;
+  }
+  /**
+   * @return int
+   */
+  public function getDatasetModelArticleScore()
+  {
+    return $this->datasetModelArticleScore;
+  }
   /**
    * @param int
    */
