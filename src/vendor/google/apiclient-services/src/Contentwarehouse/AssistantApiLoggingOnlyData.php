@@ -20,9 +20,17 @@ namespace Google\Service\Contentwarehouse;
 class AssistantApiLoggingOnlyData extends \Google\Model
 {
   /**
+   * @var int
+   */
+  public $accountIndex;
+  /**
    * @var string
    */
   public $acpVersion;
+  /**
+   * @var string
+   */
+  public $androidId;
   /**
    * @var string
    */
@@ -41,6 +49,7 @@ class AssistantApiLoggingOnlyData extends \Google\Model
   public $boardRevision;
   protected $castAssistantSettingLinkingResultType = AssistantApiCastAssistantSettingLinkingResult::class;
   protected $castAssistantSettingLinkingResultDataType = '';
+  public $castAssistantSettingLinkingResult;
   /**
    * @var string
    */
@@ -67,6 +76,20 @@ class AssistantApiLoggingOnlyData extends \Google\Model
   public $virtualReleaseChannel;
 
   /**
+   * @param int
+   */
+  public function setAccountIndex($accountIndex)
+  {
+    $this->accountIndex = $accountIndex;
+  }
+  /**
+   * @return int
+   */
+  public function getAccountIndex()
+  {
+    return $this->accountIndex;
+  }
+  /**
    * @param string
    */
   public function setAcpVersion($acpVersion)
@@ -79,6 +102,20 @@ class AssistantApiLoggingOnlyData extends \Google\Model
   public function getAcpVersion()
   {
     return $this->acpVersion;
+  }
+  /**
+   * @param string
+   */
+  public function setAndroidId($androidId)
+  {
+    $this->androidId = $androidId;
+  }
+  /**
+   * @return string
+   */
+  public function getAndroidId()
+  {
+    return $this->androidId;
   }
   /**
    * @param string

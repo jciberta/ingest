@@ -22,8 +22,10 @@ class GoogleCloudContentwarehouseV1SearchDocumentsRequest extends \Google\Collec
   protected $collection_key = 'histogramQueries';
   protected $documentQueryType = GoogleCloudContentwarehouseV1DocumentQuery::class;
   protected $documentQueryDataType = '';
+  public $documentQuery;
   protected $histogramQueriesType = GoogleCloudContentwarehouseV1HistogramQuery::class;
   protected $histogramQueriesDataType = 'array';
+  public $histogramQueries;
   /**
    * @var int
    */
@@ -46,10 +48,15 @@ class GoogleCloudContentwarehouseV1SearchDocumentsRequest extends \Google\Collec
   public $qaSizeLimit;
   protected $requestMetadataType = GoogleCloudContentwarehouseV1RequestMetadata::class;
   protected $requestMetadataDataType = '';
+  public $requestMetadata;
   /**
    * @var bool
    */
   public $requireTotalSize;
+  /**
+   * @var string
+   */
+  public $totalResultSize;
 
   /**
    * @param GoogleCloudContentwarehouseV1DocumentQuery
@@ -176,6 +183,20 @@ class GoogleCloudContentwarehouseV1SearchDocumentsRequest extends \Google\Collec
   public function getRequireTotalSize()
   {
     return $this->requireTotalSize;
+  }
+  /**
+   * @param string
+   */
+  public function setTotalResultSize($totalResultSize)
+  {
+    $this->totalResultSize = $totalResultSize;
+  }
+  /**
+   * @return string
+   */
+  public function getTotalResultSize()
+  {
+    return $this->totalResultSize;
   }
 }
 

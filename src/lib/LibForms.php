@@ -888,16 +888,16 @@ class FormRecerca extends Form
 	const ofrNOMES_LECTURA = 3; // Indica que l'opció és de només lectura.
 
 	/**
-	* Modalitat del formulari.
-	*  - mfLLISTA: Formulari de recerca on es poden visualitzar cada registre individualment (amb FormFitxa).
-	*  - mfBUSCA: Formulari de recerca que serveix d'ajuda per a les seleccions de registres. 
-	*/    
+	 * Modalitat del formulari.
+	 *  - mfLLISTA: Formulari de recerca on es poden visualitzar cada registre individualment (amb FormFitxa).
+	 *  - mfBUSCA: Formulari de recerca que serveix d'ajuda per a les seleccions de registres. 
+	 */    
     public $Modalitat = self::mfLLISTA;
 	
 	/**
-	* Sentència SQL per obtenir els registres a mostrar.
-	* @var string
-	*/    
+	 * Sentència SQL per obtenir els registres a mostrar.
+	 * @var string
+	 */    
     public $SQL = '';
 	
 	/**
@@ -907,81 +907,88 @@ class FormRecerca extends Form
     public $Camps = '';
 	
 	/**
-	* Títols de columnes separats per comes.
-	* @var string
-	*/    
+	 * Títols de columnes separats per comes.
+	 * @var string
+	 */    
     public $Descripcions = ''; 
+
+	/**
+	 * Número màxim de registres a mostrar, -1 tots.
+	 * @var int
+	 */    
+    public $MaximRegistres = -1;
+
 	
 	/**
-	* Paraules a filtrar separades per espai (formaran part del WHERE).
-	* @var string
-	*/    
+	 * Paraules a filtrar separades per espai (formaran part del WHERE).
+	 * @var string
+	 */    
     public $FiltreText = ''; 
 
 	/**
-	* Llista de components (dates, combos) que permeten filtrar de forma específica.
-	* @var object
-	*/    
+	 * Llista de components (dates, combos) que permeten filtrar de forma específica.
+	 * @var array
+	 */    
     public $Filtre = []; 
 	
 	/**
-	* Camp per realitzar l'ordenació.
-	* @var string
-	*/    
+	 * Camp per realitzar l'ordenació.
+	 * @var string
+	 */    
     public $Ordre = ''; 
 
 	/**
-	* Permet cercar.
-	* @var boolean
-	*/    
+	 * Permet cercar.
+	 * @var boolean
+	 */    
     public $PermetCercar = True; 
 	
 	/**
-	* Permet ordenar la recerca.
-	* @var boolean
-	*/    
+	 * Permet ordenar la recerca.
+	 * @var boolean
+	 */    
     public $PermetOrdenar = True; 
 	
 	/**
-	* Permet editar un registre.
-	* @var boolean
-	*/    
+	 * Permet editar un registre.
+	 * @var boolean
+	 */    
     public $PermetEditar = False; 
 
 	/**
-	* Permet editar un registre si es dona una condició.
-	* @var array
-	*/    
+	 * Permet editar un registre si es dona una condició.
+	 * @var array
+	 */    
     public $PermetEditarCondicional = []; 
 	
 	/**
-	* URL per a l'edició d'un registre.
-	* @var string
-	*/    
+	 * URL per a l'edició d'un registre.
+	 * @var string
+	 */    
     public $URLEdicio = ''; 
 	
 	/**
-	* Permet afegir un registre. Usa la URLEdicio per indicar la fitxa.
-	* @var boolean
-	*/    
+	 * Permet afegir un registre. Usa la URLEdicio per indicar la fitxa.
+	 * @var boolean
+	 */    
     public $PermetAfegir = False; 
 	
 	/**
-	* Permet suprimir un registre.
-	* @var boolean
-	*/    
+	 * Permet suprimir un registre.
+	 * @var boolean
+	 */    
     public $PermetSuprimir = False; 
 
 	/**
-	* Permet duplicar un registre.
-	* @var boolean
-	*/    
+	 * Permet duplicar un registre.
+	 * @var boolean
+	 */    
     public $PermetDuplicar = False; 
 	
 	/**
-	* Opcions per a cada registre. Estan incloses les opcions AJAX.
-	* @var array
-	*/    
+	 * Opcions per a cada registre. Estan incloses les opcions AJAX.
+	 * @var array
+	 */    
     private $Opcions = [];	
 
 	/**
@@ -1067,7 +1074,11 @@ class FormRecerca extends Form
 			}
 			$sRetorn .= ' ORDER BY '.$this->EliminaTipusPredefinit($this->Ordre);
 		}
-//print "<hr>SQL<br>$sRetorn<hr>";		
+//print "<hr>SQL<br>$sRetorn<hr>";	
+
+		if ($this->MaximRegistres != -1)
+			$sRetorn .= ' LIMIT '.$this->MaximRegistres;
+		
 		return $sRetorn;
 	}
 
@@ -1205,7 +1216,9 @@ class FormRecerca extends Form
 			$sRetorn .= '</THEAD>';
 
 			// Dades
+			$nRegistres = 0;
 			while($row = $ResultSet->fetch_assoc()) {
+				$nRegistres++;
 //print_r($row);
 				$ParametreJS = JSONEncodeUTF8($row); 
 				$ParametreJS = "'".str_replace('"', '~', $ParametreJS)."'"; 
@@ -1260,7 +1273,10 @@ class FormRecerca extends Form
 //					$sRetorn .= $this->GeneraOpcions($row[$this->ClauPrimaria], $row);
 				$sRetorn .= "</TR>";
 			}
+			
 			$sRetorn .= "</TABLE>";
+			if ($this->MaximRegistres != -1 && $nRegistres >= $this->MaximRegistres) 
+				$sRetorn .= "...";
 		}
 		
 		// Variable amagada que emmagatzema la SQL per a la descàrrega cada cop que es modifica el filtre.

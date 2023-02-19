@@ -31,17 +31,45 @@ class QualityNsrNsrData extends \Google\Collection
   /**
    * @var int
    */
+  public $chardEncoded;
+  /**
+   * @var float
+   */
+  public $chardVariance;
+  /**
+   * @var int
+   */
   public $clusterId;
   protected $clusterUpliftType = QualityNsrNsrDataClusterUplift::class;
   protected $clusterUpliftDataType = '';
+  public $clusterUplift;
   /**
    * @var float
    */
   public $clutterScore;
+  protected $clutterScoresType = QualityNsrVersionedFloatSignal::class;
+  protected $clutterScoresDataType = 'array';
+  public $clutterScores;
+  /**
+   * @var float
+   */
+  public $directFrac;
+  /**
+   * @var float
+   */
+  public $healthScore;
   /**
    * @var string
    */
   public $host;
+  /**
+   * @var int
+   */
+  public $i18nBucket;
+  /**
+   * @var float
+   */
+  public $impressions;
   /**
    * @var bool
    */
@@ -55,11 +83,20 @@ class QualityNsrNsrData extends \Google\Collection
    */
   public $isVideoFocusedSite;
   /**
+   * @var int
+   */
+  public $language;
+  /**
+   * @var int
+   */
+  public $largeOrgId;
+  /**
    * @var float
    */
   public $localityScore;
   protected $metadataType = QualityNsrNsrDataMetadata::class;
   protected $metadataDataType = '';
+  public $metadata;
   /**
    * @var float
    */
@@ -68,6 +105,10 @@ class QualityNsrNsrData extends \Google\Collection
    * @var float
    */
   public $nsr;
+  /**
+   * @var string
+   */
+  public $nsrEpoch;
   /**
    * @var float
    */
@@ -81,9 +122,20 @@ class QualityNsrNsrData extends \Google\Collection
    */
   public $nsrdataFromFallbackPatternKey;
   /**
+   * @var float
+   */
+  public $pnav;
+  protected $priorAdjustedNsrType = QualityNsrVersionedFloatSignal::class;
+  protected $priorAdjustedNsrDataType = 'array';
+  public $priorAdjustedNsr;
+  /**
    * @var string
    */
   public $secondarySiteChunk;
+  /**
+   * @var float
+   */
+  public $shoppingScore;
   /**
    * @var float
    */
@@ -116,16 +168,43 @@ class QualityNsrNsrData extends \Google\Collection
    * @var float
    */
   public $spambrainLavcScore;
+  protected $spambrainLavcScoresType = QualityNsrVersionedFloatSignal::class;
+  protected $spambrainLavcScoresDataType = 'array';
+  public $spambrainLavcScores;
+  /**
+   * @var float
+   */
+  public $tofu;
+  /**
+   * @var float
+   */
+  public $ugcScore;
   /**
    * @var string
    */
   public $url;
+  protected $versionedAsrDataType = QualityNsrVersionedFloatSignal::class;
+  protected $versionedAsrDataDataType = 'array';
+  public $versionedAsrData;
   protected $versionedDataType = QualityNsrNSRVersionedData::class;
   protected $versionedDataDataType = 'array';
+  public $versionedData;
+  /**
+   * @var float
+   */
+  public $videoScore;
+  /**
+   * @var float
+   */
+  public $vlq;
   /**
    * @var float
    */
   public $vlqNsr;
+  /**
+   * @var float
+   */
+  public $ymylNewsV2Score;
 
   /**
    * @param float
@@ -154,6 +233,34 @@ class QualityNsrNsrData extends \Google\Collection
   public function getArticleScoreV2()
   {
     return $this->articleScoreV2;
+  }
+  /**
+   * @param int
+   */
+  public function setChardEncoded($chardEncoded)
+  {
+    $this->chardEncoded = $chardEncoded;
+  }
+  /**
+   * @return int
+   */
+  public function getChardEncoded()
+  {
+    return $this->chardEncoded;
+  }
+  /**
+   * @param float
+   */
+  public function setChardVariance($chardVariance)
+  {
+    $this->chardVariance = $chardVariance;
+  }
+  /**
+   * @return float
+   */
+  public function getChardVariance()
+  {
+    return $this->chardVariance;
   }
   /**
    * @param int
@@ -198,6 +305,48 @@ class QualityNsrNsrData extends \Google\Collection
     return $this->clutterScore;
   }
   /**
+   * @param QualityNsrVersionedFloatSignal[]
+   */
+  public function setClutterScores($clutterScores)
+  {
+    $this->clutterScores = $clutterScores;
+  }
+  /**
+   * @return QualityNsrVersionedFloatSignal[]
+   */
+  public function getClutterScores()
+  {
+    return $this->clutterScores;
+  }
+  /**
+   * @param float
+   */
+  public function setDirectFrac($directFrac)
+  {
+    $this->directFrac = $directFrac;
+  }
+  /**
+   * @return float
+   */
+  public function getDirectFrac()
+  {
+    return $this->directFrac;
+  }
+  /**
+   * @param float
+   */
+  public function setHealthScore($healthScore)
+  {
+    $this->healthScore = $healthScore;
+  }
+  /**
+   * @return float
+   */
+  public function getHealthScore()
+  {
+    return $this->healthScore;
+  }
+  /**
    * @param string
    */
   public function setHost($host)
@@ -210,6 +359,34 @@ class QualityNsrNsrData extends \Google\Collection
   public function getHost()
   {
     return $this->host;
+  }
+  /**
+   * @param int
+   */
+  public function setI18nBucket($i18nBucket)
+  {
+    $this->i18nBucket = $i18nBucket;
+  }
+  /**
+   * @return int
+   */
+  public function getI18nBucket()
+  {
+    return $this->i18nBucket;
+  }
+  /**
+   * @param float
+   */
+  public function setImpressions($impressions)
+  {
+    $this->impressions = $impressions;
+  }
+  /**
+   * @return float
+   */
+  public function getImpressions()
+  {
+    return $this->impressions;
   }
   /**
    * @param bool
@@ -252,6 +429,34 @@ class QualityNsrNsrData extends \Google\Collection
   public function getIsVideoFocusedSite()
   {
     return $this->isVideoFocusedSite;
+  }
+  /**
+   * @param int
+   */
+  public function setLanguage($language)
+  {
+    $this->language = $language;
+  }
+  /**
+   * @return int
+   */
+  public function getLanguage()
+  {
+    return $this->language;
+  }
+  /**
+   * @param int
+   */
+  public function setLargeOrgId($largeOrgId)
+  {
+    $this->largeOrgId = $largeOrgId;
+  }
+  /**
+   * @return int
+   */
+  public function getLargeOrgId()
+  {
+    return $this->largeOrgId;
   }
   /**
    * @param float
@@ -310,6 +515,20 @@ class QualityNsrNsrData extends \Google\Collection
     return $this->nsr;
   }
   /**
+   * @param string
+   */
+  public function setNsrEpoch($nsrEpoch)
+  {
+    $this->nsrEpoch = $nsrEpoch;
+  }
+  /**
+   * @return string
+   */
+  public function getNsrEpoch()
+  {
+    return $this->nsrEpoch;
+  }
+  /**
    * @param float
    */
   public function setNsrOverrideBid($nsrOverrideBid)
@@ -352,6 +571,34 @@ class QualityNsrNsrData extends \Google\Collection
     return $this->nsrdataFromFallbackPatternKey;
   }
   /**
+   * @param float
+   */
+  public function setPnav($pnav)
+  {
+    $this->pnav = $pnav;
+  }
+  /**
+   * @return float
+   */
+  public function getPnav()
+  {
+    return $this->pnav;
+  }
+  /**
+   * @param QualityNsrVersionedFloatSignal[]
+   */
+  public function setPriorAdjustedNsr($priorAdjustedNsr)
+  {
+    $this->priorAdjustedNsr = $priorAdjustedNsr;
+  }
+  /**
+   * @return QualityNsrVersionedFloatSignal[]
+   */
+  public function getPriorAdjustedNsr()
+  {
+    return $this->priorAdjustedNsr;
+  }
+  /**
    * @param string
    */
   public function setSecondarySiteChunk($secondarySiteChunk)
@@ -364,6 +611,20 @@ class QualityNsrNsrData extends \Google\Collection
   public function getSecondarySiteChunk()
   {
     return $this->secondarySiteChunk;
+  }
+  /**
+   * @param float
+   */
+  public function setShoppingScore($shoppingScore)
+  {
+    $this->shoppingScore = $shoppingScore;
+  }
+  /**
+   * @return float
+   */
+  public function getShoppingScore()
+  {
+    return $this->shoppingScore;
   }
   /**
    * @param float
@@ -478,6 +739,48 @@ class QualityNsrNsrData extends \Google\Collection
     return $this->spambrainLavcScore;
   }
   /**
+   * @param QualityNsrVersionedFloatSignal[]
+   */
+  public function setSpambrainLavcScores($spambrainLavcScores)
+  {
+    $this->spambrainLavcScores = $spambrainLavcScores;
+  }
+  /**
+   * @return QualityNsrVersionedFloatSignal[]
+   */
+  public function getSpambrainLavcScores()
+  {
+    return $this->spambrainLavcScores;
+  }
+  /**
+   * @param float
+   */
+  public function setTofu($tofu)
+  {
+    $this->tofu = $tofu;
+  }
+  /**
+   * @return float
+   */
+  public function getTofu()
+  {
+    return $this->tofu;
+  }
+  /**
+   * @param float
+   */
+  public function setUgcScore($ugcScore)
+  {
+    $this->ugcScore = $ugcScore;
+  }
+  /**
+   * @return float
+   */
+  public function getUgcScore()
+  {
+    return $this->ugcScore;
+  }
+  /**
    * @param string
    */
   public function setUrl($url)
@@ -490,6 +793,20 @@ class QualityNsrNsrData extends \Google\Collection
   public function getUrl()
   {
     return $this->url;
+  }
+  /**
+   * @param QualityNsrVersionedFloatSignal[]
+   */
+  public function setVersionedAsrData($versionedAsrData)
+  {
+    $this->versionedAsrData = $versionedAsrData;
+  }
+  /**
+   * @return QualityNsrVersionedFloatSignal[]
+   */
+  public function getVersionedAsrData()
+  {
+    return $this->versionedAsrData;
   }
   /**
    * @param QualityNsrNSRVersionedData[]
@@ -508,6 +825,34 @@ class QualityNsrNsrData extends \Google\Collection
   /**
    * @param float
    */
+  public function setVideoScore($videoScore)
+  {
+    $this->videoScore = $videoScore;
+  }
+  /**
+   * @return float
+   */
+  public function getVideoScore()
+  {
+    return $this->videoScore;
+  }
+  /**
+   * @param float
+   */
+  public function setVlq($vlq)
+  {
+    $this->vlq = $vlq;
+  }
+  /**
+   * @return float
+   */
+  public function getVlq()
+  {
+    return $this->vlq;
+  }
+  /**
+   * @param float
+   */
   public function setVlqNsr($vlqNsr)
   {
     $this->vlqNsr = $vlqNsr;
@@ -518,6 +863,20 @@ class QualityNsrNsrData extends \Google\Collection
   public function getVlqNsr()
   {
     return $this->vlqNsr;
+  }
+  /**
+   * @param float
+   */
+  public function setYmylNewsV2Score($ymylNewsV2Score)
+  {
+    $this->ymylNewsV2Score = $ymylNewsV2Score;
+  }
+  /**
+   * @return float
+   */
+  public function getYmylNewsV2Score()
+  {
+    return $this->ymylNewsV2Score;
   }
 }
 

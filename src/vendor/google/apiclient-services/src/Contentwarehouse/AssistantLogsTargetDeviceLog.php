@@ -22,6 +22,11 @@ class AssistantLogsTargetDeviceLog extends \Google\Collection
   protected $collection_key = 'devices';
   protected $devicesType = AssistantLogsDeviceInfoLog::class;
   protected $devicesDataType = 'array';
+  public $devices;
+  /**
+   * @var string
+   */
+  public $lowConfidenceReason;
   /**
    * @var string
    */
@@ -40,6 +45,20 @@ class AssistantLogsTargetDeviceLog extends \Google\Collection
   public function getDevices()
   {
     return $this->devices;
+  }
+  /**
+   * @param string
+   */
+  public function setLowConfidenceReason($lowConfidenceReason)
+  {
+    $this->lowConfidenceReason = $lowConfidenceReason;
+  }
+  /**
+   * @return string
+   */
+  public function getLowConfidenceReason()
+  {
+    return $this->lowConfidenceReason;
   }
   /**
    * @param string

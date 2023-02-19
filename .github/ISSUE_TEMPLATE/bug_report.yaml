@@ -1,5 +1,5 @@
-name: "\U0001F41E Informar d'un problema"
-description: "Informar d'un problema"
+name: "\U0001F41E Informa d'un problema"
+description: "Informa d'un problema"
 body:
   - type: markdown
     attributes:
@@ -8,7 +8,7 @@ body:
   - type: textarea
     id: bug-description
     attributes:
-      label: Descriu l'error
+      label: Descriviu l'error
       description: Una descripció clara i concisa de què és l'error. Si teniu intenció d'enviar un PR per aquest problema, digueu-nos-ho a la descripció. Gràcies!
       placeholder: Descripció de l'error
     validations:

@@ -25,10 +25,21 @@ class TranslateDocumentRequest extends \Google\Model
   public $customizedAttribution;
   protected $documentInputConfigType = DocumentInputConfig::class;
   protected $documentInputConfigDataType = '';
+  public $documentInputConfig;
   protected $documentOutputConfigType = DocumentOutputConfig::class;
   protected $documentOutputConfigDataType = '';
+  public $documentOutputConfig;
+  /**
+   * @var bool
+   */
+  public $enableShadowRemovalNativePdf;
   protected $glossaryConfigType = TranslateTextGlossaryConfig::class;
   protected $glossaryConfigDataType = '';
+  public $glossaryConfig;
+  /**
+   * @var bool
+   */
+  public $isTranslateNativePdfOnly;
   /**
    * @var string[]
    */
@@ -89,6 +100,20 @@ class TranslateDocumentRequest extends \Google\Model
     return $this->documentOutputConfig;
   }
   /**
+   * @param bool
+   */
+  public function setEnableShadowRemovalNativePdf($enableShadowRemovalNativePdf)
+  {
+    $this->enableShadowRemovalNativePdf = $enableShadowRemovalNativePdf;
+  }
+  /**
+   * @return bool
+   */
+  public function getEnableShadowRemovalNativePdf()
+  {
+    return $this->enableShadowRemovalNativePdf;
+  }
+  /**
    * @param TranslateTextGlossaryConfig
    */
   public function setGlossaryConfig(TranslateTextGlossaryConfig $glossaryConfig)
@@ -101,6 +126,20 @@ class TranslateDocumentRequest extends \Google\Model
   public function getGlossaryConfig()
   {
     return $this->glossaryConfig;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsTranslateNativePdfOnly($isTranslateNativePdfOnly)
+  {
+    $this->isTranslateNativePdfOnly = $isTranslateNativePdfOnly;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsTranslateNativePdfOnly()
+  {
+    return $this->isTranslateNativePdfOnly;
   }
   /**
    * @param string[]

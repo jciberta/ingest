@@ -38,6 +38,11 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
   public $imageId;
   protected $inferredImagesType = ShoppingWebentityShoppingAnnotationInferredImage::class;
   protected $inferredImagesDataType = 'array';
+  public $inferredImages;
+  /**
+   * @var bool
+   */
+  public $isLensBuildable;
   /**
    * @var string
    */
@@ -59,9 +64,9 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
    */
   public $nonDisplayableCurrency;
   /**
-   * @var float
+   * @var int
    */
-  public $nonDisplayableOrganicMscore;
+  public $nonDisplayableOrganicScoreMillis;
   /**
    * @var string
    */
@@ -72,6 +77,7 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
   public $refType;
   protected $soriVersionIdType = ShoppingWebentityShoppingAnnotationSoriVersionId::class;
   protected $soriVersionIdDataType = '';
+  public $soriVersionId;
 
   /**
    * @param string
@@ -144,6 +150,20 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
     return $this->inferredImages;
   }
   /**
+   * @param bool
+   */
+  public function setIsLensBuildable($isLensBuildable)
+  {
+    $this->isLensBuildable = $isLensBuildable;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsLensBuildable()
+  {
+    return $this->isLensBuildable;
+  }
+  /**
    * @param string
    */
   public function setMatchingType($matchingType)
@@ -214,18 +234,18 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
     return $this->nonDisplayableCurrency;
   }
   /**
-   * @param float
+   * @param int
    */
-  public function setNonDisplayableOrganicMscore($nonDisplayableOrganicMscore)
+  public function setNonDisplayableOrganicScoreMillis($nonDisplayableOrganicScoreMillis)
   {
-    $this->nonDisplayableOrganicMscore = $nonDisplayableOrganicMscore;
+    $this->nonDisplayableOrganicScoreMillis = $nonDisplayableOrganicScoreMillis;
   }
   /**
-   * @return float
+   * @return int
    */
-  public function getNonDisplayableOrganicMscore()
+  public function getNonDisplayableOrganicScoreMillis()
   {
-    return $this->nonDisplayableOrganicMscore;
+    return $this->nonDisplayableOrganicScoreMillis;
   }
   /**
    * @param string

@@ -23,6 +23,8 @@ use Google\Service\DisplayVideo\BulkListAssignedTargetingOptionsResponse;
 use Google\Service\DisplayVideo\BulkUpdateLineItemsRequest;
 use Google\Service\DisplayVideo\BulkUpdateLineItemsResponse;
 use Google\Service\DisplayVideo\DisplayvideoEmpty;
+use Google\Service\DisplayVideo\DuplicateLineItemRequest;
+use Google\Service\DisplayVideo\DuplicateLineItemResponse;
 use Google\Service\DisplayVideo\GenerateDefaultLineItemRequest;
 use Google\Service\DisplayVideo\LineItem;
 use Google\Service\DisplayVideo\ListLineItemsResponse;
@@ -32,7 +34,7 @@ use Google\Service\DisplayVideo\ListLineItemsResponse;
  * Typical usage is:
  *  <code>
  *   $displayvideoService = new Google\Service\DisplayVideo(...);
- *   $lineItems = $displayvideoService->lineItems;
+ *   $lineItems = $displayvideoService->advertisers_lineItems;
  *  </code>
  */
 class AdvertisersLineItems extends \Google\Service\Resource
@@ -42,7 +44,10 @@ class AdvertisersLineItems extends \Google\Service\Resource
    * delete the assigned targeting options provided in
    * BulkEditAssignedTargetingOptionsRequest.delete_requests and then create the
    * assigned targeting options provided in
-   * BulkEditAssignedTargetingOptionsRequest.create_requests .
+   * BulkEditAssignedTargetingOptionsRequest.create_requests. Requests to this
+   * endpoint cannot be made concurrently with the following requests updating the
+   * same line item: * BulkUpdate * UpdateLineItem *
+   * CreateLineItemAssignedTargetingOption * DeleteLineItemAssignedTargetingOption
    * (lineItems.bulkEditAssignedTargetingOptions)
    *
    * @param string $advertiserId Required. The ID of the advertiser the line items
@@ -85,7 +90,7 @@ class AdvertisersLineItems extends \Google\Service\Resource
    * a suffix "desc" should be added to the field name. Example: `targetingType
    * desc`.
    * @opt_param int pageSize Requested page size. The size must be an integer
-   * between `1` and `5000`. If unspecified, the default is '5000'. Returns error
+   * between `1` and `5000`. If unspecified, the default is `5000`. Returns error
    * code `INVALID_ARGUMENT` if an invalid value is specified.
    * @opt_param string pageToken A token that lets the client fetch the next page
    * of results. Typically, this is the value of next_page_token returned from the
@@ -100,16 +105,21 @@ class AdvertisersLineItems extends \Google\Service\Resource
     return $this->call('bulkListAssignedTargetingOptions', [$params], BulkListAssignedTargetingOptionsResponse::class);
   }
   /**
-   * Updates multiple line items. (lineItems.bulkUpdate)
+   * Updates multiple line items. Requests to this endpoint cannot be made
+   * concurrently with the following requests updating the same line item: *
+   * BulkEditAssignedTargetingOptions * UpdateLineItem *
+   * CreateLineItemAssignedTargetingOption * DeleteLineItemAssignedTargetingOption
+   * (lineItems.bulkUpdate)
    *
-   * @param string $advertisersId
+   * @param string $advertiserId Required. The ID of the advertiser this line item
+   * belongs to.
    * @param BulkUpdateLineItemsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return BulkUpdateLineItemsResponse
    */
-  public function bulkUpdate($advertisersId, BulkUpdateLineItemsRequest $postBody, $optParams = [])
+  public function bulkUpdate($advertiserId, BulkUpdateLineItemsRequest $postBody, $optParams = [])
   {
-    $params = ['advertisersId' => $advertisersId, 'postBody' => $postBody];
+    $params = ['advertiserId' => $advertiserId, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('bulkUpdate', [$params], BulkUpdateLineItemsResponse::class);
   }
@@ -145,6 +155,23 @@ class AdvertisersLineItems extends \Google\Service\Resource
     $params = ['advertiserId' => $advertiserId, 'lineItemId' => $lineItemId];
     $params = array_merge($params, $optParams);
     return $this->call('delete', [$params], DisplayvideoEmpty::class);
+  }
+  /**
+   * Duplicates a line item. Returns the ID of the created line item if
+   * successful. (lineItems.duplicate)
+   *
+   * @param string $advertiserId Required. The ID of the advertiser this line item
+   * belongs to.
+   * @param string $lineItemId Required. The ID of the line item to duplicate.
+   * @param DuplicateLineItemRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return DuplicateLineItemResponse
+   */
+  public function duplicate($advertiserId, $lineItemId, DuplicateLineItemRequest $postBody, $optParams = [])
+  {
+    $params = ['advertiserId' => $advertiserId, 'lineItemId' => $lineItemId, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('duplicate', [$params], DuplicateLineItemResponse::class);
   }
   /**
    * Creates a new line item with settings (including targeting) inherited from
@@ -226,7 +253,7 @@ class AdvertisersLineItems extends \Google\Service\Resource
    * * `updateTime` The default sorting order is ascending. To specify descending
    * order for a field, a suffix "desc" should be added to the field name.
    * Example: `displayName desc`.
-   * @opt_param int pageSize Requested page size. Must be between `1` and `100`.
+   * @opt_param int pageSize Requested page size. Must be between `1` and `200`.
    * If unspecified will default to `100`. Returns error code `INVALID_ARGUMENT`
    * if an invalid value is specified.
    * @opt_param string pageToken A token identifying a page of results the server
@@ -244,10 +271,9 @@ class AdvertisersLineItems extends \Google\Service\Resource
   /**
    * Updates an existing line item. Returns the updated line item if successful.
    * Requests to this endpoint cannot be made concurrently with the following
-   * requests updating the same line item: *
-   * BulkEditLineItemAssignedTargetingOptions * UpdateLineItem *
-   * CreateLineItemAssignedTargetingOption * DeleteLineItemAssignedTargetingOption
-   * (lineItems.patch)
+   * requests updating the same line item: * BulkEditAssignedTargetingOptions *
+   * BulkUpdateLineItems * CreateLineItemAssignedTargetingOption *
+   * DeleteLineItemAssignedTargetingOption (lineItems.patch)
    *
    * @param string $advertiserId Output only. The unique ID of the advertiser the
    * line item belongs to.

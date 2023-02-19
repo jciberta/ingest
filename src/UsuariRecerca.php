@@ -112,6 +112,9 @@ switch ($Accio) {
 		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Camps = 'nom, cognom1, cognom2, username, data_naixement, edat, telefon, email, email_ins, codi';
 		$frm->Descripcions = 'Nom, 1r cognom, 2n cognom, Usuari, Data naixement, Edat, Telèfon, Correu, Correu INS, IDALU';
+
+		$frm->MaximRegistres = 10;
+
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'UsuariFitxa.php';
 		$frm->PermetSuprimir = True;

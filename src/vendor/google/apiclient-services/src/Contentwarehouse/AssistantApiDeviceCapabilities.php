@@ -22,22 +22,35 @@ class AssistantApiDeviceCapabilities extends \Google\Collection
   protected $collection_key = 'supportedLocale';
   protected $androidIntentCapabilitiesType = AssistantApiAndroidIntentCapabilities::class;
   protected $androidIntentCapabilitiesDataType = '';
+  public $androidIntentCapabilities;
   protected $audioInputType = AssistantApiAudioInput::class;
   protected $audioInputDataType = '';
+  public $audioInput;
   protected $audioOutputType = AssistantApiAudioOutput::class;
   protected $audioOutputDataType = '';
+  public $audioOutput;
   protected $callCapabilitiesType = AssistantApiCallCapabilities::class;
   protected $callCapabilitiesDataType = '';
+  public $callCapabilities;
   protected $cameraType = AssistantApiCameraCapabilities::class;
   protected $cameraDataType = '';
+  public $camera;
+  /**
+   * @var string[]
+   */
+  public $carUxRestrictions;
   protected $castType = AssistantApiCastCapabilities::class;
   protected $castDataType = '';
+  public $cast;
   protected $communicationUiCapabilitiesType = AssistantApiCommunicationUiCapabilities::class;
   protected $communicationUiCapabilitiesDataType = '';
+  public $communicationUiCapabilities;
   protected $contactLookupCapabilitiesType = AssistantApiContactLookupCapabilities::class;
   protected $contactLookupCapabilitiesDataType = '';
+  public $contactLookupCapabilities;
   protected $deviceIdType = AssistantApiCoreTypesDeviceId::class;
   protected $deviceIdDataType = '';
+  public $deviceId;
   /**
    * @var string
    */
@@ -48,50 +61,69 @@ class AssistantApiDeviceCapabilities extends \Google\Collection
   public $hasVoiceTelephony;
   protected $jwnCapabilitiesType = AssistantApiJwnCapabilities::class;
   protected $jwnCapabilitiesDataType = '';
+  public $jwnCapabilities;
   protected $lensPerceptionCapabilitiesType = AssistantApiLensPerceptionCapabilities::class;
   protected $lensPerceptionCapabilitiesDataType = '';
+  public $lensPerceptionCapabilities;
   protected $locationType = AssistantApiLocationCapabilities::class;
   protected $locationDataType = '';
+  public $location;
   protected $loggingOnlyDataType = AssistantApiLoggingOnlyData::class;
   protected $loggingOnlyDataDataType = '';
+  public $loggingOnlyData;
   protected $messageCapabilitiesType = AssistantApiMessageCapabilities::class;
   protected $messageCapabilitiesDataType = '';
+  public $messageCapabilities;
   protected $movementType = AssistantApiMovementCapabilities::class;
   protected $movementDataType = '';
+  public $movement;
   /**
    * @var string
    */
   public $notificationCapabilities;
   protected $notificationOutputRestrictionsType = AssistantApiNotificationOutputRestrictions::class;
   protected $notificationOutputRestrictionsDataType = '';
+  public $notificationOutputRestrictions;
   protected $outputRestrictionsType = AssistantApiOutputRestrictions::class;
   protected $outputRestrictionsDataType = '';
+  public $outputRestrictions;
+  /**
+   * @var string
+   */
+  public $popOnLockscreenCapability;
   /**
    * @var string
    */
   public $safetyRestrictions;
   protected $screenType = AssistantApiScreenCapabilities::class;
   protected $screenDataType = '';
+  public $screen;
   protected $sodaCapabilitiesType = AssistantApiSodaCapabilities::class;
   protected $sodaCapabilitiesDataType = '';
+  public $sodaCapabilities;
   protected $softwareType = AssistantApiSoftwareCapabilities::class;
   protected $softwareDataType = '';
+  public $software;
   protected $speechCapabilitiesType = AssistantApiSpeechCapabilities::class;
   protected $speechCapabilitiesDataType = '';
+  public $speechCapabilities;
   /**
    * @var string[]
    */
   public $supportedLocale;
   protected $surfaceIdentityType = AssistantApiCoreTypesSurfaceIdentity::class;
   protected $surfaceIdentityDataType = '';
+  public $surfaceIdentity;
   /**
    * @var string
    */
   public $surfaceTypeString;
   protected $systemNotificationRestrictionsType = AssistantApiSystemNotificationRestrictions::class;
   protected $systemNotificationRestrictionsDataType = '';
+  public $systemNotificationRestrictions;
   protected $thirdPartyCapabilitiesType = AssistantApiThirdPartyCapabilities::class;
   protected $thirdPartyCapabilitiesDataType = '';
+  public $thirdPartyCapabilities;
 
   /**
    * @param AssistantApiAndroidIntentCapabilities
@@ -162,6 +194,20 @@ class AssistantApiDeviceCapabilities extends \Google\Collection
   public function getCamera()
   {
     return $this->camera;
+  }
+  /**
+   * @param string[]
+   */
+  public function setCarUxRestrictions($carUxRestrictions)
+  {
+    $this->carUxRestrictions = $carUxRestrictions;
+  }
+  /**
+   * @return string[]
+   */
+  public function getCarUxRestrictions()
+  {
+    return $this->carUxRestrictions;
   }
   /**
    * @param AssistantApiCastCapabilities
@@ -372,6 +418,20 @@ class AssistantApiDeviceCapabilities extends \Google\Collection
   public function getOutputRestrictions()
   {
     return $this->outputRestrictions;
+  }
+  /**
+   * @param string
+   */
+  public function setPopOnLockscreenCapability($popOnLockscreenCapability)
+  {
+    $this->popOnLockscreenCapability = $popOnLockscreenCapability;
+  }
+  /**
+   * @return string
+   */
+  public function getPopOnLockscreenCapability()
+  {
+    return $this->popOnLockscreenCapability;
   }
   /**
    * @param string

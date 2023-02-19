@@ -30,12 +30,20 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
   public $availabilityStartTimestamp;
   protected $legalAllowedRegionsType = KeGovernanceTypedRegions::class;
   protected $legalAllowedRegionsDataType = 'array';
+  public $legalAllowedRegions;
   protected $legalRemovalRegionsType = KeGovernanceTypedRegions::class;
   protected $legalRemovalRegionsDataType = 'array';
+  public $legalRemovalRegions;
+  protected $lmsPolicyMetadataType = StorageGraphBfgLmsPolicyMetadata::class;
+  protected $lmsPolicyMetadataDataType = '';
+  public $lmsPolicyMetadata;
   /**
    * @var string
    */
   public $policySourceType;
+  protected $umpPolicyMetadataType = StorageGraphBfgUmpPolicyMetadata::class;
+  protected $umpPolicyMetadataDataType = '';
+  public $umpPolicyMetadata;
 
   /**
    * @param string
@@ -94,6 +102,20 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
     return $this->legalRemovalRegions;
   }
   /**
+   * @param StorageGraphBfgLmsPolicyMetadata
+   */
+  public function setLmsPolicyMetadata(StorageGraphBfgLmsPolicyMetadata $lmsPolicyMetadata)
+  {
+    $this->lmsPolicyMetadata = $lmsPolicyMetadata;
+  }
+  /**
+   * @return StorageGraphBfgLmsPolicyMetadata
+   */
+  public function getLmsPolicyMetadata()
+  {
+    return $this->lmsPolicyMetadata;
+  }
+  /**
    * @param string
    */
   public function setPolicySourceType($policySourceType)
@@ -106,6 +128,20 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
   public function getPolicySourceType()
   {
     return $this->policySourceType;
+  }
+  /**
+   * @param StorageGraphBfgUmpPolicyMetadata
+   */
+  public function setUmpPolicyMetadata(StorageGraphBfgUmpPolicyMetadata $umpPolicyMetadata)
+  {
+    $this->umpPolicyMetadata = $umpPolicyMetadata;
+  }
+  /**
+   * @return StorageGraphBfgUmpPolicyMetadata
+   */
+  public function getUmpPolicyMetadata()
+  {
+    return $this->umpPolicyMetadata;
   }
 }
 

@@ -26,10 +26,17 @@ class MustangReposWwwSnippetsSnippetsRanklabFeatures extends \Google\Collection
   public $browserWidth;
   protected $candidatesType = MustangReposWwwSnippetsSnippetCandidate::class;
   protected $candidatesDataType = 'array';
+  public $candidates;
+  protected $displaySnippetType = QualityPreviewRanklabSnippet::class;
+  protected $displaySnippetDataType = '';
+  public $displaySnippet;
   /**
    * @var string
    */
   public $documentLanguage;
+  protected $originalQueryTermCoveragesType = QualityPreviewSnippetQueryTermCoverageFeatures::class;
+  protected $originalQueryTermCoveragesDataType = '';
+  public $originalQueryTermCoverages;
   /**
    * @var string
    */
@@ -44,6 +51,7 @@ class MustangReposWwwSnippetsSnippetsRanklabFeatures extends \Google\Collection
   public $snippetQueryTermCoverage;
   protected $snippetsType = QualityPreviewRanklabSnippet::class;
   protected $snippetsDataType = 'array';
+  public $snippets;
   /**
    * @var int
    */
@@ -58,6 +66,7 @@ class MustangReposWwwSnippetsSnippetsRanklabFeatures extends \Google\Collection
   public $titleSnippetQueryTermCoverage;
   protected $titlesType = QualityPreviewRanklabTitle::class;
   protected $titlesDataType = 'array';
+  public $titles;
 
   /**
    * @param int
@@ -88,6 +97,20 @@ class MustangReposWwwSnippetsSnippetsRanklabFeatures extends \Google\Collection
     return $this->candidates;
   }
   /**
+   * @param QualityPreviewRanklabSnippet
+   */
+  public function setDisplaySnippet(QualityPreviewRanklabSnippet $displaySnippet)
+  {
+    $this->displaySnippet = $displaySnippet;
+  }
+  /**
+   * @return QualityPreviewRanklabSnippet
+   */
+  public function getDisplaySnippet()
+  {
+    return $this->displaySnippet;
+  }
+  /**
    * @param string
    */
   public function setDocumentLanguage($documentLanguage)
@@ -100,6 +123,20 @@ class MustangReposWwwSnippetsSnippetsRanklabFeatures extends \Google\Collection
   public function getDocumentLanguage()
   {
     return $this->documentLanguage;
+  }
+  /**
+   * @param QualityPreviewSnippetQueryTermCoverageFeatures
+   */
+  public function setOriginalQueryTermCoverages(QualityPreviewSnippetQueryTermCoverageFeatures $originalQueryTermCoverages)
+  {
+    $this->originalQueryTermCoverages = $originalQueryTermCoverages;
+  }
+  /**
+   * @return QualityPreviewSnippetQueryTermCoverageFeatures
+   */
+  public function getOriginalQueryTermCoverages()
+  {
+    return $this->originalQueryTermCoverages;
   }
   /**
    * @param string

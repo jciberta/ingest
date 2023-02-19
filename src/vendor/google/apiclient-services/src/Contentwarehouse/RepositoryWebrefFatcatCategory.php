@@ -20,10 +20,6 @@ namespace Google\Service\Contentwarehouse;
 class RepositoryWebrefFatcatCategory extends \Google\Model
 {
   /**
-   * @var string
-   */
-  public $debugId;
-  /**
    * @var int
    */
   public $id;
@@ -32,20 +28,6 @@ class RepositoryWebrefFatcatCategory extends \Google\Model
    */
   public $score;
 
-  /**
-   * @param string
-   */
-  public function setDebugId($debugId)
-  {
-    $this->debugId = $debugId;
-  }
-  /**
-   * @return string
-   */
-  public function getDebugId()
-  {
-    return $this->debugId;
-  }
   /**
    * @param int
    */

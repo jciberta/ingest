@@ -20,12 +20,16 @@ namespace Google\Service\Contentwarehouse;
 class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Collection
 {
   protected $collection_key = 'subcategory';
+  protected $appTypeDataType = RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationAppTypeData::class;
+  protected $appTypeDataDataType = '';
+  public $appTypeData;
   /**
    * @var string
    */
   public $applicationUrl;
   protected $breadcrumbsType = RepositoryAnnotationsRdfaBreadcrumbs::class;
   protected $breadcrumbsDataType = '';
+  public $breadcrumbs;
   /**
    * @var string[]
    */
@@ -36,6 +40,7 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
   public $countriesSupported;
   protected $countryPricesType = RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationCountryPrice::class;
   protected $countryPricesDataType = 'array';
+  public $countryPrices;
   /**
    * @var string
    */
@@ -76,6 +81,9 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
    * @var string
    */
   public $iconUrlThumbnail;
+  protected $imageDataType = QualityCalypsoAppsUniversalImageData::class;
+  protected $imageDataDataType = '';
+  public $imageData;
   /**
    * @var bool
    */
@@ -92,6 +100,12 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
    * @var string
    */
   public $lastUpdated;
+  protected $liveOpDetailsType = QualityCalypsoAppsUniversalAuLiveOpsDetailInfo::class;
+  protected $liveOpDetailsDataType = '';
+  public $liveOpDetails;
+  protected $localizedTrustedGenomeType = RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationLocalizedTrustedGenome::class;
+  protected $localizedTrustedGenomeDataType = '';
+  public $localizedTrustedGenome;
   /**
    * @var string
    */
@@ -132,6 +146,9 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
    * @var string
    */
   public $price;
+  protected $rankDataType = RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationRankData::class;
+  protected $rankDataDataType = '';
+  public $rankData;
   /**
    * @var string
    */
@@ -186,6 +203,7 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
   public $totalRatingCount;
   protected $trustedGenomeDataType = VendingConsumerProtoTrustedGenomeAnnotation::class;
   protected $trustedGenomeDataDataType = 'map';
+  public $trustedGenomeData;
   /**
    * @var string
    */
@@ -203,6 +221,20 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
    */
   public $version;
 
+  /**
+   * @param RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationAppTypeData
+   */
+  public function setAppTypeData(RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationAppTypeData $appTypeData)
+  {
+    $this->appTypeData = $appTypeData;
+  }
+  /**
+   * @return RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationAppTypeData
+   */
+  public function getAppTypeData()
+  {
+    return $this->appTypeData;
+  }
   /**
    * @param string
    */
@@ -414,6 +446,20 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
     return $this->iconUrlThumbnail;
   }
   /**
+   * @param QualityCalypsoAppsUniversalImageData
+   */
+  public function setImageData(QualityCalypsoAppsUniversalImageData $imageData)
+  {
+    $this->imageData = $imageData;
+  }
+  /**
+   * @return QualityCalypsoAppsUniversalImageData
+   */
+  public function getImageData()
+  {
+    return $this->imageData;
+  }
+  /**
    * @param bool
    */
   public function setInAppPurchase($inAppPurchase)
@@ -468,6 +514,34 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
   public function getLastUpdated()
   {
     return $this->lastUpdated;
+  }
+  /**
+   * @param QualityCalypsoAppsUniversalAuLiveOpsDetailInfo
+   */
+  public function setLiveOpDetails(QualityCalypsoAppsUniversalAuLiveOpsDetailInfo $liveOpDetails)
+  {
+    $this->liveOpDetails = $liveOpDetails;
+  }
+  /**
+   * @return QualityCalypsoAppsUniversalAuLiveOpsDetailInfo
+   */
+  public function getLiveOpDetails()
+  {
+    return $this->liveOpDetails;
+  }
+  /**
+   * @param RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationLocalizedTrustedGenome
+   */
+  public function setLocalizedTrustedGenome(RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationLocalizedTrustedGenome $localizedTrustedGenome)
+  {
+    $this->localizedTrustedGenome = $localizedTrustedGenome;
+  }
+  /**
+   * @return RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationLocalizedTrustedGenome
+   */
+  public function getLocalizedTrustedGenome()
+  {
+    return $this->localizedTrustedGenome;
   }
   /**
    * @param string
@@ -608,6 +682,20 @@ class RepositoryAnnotationsRdfaRdfaRichSnippetsApplication extends \Google\Colle
   public function getPrice()
   {
     return $this->price;
+  }
+  /**
+   * @param RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationRankData
+   */
+  public function setRankData(RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationRankData $rankData)
+  {
+    $this->rankData = $rankData;
+  }
+  /**
+   * @return RepositoryAnnotationsRdfaRdfaRichSnippetsApplicationRankData
+   */
+  public function getRankData()
+  {
+    return $this->rankData;
   }
   /**
    * @param string
