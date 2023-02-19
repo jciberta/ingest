@@ -99,7 +99,7 @@ class Material extends Objecte
 		array_unshift($aResponsable[0] , '');
 		array_unshift($aResponsable[1] , 'Tots');
 		$frm->Filtre->AfegeixLlista('U.usuari_id', 'Responsable', 60, $aResponsable[0], $aResponsable[1]);
-		$frm->Filtre->AfegeixLlista('M.es_obsolet', 'Obsolet', 15, array('', '0', '1'), array('Tots', 'No', 'Si'));
+		$frm->Filtre->AfegeixLlista('M.es_obsolet', 'Obsolet', 15, array('', '0', '1'), array('Tots', 'No', 'Sí'));
 
 		if ($this->Usuari->es_admin) {
 			$frm->PermetEditar = true;
