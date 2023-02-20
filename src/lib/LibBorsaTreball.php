@@ -23,17 +23,19 @@ require_once(ROOT . '/lib/LibForms.php');
 
 class BorsaTreball extends Objecte
 {
+  private $Professor;
 
   /**
    * Constructor de la classe
    * @param mysqli $conn Connexió a la base de dades
    * @param Usuari $usuari Usuari que ha fet login
    * @param Sistema $sistema Objecte amb la informació del sistema
-   * @param Professor $professorGestor Objecte amb la informació del professor gestor
+   * @param Professor $Professor Objecte amb la informació del professor loguejat
    */
-  function __construct($conn = null, $usuari = null, $sistema = null)
+  function __construct($conn = null, $usuari = null, $sistema = null, $Professor = null)
   {
     parent::__construct($conn, $usuari, $sistema);
+    $this->Professor = $Professor;
   }
 
   /**
@@ -75,25 +77,7 @@ class BorsaTreball extends Objecte
     $output = "";
 
     while ($row = $resultSet->fetch_assoc()) {
-      if ($row["publicat"] === 1) {
-        $data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
-        $output .= "
-        <tr>
-          <td>$row[empresa]</td>
-          <td>$row[nom_cicle]</td>
-          <td>$row[poblacio]</td>
-          <td>$data</td>
-          <td>
-            <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
-              <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
-                <path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
-                <path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
-              </svg>
-              Visualitzar
-            </button>
-          </td>
-        </tr>";
-      }
+      $output .= $this->MostraFilaOferta($row);
     }
 
     return $output;
@@ -121,25 +105,7 @@ class BorsaTreball extends Objecte
     $output = "";
 
     while ($row = $resultSet->fetch_assoc()) {
-      if ($row["publicat"] === 1) {
-        $data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
-        $output .= "
-        <tr>
-          <td>$row[empresa]</td>
-          <td>$row[nom_cicle]</td>
-          <td>$row[poblacio]</td>
-          <td>$data</td>
-          <td>
-            <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
-              <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
-                <path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
-                <path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
-              </svg>
-              Visualitzar
-            </button>
-          </td>
-        </tr>";
-      }
+      $output .= $this->MostraFilaOferta($row);
     }
 
     return $output;
@@ -180,6 +146,7 @@ class BorsaTreball extends Objecte
    */
   public function GuardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
   {
+    $web = preg_replace("/^https?:\/\//", "", $web);
     try {
 
       $stmt = $this->Connexio->prepare("INSERT INTO borsa_treball (cicle_formatiu_id, empresa, contacte, telefon, poblacio, email, web, descripcio) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
@@ -197,6 +164,91 @@ class BorsaTreball extends Objecte
       }
 
       return json_encode(array("status" => "error", "message" => "Error al enviar el correu"));
+    }
+
+    return json_encode(array("status" => "ok"));
+  }
+
+  /**
+   * Publica una oferta de la borsa de treball a partir del seu id i notifica a tots els estudiants del cicle formatiu de l'oferta publicada per correu electrònic
+   * @param int $id Identificador de l'oferta
+   * @return string JSON amb el resultat de la operació
+   */
+  public function PublicaOferta(int $id): string
+  {
+    if ($this->Professor === null || !$this->Professor->EsGestorBorsa()) {
+      return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
+    }
+
+    try {
+      $stmt = $this->Connexio->prepare("UPDATE borsa_treball SET publicat = 1 WHERE borsa_treball_id = ?;");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
+
+      $stmtOferta = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM borsa_treball bt INNER JOIN cicle_formatiu cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id WHERE bt.borsa_treball_id = ?;");
+      $stmtOferta->bind_param("i", $id);
+      $stmtOferta->execute();
+      $resultSetOferta = $stmtOferta->get_result();
+      $stmtOferta->close();
+      $resultSetOferta = $resultSetOferta->fetch_assoc();
+
+      $stmt = $this->Connexio->prepare("SELECT u.ususari_id, u.email, u.inscripcio_borsa_treball FROM usuari u 
+      INNER JOIN MATRICULA m ON u.usuari_id = m.alumne_id 
+      INNER JOIN curs c ON m.curs_id = c.curs_id 
+      INNER JOIN cicle_pla_estudi cpe ON c.cicle_formatiu_id = cpe.cicle_pla_estudi_id 
+      INNER JOIN cicle_formatiu cf ON cpe.cicle_formatiu_id = cf.cicle_formatiu_id 
+      WHERE cf.cicle_formatiu_id = ?;");
+
+      $stmt->bind_param("i", $resultSetOferta["cicle_formatiu_id"]);
+
+      $stmt->execute();
+
+      $resultSet = $stmt->get_result();
+
+      $stmt->close();
+
+      while ($row = $resultSet->fetch_assoc()) {
+        if ($row['inscripcio_borsa_treball'] === 1) {
+          $this->EnviarMailNovaOfertaAlumnes($resultSetOferta, $row['usuari_id'], $row['email']);
+        }
+      }
+    } catch (Exception $e) {
+      if (Config::Debug) {
+        return json_encode(array("status" => "error", "message" => $e->getMessage(), "trace" => $e->getTrace()));
+      }
+
+      return json_encode(array("status" => "error", "message" => "Error al publicar l'oferta"));
+    }
+
+    return json_encode(array("status" => "ok"));
+  }
+
+  /**
+   * Elimina una oferta de la borsa de treball
+   * @param int $id Identificador de l'oferta
+   * @return string JSON amb el resultat de la operació
+   */
+  public function EliminaOferta(int $id): string
+  {
+    if ($this->Professor === null || !$this->Professor->EsGestorBorsa()) {
+      return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
+    }
+
+    try {
+      $stmt = $this->Connexio->prepare("DELETE FROM borsa_treball WHERE borsa_treball_id = ?;");
+
+      $stmt->bind_param("i", $id);
+
+      $stmt->execute();
+
+      $stmt->close();
+    } catch (Exception $e) {
+      if (Config::Debug) {
+        return json_encode(array("status" => "error", "message" => $e->getMessage(), "trace" => $e->getTrace()));
+      }
+
+      return json_encode(array("status" => "error", "message" => "Error al eliminar l'oferta"));
     }
 
     return json_encode(array("status" => "ok"));
@@ -233,6 +285,68 @@ class BorsaTreball extends Objecte
     echo '</html>' . PHP_EOL;
   }
 
+
+  /**
+   * Construeix la fila de la taula amb la informació de la oferta de treball tenint en compte si l'usuari està loguejat o no i si és un gestor de la borsa de treball, només mostrarà les ofertes dels anteriors 6 mesos
+   * @param array $row Array amb la informació de la oferta
+   * @return string HTML amb la informació de la oferta
+   * @see ConsultaOfertes()
+   * @see FiltrarOfertes()
+   */
+  private function MostraFilaOferta(array $row): string
+  {
+    $output = "";
+    $data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
+    if (date($row["data_creacio"]) > date("Y-m-d H:i:s", strtotime("-6 month"))) {
+      if ($row["publicat"] === 1 && ($this->Professor === null || !$this->Professor->EsGestorBorsa())) {
+        $output .= "
+          <tr>
+            <td>$row[empresa]</td>
+            <td>$row[nom_cicle]</td>
+            <td>$row[poblacio]</td>
+            <td>$data</td>
+            <td>
+              <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
+                  <path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
+                  <path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
+                </svg>
+                Visualitzar
+              </button>
+            </td>
+          </tr>";
+      } else if ($this->Professor !== null && $this->Professor->EsGestorBorsa()) {
+        $output .= "
+          <tr>
+            <td>$row[empresa]</td>
+            <td>$row[nom_cicle]</td>
+            <td>$row[poblacio]</td>
+            <td>$data</td>
+            <td>
+              <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
+                  <path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
+                  <path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
+                </svg>
+                Visualitzar
+              </button>";
+        if ($row["publicat"] === 0) {
+          $output .= "
+            <button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalEditaOferta' onclick='mostraEditaOferta($row[borsa_treball_id])'>
+              <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
+                <path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
+                <path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
+              </svg>
+              Edita
+            </button>";
+        }
+
+        $output .= "</td></tr>";
+      }
+    }
+    return $output;
+  }
+
   /**
    * Envia un correu amb la informació de la nova oferta de treball
    * @param string $empresa
@@ -243,6 +357,7 @@ class BorsaTreball extends Objecte
    * @param string $correu
    * @param string $descripcio
    * @param string $web
+   * @see GuardarNovaOferta()
    * @throws Exception Si hi ha algun error al enviar el correu
    */
   private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
@@ -293,6 +408,118 @@ class BorsaTreball extends Objecte
 
     if (!$mail->Send()) {
       throw new Exception("Error al enviar el correu");
+    }
+  }
+
+  /**
+   * Envia un correu a l'alumne amb la informació de la nova oferta de treball
+   * @param array $oferta Oferta de treball a enviar
+   * @param int $usuari_id Id de l'usuari
+   * @param string $emailAlumne Correu de l'alumne
+   * @see PublicaOferta()
+   * @throws Exception Si hi ha algun error al enviar el correu
+   */
+  private function EnviarMailNovaOfertaAlumnes(array $oferta, int $usuari_id, string $emailAlumne)
+  {
+
+    $token = base64_encode($this->GenerarToken($emailAlumne));
+    $URL = GeneraURL("https://smx.inspalamos.cat/ingest/lib/LibBorsaTreball.ajax.php?accio=desubscriuBorsaTreball&usuari_id={$usuari_id}&email={$emailAlumne}&token={$token}");
+    $body = "
+    <html>
+      <body>
+        <h1>Nova oferta de treball</h1>
+        <p>Empresa: {$oferta['empresa']}</p>
+        <p>Cicle: {$oferta['nom_cicle']}</p>
+        <p>Contacte:{$oferta['contacte']}</p>
+        <p>Telefon: {$oferta['telefon']}</p>
+        <p>Població: {$oferta['poblacio']}</p>
+        <p>Correu: {$oferta['email']}</p>
+        <p>Descripció: {$oferta['descripcio']}</p>
+        <p>Web: {$oferta['web']}</p>
+        <footer>
+          <div class='container'>
+            <div class='row'>
+              <div class='col-12'>
+                <p>Si no vols rebre més correus de la Borsa de Treball, <a href='$URL'>desactiva el correu</a></p>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </body>
+    </html>
+    ";
+
+    $alBody = "
+      Nova oferta de treball
+      Empresa: {$oferta['empresa']}
+      Cicle: {$oferta['nom_cicle']}
+      Contacte:{$oferta['contacte']}
+      Telefon: {$oferta['telefon']}
+      Població: {$oferta['poblacio']}
+      Correu: {$oferta['email']}
+      Descripció: {$oferta['descripcio']}
+      Web: {$oferta['web']}
+      ";
+
+    $mail = new PHPMailer(true);
+    $mail->SMTPDebug = 0;
+    $mail->IsSMTP();
+
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = Config::Correu;
+    $mail->Password = Config::PasswordCorreu;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port = 465;
+
+
+
+    $mail->setFrom(Config::Correu, "No contesteu");
+    $mail->AddAddress($emailAlumne);
+
+    $mail->isHTML(true);
+    $mail->Sender = Config::Correu;
+    $mail->Subject = "Nova oferta de treball";
+    $mail->Body = $body;
+    $mail->AltBody = $alBody;
+
+    if (!$mail->Send()) {
+      throw new Exception("Error al enviar el correu");
+    }
+  }
+
+  /**
+   * Genera un token per desactivar el correu
+   * @param string $emailAlumne Correu de l'alumne
+   * @see EnviarMailNovaOfertaAlumnes()
+   * @return string Token
+   */
+  private function GenerarToken($emailAlumne)
+  {
+    return hash_hmac('sha256', $emailAlumne, Config::Secret);
+  }
+
+  /**
+   * Dona de baixa l'alumne de la borsa de treball
+   * @param string $email Correu de l'alumne
+   * @param string $token Token de desactivació
+   * @return bool True si s'ha desactivat correctament, false si no
+   */
+
+  public function DesubscriuBorsaTreball(string $email, string $token)
+  {
+    if ($this->GenerarToken($email) === base64_decode($token)) {
+      try {
+        $stmt = $this->Connexio->prepare("UPDATE usuari SET inscripcio_borsa_treball = 0 WHERE email = ?;");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->close();
+      } catch (Exception $e) {
+        return false;
+      }
+      return true;
+    } else {
+      return false;
     }
   }
 }
