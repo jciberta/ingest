@@ -363,7 +363,7 @@ class BorsaTreball extends Objecte
 	private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
 	{
 
-		$stmt = $this->Connexio->prepare("SELECT u.email FROM FAMILIA_FP u INNER JOIN SISTEMA s ON u.usuari_id = s.gestor_borsa_treball_id;");
+		$stmt = $this->Connexio->prepare("SELECT u.email FROM USUARI u INNER JOIN SISTEMA s ON u.usuari_id = s.gestor_borsa_treball_id;");
 
 		$stmt->execute();
 
