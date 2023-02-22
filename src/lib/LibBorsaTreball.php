@@ -193,7 +193,7 @@ class BorsaTreball extends Objecte
 			$stmtOferta->close();
 			$resultSetOferta = $resultSetOferta->fetch_assoc();
 
-			$stmt = $this->Connexio->prepare("SELECT u.ususari_id, u.email, u.inscripcio_borsa_treball FROM usuari u 
+			$stmt = $this->Connexio->prepare("SELECT u.usuari_id, u.email, u.inscripcio_borsa_treball FROM USUARI u 
 			INNER JOIN MATRICULA m ON u.usuari_id = m.alumne_id 
 			INNER JOIN CURS c ON m.curs_id = c.curs_id 
 			INNER JOIN CICLE_PLA_ESTUDI cpe ON c.cicle_formatiu_id = cpe.cicle_pla_estudi_id 
