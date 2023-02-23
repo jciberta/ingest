@@ -20,10 +20,6 @@ namespace Google\Service\Contentwarehouse;
 class RepositoryWebrefEntityDebugInfo extends \Google\Model
 {
   /**
-   * @var bool
-   */
-  public $containsRestrictedData;
-  /**
    * @var string
    */
   public $description;
@@ -41,20 +37,6 @@ class RepositoryWebrefEntityDebugInfo extends \Google\Model
    */
   public $url;
 
-  /**
-   * @param bool
-   */
-  public function setContainsRestrictedData($containsRestrictedData)
-  {
-    $this->containsRestrictedData = $containsRestrictedData;
-  }
-  /**
-   * @return bool
-   */
-  public function getContainsRestrictedData()
-  {
-    return $this->containsRestrictedData;
-  }
   /**
    * @param string
    */

@@ -23,6 +23,10 @@ class ImageRepositoryUnwantedContent extends \Google\Model
    * @var string
    */
   public $deletionReason;
+  /**
+   * @var string
+   */
+  public $hideReason;
 
   /**
    * @param string
@@ -37,6 +41,20 @@ class ImageRepositoryUnwantedContent extends \Google\Model
   public function getDeletionReason()
   {
     return $this->deletionReason;
+  }
+  /**
+   * @param string
+   */
+  public function setHideReason($hideReason)
+  {
+    $this->hideReason = $hideReason;
+  }
+  /**
+   * @return string
+   */
+  public function getHideReason()
+  {
+    return $this->hideReason;
   }
 }
 

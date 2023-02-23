@@ -1,0 +1,41 @@
+name: "\U0001F41E Informa d'un problema"
+description: "Informa d'un problema"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Primer de tot, gràcies per informar!
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Descriviu l'error
+      description: Una descripció clara i concisa de què és l'error. Si teniu intenció d'enviar un PR per aquest problema, digueu-nos-ho a la descripció. Gràcies!
+      placeholder: Descripció de l'error
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Captures de pantalla
+      description: Si teniu cap captura de pantalla que necessiteu compartir per demostrar millor el vostre punt, aquí és on podeu fer-ho.
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproducció
+      description: Si us plau, proporcioneu un enllaç a un repo o millor un stackblitz/replit que pugui reproduir el problema amb el qual heu trobat. Això accelerarà el procés.
+      placeholder: Reproducció
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Registres
+      description: 'Incloeu la consola del navegador i els registres del servidor al voltant del moment en què es va produir aquest error. Opcional si es proporciona reproducció. Si us plau, intenteu no inserir una imatge, sinó copiar i enganxar el text del registre.'
+      render: shell
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: Heu comprovat si ja s'ha plantejat aquest problema?
+      options:
+        - label: No he trobat cap problema semblant
+          required: true

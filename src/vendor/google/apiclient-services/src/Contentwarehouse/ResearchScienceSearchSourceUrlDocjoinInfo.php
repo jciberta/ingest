@@ -19,7 +19,7 @@ namespace Google\Service\Contentwarehouse;
 
 class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
 {
-  protected $collection_key = 'topEntity';
+  protected $collection_key = 'webrefEntity';
   /**
    * @var string
    */
@@ -32,8 +32,6 @@ class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
    * @var string
    */
   public $docid;
-  protected $fieldOfStudyEntityType = ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo::class;
-  protected $fieldOfStudyEntityDataType = 'array';
   /**
    * @var string[]
    */
@@ -48,16 +46,20 @@ class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
   public $latestPageUpdateDate;
   protected $navboostQueryType = ResearchScienceSearchNavboostQueryInfo::class;
   protected $navboostQueryDataType = 'array';
+  public $navboostQuery;
   /**
    * @var int
    */
   public $pagerank;
   protected $petacatInfoType = FatcatCompactDocClassification::class;
   protected $petacatInfoDataType = '';
+  public $petacatInfo;
   protected $salientTermsType = QualitySalientTermsSalientTermSet::class;
   protected $salientTermsDataType = '';
+  public $salientTerms;
   protected $scholarInfoType = ScienceIndexSignal::class;
   protected $scholarInfoDataType = '';
+  public $scholarInfo;
   /**
    * @var string[]
    */
@@ -68,10 +70,14 @@ class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
   public $title;
   protected $topEntityType = RepositoryWebrefWebrefEntity::class;
   protected $topEntityDataType = 'array';
+  public $topEntity;
   /**
    * @var string
    */
   public $url;
+  protected $webrefEntityType = ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo::class;
+  protected $webrefEntityDataType = 'array';
+  public $webrefEntity;
 
   /**
    * @param string
@@ -114,20 +120,6 @@ class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
   public function getDocid()
   {
     return $this->docid;
-  }
-  /**
-   * @param ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo[]
-   */
-  public function setFieldOfStudyEntity($fieldOfStudyEntity)
-  {
-    $this->fieldOfStudyEntity = $fieldOfStudyEntity;
-  }
-  /**
-   * @return ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo[]
-   */
-  public function getFieldOfStudyEntity()
-  {
-    return $this->fieldOfStudyEntity;
   }
   /**
    * @param string[]
@@ -296,6 +288,20 @@ class ResearchScienceSearchSourceUrlDocjoinInfo extends \Google\Collection
   public function getUrl()
   {
     return $this->url;
+  }
+  /**
+   * @param ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo[]
+   */
+  public function setWebrefEntity($webrefEntity)
+  {
+    $this->webrefEntity = $webrefEntity;
+  }
+  /**
+   * @return ResearchScienceSearchSourceUrlDocjoinInfoWebrefEntityInfo[]
+   */
+  public function getWebrefEntity()
+  {
+    return $this->webrefEntity;
   }
 }
 

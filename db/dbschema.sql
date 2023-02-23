@@ -258,6 +258,12 @@ CREATE TABLE MATRICULA
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
     baixa BIT,
+    comentari_trimestre1 VARCHAR(100),
+    comentari_trimestre2 VARCHAR(100),
+    comentari_trimestre3 VARCHAR(100),
+    comentari_ordinaria VARCHAR(100),
+    comentari_extraordinaria VARCHAR(100),
+    comentari_matricula_seguent VARCHAR(100),
 
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
@@ -284,12 +290,6 @@ CREATE TABLE NOTES
     junta BIT,
     baixa BIT, /* Baixa d'una UF */
     convocatoria INT, /* 0 (aprovat), 1, 2, 3, 4, 5 */
-    comentari_trimestre1 VARCHAR(100),
-    comentari_trimestre2 VARCHAR(100),
-    comentari_trimestre3 VARCHAR(100),
-    comentari_ordinaria VARCHAR(100),
-    comentari_extraordinaria VARCHAR(100),
-    comentari_matricula_seguent VARCHAR(100),
 
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
@@ -584,7 +584,7 @@ CREATE TABLE BORSA_TREBALL
     poblacio VARCHAR(120),
     email VARCHAR(100), 
     web VARCHAR(100), 
-	decripcio TEXT,
+	descripcio TEXT,
     ip VARCHAR(15),
 	publicat BIT NOT NULL DEFAULT 0,
 	
@@ -640,6 +640,19 @@ CREATE TABLE BONIFICACIO_MATRICULA
     CONSTRAINT BonificacioMatriculaPK PRIMARY KEY (bonificacio_matricula_id),
     CONSTRAINT BM_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT BM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE PROPOSTA_MATRICULA
+(
+    /* PM */
+    proposta_matricula_id INT NOT NULL AUTO_INCREMENT,
+    matricula_id INT NOT NULL,
+    unitat_formativa_id INT NOT NULL, 
+	baixa BIT NOT NULL DEFAULT 0,
+	
+    CONSTRAINT PropostaMatriculaPK PRIMARY KEY (proposta_matricula_id),
+    CONSTRAINT PM_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
+    CONSTRAINT PM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

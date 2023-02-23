@@ -22,22 +22,25 @@ class RepositoryWebrefCategoryInfo extends \Google\Collection
   protected $collection_key = 'wpCategory';
   protected $allTypesType = RepositoryWebrefFreebaseType::class;
   protected $allTypesDataType = 'array';
-  protected $fatcatCategoryType = RepositoryWebrefFatcatCategory::class;
-  protected $fatcatCategoryDataType = 'array';
-  protected $fatcatContextType = RepositoryWebrefFatcatCategory::class;
-  protected $fatcatContextDataType = 'array';
+  public $allTypes;
   protected $freebaseTypeType = RepositoryWebrefFreebaseType::class;
   protected $freebaseTypeDataType = 'array';
+  public $freebaseType;
   protected $kgCollectionType = RepositoryWebrefKGCollection::class;
   protected $kgCollectionDataType = 'array';
+  public $kgCollection;
   protected $oysterTypeType = RepositoryWebrefOysterType::class;
   protected $oysterTypeDataType = '';
+  public $oysterType;
   protected $salientCategoryType = RepositoryWebrefFatcatCategory::class;
   protected $salientCategoryDataType = 'array';
+  public $salientCategory;
   protected $wikipediaCategoryType = RepositoryWebrefWikipediaCategory::class;
   protected $wikipediaCategoryDataType = 'array';
+  public $wikipediaCategory;
   protected $wpCategoryType = RepositoryWebrefFreebaseType::class;
   protected $wpCategoryDataType = 'array';
+  public $wpCategory;
 
   /**
    * @param RepositoryWebrefFreebaseType[]
@@ -52,34 +55,6 @@ class RepositoryWebrefCategoryInfo extends \Google\Collection
   public function getAllTypes()
   {
     return $this->allTypes;
-  }
-  /**
-   * @param RepositoryWebrefFatcatCategory[]
-   */
-  public function setFatcatCategory($fatcatCategory)
-  {
-    $this->fatcatCategory = $fatcatCategory;
-  }
-  /**
-   * @return RepositoryWebrefFatcatCategory[]
-   */
-  public function getFatcatCategory()
-  {
-    return $this->fatcatCategory;
-  }
-  /**
-   * @param RepositoryWebrefFatcatCategory[]
-   */
-  public function setFatcatContext($fatcatContext)
-  {
-    $this->fatcatContext = $fatcatContext;
-  }
-  /**
-   * @return RepositoryWebrefFatcatCategory[]
-   */
-  public function getFatcatContext()
-  {
-    return $this->fatcatContext;
   }
   /**
    * @param RepositoryWebrefFreebaseType[]

@@ -31,6 +31,10 @@ class QualityPreviewChosenSnippetInfo extends \Google\Collection
   /**
    * @var string
    */
+  public $snippetHtml;
+  /**
+   * @var string
+   */
   public $snippetType;
   /**
    * @var string
@@ -38,6 +42,7 @@ class QualityPreviewChosenSnippetInfo extends \Google\Collection
   public $source;
   protected $tidbitsType = QualityPreviewChosenSnippetInfoTidbitInfo::class;
   protected $tidbitsDataType = 'array';
+  public $tidbits;
   /**
    * @var bool
    */
@@ -70,6 +75,20 @@ class QualityPreviewChosenSnippetInfo extends \Google\Collection
   public function getLeadingTextType()
   {
     return $this->leadingTextType;
+  }
+  /**
+   * @param string
+   */
+  public function setSnippetHtml($snippetHtml)
+  {
+    $this->snippetHtml = $snippetHtml;
+  }
+  /**
+   * @return string
+   */
+  public function getSnippetHtml()
+  {
+    return $this->snippetHtml;
   }
   /**
    * @param string

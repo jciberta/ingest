@@ -22,6 +22,10 @@ class MapsQualitySpecialWordsFlags extends \Google\Model
   /**
    * @var bool
    */
+  public $isAlleyAffix;
+  /**
+   * @var bool
+   */
   public $isCommonWord;
   /**
    * @var bool
@@ -31,6 +35,10 @@ class MapsQualitySpecialWordsFlags extends \Google\Model
    * @var bool
    */
   public $isDirectionalModifier;
+  /**
+   * @var bool
+   */
+  public $isDistanceMarker;
   /**
    * @var bool
    */
@@ -99,6 +107,20 @@ class MapsQualitySpecialWordsFlags extends \Google\Model
   /**
    * @param bool
    */
+  public function setIsAlleyAffix($isAlleyAffix)
+  {
+    $this->isAlleyAffix = $isAlleyAffix;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsAlleyAffix()
+  {
+    return $this->isAlleyAffix;
+  }
+  /**
+   * @param bool
+   */
   public function setIsCommonWord($isCommonWord)
   {
     $this->isCommonWord = $isCommonWord;
@@ -137,6 +159,20 @@ class MapsQualitySpecialWordsFlags extends \Google\Model
   public function getIsDirectionalModifier()
   {
     return $this->isDirectionalModifier;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsDistanceMarker($isDistanceMarker)
+  {
+    $this->isDistanceMarker = $isDistanceMarker;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsDistanceMarker()
+  {
+    return $this->isDistanceMarker;
   }
   /**
    * @param bool

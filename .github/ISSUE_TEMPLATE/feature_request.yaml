@@ -1,0 +1,30 @@
+name: "\U0001F4A1 Petició de funcions"
+description: Sol·licita una nova funció
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gràcies per dedicar el vostre temps a proposar una nova idea
+  - type: textarea
+    id: problem
+    attributes:
+      label: Descriviu el problema
+      description: Proporcioneu una descripció clara i concisa del problema que solucionaria aquesta funció. Com més informació pugueu proporcionar aquí, millor.
+      placeholder: M'agradaria...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Descriviu la solució proposada
+      description: "Intenteu proporcionar una descripció o un disseny del que us agradaria que s'implantés"
+      placeholder: "M'agradaria veure..."
+    validations:
+      required: true
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: "Heu comprovat si ja s'ha plantejat aquest problema?"
+      options:
+        - label: "No he trobat cap problema semblant"
+          required: true

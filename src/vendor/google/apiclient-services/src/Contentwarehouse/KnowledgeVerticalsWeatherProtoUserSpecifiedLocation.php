@@ -21,12 +21,18 @@ class KnowledgeVerticalsWeatherProtoUserSpecifiedLocation extends \Google\Model
 {
   protected $featureIdType = GeostoreFeatureIdProto::class;
   protected $featureIdDataType = '';
+  public $featureId;
   protected $latLngType = GoogleTypeLatLng::class;
   protected $latLngDataType = '';
+  public $latLng;
   /**
    * @var string
    */
   public $locationName;
+  /**
+   * @var string
+   */
+  public $mid;
   /**
    * @var string
    */
@@ -73,6 +79,20 @@ class KnowledgeVerticalsWeatherProtoUserSpecifiedLocation extends \Google\Model
   public function getLocationName()
   {
     return $this->locationName;
+  }
+  /**
+   * @param string
+   */
+  public function setMid($mid)
+  {
+    $this->mid = $mid;
+  }
+  /**
+   * @return string
+   */
+  public function getMid()
+  {
+    return $this->mid;
   }
   /**
    * @param string

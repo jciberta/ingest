@@ -21,18 +21,39 @@ class QualityPreviewRanklabSnippet extends \Google\Model
 {
   protected $brainFeaturesType = QualityPreviewSnippetBrainFeatures::class;
   protected $brainFeaturesDataType = '';
+  public $brainFeatures;
   protected $documentFeaturesType = QualityPreviewSnippetDocumentFeatures::class;
   protected $documentFeaturesDataType = '';
+  public $documentFeatures;
   protected $experimentalFeaturesType = QualityPreviewSnippetExperimentalFeatures::class;
   protected $experimentalFeaturesDataType = '';
+  public $experimentalFeatures;
+  /**
+   * @var float
+   */
+  public $finalScore;
+  /**
+   * @var bool
+   */
+  public $isMuppetSelectedSnippet;
+  protected $originalQueryTermCoverageFeaturesType = QualityPreviewSnippetQueryTermCoverageFeatures::class;
+  protected $originalQueryTermCoverageFeaturesDataType = '';
+  public $originalQueryTermCoverageFeatures;
   protected $qualityFeaturesType = QualityPreviewSnippetQualityFeatures::class;
   protected $qualityFeaturesDataType = '';
+  public $qualityFeatures;
   protected $queryFeaturesType = QualityPreviewSnippetQueryFeatures::class;
   protected $queryFeaturesDataType = '';
+  public $queryFeatures;
   protected $queryTermCoverageFeaturesType = QualityPreviewSnippetQueryTermCoverageFeatures::class;
   protected $queryTermCoverageFeaturesDataType = '';
+  public $queryTermCoverageFeatures;
+  protected $radishFeaturesType = QualityPreviewSnippetRadishFeatures::class;
+  protected $radishFeaturesDataType = '';
+  public $radishFeatures;
   protected $snippetInfoType = QualityPreviewChosenSnippetInfo::class;
   protected $snippetInfoDataType = '';
+  public $snippetInfo;
 
   /**
    * @param QualityPreviewSnippetBrainFeatures
@@ -77,6 +98,48 @@ class QualityPreviewRanklabSnippet extends \Google\Model
     return $this->experimentalFeatures;
   }
   /**
+   * @param float
+   */
+  public function setFinalScore($finalScore)
+  {
+    $this->finalScore = $finalScore;
+  }
+  /**
+   * @return float
+   */
+  public function getFinalScore()
+  {
+    return $this->finalScore;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsMuppetSelectedSnippet($isMuppetSelectedSnippet)
+  {
+    $this->isMuppetSelectedSnippet = $isMuppetSelectedSnippet;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsMuppetSelectedSnippet()
+  {
+    return $this->isMuppetSelectedSnippet;
+  }
+  /**
+   * @param QualityPreviewSnippetQueryTermCoverageFeatures
+   */
+  public function setOriginalQueryTermCoverageFeatures(QualityPreviewSnippetQueryTermCoverageFeatures $originalQueryTermCoverageFeatures)
+  {
+    $this->originalQueryTermCoverageFeatures = $originalQueryTermCoverageFeatures;
+  }
+  /**
+   * @return QualityPreviewSnippetQueryTermCoverageFeatures
+   */
+  public function getOriginalQueryTermCoverageFeatures()
+  {
+    return $this->originalQueryTermCoverageFeatures;
+  }
+  /**
    * @param QualityPreviewSnippetQualityFeatures
    */
   public function setQualityFeatures(QualityPreviewSnippetQualityFeatures $qualityFeatures)
@@ -117,6 +180,20 @@ class QualityPreviewRanklabSnippet extends \Google\Model
   public function getQueryTermCoverageFeatures()
   {
     return $this->queryTermCoverageFeatures;
+  }
+  /**
+   * @param QualityPreviewSnippetRadishFeatures
+   */
+  public function setRadishFeatures(QualityPreviewSnippetRadishFeatures $radishFeatures)
+  {
+    $this->radishFeatures = $radishFeatures;
+  }
+  /**
+   * @return QualityPreviewSnippetRadishFeatures
+   */
+  public function getRadishFeatures()
+  {
+    return $this->radishFeatures;
   }
   /**
    * @param QualityPreviewChosenSnippetInfo

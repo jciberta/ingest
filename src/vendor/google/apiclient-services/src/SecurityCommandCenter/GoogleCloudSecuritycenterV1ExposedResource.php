@@ -17,8 +17,118 @@
 
 namespace Google\Service\SecurityCommandCenter;
 
-class GoogleCloudSecuritycenterV1ExposedResource extends \Google\Model
+class GoogleCloudSecuritycenterV1ExposedResource extends \Google\Collection
 {
+  protected $collection_key = 'methods';
+  /**
+   * @var string
+   */
+  public $displayName;
+  /**
+   * @var string[]
+   */
+  public $methods;
+  /**
+   * @var string
+   */
+  public $name;
+  /**
+   * @var string
+   */
+  public $resource;
+  /**
+   * @var string
+   */
+  public $resourceType;
+  /**
+   * @var string
+   */
+  public $resourceValue;
+
+  /**
+   * @param string
+   */
+  public function setDisplayName($displayName)
+  {
+    $this->displayName = $displayName;
+  }
+  /**
+   * @return string
+   */
+  public function getDisplayName()
+  {
+    return $this->displayName;
+  }
+  /**
+   * @param string[]
+   */
+  public function setMethods($methods)
+  {
+    $this->methods = $methods;
+  }
+  /**
+   * @return string[]
+   */
+  public function getMethods()
+  {
+    return $this->methods;
+  }
+  /**
+   * @param string
+   */
+  public function setName($name)
+  {
+    $this->name = $name;
+  }
+  /**
+   * @return string
+   */
+  public function getName()
+  {
+    return $this->name;
+  }
+  /**
+   * @param string
+   */
+  public function setResource($resource)
+  {
+    $this->resource = $resource;
+  }
+  /**
+   * @return string
+   */
+  public function getResource()
+  {
+    return $this->resource;
+  }
+  /**
+   * @param string
+   */
+  public function setResourceType($resourceType)
+  {
+    $this->resourceType = $resourceType;
+  }
+  /**
+   * @return string
+   */
+  public function getResourceType()
+  {
+    return $this->resourceType;
+  }
+  /**
+   * @param string
+   */
+  public function setResourceValue($resourceValue)
+  {
+    $this->resourceValue = $resourceValue;
+  }
+  /**
+   * @return string
+   */
+  public function getResourceValue()
+  {
+    return $this->resourceValue;
+  }
 }
 
 // Adding a class alias for backwards compatibility with the previous class name.
