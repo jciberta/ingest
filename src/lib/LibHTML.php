@@ -400,9 +400,9 @@ class Menu
 		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
 		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
 		if ($Usuari->es_admin) 
-			$Retorn .= '	<span class="navbar-brand">inGest '.Config::Versio.'</span>'.PHP_EOL;
+			$Retorn .= '	<span class="navbar-brand">InGest '.Config::Versio.'</span>'.PHP_EOL;
 		else
-			$Retorn .= '	<span class="navbar-brand">inGest</span>'.PHP_EOL;
+			$Retorn .= '	<span class="navbar-brand">InGest</span>'.PHP_EOL;
 		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">'.PHP_EOL;
 		$Retorn .= '		<span class="navbar-toggler-icon"></span>'.PHP_EOL;
 		$Retorn .= '	</button>'.PHP_EOL;
@@ -449,8 +449,10 @@ class Menu
 			$Retorn .= Menu::TancaSubMenu();
 			$Retorn .= Menu::ObreSubMenu('Programacions');
 			$Retorn .= Menu::Opcio('Programacions didàctiques', 'FPRecerca.php?accio=ProgramacionsDidactiques');
-			$Retorn .= Menu::Opcio("Resultats d'aprenentatge", 'FPRecerca.php?accio=ResultatsAprenentatge');
-			$Retorn .= Menu::Opcio('Continguts', 'FPRecerca.php?accio=ContingutsUF');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio("Resultats d'aprenentatge (LOE)", 'FPRecerca.php?accio=ResultatsAprenentatge');
+			$Retorn .= Menu::Opcio('Continguts (LOE)', 'FPRecerca.php?accio=ContingutsUF');
+			$Retorn .= Menu::Opcio('Objectius i continguts (LOGSE)', 'FPRecerca.php?accio=ObjectiusContinguts');
 			$Retorn .= Menu::TancaSubMenu();
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Cursos', 'Escriptori.php');

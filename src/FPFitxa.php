@@ -186,8 +186,9 @@ switch ($accio) {
 		else
 			header("Location: Surt.php");
 		
-		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari, $Sistema);
-		$frm->Id = $Id;
+//		$frm = new ProgramacioDidacticaFitxa($conn, $Usuari, $Sistema);
+//		$frm->Id = $Id;
+		$frm = ProgramacioDidacticaFitxaFactory::Crea($conn, $Usuari, $Sistema, $Id);
 		$frm->EscriuHTML();
         break;
     case "ProgramacioDidacticaLectura":

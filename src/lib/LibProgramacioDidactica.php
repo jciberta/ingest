@@ -53,6 +53,29 @@ class ProgramacioDidacticaFactory
 }
 
 /**
+ * Factoria que genera l'objecte de la fitxa de la programació didàctica en DOCX depenent de la llei.
+ */
+class ProgramacioDidacticaFitxaFactory extends ProgramacioDidacticaFactory
+{
+	public static function Crea($conn, $user, $system, $Id) {
+		$Llei = self::ObteLlei($conn, $Id);
+		switch($Llei) {
+			case "LO":
+				$obj = new ProgramacioDidacticaFitxaLOE($conn, $user, $system);
+				break;
+			case "LG":
+				$obj = new ProgramacioDidacticaFitxaLOGSE($conn, $user, $system);
+				break;
+			default:
+				throw new Exception("ProgramacioDidacticaFitxaFactory: Llei no implementada");
+				break;
+		}
+		$obj->Id = $Id;
+		return $obj;		
+	}
+}
+
+/**
  * Factoria que genera l'objecte per a l'exportació de la programació didàctica en DOCX depenent de la llei.
  */
 class ProgramacioDidacticaDOCXFactory extends ProgramacioDidacticaFactory
@@ -90,16 +113,21 @@ abstract class ProgramacioDidactica extends Form
 	const pdESTRATEGIES = 1;
 	const pdCRITERIS = 2;
 	const pdRECURSOS = 3;
-	const pdSEQUENCIACIO = 4;
-	const pdUNITATS = 5;
+//	const pdSEQUENCIACIO = 4;
+	const pdSEQUENCIACIO_LOE = 4;
+	const pdSEQUENCIACIO_LOGSE = 5;
+	const pdUNITATS = 6;
+	const pdOBJECTIUS_CONTINGUTS = 7;
 
 	// Títol de les seccions de la programació didàctica.
 	const SECCIO = array(
-		self::pdESTRATEGIES => 	'Estratègies metodològiques',
-		self::pdCRITERIS => 	'Criteris d’avaluació, qualificació i recuperació',
-		self::pdRECURSOS => 	'Recursos i material utilitzat',
-		self::pdSEQUENCIACIO => 'Seqüenciació i temporitzador de les unitats formatives',
-		self::pdUNITATS => 		'Unitats formatives'
+		self::pdESTRATEGIES => 'Estratègies metodològiques',
+		self::pdCRITERIS => 'Criteris d’avaluació, qualificació i recuperació',
+		self::pdRECURSOS => 'Recursos i material utilitzat',
+		self::pdSEQUENCIACIO_LOE => 'Seqüenciació i temporitzador de les unitats formatives',
+		self::pdSEQUENCIACIO_LOGSE => 'Seqüenciació i temporitzador de les unitats didàctiques',
+		self::pdUNITATS => 'Unitats formatives',
+		self::pdOBJECTIUS_CONTINGUTS => 'Objectius i continguts'
 	);
 
 	/**
@@ -211,15 +239,18 @@ abstract class ProgramacioDidactica extends Form
 		$sRetorn .= '</DIV>';
 		return $sRetorn;
 	}	
-	
+
 	/**
 	 * Genera la secció especificada de la programació didàctica.
 	 * @param integer $SeccioId Identificador de la secció.
+	 * @param integer $Comptador Comptador de número de secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	protected function GeneraSeccio($SeccioId) {
+	protected function GeneraSeccio(int $SeccioId, int &$Comptador) {
 		$sRetorn = "<DIV id=seccio$SeccioId>";
-		$sRetorn .= "<H2>".$SeccioId.". ".self::SECCIO[$SeccioId]."</H2>";
+//		$sRetorn .= "<H2>".$SeccioId.". ".self::SECCIO[$SeccioId]."</H2>";
+		$sRetorn .= "<H2>".$Comptador.". ".self::SECCIO[$SeccioId]."</H2>";
+		$Comptador++;
 		switch ($SeccioId) {
 			case self::pdESTRATEGIES:
 				$sRetorn .= $this->GeneraSeccioEstrategies();
@@ -230,11 +261,15 @@ abstract class ProgramacioDidactica extends Form
 			case self::pdRECURSOS:
 				$sRetorn .= $this->GeneraSeccioRecursos();
 				break;
-			case self::pdSEQUENCIACIO:
+			case self::pdSEQUENCIACIO_LOE:
+			case self::pdSEQUENCIACIO_LOGSE:
 				$sRetorn .= $this->GeneraSeccioSequenciacio();
 				break;
 			case self::pdUNITATS:
 				$sRetorn .= $this->GeneraSeccioUnitats();
+				break;
+			case self::pdOBJECTIUS_CONTINGUTS:
+				$sRetorn .= $this->GeneraSeccioObjectiusContinguts();
 				break;
 		}
 		$sRetorn .= "</DIV>";
@@ -362,48 +397,10 @@ abstract class ProgramacioDidactica extends Form
 		return $sRetorn;		
 	}
 
-	/**
-	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
-	 * @param integer $SeccioId Identificador de la secció.
-	 * @return string Codi HTML amb la secció.
-	 */
-	protected function GeneraSeccioSequenciacio(&$section = null) {
-		$ModulPlaEstudiId = $this->Id;
-		$sRetorn = "<BR>";
-		$sRetorn .= "<TABLE BORDER=1'>";
-		$sRetorn .= "<thead>";
-		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
-//		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
-		$sRetorn .= "<TH>Unitat formativa</TH>";
-		$sRetorn .= "<TH STYLE='text-align:center'>Hores</TH>";
-		$sRetorn .= "<TH>Data inici</TH>";
-		$sRetorn .= "<TH>Data fi</TH>";
-		$sRetorn .= "</TR>";
-		$sRetorn .= "</thead>";
-		$SQL = "
-			SELECT UPE.* 
-			FROM UNITAT_PLA_ESTUDI UPE
-			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
-			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId	
-		";
-		$ResultSet = $this->Connexio->query($SQL);
-		$sRetorn .= "<tbody>";
-		while($row = $ResultSet->fetch_object()) {
-			$sRetorn .= "<TR>";
-			$sRetorn .= "<TD>".CodificaUTF8($row->nom)."</TD>";
-			$sRetorn .= "<TD style='text-align:center;'>".$row->hores."</TD>";
-			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
-			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
-			$sRetorn .= "</TR>";
-		}
-		$sRetorn .= "</tbody>";
-		$sRetorn .= "</TABLE>";
-		$sRetorn .= "<BR>";
-		return $sRetorn;		
-	}
+	abstract protected function GeneraSeccioSequenciacio(&$section = null);
 
 	/**
-	 * Genera la secció d'unitats formatives de la programació didàctica.
+	 * Genera la secció d'unitats formatives de la programació didàctica (LOE).
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
@@ -411,6 +408,18 @@ abstract class ProgramacioDidactica extends Form
 		$ModulId = $this->Registre->modul_professional_id;
 		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
 		$sRetorn = $RA->GeneraTaulaModul($ModulId);
+		return $sRetorn;		
+	}
+	
+	/**
+	 * Genera la secció d'objectius i continguts de la programació didàctica (LOGSE).
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioObjectiusContinguts(&$section = null) {
+		$ModulId = $this->Registre->modul_professional_id;
+		$OC = new ObjectiusContinguts($this->Connexio, $this->Usuari);
+		$sRetorn = $OC->GeneraTaulaModul($ModulId);
 		return $sRetorn;		
 	}
 	
@@ -494,11 +503,52 @@ abstract class ProgramacioDidactica extends Form
 class ProgramacioDidacticaLOE extends ProgramacioDidactica
 {
 	protected function GeneraSeccions() {
-		echo $this->GeneraSeccio(self::pdESTRATEGIES);
-		echo $this->GeneraSeccio(self::pdCRITERIS);
-		echo $this->GeneraSeccio(self::pdRECURSOS);
-		echo $this->GeneraSeccio(self::pdSEQUENCIACIO);
-		echo $this->GeneraSeccio(self::pdUNITATS);	
+		$Comptador = 1;
+		echo $this->GeneraSeccio(self::pdESTRATEGIES, $Comptador);
+		echo $this->GeneraSeccio(self::pdCRITERIS, $Comptador);
+		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
+		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOE, $Comptador);
+		echo $this->GeneraSeccio(self::pdUNITATS, $Comptador);	
+	}
+
+	/**
+	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioSequenciacio(&$section = null) {
+		$ModulPlaEstudiId = $this->Id;
+		$sRetorn = "<BR>";
+		$sRetorn .= "<TABLE BORDER=1'>";
+		$sRetorn .= "<thead>";
+		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
+//		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
+		$sRetorn .= "<TH>Unitat formativa</TH>";
+		$sRetorn .= "<TH STYLE='text-align:center'>Hores</TH>";
+		$sRetorn .= "<TH>Data inici</TH>";
+		$sRetorn .= "<TH>Data fi</TH>";
+		$sRetorn .= "</TR>";
+		$sRetorn .= "</thead>";
+		$SQL = "
+			SELECT UPE.* 
+			FROM UNITAT_PLA_ESTUDI UPE
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId	
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		$sRetorn .= "<tbody>";
+		while($row = $ResultSet->fetch_object()) {
+			$sRetorn .= "<TR>";
+			$sRetorn .= "<TD>".CodificaUTF8($row->nom)."</TD>";
+			$sRetorn .= "<TD style='text-align:center;'>".$row->hores."</TD>";
+			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
+			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
+			$sRetorn .= "</TR>";
+		}
+		$sRetorn .= "</tbody>";
+		$sRetorn .= "</TABLE>";
+		$sRetorn .= "<BR>";
+		return $sRetorn;		
 	}
 }
 
@@ -508,7 +558,23 @@ class ProgramacioDidacticaLOE extends ProgramacioDidactica
 class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
 {
 	protected function GeneraSeccions() {
-		throw new Exception("ProgramacioDidacticaLOGSE->GeneraSeccions. No implementat");
+		$Comptador = 1;
+		echo $this->GeneraSeccio(self::pdESTRATEGIES, $Comptador);
+		echo $this->GeneraSeccio(self::pdCRITERIS, $Comptador);
+		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
+		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOGSE, $Comptador);
+		echo $this->GeneraSeccio(self::pdOBJECTIUS_CONTINGUTS, $Comptador);
+	}
+
+	/**
+	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioSequenciacio(&$section = null) {
+		$sRetorn = $this->Registre->unitats_didactiques;
+		$sRetorn = $this->TractaTaules($sRetorn);
+		return $sRetorn;		
 	}
 }
 
@@ -577,7 +643,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 /**
  * Classe que encapsula el formulari de fitxa de les programacions didàctiques.
  */
-class ProgramacioDidacticaFitxa extends FormRecerca
+abstract class ProgramacioDidacticaFitxa extends FormRecerca
 {
 	/**
 	* Registre de l'any acadèmic de la programació didàctica.
@@ -595,14 +661,7 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
-/*		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
-		
-		if (!$Usuari->es_admin)
-			header("Location: Surt.php"); */
-		
 		$Registre = DB::CarregaRegistreObj($this->Connexio, 'MODUL_PLA_ESTUDI', 'modul_pla_estudi_id', $this->Id);
-		
 		$this->CarregaAnyAcademic($this->Id);
 		$this->CarregaDiesFestius();
 
@@ -616,7 +675,56 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		$frm->AfegeixText('codi', 'Codi', 20, [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offNOMES_LECTURA]);
+		$this->GeneraPestanyes($frm, $Registre);
+		$frm->EscriuHTML();		
+	}
+
+	/**
+	 * Genera les pestanyes de la programació didàctica.
+	 * @param object $frm Formulari fitxa.
+	 * @param object $Registre Registre amb les dades del mòdul.
+	 */
+	abstract protected function GeneraPestanyes(object $frm, object $Registre);
 		
+	private function CarregaAnyAcademic(string $ModulPlaEstudiId) {
+		$SQL = "
+			SELECT C.*
+			FROM MODUL_PLA_ESTUDI MPE
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
+			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
+			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) 
+			$this->AnyAcademic = $ResultSet->fetch_object();
+	}
+	
+	private function CarregaDiesFestius() {
+		$this->DiesFestius = [];
+		$SQL = "
+			SELECT data
+			FROM FESTIU F
+			WHERE data >= '".$this->AnyAcademic->data_inici."'
+			AND data <= '".$this->AnyAcademic->data_final."'
+			ORDER BY data			
+		";
+		$ResultSet = $this->Connexio->query($SQL);
+		while ($row = $ResultSet->fetch_object()) 
+			array_push($this->DiesFestius, MySQLAData($row->data));
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de fitxa de les programacions didàctiques LOE.
+ */
+class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
+{
+	/**
+	 * Genera les pestanyes de la programació didàctica.
+	 * @param object $frm Formulari fitxa.
+	 * @param object $Registre Registre amb les dades del mòdul.
+	 */
+	protected function GeneraPestanyes(object $frm, object $Registre) {
 		$frm->Pestanya('Metodologia');
 		$frm->AfegeixTextRic('metodologia', '', 500, 300);
 
@@ -653,42 +761,36 @@ class ProgramacioDidacticaFitxa extends FormRecerca
 		
 		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF', $Ajuda);
 		$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
-		
-		$frm->EscriuHTML();		
 	}
-	
-	private function CarregaAnyAcademic(string $ModulPlaEstudiId) {
-		$SQL = "
-			SELECT C.*
-			FROM MODUL_PLA_ESTUDI MPE
-			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-			LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id)
-			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
-		";
-/*		$SQL = "
-			SELECT AA.*
-			FROM MODUL_PLA_ESTUDI MPE
-			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
-			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId				
-		";*/
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) 
-			$this->AnyAcademic = $ResultSet->fetch_object();
-	}
-	
-	private function CarregaDiesFestius() {
-		$this->DiesFestius = [];
-		$SQL = "
-			SELECT data
-			FROM FESTIU F
-			WHERE data >= '".$this->AnyAcademic->data_inici."'
-			AND data <= '".$this->AnyAcademic->data_final."'
-			ORDER BY data			
-		";
-		$ResultSet = $this->Connexio->query($SQL);
-		while ($row = $ResultSet->fetch_object()) 
-			array_push($this->DiesFestius, MySQLAData($row->data));
+}
+
+/**
+ * Classe que encapsula el formulari de fitxa de les programacions didàctiques LOGSE.
+ */
+class ProgramacioDidacticaFitxaLOGSE extends ProgramacioDidacticaFitxa
+{
+	/**
+	 * Genera les pestanyes de la programació didàctica.
+	 * @param object $frm Formulari fitxa.
+	 * @param object $Registre Registre amb les dades del mòdul.
+	 */
+	protected function GeneraPestanyes(object $frm, object $Registre) {
+		$frm->Pestanya('Metodologia');
+		$frm->AfegeixTextRic('metodologia', '', 500, 300);
+
+		$frm->Pestanya("Criteris d'avaluació");
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300);
+
+		$frm->Pestanya("Recursos");
+		$frm->AfegeixTextRic('recursos', '', 500, 300);
+
+		$frm->Pestanya("Unitats didàctiques");
+		$frm->AfegeixTextRic('unitats_didactiques', '', 500, 300);
+
+		if ($Registre->es_fct) {
+			$frm->Pestanya("Planificació");
+			$frm->AfegeixTextRic('planificacio', '', 500, 300);
+		}
 	}
 }
 
@@ -1031,6 +1133,142 @@ abstract class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 		$toc = $section->addTOC($fontStyle12, 'Interliniat0');
 	}
 
+	abstract protected function GeneraSeccioSequenciacio(&$section = null);
+
+	protected function GeneraSeccioUnitats(&$section = null) {
+		$ModulId = $this->Registre->modul_professional_id;
+		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
+		$RA->CreaRegistreModul($ModulId);
+//print_h($RA->Registre);
+		
+		$width = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(17); // 17 cm 
+		//$Negreta = array('bold' => true);
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
+		$EstilGris = array('bgColor' => '808080', 'borderSize' => 1, 'borderColor' => '000000');
+		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000');
+		//$CentratInterliniat0 = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0 );
+
+		foreach ($RA->Registre as $UF) {
+			$table = $section->addTable('TaulaSeccioUnitats'.$UF->Id);
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGris)->addText($UF->Nom, 'Negreta', 'Interliniat0');
+			foreach ($UF->Dades as $Dades) {
+				if ($Dades->Tipus == 'R') {
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGris)->addText('RA'.$Dades->Nom, 'Negreta', 'Interliniat0');
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGrisClar)->addText('Resultats d’aprenentatge i criteris d’avaluació', 'Negreta', 'Interliniat0');
+				}
+				else if ($Dades->Tipus == 'C') {
+					$table->addRow();
+					$cell = $table->addCell($width, $EstilGrisClar)->addText('Continguts', 'Negreta', 'Interliniat0');
+					$table->addRow();
+					$cell = $table->addCell($width, $Estil)->addText($Dades->Nom, null, 'Interliniat0');
+				}
+				foreach ($Dades->Dades as $Dades2) {
+					$table->addRow();
+					$cell = $table->addCell($width, $Estil)->addText($Dades2, null, 'Interliniat0');
+				}
+			}
+			$section->addTextBreak(2);
+		}
+	}
+	
+	/**
+	 * Genera la secció d'objectius i continguts de la programació didàctica (LOGSE).
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioObjectiusContinguts(&$section = null) {
+		$ModulId = $this->Registre->modul_professional_id;
+		$OC = new ObjectiusContinguts($this->Connexio, $this->Usuari);
+		$OC->CreaRegistreModul($ModulId);
+
+		$width = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(17); // 17 cm 
+		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
+		$EstilGris = array('bgColor' => '808080', 'borderSize' => 1, 'borderColor' => '000000');
+		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000');
+		
+		foreach ($OC->Registre as $MP) {
+			$table = $section->addTable('TaulaSeccioObjectiusContinguts'.$MP->Id);
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGris)->addText($MP->Nom, 'Negreta', 'Interliniat0');
+				
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGrisClar)->addText($OC->TipusText('O'), 'Negreta', 'Interliniat0');
+			foreach ($MP->MP->Objectius as $Dades) {
+				$table->addRow();
+				$cell = $table->addCell($width, $Estil)->addText($Dades, null, 'Interliniat0');
+			}
+
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGrisClar)->addText($OC->TipusText('F'), 'Negreta', 'Interliniat0');
+			foreach ($MP->MP->Fets as $Dades) {
+				$table->addRow();
+				$cell = $table->addCell($width, $Estil)->addText($Dades, null, 'Interliniat0');
+			}
+
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGrisClar)->addText($OC->TipusText('P'), 'Negreta', 'Interliniat0');
+			foreach ($MP->MP->Procediments as $Dades) {
+				$table->addRow();
+				$cell = $table->addCell($width, $Estil)->addText($Dades, null, 'Interliniat0');
+			}
+
+			$table->addRow();
+			$cell = $table->addCell($width, $EstilGrisClar)->addText($OC->TipusText('A'), 'Negreta', 'Interliniat0');
+			foreach ($MP->MP->Actituds as $Dades) {
+				$table->addRow();
+				$cell = $table->addCell($width, $Estil)->addText($Dades, null, 'Interliniat0');
+			}
+				
+			$section->addTextBreak(2);
+		}
+		
+	}	
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOE en DOCX.
+ */
+class ProgramacioDidacticaDOCXLOE extends ProgramacioDidacticaDOCX
+{
+	protected function GeneraSeccionsDOCX($section) {
+		$Comptador = 1;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
+		$html = $this->GeneraSeccioEstrategies();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdCRITERIS], 1);
+		$html = $this->GeneraSeccioCriteris();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdRECURSOS], 1);
+		$html = $this->GeneraSeccioRecursos();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOE], 1);
+		$this->GeneraSeccioSequenciacio($section);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdUNITATS], 1);
+		$this->GeneraSeccioUnitats($section);
+	}
+	
 	protected function GeneraSeccioSequenciacio(&$section = null) {
 		$ModulPlaEstudiId = $this->Id;
 		$aUF = [];
@@ -1076,81 +1314,6 @@ abstract class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 			$cell = $table->addCell(2*$UnCm, $Estil)->addText(MySQLAData($row->data_final), null, 'Interliniat0');
 		}
 	}
-
-	protected function GeneraSeccioUnitats(&$section = null) {
-		$ModulId = $this->Registre->modul_professional_id;
-		$RA = new ResultatsAprenentatge($this->Connexio, $this->Usuari);
-		$RA->CreaRegistreModul($ModulId);
-//print_h($RA->Registre);
-		
-		$width = \PhpOffice\PhpWord\Shared\Converter::cmToTwip(17); // 17 cm 
-		//$Negreta = array('bold' => true);
-		$Estil = array('borderSize' => 1, 'borderColor' => '000000');
-		$EstilGris = array('bgColor' => '808080', 'borderSize' => 1, 'borderColor' => '000000');
-		$EstilGrisClar = array('bgColor' => 'D3D3D3', 'borderSize' => 1, 'borderColor' => '000000');
-		//$CentratInterliniat0 = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0 );
-
-		foreach ($RA->Registre as $UF) {
-			$table = $section->addTable('TaulaSeccioUnitats'.$UF->Id);
-			$table->addRow();
-			$cell = $table->addCell($width, $EstilGris)->addText($UF->Nom, 'Negreta', 'Interliniat0');
-			foreach ($UF->Dades as $Dades) {
-				if ($Dades->Tipus == 'R') {
-					$table->addRow();
-					$cell = $table->addCell($width, $EstilGris)->addText('RA'.$Dades->Nom, 'Negreta', 'Interliniat0');
-					$table->addRow();
-					$cell = $table->addCell($width, $EstilGrisClar)->addText('Resultats d’aprenentatge i criteris d’avaluació', 'Negreta', 'Interliniat0');
-				}
-				else if ($Dades->Tipus == 'C') {
-					$table->addRow();
-					$cell = $table->addCell($width, $EstilGrisClar)->addText('Continguts', 'Negreta', 'Interliniat0');
-					$table->addRow();
-					$cell = $table->addCell($width, $Estil)->addText($Dades->Nom, null, 'Interliniat0');
-				}
-				foreach ($Dades->Dades as $Dades2) {
-					$table->addRow();
-					$cell = $table->addCell($width, $Estil)->addText($Dades2, null, 'Interliniat0');
-				}
-			}
-			$section->addTextBreak(2);
-		}
-	}
-}
-
-/**
- * Classe que encapsula l'exportació de la programació didàctica LOE en DOCX.
- */
-class ProgramacioDidacticaDOCXLOE extends ProgramacioDidacticaDOCX
-{
-	protected function GeneraSeccionsDOCX($section) {
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdESTRATEGIES.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
-		$html = $this->GeneraSeccioEstrategies();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdCRITERIS.'. '.self::SECCIO[self::pdCRITERIS], 1);
-		$html = $this->GeneraSeccioCriteris();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdRECURSOS.'. '.self::SECCIO[self::pdRECURSOS], 1);
-		$html = $this->GeneraSeccioRecursos();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdSEQUENCIACIO.'. '.self::SECCIO[self::pdSEQUENCIACIO], 1);
-		$this->GeneraSeccioSequenciacio($section);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdUNITATS.'. '.self::SECCIO[self::pdUNITATS], 1);
-		$this->GeneraSeccioUnitats($section);
-	}
 }
 
 /**
@@ -1159,8 +1322,54 @@ class ProgramacioDidacticaDOCXLOE extends ProgramacioDidacticaDOCX
 class ProgramacioDidacticaDOCXLOGSE extends ProgramacioDidacticaDOCX
 {
 	protected function GeneraSeccionsDOCX($section) {
-		throw new Exception("ProgramacioDidacticaLOGSE->GeneraSeccions. No implementat");
+		$Comptador = 1;
+		
+//		throw new Exception("ProgramacioDidacticaLOGSE->GeneraSeccions. No implementat");
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
+		$html = $this->GeneraSeccioEstrategies();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+		
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdCRITERIS], 1);
+		$html = $this->GeneraSeccioCriteris();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdRECURSOS], 1);
+		$html = $this->GeneraSeccioRecursos();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOGSE], 1);
+		$html = $this->GeneraSeccioSequenciacio();
+		$this->AfegeixHTML($section, $html);
+		$Comptador++;
+
+		$section->addPageBreak();
+		$section->addTextBreak(1);
+		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdOBJECTIUS_CONTINGUTS], 1);
+		$this->GeneraSeccioObjectiusContinguts($section);
 	}
+
+	/**
+	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioSequenciacio(&$section = null) {
+		$sRetorn = $this->Registre->unitats_didactiques;
+		$sRetorn = $this->TractaTaules($sRetorn);
+		return $sRetorn;		
+	}
+	
 }
 
 /**
@@ -1217,7 +1426,7 @@ class ResultatsAprenentatge extends Form
      * @return string Codi HTML del filtre.
 	 */
 	protected function GeneraFiltre(): string {
-		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LO' ORDER BY nom", "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
 		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
 	}
@@ -1453,7 +1662,7 @@ class ContingutsUF extends Form
      * @return string Codi HTML del filtre.
 	 */
 	protected function GeneraFiltre(): string {
-		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LO' ORDER BY nom", "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
 		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaContingutsUF(this);"');
 	}
@@ -1508,6 +1717,317 @@ class ContingutsUF extends Form
 			$sRetorn .= 'No hi ha dades.';
 		$sRetorn .= '</DIV>';
 		return $sRetorn;			
+	}	
+}
+
+/**
+ * Formulari que encapsula els objectius i continguts.
+ */
+class ObjectiusContinguts extends Form
+{
+	/**
+	* Identificador del cicle formatiu.
+	* @var integer
+	*/    
+    public $CicleFormatiuId = -1; 
+	
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, "Objectius i continguts");
+		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/ProgramacioDidactica.js?v1.1" type="text/javascript"></script>';
+
+		// Inicialització de l'ajuda
+		// https://getbootstrap.com/docs/4.0/components/popovers/
+//		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+
+		echo $this->GeneraFiltre();
+		echo '<BR><BR>';
+		echo $this->GeneraTaula();
+		CreaFinalHTML();
+	}	
+
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $CicleFormatiuId Identificador del cicle.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQL(int $CicleFormatiuId): string {
+		return "
+			SELECT 
+				MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP,
+				OC.*
+			FROM MODUL_PROFESSIONAL MP 
+			LEFT JOIN OBJECTIU_CONTINGUT OC ON (OC.modul_professional_id=MP.modul_professional_id)
+			WHERE cicle_formatiu_id=$CicleFormatiuId
+			ORDER BY MP.codi
+		";		
+	}
+
+	/**
+	 * Genera el filtre del formulari si n'hi ha.
+     * @return string Codi HTML del filtre.
+	 */
+	protected function GeneraFiltre(): string {
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LG' ORDER BY nom", "cicle_formatiu_id", "nom");
+		$this->CicleFormatiuId = $aCicles[0][0]; 
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
+	}
+	
+	public function TipusText(string $Tipus): string {
+		switch ($Tipus) {
+			case 'O':
+				return 'Objectius terminals';
+				break;
+			case 'F':
+				return 'Continguts de fets, conceptes i sistemes conceptuals';
+				break;
+			case 'P':
+				return 'Continguts de procediments';
+				break;
+			case 'A':
+				return 'Continguts d’actituds';
+				break;
+			default:
+				return '';
+				break;
+		}
+	}
+	
+	/**
+	 * Carrega els registres especificat a la SQL i els posa en un objecte.
+	 * @return void.
+	 */				
+	protected function Carrega() {
+		$this->Registre = [];
+		$ModulProfessionalId = -1;
+		$Tipus = '';
+		$SQL = $this->CreaSQL($this->CicleFormatiuId);
+//print_r($SQL);		
+		$ResultSet = $this->Connexio->query($SQL);
+//print_r($ResultSet->num_rows);		
+		if ($ResultSet->num_rows > 0) {
+//print_r('-');		
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->modul_professional_id !== $ModulProfessionalId) {
+					$this->Registre[$row->modul_professional_id] = new StdClass();
+					$this->Registre[$row->modul_professional_id]->Id = $row->modul_professional_id;
+					$this->Registre[$row->modul_professional_id]->Codi = $row->CodiMP;
+					$this->Registre[$row->modul_professional_id]->Nom = $row->NomMP;
+					$MP = new StdClass();
+					$MP->Objectius = [];
+					$MP->Fets = [];
+					$MP->Procediments = [];
+					$MP->Actituds = [];
+					$this->Registre[$row->modul_professional_id]->MP = $MP;
+					$ModulProfessionalId = $row->modul_professional_id;
+				}
+				switch ($row->tipus) {
+					case 'O':
+						array_push($MP->Objectius, $row->descripcio);
+						break;
+					case 'F':
+						array_push($MP->Fets, $row->descripcio);
+						break;
+					case 'P':
+						array_push($MP->Procediments, $row->descripcio);
+						break;
+					case 'A':
+						array_push($MP->Actituds, $row->descripcio);
+						break;
+				}
+			}
+		}
+//print_h($this->Registre);
+//exit;
+	}
+	
+
+	/**
+	 * Genera la llista amb els RA d'un cicle.
+     * @return string Llista amb les dades.
+	 */
+	public function GeneraTaula(): string {
+		$this->Carrega();
+		$sRetorn = '<DIV id=taula>'.PHP_EOL;
+		foreach($this->Registre as $MP) {
+			$sRetorn .= '<ul>'.PHP_EOL;
+			$Id = ($this->Usuari->es_admin) ? ' ['.$MP->Id.']' : '';
+			$sRetorn .= '    <li><b>'.$MP->Codi.'. '.$MP->Nom.'</b>'.$Id.'</li>'.PHP_EOL;
+			$sRetorn .= '    <ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('O').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Objectius as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('F').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Fets as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('P').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Procediments as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('A').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Actituds as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '    </ul>'.PHP_EOL;
+			
+			$sRetorn .= '</ul>'.PHP_EOL;
+		}
+		$sRetorn .= '</DIV>';
+		return $sRetorn;			
+	}
+
+	/**
+	 * Crea la sentència SQL.
+	 * @param integer $Modul Identificador del mòdul.
+	 * @return string Sentència SQL.
+	 */
+	protected function CreaSQLModul(int $ModulId): string {
+		return "
+			SELECT 
+				MP.modul_professional_id, MP.codi AS CodiMP, MP.nom AS NomMP,
+				OC.*
+			FROM MODUL_PROFESSIONAL MP 
+			LEFT JOIN OBJECTIU_CONTINGUT OC ON (OC.modul_professional_id=MP.modul_professional_id)
+			WHERE MP.modul_professional_id=$ModulId
+			ORDER BY MP.codi
+		";			
+	}
+	
+	/**
+	 * Crea un registre amb els resultats d’aprenentatge, criteris d’avaluació i continguts d'un mòdul.
+	 * @param integer $ModulId Identificador del mòdul.
+	 */
+	public function CreaRegistreModul(int $ModulId) {
+		$this->Registre = [];
+		$ModulProfessionalId = -1;
+		$Tipus = '';
+		$SQL = $this->CreaSQLModul($ModulId);
+//print_r($SQL);		
+		$ResultSet = $this->Connexio->query($SQL);
+//print_r($ResultSet->num_rows);		
+		if ($ResultSet->num_rows > 0) {
+//print_r('-');		
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->modul_professional_id !== $ModulProfessionalId) {
+					$this->Registre[$row->modul_professional_id] = new StdClass();
+					$this->Registre[$row->modul_professional_id]->Id = $row->modul_professional_id;
+					$this->Registre[$row->modul_professional_id]->Codi = $row->CodiMP;
+					$this->Registre[$row->modul_professional_id]->Nom = $row->NomMP;
+					$MP = new StdClass();
+					$MP->Objectius = [];
+					$MP->Fets = [];
+					$MP->Procediments = [];
+					$MP->Actituds = [];
+					$this->Registre[$row->modul_professional_id]->MP = $MP;
+					$ModulProfessionalId = $row->modul_professional_id;
+				}
+				switch ($row->tipus) {
+					case 'O':
+						array_push($MP->Objectius, $row->descripcio);
+						break;
+					case 'F':
+						array_push($MP->Fets, $row->descripcio);
+						break;
+					case 'P':
+						array_push($MP->Procediments, $row->descripcio);
+						break;
+					case 'A':
+						array_push($MP->Actituds, $row->descripcio);
+						break;
+				}
+			}
+		}
+//print_h($this->Registre);
+//exit;		
+		
+		
+		
+		
+		
+		
+		/*
+		$this->Registre = [];
+		$SQL = $this->CreaSQLModul($ModulId);
+		$ResultSet = $this->Connexio->query($SQL);
+		if ($ResultSet->num_rows > 0) {
+			$UnitatFormativaId = -1;
+			$DescripcioId = -1;
+			$Tipus = '';
+
+			while($row = $ResultSet->fetch_object()) {
+				if ($row->unitat_formativa_id !== $UnitatFormativaId) {
+					// UF nova
+					$UF = new stdClass();
+					array_push($this->Registre, $UF);
+					$UF->Id = $row->unitat_formativa_id;
+					$UF->Nom = CodificaUTF8($row->NomUF);
+					$UF->Dades = [];
+					
+					$UnitatFormativaId = $row->unitat_formativa_id;
+				}
+				
+				if (($row->DescripcioId !== $DescripcioId) || ($row->Tipus !== $Tipus)) {
+					// RA o contingut nou	
+					$Dades = new stdClass();
+					array_push($UF->Dades, $Dades);
+					$Dades->Id = $row->DescripcioId;
+					$Dades->Nom = CodificaUTF8($row->Descripcio);
+					$Dades->Tipus = $row->Tipus;
+					$Dades->Dades = [];
+
+					$DescripcioId = $row->DescripcioId;							
+					$Tipus = $row->Tipus;							
+				}
+				
+				array_push($Dades->Dades, CodificaUTF8($row->Descripcio2));
+			}
+		}*/
+//print_h($this->Registre);
+	}	
+	
+	/**
+	 * Genera la taula amb els RA d'un mòdul.
+	 * @param integer $ModulId Identificador del mòdul.
+     * @return string Taula amb les dades.
+	 */
+	public function GeneraTaulaModul(int $ModulId): string {
+		$sRetorn = '';
+		$this->CreaRegistreModul($ModulId);
+		foreach($this->Registre as $MP) {
+			$Id = ($this->Usuari->es_admin) ? ' ['.$MP->Id.']' : '';
+			$sRetorn .= '    <ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('O').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Objectius as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('F').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Fets as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('P').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Procediments as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '        <li>'.$this->TipusText('A').'</li>'.PHP_EOL;
+			$sRetorn .= '        <ul>'.PHP_EOL;
+			foreach($MP->MP->Actituds as $descripcio)
+				$sRetorn .= '            <li>'.$descripcio.'</li>'.PHP_EOL;
+			$sRetorn .= '        </ul>'.PHP_EOL;
+			$sRetorn .= '    </ul>'.PHP_EOL;
+		}
+		return $sRetorn;
 	}	
 }
 

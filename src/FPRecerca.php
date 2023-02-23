@@ -161,6 +161,10 @@ switch ($accio) {
 		$frm = new ContingutsUF($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
 		break;
+	case "ObjectiusContinguts":
+		$frm = new ObjectiusContinguts($conn, $Usuari, $Sistema);
+		$frm->EscriuHTML();
+		break;
 	case "PreuMatricula":
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;

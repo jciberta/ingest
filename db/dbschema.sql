@@ -191,6 +191,7 @@ CREATE TABLE MODUL_PLA_ESTUDI
 	criteris_avaluacio TEXT,
 	recursos TEXT,
 	planificacio TEXT,
+	unitats_didactiques TEXT,
 
     CONSTRAINT ModulPlaEstudiPK PRIMARY KEY (modul_pla_estudi_id),
     CONSTRAINT MPE_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id),

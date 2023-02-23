@@ -15,6 +15,8 @@ ALTER TABLE SISTEMA ADD clickedu_secret VARCHAR(100);
 ALTER TABLE SISTEMA ADD capcalera_login VARCHAR(1000);
 ALTER TABLE SISTEMA ADD peu_login VARCHAR(1000);
 
+ALTER TABLE MODUL_PLA_ESTUDI ADD unitats_didactiques TEXT;
+
 DROP PROCEDURE CopiaNotesAnteriorMatricula;
 
 /*
