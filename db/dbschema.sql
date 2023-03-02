@@ -152,6 +152,7 @@ CREATE TABLE SISTEMA
     capcalera_login VARCHAR(1000),
     peu_login VARCHAR(1000),
 
+    CONSTRAINT SistemaPK PRIMARY KEY (sistema_id),
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id),		
     CONSTRAINT S_GestorBorsaTreballFK FOREIGN KEY (gestor_borsa_treball_id) REFERENCES USUARI(usuari_id)		
@@ -233,8 +234,6 @@ CREATE TABLE CURS
     codi VARCHAR(10) NOT NULL,
     cicle_formatiu_id INT NOT NULL,
     nivell INT CHECK (nivell IN (1, 2)),
-	data_inici DATE,
-	data_final DATE,
     grups_classe VARCHAR(100),
     grups_tutoria VARCHAR(100),
     avaluacio CHAR(3) NOT NULL DEFAULT 'ORD', /* ORD, EXT */
@@ -389,7 +388,7 @@ CREATE TABLE PROFESSOR_GUARDIA
 CREATE TABLE REGISTRE
 (
     /* R */
-	registre_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	registre_id INT NOT NULL AUTO_INCREMENT,
     usuari_id INT NOT NULL,
     nom_usuari VARCHAR(100) NOT NULL, 
     data DATETIME NOT NULL,
@@ -541,13 +540,13 @@ CREATE TABLE MATERIAL
     /* M */
     material_id INT NOT NULL,
     tipus_material_id INT NOT NULL,
-    familia_fp_id INT;
-    responsable_id INT NOT NULL;
+    familia_fp_id INT,
+    responsable_id INT NOT NULL,
     nom VARCHAR(200) NOT NULL,
 	codi VARCHAR(15) NOT NULL,
     descripcio TEXT,
-    ambit VARCHAR(50);
-    ubicacio VARCHAR(100);	
+    ambit VARCHAR(50),
+    ubicacio VARCHAR(100),
     data_compra DATE,
     es_obsolet BIT NOT NULL DEFAULT 0,
 	
@@ -1183,7 +1182,7 @@ BEGIN
 END //
 DELIMITER ;
 
-
+DELIMITER //
 CREATE TRIGGER AU_CopiaTrimestre AFTER UPDATE ON CURS FOR EACH ROW
 BEGIN
     IF NEW.trimestre = 2 AND OLD.trimestre = 1 THEN
