@@ -137,6 +137,7 @@ CREATE TABLE SISTEMA
 	/* Ha de contenir un únic registre que conté la configuració */
     sistema_id INT NOT NULL AUTO_INCREMENT,
 	nom VARCHAR(100), /* Nom institut */ 
+    aplicacio VARCHAR(10) DEFAULT 'InGest',
 	any_academic_id INT NOT NULL,
     director_id INT NOT NULL,
     gestor_borsa_treball_id INT,

@@ -917,7 +917,6 @@ class FormRecerca extends Form
 	 * @var int
 	 */    
     public $MaximRegistres = -1;
-
 	
 	/**
 	 * Paraules a filtrar separades per espai (formaran part del WHERE).
@@ -2395,9 +2394,9 @@ class FormFitxa extends Form
 					break;
 				case self::tcFOTOGRAFIA:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
-//echo '<hr>'.$Valor->Camp;
-//echo '<hr>'.$this->ValorCampText($Valor->Camp);
-//echo '<hr>'.$this->Registre[$Valor->Camp];
+//echo '<hr>$Valor->Camp: '.$Valor->Camp;
+//echo '<hr>$this->ValorCampText($Valor->Camp): '.$this->ValorCampText($Valor->Camp);
+//echo '<hr>$this->Registre[$Valor->Camp]: '.$this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
 					break;
 				case self::tcTEXT_RIC:

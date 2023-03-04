@@ -34,7 +34,7 @@ $Portal->EscriuCapcalera($Sistema->capcalera_login ?? '');
 echo '	<div class="jumbotron">';
 echo '		<div class="d-flex justify-content-center">';
 echo '			<form action="Autenticacio.php" method="post">';
-echo '				<h2 class="d-flex justify-content-center">inGest</h2>';
+echo '				<h2 class="d-flex justify-content-center">'.$Sistema->aplicacio.'</h2>';
 echo '				<div class="form-group">';
 echo '					<label for="usuari">Usuari</label>';
 echo '					<input type="text" class="form-control" name="usuari" required>';

@@ -15,13 +15,17 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibMaterial.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
-//print_h($Sistema);
+
+// Pedaç per passar l'aplicació.
+$Usuari->aplicacio = $Sistema->aplicacio;
+$_SESSION['USUARI'] = serialize($Usuari);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -38,8 +42,14 @@ if ($conn->connect_error)
 //  - pare: Expedient fills.
 
 if (($Usuari->es_admin) || ($Usuari->es_cap_estudis)) {
-	$curs = new Curs($conn, $Usuari, $Sistema);
-	$curs->EscriuFormulariRecera();
+	if ($Usuari->aplicacio == 'InGest') {
+		$curs = new Curs($conn, $Usuari, $Sistema);
+		$curs->EscriuFormulariRecerca();
+	}
+	else if ($Usuari->aplicacio == 'CapGest') {
+		$mat = new Material($conn, $Usuari, $Sistema);
+		$mat->EscriuFormulariRecerca();
+	}
 }
 else if ($Usuari->es_professor) {
 	$Professor = new Professor($conn, $Usuari);

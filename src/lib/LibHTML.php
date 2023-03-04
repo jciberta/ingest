@@ -105,12 +105,13 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		$Retorn .= '<BODY STYLE="background-color:#ffa70570">'.PHP_EOL;
 	else
 		$Retorn .= '<BODY>'.PHP_EOL;
-//		$Retorn .= '<BODY BGCOLOR=yellow>'.PHP_EOL;
 	if ($bMenu) {
-		$Retorn .= Menu::Crea($Usuari);
+		if ($Usuari->aplicacio == 'InGest')
+			$Retorn .= MenuInGest::Crea($Usuari);
+		else if ($Usuari->aplicacio == 'CapGest')
+			$Retorn .= MenuCapGest::Crea($Usuari);
 	}
 	$Retorn .= '      <div class="starter-template" style="padding:20px">';
-//	$Retorn .= '<H1>'.utf8_encodeX($Titol).'</H1>';
 	$Retorn .= '<H1>'.$Titol.'</H1>';
 	return $Retorn;
 }
@@ -362,9 +363,9 @@ class Portal
 }
 
 /**
- * Classe base per a la realització de menús.
+ * Classe base per a la realització de menús de l'aplicació.
  */
-class Menu
+abstract class Menu
 {
 	static public function Obre(string $Text): string {
 		$Retorn = '            <li class="nav-item dropdown">'.PHP_EOL;
@@ -395,12 +396,21 @@ class Menu
 	static public function Opcio(string $Text, string $URL): string {
 		return '<a class="dropdown-item" href="'.GeneraURL($URL).'">'.$Text.'</a>'.PHP_EOL;
 	}
-	
+
+	abstract static public function Crea($Usuari): string;
+}
+
+
+/**
+ * Classe per a la realització de menús de l'aplicació InGest.
+ */
+class MenuInGest extends Menu
+{
 	static public function Crea($Usuari): string {
 		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
 		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
 		if ($Usuari->es_admin) 
-			$Retorn .= '	<span class="navbar-brand">InGest '.Config::Versio.'</span>'.PHP_EOL;
+			$Retorn .= '	<span class="navbar-brand">'.$Usuari->aplicacio.' '.Config::Versio.'</span>'.PHP_EOL;
 		else
 			$Retorn .= '	<span class="navbar-brand">InGest</span>'.PHP_EOL;
 		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">'.PHP_EOL;
@@ -494,6 +504,83 @@ class Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Promoció alumnes 1r', 'UsuariRecerca.php?accio=AlumnesPromocio1r');
 			$Retorn .= Menu::Opcio('Graduació alumnes 2n', 'UsuariRecerca.php?accio=AlumnesGraduacio2n');
+			$Retorn .= Menu::Tanca();
+		}	
+		$Retorn .= '		</ul>';
+
+		// Menú usuari
+		$NomComplet = utf8_encodeX(trim($Usuari->nom.' '.$Usuari->cognom1.' '.$Usuari->cognom2));
+		$Retorn .= '		<ul class="navbar-nav">'.PHP_EOL;
+		$Retorn .= '		  <li class="nav-item dropdown">'.PHP_EOL;
+		$Retorn .= '          <a class="nav-link dropdown-toggle" href="#" id="ddUsuari" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.$NomComplet.'</a>'.PHP_EOL;
+		$Retorn .= '			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ddUsuari">'.PHP_EOL;
+		$Retorn .= Menu::Opcio('Canvia password', 'CanviPassword.html');
+//		$Retorn .= Menu::Separador();
+		if ($Usuari->es_alumne) {
+			$Retorn .= Menu::Opcio('Perfil', 'Fitxa.php?accio=PerfilAlumne');
+		}
+		if ($Usuari->es_cap_estudis) {
+			$Retorn .= Menu::Opcio('Canvia a professor', 'Canvia.php?accio=CanviaRolAProfessor');
+		}
+		if ($Usuari->es_admin) {
+			$Retorn .= Menu::Opcio('Canvia usuari', 'Canvia.php?accio=SeleccionaUsuari');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
+			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
+			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
+		}
+		if (property_exists($Usuari, 'era_admin') && $Usuari->era_admin) {
+			$Retorn .= Menu::Opcio('Torna a admin', 'Canvia.php?accio=TornaAAdmin');
+		}
+		$Retorn .= Menu::Separador();
+		$Retorn .= Menu::Opcio('Surt', 'Surt.php');
+		$Retorn .= Menu::Tanca();
+		$Retorn .= '		</ul>'.PHP_EOL;
+
+		$Retorn .= '	</div>'.PHP_EOL;
+		$Retorn .= '</nav>'.PHP_EOL;
+		$Retorn .= '<!-- FINAL Menú -->'.PHP_EOL;
+		$Retorn .= PHP_EOL;
+		$Retorn .= '<BR><BR>'; // Per donar espai al menú
+		$Retorn .= PHP_EOL;
+
+		return $Retorn;
+	}		
+}
+
+/**
+ * Classe per a la realització de menús de l'aplicació CapGest.
+ */
+class MenuCapGest extends Menu
+{
+	static public function Crea($Usuari): string {
+		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
+		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
+		if ($Usuari->es_admin) 
+			$Retorn .= '	<span class="navbar-brand">CapGest '.Config::Versio.'</span>'.PHP_EOL;
+		else
+			$Retorn .= '	<span class="navbar-brand">CapGest</span>'.PHP_EOL;
+		$Retorn .= '	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">'.PHP_EOL;
+		$Retorn .= '		<span class="navbar-toggler-icon"></span>'.PHP_EOL;
+		$Retorn .= '	</button>'.PHP_EOL;
+		$Retorn .= '	<div class="collapse navbar-collapse">'.PHP_EOL;
+		$Retorn .= '		<ul class="navbar-nav mr-auto">'.PHP_EOL;
+		$Retorn .= '			<li class="nav-item active">'.PHP_EOL;
+		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>'.PHP_EOL;
+		$Retorn .= '			</li>'.PHP_EOL;
+		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
+			// Menú Club
+			$Retorn .= Menu::Obre('Club');
+			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
+			$Retorn .= Menu::Tanca();
+
+			// Menú Material
+			$Retorn .= Menu::Obre('Material');
+			$Retorn .= Menu::Opcio('Classificació', 'Recerca.php?accio=TipusMaterial');
+			$Retorn .= Menu::Opcio('Material', 'Recerca.php?accio=Material');
+			$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
 			$Retorn .= Menu::Tanca();
 		}	
 		$Retorn .= '		</ul>';

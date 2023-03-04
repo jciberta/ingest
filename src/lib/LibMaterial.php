@@ -28,8 +28,8 @@ class TipusMaterial extends Objecte
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'TIPUS_MATERIAL';
 		$frm->ClauPrimaria = 'tipus_material_id';
-		$frm->Camps = 'tipus_material_id, nom';
-		$frm->Descripcions = 'Id, Nom';
+		$frm->Camps = 'nom';
+		$frm->Descripcions = 'Nom';
 		if ($this->Usuari->es_admin) {
 			$frm->PermetEditar = true;
 			$frm->URLEdicio = 'Fitxa.php?accio=TipusMaterial';
@@ -83,7 +83,7 @@ class Material extends Objecte
 		$frm->Taula = 'MATERIAL';
 		$frm->ClauPrimaria = 'material_id';
 		$frm->Camps = 'codi, nom, Tipus, Familia, Responsable, ambit, ubicacio, data_compra, bool:es_obsolet';
-		$frm->Descripcions = 'Codi, Nom, Tipus, Familia, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
+		$frm->Descripcions = 'Codi, Nom, Tipus, Família, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
 
 		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
 		array_unshift($aTMaterials[0] , '');

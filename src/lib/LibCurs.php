@@ -248,7 +248,7 @@ class Curs extends Objecte
 	/**
 	 * Genera el llistat de cursos.
 	 */
-	public function EscriuFormulariRecera() {
+	public function EscriuFormulariRecerca() {
 		$SQL = $this->CreaSQL();
 //print '<br><br><br>'.$SQL;
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
