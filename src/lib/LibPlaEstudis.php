@@ -49,18 +49,47 @@ abstract class PlaEstudis extends Form
 	abstract protected function GeneraAcordio();
 	abstract protected function CreaSQL(int $id): string;
 	abstract protected function Carrega(int $id);
+
+	/**
+	 * Comprova si les hores del MP coincideixen amb les de les UF, sinó ho marca.
+	 */
+	private function ComprovaHores(&$Nivell1) {
+		for($j = 0; $j < count($Nivell1->Modul); $j++) {
+			$Modul = $Nivell1->Modul[$j];
+			$CodiMP = $Modul->Registre->CodiMP;
+			
+			$NomMP = $Modul->Registre->NomMP;
+			$HoresMP = $Modul->Registre->HoresMP;
+			$HoresUF = 0;
+			
+			for($k = 0; $k < count($Modul->Unitat); $k++) {				
+				$Unitat = $Modul->Unitat[$k];
+				$CodiUF = $Unitat->Registre->CodiUF;
+				$NomUF = $Unitat->Registre->NomUF;
+				$HoresUF += $Unitat->Registre->HoresUF;
+			}
+			
+			$Modul->Registre->ErrorHores = ($HoresUF != $HoresMP);
+		}
+	}
 	
 	/**
 	 * Genera la taula per a un any i cicle concret.
      * @return string Taula amb les dades.
 	 */
 	protected function GeneraTaula($Nivell1): string {
+		$HoresMP = 0;
+		$HoresMPSetmana = 0;
+		$HoresUF = 0;
+		
+		$this->ComprovaHores($Nivell1);
+		
 		$sRetorn = '<TABLE class="table table-striped table-sm table-hover">';
 		$sRetorn .= '<thead class="thead-dark">';
 		$sRetorn .= "<TH>Mòdul</TH>";
 		$sRetorn .= "<TH>Hores</TH>";
 		$sRetorn .= "<TH>Hores setmana</TH>";
-		$sRetorn .= "<TH></TH><TH></TH>";
+		$sRetorn .= "<TH></TH><TH></TH><TH></TH>";
 		$sRetorn .= "<TH>Unitat formativa</TH>"; 
 		$sRetorn .= "<TH>Hores</TH>";
 		$sRetorn .= "<TH></TH>";
@@ -79,7 +108,10 @@ abstract class PlaEstudis extends Form
 					$Id = ($this->Usuari->es_admin	) ? "[".$Modul->Registre->modul_pla_estudi_id."]" : "";
 					$sRetorn .= "<TD>".utf8_encodeX($CodiMP.'. '.$NomMP)." $Id</TD>";
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMP."</TD>";
+					$HoresMP += $Modul->Registre->HoresMP;
 					$sRetorn .= "<TD>".$Modul->Registre->HoresMPSetmana."</TD>";
+					$HoresMPSetmana += $Modul->Registre->HoresMPSetmana;
+					$sRetorn .= ($Modul->Registre->ErrorHores) ? "<TD>*</TD>" : "<TD></TD>";
 					if ($this->Usuari->es_admin) {
 						$URL = "FPFitxa.php?accio=ModulsProfessionalsPlaEstudis&Id=".$Modul->Registre->modul_pla_estudi_id;
 						$sRetorn .= "<TD width=15><A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A></TD>";
@@ -91,20 +123,35 @@ abstract class PlaEstudis extends Form
 					$bPrimer = False;
 				}
 				else {
-					$sRetorn .= "<TD></TD><TD></TD><TD></TD><TD></TD><TD></TD>";
+					$sRetorn .= str_repeat("<TD></TD>", 6);
 				}
 				$Id = ($this->Usuari->es_admin	) ? "[".$Unitat->Registre->unitat_pla_estudi_id."]" : "";
 				$sRetorn .= "<TD>".utf8_encodeX($NomUF).' ('.Ordinal($Unitat->Registre->nivell).')'." $Id</TD>";
 				$sRetorn .= "<TD>".$Unitat->Registre->HoresUF."</TD>";
+				$HoresUF += $Unitat->Registre->HoresUF;
 				if ($this->Usuari->es_admin) {
 					$URL = "FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=".$Unitat->Registre->unitat_pla_estudi_id;
 					$sRetorn .= "<TD width=15 align=left><A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A></TD>";
 				}
 				else 
-					$sRetorn .= "<TD></TD>";
+					$sRetorn .= "<TD></TD><TD></TD>";
 				$sRetorn .= "</TR>";
 			}
 		}
+		if ($this->Usuari->es_admin) {
+			$sRetorn .= "<TR>";
+			$sRetorn .= "<TD><b>Total</b></TD>";
+			$sRetorn .= "<TD><b>$HoresMP</b></TD>";
+			$sRetorn .= "<TD><b>$HoresMPSetmana</b></TD>";
+			$sRetorn .= "<TD></TD>";
+			$sRetorn .= "<TD></TD>";
+			$sRetorn .= "<TD></TD>";
+			$sRetorn .= "<TD></TD>";
+			$sRetorn .= "<TD><b>$HoresUF</b></TD>";
+			$sRetorn .= "<TD></TD>";
+			}
+		
+		$sRetorn .= "</TR>";
 		$sRetorn .= "</TABLE>";
 		return $sRetorn;			
 	}	

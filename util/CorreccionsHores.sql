@@ -16,4 +16,4 @@ GROUP BY UPE.modul_pla_estudi_id;
 
 UPDATE MODUL_PROFESSIONAL MP SET MP.hores=(SELECT SUM(UF.hores) FROM UNITAT_FORMATIVA UF WHERE UF.modul_professional_id=MP.modul_professional_id);
 
-UPDATE MODUL_PLA_ESTUDI MPE SET MPE.hores=(SELECT SUM(UPE.hores) FROM UNITAT_PLA_ESTUDI UPE WHERE UPE.modul_pla_estudi_id=MPE.modul_pla_estudi_id);
+UPDATE MODUL_PLA_ESTUDI MPE SET MPE.hores=IFNULL((SELECT SUM(UPE.hores) FROM UNITAT_PLA_ESTUDI UPE WHERE UPE.modul_pla_estudi_id=MPE.modul_pla_estudi_id), 0);
