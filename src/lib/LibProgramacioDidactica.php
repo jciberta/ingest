@@ -649,13 +649,13 @@ abstract class ProgramacioDidacticaFitxa extends FormRecerca
 	* Registre de l'any acadèmic de la programació didàctica.
 	* @var object
 	*/    
-    private $AnyAcademic = null;
+    protected $AnyAcademic = null;
 
 	/**
 	* Array dels dies festius.
 	* @var array
 	*/    
-    private $DiesFestius = [];
+    protected $DiesFestius = [];
 
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.

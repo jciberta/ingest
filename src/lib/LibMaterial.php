@@ -84,16 +84,21 @@ class Material extends Objecte
 		$frm->ClauPrimaria = 'material_id';
 		$frm->Camps = 'codi, nom, Tipus, Familia, Responsable, ambit, ubicacio, data_compra, bool:es_obsolet';
 		$frm->Descripcions = 'Codi, Nom, Tipus, Família, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
-
+		if ($this->Usuari->aplicacio == 'CapGest') {
+			$frm->Camps = 'codi, nom, Tipus, Responsable, data_compra, bool:es_obsolet';
+			$frm->Descripcions = 'Codi, Nom, Tipus, Responsable, Data compra, Obsolet';
+		}
 		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
 		array_unshift($aTMaterials[0] , '');
 		array_unshift($aTMaterials[1] , 'Tots');
 		$frm->Filtre->AfegeixLlista('TM.tipus_material_id', 'Tipus', 32, $aTMaterials[0], $aTMaterials[1]);
 		
-		$aFamilia = ObteCodiValorDesDeSQL($this->Connexio,'SELECT ffp.familia_fp_id as familiafp_id, ffp.nom as familia from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY familia, familiafp_id', "familiafp_id", "familia");
-		array_unshift($aFamilia[0] , '');
-		array_unshift($aFamilia[1] , 'Tots');
-		$frm->Filtre->AfegeixLlista('FFP.familia_fp_id', 'Família', 50, $aFamilia[0], $aFamilia[1]);
+		if ($this->Usuari->aplicacio == 'InGest') {
+			$aFamilia = ObteCodiValorDesDeSQL($this->Connexio,'SELECT ffp.familia_fp_id as familiafp_id, ffp.nom as familia from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY familia, familiafp_id', "familiafp_id", "familia");
+			array_unshift($aFamilia[0] , '');
+			array_unshift($aFamilia[1] , 'Tots');
+			$frm->Filtre->AfegeixLlista('FFP.familia_fp_id', 'Família', 50, $aFamilia[0], $aFamilia[1]);
+		}
 		
 		$aResponsable = ObteCodiValorDesDeSQL($this->Connexio,'SELECT u.usuari_id as responsable_id, concat(u.nom," ",u.cognom1," ",u.cognom2) as responsable from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY responsable, responsable_id', "responsable_id", "responsable");
 		array_unshift($aResponsable[0] , '');
@@ -139,12 +144,20 @@ class Material extends Objecte
 		$frm->AfegeixText('codi', 'Codi', 50, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('tipus_material_id', 'Classificació', 100, 'Recerca.php?accio=TipusMaterial', 'TIPUS_MATERIAL', 'tipus_material_id', 'nom');
-		$frm->AfegeixLookUp('familia_fp_id', 'Família FP', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
+
+		$frm->Pestanya('Fotografia');
+		$frm->AfegeixSequenciaFotografies('codi', 'material/', '.jpg');
+
+		$frm->Pestanya('Dades');
 		$frm->AfegeixLookUp('responsable_id', 'Responsable', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
-		$frm->AfegeixText('ambit', 'Àmbit', 100);
-		$frm->AfegeixText('ubicacio', 'Ubicació', 100);
+		if ($this->Usuari->aplicacio == 'InGest') {
+			$frm->AfegeixLookUp('familia_fp_id', 'Família FP', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
+			$frm->AfegeixText('ambit', 'Àmbit', 100);
+			$frm->AfegeixText('ubicacio', 'Ubicació', 100);
+		}
 		$frm->AfegeixData('data_compra', 'Data compra');
 		$frm->AfegeixCheckBox('es_obsolet', 'Obsolet');
+
 		$frm->EscriuHTML();
 	}
 }

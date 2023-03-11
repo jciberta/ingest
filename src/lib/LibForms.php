@@ -92,10 +92,11 @@ class Form extends Objecte
 	const tcLOOKUP = 9;
 	const tcCALCULAT = 10;
 	const tcFOTOGRAFIA = 11;
-	const tcTEXT_RIC = 12;
+	const tcSEQUENCIA_FOTOGRAFIES = 12;
 	const tcHTML = 13;
 	const tcLINK = 14;
-	const tcAMAGAT = 15;
+	const tcTEXT_RIC = 15;
+	const tcAMAGAT = 16;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -497,16 +498,79 @@ class Form extends Objecte
 	/**
 	 * Crea un camp de tipus fotografia.
 	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
 	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
-	 * @return string Codi HTML del checkbox.
+	 * @return string Codi HTML camp tipus fotografia.
 	 */
-	public function CreaFotografia(string $Valor, string $Sufix): string {
+	public function CreaFotografia(string $Valor, string $Prefix, string $Sufix): string {
 		//$bAlCostat = in_array(self::offAL_COSTAT, $off);
-		$Fitxer = 'img/pix/'.$Valor.$Sufix;
+		$Fitxer = 'img/pix/'.$Prefix.$Valor.$Sufix;
 		if (!file_exists($Fitxer))
 			$Fitxer = 'img/nobody.png';
 		//$sRetorn = (!$bAlCostat) ? '</TR><TR>' : '';
 		$sRetorn = '<TD><IMG SRC="'.$Fitxer.'"></TD>';
+		return $sRetorn;
+	}	
+
+	/**
+	 * Crea un camp que conté una seqüència de fotografies (carousel).
+	 * https://getbootstrap.com/docs/4.0/components/carousel/
+	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
+	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
+	 * @return string Codi HTML del camp que conté una seqüència de fotografies.
+	 */
+	public function CreaSequenciaFotografies(string $Valor, string $Prefix, string $Sufix): string {
+		$Fitxer = 'img/pix/'.$Prefix.$Valor.'*'.$Sufix;
+		$list = glob($Fitxer);
+
+		if (count($list) === 0) {
+			$sRetorn = '<TD>No hi ha imatges</TD>';
+		}
+		else {
+			$sRetorn = '
+				<style>
+				</style>
+				<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="height:200px;width:400px;background-color:lightgrey;">
+					<ol class="carousel-indicators">
+			';
+			for ($i=0; $i<count($list); $i++) {
+				if ($i == 0)
+					$sRetorn .= '<li data-target="#carouselExampleIndicators" data-slide-to="'.$i.'" class="active"></li>';
+				else
+					$sRetorn .= '<li data-target="#carouselExampleIndicators" data-slide-to="'.$i.'"></li>';
+			}
+			$sRetorn .= '
+					</ol>
+					<div class="carousel-inner">
+			';
+			for ($i=0; $i<count($list); $i++) {
+				if ($i == 0)
+					$sRetorn .= '
+						<div class="carousel-item active" style="height:200px;width:400px">
+							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
+						</div>
+					';
+				else
+					$sRetorn .= '
+						<div class="carousel-item" style="height:200px;width:400px">
+							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
+						</div>
+					';
+			}
+			$sRetorn .= '
+				</div>
+				<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+                </a>
+				</div>		
+			';
+		}
 		return $sRetorn;
 	}	
 
@@ -926,9 +990,9 @@ class FormRecerca extends Form
 
 	/**
 	 * Llista de components (dates, combos) que permeten filtrar de forma específica.
-	 * @var array
+	 * @var object
 	 */    
-    public $Filtre = []; 
+    public $Filtre; 
 	
 	/**
 	 * Camp per realitzar l'ordenació.
@@ -1647,7 +1711,7 @@ class FormRecerca extends Form
 				if ($bPrimerRegistre) {
 					$x = 1;
 					foreach ($row as $key => $value) {
-						$sheet->setCellValueByColumnAndRow($x, $y, utf8_encodeX($key));
+						$sheet->setCellValue([$x, $y], utf8_encodeX($key));
 						$x++;
 					}
 					$bPrimerRegistre = False;
@@ -1655,7 +1719,7 @@ class FormRecerca extends Form
 				}	
 				$x = 1;
 				foreach ($row as $key => $value) {
-					$sheet->setCellValueByColumnAndRow($x, $y, utf8_encodeX($value));
+					$sheet->setCellValue([$x, $y], utf8_encodeX($value));
 					$x++;
 				}
 				$y++;
@@ -2079,19 +2143,39 @@ class FormFitxa extends Form
 	/**
 	 * Afegeix una fotografia.
 	 * @param string $Camp Camp de la taula.
+	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
 	 * @param string $Sufix Sufix del fitxer.
 	 * @return void
 	 */
-	public function AfegeixFotografia(string $Camp, string $Sufix) {
+	public function AfegeixFotografia(string $Camp, string $Prefix, string $Sufix) {
 		$i = count($this->Camps);
 		$i++;
 		$this->Camps[$i] = new stdClass();
 		$this->Camps[$i]->Tipus = self::tcFOTOGRAFIA;
 		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Prefix = $Prefix;
 		$this->Camps[$i]->Sufix = $Sufix;
 		$this->Camps[$i]->Opcions = [];
 	}
-	
+
+	/**
+	 * Crea un camp que conté una seqüència de fotografies (carousel).
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
+	 * @param string $Sufix Sufix del fitxer.
+	 * @return void
+	 */
+	public function AfegeixSequenciaFotografies(string $Camp, string $Prefix, string $Sufix) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcSEQUENCIA_FOTOGRAFIES;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Prefix = $Prefix;
+		$this->Camps[$i]->Sufix = $Sufix;
+		$this->Camps[$i]->Opcions = [];
+	}
+
 	/**
 	 * Afegeix un text amb format (RichEdit o RichMemo).
 	 * @param string $Camp Camp de la taula.
@@ -2397,7 +2481,14 @@ class FormFitxa extends Form
 //echo '<hr>$Valor->Camp: '.$Valor->Camp;
 //echo '<hr>$this->ValorCampText($Valor->Camp): '.$this->ValorCampText($Valor->Camp);
 //echo '<hr>$this->Registre[$Valor->Camp]: '.$this->Registre[$Valor->Camp];
-					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Sufix);
+					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Prefix, $Valor->Sufix);
+					break;
+				case self::tcSEQUENCIA_FOTOGRAFIES:
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
+//echo '<hr>$Valor->Camp: '.$Valor->Camp;
+//echo '<hr>$this->ValorCampText($Valor->Camp): '.$this->ValorCampText($Valor->Camp);
+//echo '<hr>$this->Registre[$Valor->Camp]: '.$this->Registre[$Valor->Camp];
+					$sRetorn .= $this->CreaSequenciaFotografies($this->Registre[$Valor->Camp], $Valor->Prefix, $Valor->Sufix);
 					break;
 				case self::tcTEXT_RIC:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
@@ -3073,7 +3164,7 @@ class FormFitxaDetall extends FormFitxa
 	
 	/**
 	 * Desa un detall a la base de dades.
-	 * @param string $Detall Detall a desar.
+	 * @param mixed $Detall Detall a desar.
 	 * @return string Missatge informatiu.
 	 */
 	public function DesaDetall($Detall): string {

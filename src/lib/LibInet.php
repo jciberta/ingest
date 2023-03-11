@@ -182,7 +182,7 @@ class Inet extends Objecte
 			}
 			try {
 				if (!$this->Connexio->query($SQL))
-					throw new Exception($Connexio->error.'.<br>SQL: '.$SQL);
+					throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
 			} catch (Exception $e) {
 				print("<BR><b>ERROR ActualitzaIP</b>. Causa: ".$e->getMessage());
 			}		

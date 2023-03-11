@@ -128,7 +128,7 @@ class Usuari extends Objecte
 
 		if ($this->Registre->es_alumne && $UsuariId > 0) {
 			$frm->Pestanya('Fotografia');
-			$frm->AfegeixFotografia('document', '.jpg');
+			$frm->AfegeixFotografia('document', '', '.jpg');
 		}
 
 		$frm->Pestanya('Dades');
