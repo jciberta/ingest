@@ -445,7 +445,7 @@ class Form extends Objecte
 		
 		// $NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
 		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off)) ? ' readonly' : '';
-		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'</label></TD>';
+		$sRetorn = '<TD><label for="lkp_'.$Nom.'">'.$Titol.'&nbsp;</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= '<div class="input-group mb-3">';
 		$sRetorn .= "  <input type=hidden name=lkh_".$Nom." value='".$CodiSeleccionat."' $onChange $NomesLectura>";
@@ -514,6 +514,7 @@ class Form extends Objecte
 
 	/**
 	 * Crea un camp que conté una seqüència de fotografies (carousel).
+	 * Fotografies apaisades i 800x600.
 	 * https://getbootstrap.com/docs/4.0/components/carousel/
 	 * @param string $Valor Valor que identifica la fotografia.
 	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
@@ -2160,6 +2161,7 @@ class FormFitxa extends Form
 
 	/**
 	 * Crea un camp que conté una seqüència de fotografies (carousel).
+	 * Fotografies apaisades i 800x600.
 	 * @param string $Camp Camp de la taula.
 	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
 	 * @param string $Sufix Sufix del fitxer.
@@ -2485,9 +2487,6 @@ class FormFitxa extends Form
 					break;
 				case self::tcSEQUENCIA_FOTOGRAFIES:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
-//echo '<hr>$Valor->Camp: '.$Valor->Camp;
-//echo '<hr>$this->ValorCampText($Valor->Camp): '.$this->ValorCampText($Valor->Camp);
-//echo '<hr>$this->Registre[$Valor->Camp]: '.$this->Registre[$Valor->Camp];
 					$sRetorn .= $this->CreaSequenciaFotografies($this->Registre[$Valor->Camp], $Valor->Prefix, $Valor->Sufix);
 					break;
 				case self::tcTEXT_RIC:
@@ -2495,9 +2494,6 @@ class FormFitxa extends Form
 					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
 //print_r($sRetorn);					
 //					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
-
-
-
 					break;
 				case self::tcHTML:
 					//$sRetorn .= (!$bAlCostat) ? '</TR><TR>' : '';

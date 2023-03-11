@@ -580,7 +580,14 @@ class MenuCapGest extends Menu
 			$Retorn .= Menu::Obre('Material');
 			$Retorn .= Menu::Opcio('Classificació', 'Recerca.php?accio=TipusMaterial');
 			$Retorn .= Menu::Opcio('Material', 'Recerca.php?accio=Material');
-			$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::ObreSubMenu('Préstec');
+			$Retorn .= Menu::Opcio('Sortida material', 'Fitxa.php?accio=SortidaMaterial');
+			$Retorn .= Menu::Opcio('Entrada material', 'Fitxa.php?accio=EntradaMaterial');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Històric', 'Recerca.php?accio=HistoricPrestecMaterial');
+			$Retorn .= Menu::TancaSubMenu();
+		$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
 			$Retorn .= Menu::Tanca();
 		}	
 		$Retorn .= '		</ul>';

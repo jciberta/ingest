@@ -17,6 +17,7 @@
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
@@ -318,6 +319,16 @@ switch ($accio) {
 		$Alumne = new Alumne($conn, $Usuari, $Sistema);
 		$Alumne->Perfil();
         break;
+	case "SortidaMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
+		$sm = new SortidaMaterial($conn, $Usuari, $Sistema);
+		$sm->EscriuHTML();
+		break;
+	case "EntradaMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
+		$sm = new EntradaMaterial($conn, $Usuari, $Sistema);
+		$sm->EscriuHTML();
+		break;
 	case "Altre":
         break;
 }

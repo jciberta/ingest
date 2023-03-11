@@ -557,6 +557,23 @@ CREATE TABLE MATERIAL
 	CONSTRAINT M_UsuariFK FOREIGN KEY (responsable_id) REFERENCES USUARI(usuari_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE PRESTEC_MATERIAL
+(
+    /* PM */
+    prestec_material_id INT NOT NULL AUTO_INCREMENT,
+    material_id INT NOT NULL,
+	usuari_id INT NOT NULL,
+	responsable_id INT NOT NULL,
+    data_sortida DATE,
+    data_entrada DATE,
+    nota VARCHAR(200),
+	
+	CONSTRAINT PrestecMaterialPK PRIMARY KEY (prestec_material_id),
+	CONSTRAINT PM_MaterialFK FOREIGN KEY (material_id) REFERENCES MATERIAL(material_id),
+    CONSTRAINT PM_UsuariFK FOREIGN KEY (usuari_id) REFERENCES USUARI(usuari_id),
+    CONSTRAINT PM_ResponsableFK FOREIGN KEY (responsable_id) REFERENCES USUARI(usuari_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE RESERVA_MATERIAL
 (
     /* RM */

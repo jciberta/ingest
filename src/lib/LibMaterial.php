@@ -224,4 +224,126 @@ class ReservaMaterial extends Objecte
 	}
 }
 
+/**
+ * Classe que encapsula les utilitats per al maneig de les sortides de material.
+ */
+class SortidaMaterial extends Form
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, 'Sortida de material');
+		echo '<script language="javascript" src="js/Forms.js?v1.8" type="text/javascript"></script>'.PHP_EOL;
+		echo '<script language="javascript" src="js/Material.js?v1.0" type="text/javascript"></script>'.PHP_EOL;
+
+		echo PHP_EOL;
+		echo '<form action="Material.php" method="post" name="FormSortidaMaterial" onsubmit="return ValidaFormSortidaMaterial()">'.PHP_EOL;
+		echo "<input type=hidden name='accio' value='SortidaMaterial'>".PHP_EOL;
+
+		echo '<TABLE>'.PHP_EOL;
+		echo '<TR>'.PHP_EOL;
+		echo $this->CreaLookUp('usuari', 'Usuari', 500, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2').PHP_EOL;
+		echo '</TR>'.PHP_EOL;
+		echo '</TABLE>'.PHP_EOL;
+
+		$SQL = '
+			SELECT *, (
+				SELECT FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2)
+				FROM PRESTEC_MATERIAL PM 
+				LEFT JOIN USUARI U ON (U.usuari_id=PM.usuari_id)
+				WHERE M.material_id=PM.material_id and data_entrada IS NULL
+				LIMIT 1
+			) AS Prestec
+			FROM MATERIAL M
+			WHERE es_obsolet = 0
+			ORDER BY tipus_material_id
+		';
+		$ResultSet = $this->Connexio->query($SQL);
+
+		//echo '<TABLE>';
+		echo '<TABLE class="table table-sm table-striped table-hover">'.PHP_EOL;
+		echo '<thead class="thead-dark">'.PHP_EOL;
+		echo "<TH></TH>".PHP_EOL;
+		echo "<TH>Codi</TH>".PHP_EOL;
+		echo "<TH>Nom</TH>".PHP_EOL;
+		echo "<TH>Préstec</TH>".PHP_EOL;
+		echo '</thead>'.PHP_EOL;
+
+		while ($row = $ResultSet->fetch_object()) {
+			$Style = ($row->Prestec == '') ? '' : 'style="color:lightgrey;"';
+			echo "<TR $Style>".PHP_EOL;
+			$Disable = ($row->Prestec == '') ? '' : 'disabled';
+			echo '<TD><input type="checkbox" name="chk_'.$row->material_id.'" '.$Disable.'></TD>'.PHP_EOL;
+			echo '<TD>'.$row->codi.'</TD>'.PHP_EOL;
+			echo '<TD>'.$row->nom.'</TD>'.PHP_EOL;
+			echo '<TD>'.$row->Prestec.'</TD>'.PHP_EOL;
+			echo '</TR>'.PHP_EOL;
+		}
+		echo '</TABLE>'.PHP_EOL;
+
+		echo '<button class="btn btn-primary active" type="submit" value="Submit">Sortida</button>'.PHP_EOL;
+		echo '</FORM>'.PHP_EOL;
+
+
+		CreaFinalHTML();
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de les entrades de material.
+ */
+class EntradaMaterial extends Form
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, 'Entrada de material');
+		echo '<script language="javascript" src="js/Forms.js?v1.8" type="text/javascript"></script>'.PHP_EOL;
+		echo '<script language="javascript" src="js/Material.js?v1.1" type="text/javascript"></script>'.PHP_EOL;
+
+		echo PHP_EOL;
+		echo '<form action="Material.php" method="post" name="FormEntradaMaterial" onsubmit="return ValidaFormEntradaMaterial()">'.PHP_EOL;
+		echo "<input type=hidden name='accio' value='EntradaMaterial'>".PHP_EOL;
+
+		$SQL = '
+			SELECT PM.*, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) As Usuari, M.nom AS NomMaterial, M.codi AS CodiMaterial
+			FROM PRESTEC_MATERIAL PM
+			LEFT JOIN MATERIAL M ON (M.material_id=PM.material_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=PM.usuari_id)
+			WHERE data_entrada IS NULL
+			ORDER BY usuari_id, tipus_material_id
+		';
+		$ResultSet = $this->Connexio->query($SQL);
+
+		//echo '<TABLE>';
+		echo '<TABLE class="table table-sm table-striped table-hover">'.PHP_EOL;
+		echo '<thead class="thead-dark">'.PHP_EOL;
+		echo "<TH></TH>".PHP_EOL;
+		echo "<TH>Codi</TH>".PHP_EOL;
+		echo "<TH>Nom</TH>".PHP_EOL;
+		echo "<TH>Préstec</TH>".PHP_EOL;
+		echo "<TH>Data sortida</TH>".PHP_EOL;
+		echo '</thead>'.PHP_EOL;
+
+		while ($row = $ResultSet->fetch_object()) {
+			echo "<TR>".PHP_EOL;
+			echo '<TD><input type="checkbox" name="chk_'.$row->prestec_material_id.'"></TD>'.PHP_EOL;
+			echo '<TD>'.$row->CodiMaterial.'</TD>'.PHP_EOL;
+			echo '<TD>'.$row->NomMaterial.'</TD>'.PHP_EOL;
+			echo '<TD>'.$row->Usuari.'</TD>'.PHP_EOL;
+			echo '<TD>'.$row->data_sortida.'</TD>'.PHP_EOL;
+			echo '</TR>'.PHP_EOL;
+		}
+		echo '</TABLE>'.PHP_EOL;
+
+		echo '<button class="btn btn-primary active" type="submit" value="Submit">Entrada</button>'.PHP_EOL;
+		echo '</FORM>'.PHP_EOL;
+
+
+		CreaFinalHTML();
+	}
+}
+
 ?>

@@ -15,6 +15,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
@@ -26,8 +27,8 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-	header("Location: Surt.php");
+
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -157,7 +158,30 @@ switch ($accio) {
     case "ReservaMaterial":
 		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->EscriuFormulariRecerca($Modalitat);
-        break;		
+        break;
+	case "HistoricPrestecMaterial":
+		$frm = new FormRecerca($conn, $Usuari, $Sistema);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Històric de préstecs de material';
+		$SQL = '
+			SELECT 
+				PM.*, DATEDIFF(data_sortida, data_entrada) AS Dies, 
+				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) As Usuari, 
+				TM.nom AS TipusMaterial, 
+				M.nom AS NomMaterial
+			FROM PRESTEC_MATERIAL PM
+			LEFT JOIN MATERIAL M ON (M.material_id=PM.material_id)
+			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=PM.usuari_id)
+			ORDER BY data_entrada, data_sortida, M.tipus_material_id, usuari_id		
+		';
+		$frm->SQL = $SQL;
+		$frm->Taula = 'PRESTEC_MATERIAL';		
+		$frm->ClauPrimaria = 'prestec_material_id';
+		$frm->Camps = 'data_sortida, data_entrada, Dies, TipusMaterial, NomMaterial, Usuari';
+		$frm->Descripcions = 'Data sortida, Data entrada, Dies, Tipus material, Material, Usuari';
+		$frm->EscriuHTML();
+		break;
 }
 
 ?>
