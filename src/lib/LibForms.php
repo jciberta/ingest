@@ -2483,11 +2483,11 @@ class FormFitxa extends Form
 //echo '<hr>$Valor->Camp: '.$Valor->Camp;
 //echo '<hr>$this->ValorCampText($Valor->Camp): '.$this->ValorCampText($Valor->Camp);
 //echo '<hr>$this->Registre[$Valor->Camp]: '.$this->Registre[$Valor->Camp];
-					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp], $Valor->Prefix, $Valor->Sufix);
+					$sRetorn .= $this->CreaFotografia($this->Registre[$Valor->Camp] ?? '', $Valor->Prefix, $Valor->Sufix);
 					break;
 				case self::tcSEQUENCIA_FOTOGRAFIES:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
-					$sRetorn .= $this->CreaSequenciaFotografies($this->Registre[$Valor->Camp], $Valor->Prefix, $Valor->Sufix);
+					$sRetorn .= $this->CreaSequenciaFotografies($this->Registre[$Valor->Camp] ?? '', $Valor->Prefix, $Valor->Sufix);
 					break;
 				case self::tcTEXT_RIC:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';

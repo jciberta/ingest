@@ -570,7 +570,7 @@ class MenuCapGest extends Menu
 		$Retorn .= '			<li class="nav-item active">'.PHP_EOL;
 		$Retorn .= '				<a class="nav-link" href="'.GeneraURL('Escriptori.php').'">Inici</a>'.PHP_EOL;
 		$Retorn .= '			</li>'.PHP_EOL;
-		if (($Usuari->es_admin) || ($Usuari->es_direccio) || ($Usuari->es_cap_estudis)) {
+		if ($Usuari->es_admin) {
 			// Menú Club
 			$Retorn .= Menu::Obre('Club');
 			$Retorn .= Menu::Opcio('Usuaris', 'UsuariRecerca.php');
@@ -587,7 +587,7 @@ class MenuCapGest extends Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Històric', 'Recerca.php?accio=HistoricPrestecMaterial');
 			$Retorn .= Menu::TancaSubMenu();
-		$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
+			$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
 			$Retorn .= Menu::Tanca();
 		}	
 		$Retorn .= '		</ul>';

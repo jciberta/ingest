@@ -1894,3 +1894,22 @@ class Progenitor extends Usuari
 		$ResultSet->close();
 	}
 }
+
+/**
+ * Classe que encapsula les utilitats per al maneig dels membres de la junta.
+ */
+class MembreJunta extends Objecte
+{
+	/**
+	 * Genera i escriu l'escriptori.
+	 */
+	public function Escriptori() {
+		CreaIniciHTML($this->Usuari, '');
+		echo '<div class="card-columns" style="column-count:6">';
+		echo CreaTargeta('Material', 'Llistat de material', GeneraURL('Recerca.php?accio=Material'));
+		echo CreaTargeta('Sortida', 'Sortida de material', GeneraURL('Fitxa.php?accio=SortidaMaterial'));
+		echo CreaTargeta('Entrada', 'Entrada de material', GeneraURL('Fitxa.php?accio=EntradaMaterial'));
+		echo CreaTargeta('Històric', 'Històric de material', GeneraURL('Recerca.php?accio=HistoricPrestecMaterial'));
+		echo '</div>';
+	}	
+}

@@ -165,10 +165,10 @@ switch ($accio) {
 		$frm->Titol = 'Històric de préstecs de material';
 		$SQL = '
 			SELECT 
-				PM.*, DATEDIFF(data_sortida, data_entrada) AS Dies, 
+				PM.*, DATEDIFF(data_entrada, data_sortida) AS Dies, 
 				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) As Usuari, 
 				TM.nom AS TipusMaterial, 
-				M.nom AS NomMaterial
+				M.codi AS CodiMaterial, M.nom AS NomMaterial
 			FROM PRESTEC_MATERIAL PM
 			LEFT JOIN MATERIAL M ON (M.material_id=PM.material_id)
 			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id)
@@ -178,8 +178,8 @@ switch ($accio) {
 		$frm->SQL = $SQL;
 		$frm->Taula = 'PRESTEC_MATERIAL';		
 		$frm->ClauPrimaria = 'prestec_material_id';
-		$frm->Camps = 'data_sortida, data_entrada, Dies, TipusMaterial, NomMaterial, Usuari';
-		$frm->Descripcions = 'Data sortida, Data entrada, Dies, Tipus material, Material, Usuari';
+		$frm->Camps = 'data_sortida, data_entrada, Dies, TipusMaterial, CodiMaterial, NomMaterial, Usuari';
+		$frm->Descripcions = 'Data sortida, Data entrada, Dies, Tipus material, Codi, Material, Usuari';
 		$frm->EscriuHTML();
 		break;
 }
