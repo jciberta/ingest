@@ -220,5 +220,8 @@ UPDATE mysql.user
 FLUSH PRIVILEGES;
 ```
 
+#### Còpia de seguretat
 
-
+```
+F:\xampp\mysql\bin\mysqldump.exe -u root -p --routines InGest > InGest.sql
+```
