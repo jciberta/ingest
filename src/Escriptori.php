@@ -60,7 +60,7 @@ if ($Usuari->aplicacio == 'InGest') {
 	}
 	else if ($Usuari->es_administratiu) {
 		$curs = new Curs($conn, $Usuari, $Sistema);
-		$curs->EscriuFormulariRecera();
+		$curs->EscriuFormulariRecerca();
 	}
 }
 else if ($Usuari->aplicacio == 'CapGest') {

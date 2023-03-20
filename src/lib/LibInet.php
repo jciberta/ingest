@@ -9,9 +9,7 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once(ROOT.'/lib/LibForms.php');
-require_once(ROOT.'/lib/LibHTML.php');
-
+require_once(ROOT.'/lib/LibClasses.php');
 
 /**
  * Obté l'adreça IP del visitant.
@@ -88,7 +86,6 @@ class Inet extends Objecte
 	 * @returns array Dades en format JSON posades en un array.
 	 */
 	private function ObteJsonIP(string $ip) {
-//		$URL = "https://api.ipdata.co/$ip?api-key=".IPDATA_API_KEY;
 		$URL = "https://api.ipdata.co/$ip?api-key=".$this->Sistema->ipdata_api_key;
 		$json = file_get_contents($URL);
 

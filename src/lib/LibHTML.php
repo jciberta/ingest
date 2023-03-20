@@ -11,7 +11,6 @@
  
 require_once(ROOT.'/lib/LibURL.php');
 
-
  /**
  * CreaIniciHTML
  *
@@ -224,7 +223,7 @@ function CreaIniciHTML_Notes($Usuari, $Titol)
 	}	
 
 	$Retorn .= '<BODY>';
-	$Retorn .= Menu::Crea($Usuari);
+	$Retorn .= MenuInGest::Crea($Usuari);
 	$Retorn .= '      <div class="starter-template" style="padding:20px">';
 	$Retorn .= '<H1>'.$Titol.'</H1>';
 	echo $Retorn;
