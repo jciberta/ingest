@@ -138,7 +138,7 @@ abstract class PlaEstudis extends Form
 				$sRetorn .= "</TR>";
 			}
 		}
-		if ($this->Usuari->es_admin) {
+		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
 			$sRetorn .= "<TR>";
 			$sRetorn .= "<TD><b>Total</b></TD>";
 			$sRetorn .= "<TD><b>$HoresMP</b></TD>";
