@@ -80,7 +80,7 @@ switch ($accio) {
 			'     WHEN "CM" THEN "Comissió" '.
 			' END AS Tipus, '.
 			' EQ.nom AS NomEquip, '.
-			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username '.
+			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, U.email_ins '.
 			' FROM EQUIP EQ '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (EQ.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id) ';
@@ -88,8 +88,8 @@ switch ($accio) {
 //print('<br><br><br>'.$SQL);		
 		$frm->Taula = 'EQUIP';
 		$frm->ClauPrimaria = 'equip_id';
-		$frm->Camps = 'AnyAcademic, Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor';
-		$frm->Descripcions = 'Any, Tipus, Equip, Nom, 1r cognom, 2n cognom';
+		$frm->Camps = 'AnyAcademic, Tipus, NomEquip, NomProfessor, Cognom1Professor, Cognom2Professor, email_ins';
+		$frm->Descripcions = 'Any, Tipus, Equip, Nom, 1r cognom, 2n cognom, Email';
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'Fitxa.php?accio=Equip';
 		$frm->PermetAfegir = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis);

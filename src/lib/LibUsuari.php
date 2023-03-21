@@ -1434,8 +1434,8 @@ class ProfessorsEquip extends Objecte
 		$frm->Taula = 'PROFESSOR_EQUIP';
 		$frm->ClauPrimaria = 'professor_equip_id';
 		
-		$frm->Camps = 'username, NomProfessor, codi';
-		$frm->Descripcions = 'Usuari, Professor, Codi';
+		$frm->Camps = 'username, NomProfessor, codi, email_ins';
+		$frm->Descripcions = 'Usuari, Professor, Codi, Email';
 		$frm->PermetSuprimir = True;
 		$frm->PermetAfegir = True;
 
@@ -1482,7 +1482,7 @@ class ProfessorsEquip extends Objecte
 	 */
 	private function CreaSQLProfessors(int $EquipId): string {
 		return "
-			SELECT PEQ.professor_equip_id, U.codi, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor, U.username 
+			SELECT PEQ.professor_equip_id, U.codi, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor, U.username, U.email_ins 
 			FROM PROFESSOR_EQUIP PEQ
 			LEFT JOIN USUARI U ON (PEQ.professor_id=U.usuari_id)
 			WHERE equip_id=$EquipId
