@@ -104,15 +104,14 @@ switch ($accio) {
         break;
     case "HistoricCurs":
 		$curs = new Curs($conn, $Usuari, $Sistema);
-		$curs->EscriuFormulariRecera();
+		$curs->EscriuFormulariRecerca();
         break;		
     case "Avaluacio":
 		$avaluacio = new Avaluacio($conn, $Usuari, $Sistema);
 		$avaluacio->EscriuFormulariRecerca();
         break;		
     case "Registre":
-		if (!$Usuari->es_admin)
-				header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Inet.js?v1.0');
 		$frm->Modalitat = $Modalitat;
