@@ -186,7 +186,11 @@ switch ($accio) {
 		$frm->PermetSuprimir = ($Usuari->es_admin);
 		$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		
+		
 		$aCicles = ObteCodiValorDesDeSQL($conn, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
 		$CicleFormatiuId = $aCicles[0][0]; 
 		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
 
