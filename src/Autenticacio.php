@@ -13,6 +13,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibInet.php');
+require_once(ROOT.'/lib/LibClasses.php');
 require_once(ROOT.'/lib/LibRegistre.php');
 
 session_start();

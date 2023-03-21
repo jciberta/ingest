@@ -730,14 +730,12 @@ class Notes extends Form
 	public function CreaCellaNota(string $IdGraella, int $i, int $j, $row, $Professor, int &$Hores, $Avaluacio, $Class = ''): string {
 		$EstatAvaluacio = $Avaluacio->Estat();
 		$style = "text-align:center;text-transform:uppercase;border:1px solid #A9A9A9;margin:1px;";
-		//$style = '';
 		$Baixa = (($row["BaixaUF"] == 1) || ($row["BaixaMatricula"] == 1));
 		$Convalidat = ($row["Convalidat"] == True);
 
 		$Deshabilitat = '';
 		if ($Baixa)
 			$Deshabilitat = ' disabled ';
-//NO!		else if (!$Professor->TeUF($row["unitat_formativa_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 		else if (!$Professor->TeUF($row["unitat_pla_estudi_id"]) && !$Professor->EsAdmin() && !$Professor->EsDireccio() && !$Professor->EsCapEstudis())
 			$Deshabilitat = ' disabled ';
 
@@ -766,18 +764,16 @@ class Notes extends Form
 		else
 			// Baixa UF. Sense nota
 			$BackgroundColor = 'background-color:grey;';
-			//$style .= "background-color:darkgrey;";
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
 		else if ($Nota!='' && $Nota>=0 && $Nota<5 && $row["Convocatoria"]!=5)
 			$Color = 'color:red;';
-			//$style .= ";color:red";
 		
 		$style .= $BackgroundColor.$Color;
 		
 		// Si el curs no està en estat Actiu, tot deshabilitat (Junta, Inactiu, Obert i Tancat).
-		$Deshabilitat = ($row["EstatCurs"] != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
-		
+		$Deshabilitat = ($Avaluacio->Registre->estat != Curs::Actiu) ? ' disabled ' : $Deshabilitat;
+
 		$ClassInput = 'nota';
 		if ($row["FCT"] == 1)
 			$ClassInput .= ' fct';
@@ -1564,7 +1560,7 @@ class Notes extends Form
 		// Mòduls
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encodeX($row["CodiMP"]));
+			$sheet->setCellValue([$j + 5, $y], utf8_encodeX($row["CodiMP"]));
 			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -1572,20 +1568,20 @@ class Notes extends Form
 		$y++;
 
 		// UFs
-		$sheet->setCellValueByColumnAndRow(1, $y, 'DNI');
-		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumne');
-		$sheet->setCellValueByColumnAndRow(3, $y, 'Grup');
-		$sheet->setCellValueByColumnAndRow(4, $y, 'Tutoria');
+		$sheet->setCellValue([1, $y], 'DNI');
+		$sheet->setCellValue([2, $y], 'Alumne');
+		$sheet->setCellValue([3, $y], 'Grup');
+		$sheet->setCellValue([4, $y], 'Tutoria');
 		for($j = 0; $j < count($RegistreNotes->UF[0]); $j++) {
 			$row = $RegistreNotes->UF[0][$j];
-			$sheet->setCellValueByColumnAndRow($j + 5, $y, utf8_encodeX($row["CodiUF"]));
+			$sheet->setCellValue([$j + 5, $y], utf8_encodeX($row["CodiUF"]));
 			$cellStyle = $Columnes[$j + 4].$y;
 			$sheet->getStyle($cellStyle)->getFont()->getColor()->setARGB('ff007bff');
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$Noms = ['HoresTotals', 'HoresFetes', 'HoresAprovades', 'NotaMitjana', 'UFAprovades', 'UFSuspeses', 'PercentatgeAprovat'];
 		for($j = 0; $j < count($Noms); $j++) {
-			$sheet->setCellValueByColumnAndRow($j + count($RegistreNotes->UF[0]) + 3, $y, $Noms[$j]);
+			$sheet->setCellValue([$j + count($RegistreNotes->UF[0]) + 3, $y], $Noms[$j]);
 			$cellStyle = $Columnes[$j + count($RegistreNotes->UF[0]) + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
@@ -1596,12 +1592,12 @@ class Notes extends Form
 			$RegistreAlumne = $RegistreNotes->UF[$i];
 			if ($RegistreNotes->Alumne[$i]['NivellMAT'] == $Nivell) {
 				$Document = $RegistreNotes->Alumne[$i]['document'];
-				$sheet->setCellValueByColumnAndRow(1, $y, $Document);
+				$sheet->setCellValue([1, $y], $Document);
 				$Nom = utf8_encodeX($RegistreNotes->Alumne[$i]['Cognom1Alumne'].' '.$RegistreNotes->Alumne[$i]['Cognom2Alumne'].' '.$RegistreNotes->Alumne[$i]['NomAlumne']);
 				//$Nom = utf8_encodeX($Nom);
-				$sheet->setCellValueByColumnAndRow(2, $y, $Nom);
-				$sheet->setCellValueByColumnAndRow(3, $y, $RegistreNotes->Alumne[$i]['Grup']);
-				$sheet->setCellValueByColumnAndRow(4, $y, $RegistreNotes->Alumne[$i]['GrupTutoria']);
+				$sheet->setCellValue([2, $y], $Nom);
+				$sheet->setCellValue([3, $y], $RegistreNotes->Alumne[$i]['Grup']);
+				$sheet->setCellValue([4, $y], $RegistreNotes->Alumne[$i]['GrupTutoria']);
 				$sheet->getStyle('B'.$y)->getFont()->getColor()->setARGB('ff007bff');
 				for($j = 0; $j < count($RegistreAlumne); $j++) {
 					$row = $RegistreAlumne[$j];
@@ -1636,7 +1632,7 @@ class Notes extends Form
 						} else if ($row["Orientativa"]) {
 							$sheet->getStyle($cellStyle)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('ffffff00');
 						}
-						$sheet->setCellValueByColumnAndRow($j + 5, $y, $UltimaNota);
+						$sheet->setCellValue([$j + 5, $y], $UltimaNota);
 					}
 				}
 				$Estadistiques = [$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals, 
@@ -1647,7 +1643,7 @@ class Notes extends Form
 				$RegistreNotes->Alumne[$i]['Estadistiques']->UFSuspeses, 
 				number_format($RegistreNotes->Alumne[$i]['Estadistiques']->HoresAprovades/$RegistreNotes->Alumne[$i]['Estadistiques']->HoresTotals*100, 2)];
 				for($j = 0; $j < count($Estadistiques); $j++) {
-					$sheet->setCellValueByColumnAndRow($j + count($RegistreAlumne) + 5, $y, $Estadistiques[$j]);
+					$sheet->setCellValue([$j + count($RegistreAlumne) + 5, $y], $Estadistiques[$j]);
 					$cellStyle = $Columnes[$j + count($RegistreAlumne) + 2].$y;
 					$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 				}
@@ -1668,28 +1664,28 @@ class Notes extends Form
 		//Estadístiques UF
 		$aEstadistiquesUF = $this->CalculaEstadistiquesUF($RegistreNotes, $Nivell);
 		
-		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumnes aprovats');
+		$sheet->setCellValue([2, $y], 'Alumnes aprovats');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 5, $y, $euf->AlumnesAprovats);
+			$sheet->setCellValue([$i + 5, $y], $euf->AlumnesAprovats);
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
-		$sheet->setCellValueByColumnAndRow(2, $y, 'Alumnes aprovats convocatòries anteriors');
+		$sheet->setCellValue([2, $y], 'Alumnes aprovats convocatòries anteriors');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 5, $y, $euf->AlumnesAprovatsConvocatoriaAnterior);
+			$sheet->setCellValue([$i + 5, $y], $euf->AlumnesAprovatsConvocatoriaAnterior);
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}
 		$y++;
 
-		$sheet->setCellValueByColumnAndRow(2, $y, '% aprovats convocatòria actual');
+		$sheet->setCellValue([2, $y], '% aprovats convocatòria actual');
 		for ($i = 0; $i < count($aEstadistiquesUF); $i++) {
 			$euf = $aEstadistiquesUF[$i];
-			$sheet->setCellValueByColumnAndRow($i + 5, $y, str_replace('.', ',', $euf->PercentatgeAprovats));
+			$sheet->setCellValue([$i + 5, $y], str_replace('.', ',', $euf->PercentatgeAprovats));
 			$cellStyle = $Columnes[$i + 2].$y;
 			$sheet->getStyle($cellStyle)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 		}

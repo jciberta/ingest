@@ -10,39 +10,18 @@
  * @version 1.0
  */
 
-require_once(ROOT.'/lib/LibInet.php');
+ require_once(ROOT.'/lib/LibInet.php');
+ require_once(ROOT.'/lib/LibClasses.php');
 
 /**
  * Classe Registre.
  *
  * Classe per al registre de log.
  */
-class Registre {
+class Registre extends Objecte
+{
 	const AUTH = 'Autenticació';
 	const AVAL = 'Avaluació';
-
-	/**
-	* Connexió a la base de dades.
-	* @access public 
-	* @var object
-	*/    
-	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @access public 
-	* @var object
-	*/    
-	public $Usuari;
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
-	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}
 
 	/**
 	 * Registra a la taula de log un missatge.

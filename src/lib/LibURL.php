@@ -11,7 +11,6 @@
 
 require_once(ROOT.'/lib/LibCripto.php');
 
-
 /**
  * Encripta la URL.
  * @param string $URL URL a encriptar.
