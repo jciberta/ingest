@@ -96,4 +96,5 @@ END //
 DELIMITER ;
 
 
+/* Aplicar a producció */
 UPDATE SISTEMA SET versio_db='1.14';
