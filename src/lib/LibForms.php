@@ -1146,7 +1146,7 @@ class FormRecerca extends Form
 	 * @param string $SQL Sentència SQL que conté les dades a descarregar.
 	 * @return string Codi HTML del botó.
 	 */
-	private function CreaBotoDescarrega(string $SQL): string {
+	public function CreaBotoDescarrega(string $SQL): string {
 		$sRetorn = '<div class="btn-group" role="group">';
 		$sRetorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
 		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
@@ -2813,8 +2813,24 @@ class FormDetall extends FormRecerca
 			$Id = $this->LookUp->Id;
 			$Camps = $this->LookUp->Camps;
 
+			// De moment només admin
+			if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
+			//			$sRetorn .= '<TD style="align:right">';
+			//			$sRetorn .= '<span style="float:right;">';
+				$SQL = $this->CreaSQL();	
+			//print('<B>SQL</B>: '.$SQL.'<BR>');
+				$SQL = bin2hex(Encripta(TrimX($SQL)));
+			//print('<B>SQL</B>: '.$SQL.'<BR>');
+			//			$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+			//print('<B>URL</B>: '.$URL.'<BR>');
+				$sRetorn .= $this->CreaBotoDescarrega($SQL).'&nbsp';
+			//			$sRetorn .= '</span>';
+			//			$sRetorn .= '</TD>';		
+								}
+
 			$sRetorn .= $this->CreaBotoAfegeix('afegeix', 'Afegeix', $URL, $Camps);
 
+			
 			$sRetorn .= '</span>';	
 		}
 		$sRetorn .= parent::GeneraSubTitol();
@@ -2854,6 +2870,8 @@ class FormDetall extends FormRecerca
 		
 		return $sRetorn;
 	}
+
+
 }
 
 /**
