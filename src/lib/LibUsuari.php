@@ -72,8 +72,8 @@ class Usuari extends Objecte
 	 */
 	function EsAlumne(): bool {
 		return $this->Usuari->es_alumne == '1';
-	}	
-
+	}
+	
 	/**
 	 * Comprova si l'usuari és pare/mare d'un alumne.
 	 * @param $alumne Identificador de l'alumne.
@@ -356,8 +356,8 @@ class Professor extends Usuari
 			}
 		}
 		$ResultSet->close();
-//print_h($this->UFAssignades);
-//exit;
+		//print_h($this->UFAssignades);
+		//exit;
 	}
 
 	/**
@@ -366,10 +366,10 @@ class Professor extends Usuari
 	 * @returns boolean Cert si té alguna UF en un determinat cicle.
 	 */
 	function TeUFEnCicle(int $Cicle): bool {
-//print('Cicle: '.$Cicle);
-//print('Nivell: '.$Nivell);
-//print_h($this->UFAssignades);
-//exit;
+		//print('Cicle: '.$Cicle);
+		//print('Nivell: '.$Nivell);
+		//print_h($this->UFAssignades);
+		//exit;
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
 			if ($this->UFAssignades[$i]->cicle_formatiu_id == $Cicle)
@@ -385,10 +385,10 @@ class Professor extends Usuari
 	 * @returns boolean Cert si té alguna UF en un determinat cicle i nivell.
 	 */
 	function TeUFEnCicleNivell(int $Cicle, int $Nivell): bool {
-//print('Cicle: '.$Cicle);
-//print('Nivell: '.$Nivell);
-//print_h($this->UFAssignades);
-//exit;
+		//print('Cicle: '.$Cicle);
+		//print('Nivell: '.$Nivell);
+		//print_h($this->UFAssignades);
+		//exit;
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
 			if (($this->UFAssignades[$i]->cicle_formatiu_id == $Cicle) && ($this->UFAssignades[$i]->nivell == $Nivell))
@@ -442,12 +442,12 @@ class Professor extends Usuari
 	 * @returns boolean Cert si té assignada la UF.
 	 */
 	function TeUF(int $UF): bool {
-//print('Id UF: '.$UF);
-//print_h($this->UFAssignades);
-//exit;
+		//print('Id UF: '.$UF);
+		//print_h($this->UFAssignades);
+		//exit;
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades); $i++) {
-//			if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
+			//if ($this->UFAssignades[$i]->unitat_formativa_id == $UF) 
 			if ($this->UFAssignades[$i]->unitat_pla_estudi_id == $UF) 
 				$bRetorn = True;
 		}
@@ -462,7 +462,7 @@ class Professor extends Usuari
 	function TeMP(int $MP): bool {
 		$bRetorn = False;
 		for($i = 0; $i < count($this->UFAssignades) && !$bRetorn; $i++) {
-//			if ($this->UFAssignades[$i]->modul_professional_id == $MP) 
+			//if ($this->UFAssignades[$i]->modul_professional_id == $MP) 
 			if ($this->UFAssignades[$i]->modul_pla_estudi_id == $MP) 
 				$bRetorn = True;
 		}
@@ -630,11 +630,11 @@ class Professor extends Usuari
 			' WHERE C.estat<>"T" AND actual=1 AND professor_id='.$this->Usuari->usuari_id .
 			' ORDER BY CPE.codi, UPE.nivell ';
 			
-//print $SQL;
+		//print $SQL;
 		echo '<h3>Cursos</h3>';
 		echo '<div class="card-columns" style="column-count:6">';
 		$ResultSet = $this->Connexio->query($SQL);
-//var_dump($ResultSet);
+		//var_dump($ResultSet);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
@@ -665,7 +665,7 @@ class Professor extends Usuari
 
 		echo '</div>';
 		echo '<h3>Gestió</h3>';
-		echo '<div class="card-columns" style="column-count:6">';
+		echo '<div class="card-columns" style="column-count:7">';
 		
 		// Grups tutoria
 		$Professor = new Professor($this->Connexio, $this->Usuari);
@@ -676,16 +676,16 @@ class Professor extends Usuari
 			echo '  <div class="card">';
 			echo '    <div class="card-body">';
 			echo '      <h5 class="card-title">Tutoria</h5>';
-			echo '<table style="border-collapse: separate;border-spacing: 0px 6px ">';
-			echo '<tr>';
-			echo '      <td width=100><p class="card-text">Grups</p></td>';
-			echo '      <td><p class="card-text">Darrers accessos</p></td>';
-			echo '</tr>';
-			echo '<tr>';
-			echo '      <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
-			echo '      <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
-			echo '</tr>';
-			echo '</table>';
+			echo '      <table style="border-collapse: separate;border-spacing: 0px 6px ">';
+			echo '       <tr>';
+			echo '        <td width=100><p class="card-text">Grups</p></td>';
+			echo '        <td><p class="card-text">Darrers accessos</p></td>';
+			echo '       </tr>';
+			echo '       <tr>';
+			echo '        <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+			echo '        <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+			echo '      </tr>';
+			echo '     </table>';
 			echo '    </div>';
 			echo '  </div>';
 		}
@@ -701,13 +701,19 @@ class Professor extends Usuari
 		// Cap de departament
 		$FamiliaFPId = $this->EsCapDepartament($this->Usuari->usuari_id);
 		if ($FamiliaFPId != -1) {
+			// Departament
 			$URL = GeneraURL("FPRecerca.php?accio=PlaEstudisModul&FamiliaFPId=$FamiliaFPId&ProfId=".$this->Usuari->usuari_id);
 			echo CreaTargeta('Departament', 'Revisió programacions', $URL);
+			
+			// Assignació UF
+			$URL = GeneraURL('AssignaUFs.php?accio=GrupAssignaUF');
+			//$URL = GeneraURL('AssignaUFs.php?accio=AssignaUF&ProfessorId='.$this->Usuari->usuari_id);
+			echo CreaTargeta('Assignació UF', 'Assignació UF a professors', $URL);
 		}
 
 		// Programacions
 		$URL = GeneraURL('FPRecerca.php?accio=PlaEstudisModul&MostraTot=1&ProfId='.$this->Usuari->usuari_id);
-		echo CreaTargeta('Programacions', 'Totes les programacions', $URL);
+		echo CreaTargeta('Programacions', 'Totes les programacions', $URL);		
 
 		// Pedaç temporal
 		if (str_starts_with($this->Usuari->codi, 'SMX')) {

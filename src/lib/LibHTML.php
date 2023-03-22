@@ -280,8 +280,16 @@ function CreaTargeta($Titol, $Text, $URL): string
 	$Retorn = '  <div class="card">';
 	$Retorn .= '    <div class="card-body">';
 	$Retorn .= '      <h5 class="card-title">'.$Titol.'</h5>';
-	$Retorn .= '      <p class="card-text">'.$Text.'</p>';
-	$Retorn .= '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
+	$Retorn .= '       <table style="border-collapse: separate;border-spacing: 0px 6px ">';
+	$Retorn .=  '       <tr>';
+	$Retorn .=  '        <td width=100% height=50><p font-size:14px class="card-text" >'.$Text.'</p></td>';
+	$Retorn .=  '       </tr>';
+	$Retorn .=  '       <tr>';
+	$Retorn .=  '        <td><a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+	$Retorn .=  '      </tr>';
+	$Retorn .=  '     </table>';
+	//$Retorn .= '      <p class="card-text">'.$Text.'</p>';
+	//$Retorn .= '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	$Retorn .= '    </div>';
 	$Retorn .= '  </div>';
 	return $Retorn;			
