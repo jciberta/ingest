@@ -114,4 +114,16 @@ update NOTES set nota3=truncate(1+3*rand(),0) where notes_id>0 and nota3<5;
 update NOTES set nota4=truncate(1+3*rand(),0) where notes_id>0 and nota4<5;
 update NOTES set nota5=truncate(1+3*rand(),0) where notes_id>0 and nota5<5;
 
+update SISTEMA set
+    google_client_id = NULL,
+    google_client_secret = NULL,
+    google_redirect_uri = NULL,
+    moodle_url = NULL,
+    moodle_ws_token = NULL,
+    ipdata_api_key = NULL,
+    clickedu_api_key = NULL,
+    clickedu_id = NULL,
+    clickedu_secret = NULL
+where sistema_id>0;
+
 delete from REGISTRE where registre_id>0;
