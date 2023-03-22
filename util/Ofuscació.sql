@@ -1,7 +1,3 @@
-use InGest;
-
-describe USUARI;
-select * from USUARI;
 
 update USUARI set username=concat(round(100000000*rand()),char(truncate(65+25*rand(),0))) where usuari_id>1;
 update USUARI set codi=username where usuari_id>0;
