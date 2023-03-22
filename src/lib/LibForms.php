@@ -12,8 +12,8 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
- require_once(ROOT.'/lib/LibClasses.php');
- require_once(ROOT.'/lib/LibCripto.php');
+require_once(ROOT.'/lib/LibClasses.php');
+require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
@@ -1146,7 +1146,7 @@ class FormRecerca extends Form
 	 * @param string $SQL Sentència SQL que conté les dades a descarregar.
 	 * @return string Codi HTML del botó.
 	 */
-	public function CreaBotoDescarrega(string $SQL): string {
+	protected function CreaBotoDescarrega(string $SQL): string {
 		$sRetorn = '<div class="btn-group" role="group">';
 		$sRetorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
 		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
