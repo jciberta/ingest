@@ -42,7 +42,6 @@ class GooglePlayDeveloperReportingV1beta1QueryExcessiveWakeupRateMetricSetReques
   public $pageToken;
   protected $timelineSpecType = GooglePlayDeveloperReportingV1beta1TimelineSpec::class;
   protected $timelineSpecDataType = '';
-  public $timelineSpec;
 
   /**
    * @param string[]

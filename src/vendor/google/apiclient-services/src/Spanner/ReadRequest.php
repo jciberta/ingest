@@ -30,7 +30,6 @@ class ReadRequest extends \Google\Collection
   public $index;
   protected $keySetType = KeySet::class;
   protected $keySetDataType = '';
-  public $keySet;
   /**
    * @var string
    */
@@ -41,7 +40,6 @@ class ReadRequest extends \Google\Collection
   public $partitionToken;
   protected $requestOptionsType = RequestOptions::class;
   protected $requestOptionsDataType = '';
-  public $requestOptions;
   /**
    * @var string
    */
@@ -52,7 +50,6 @@ class ReadRequest extends \Google\Collection
   public $table;
   protected $transactionType = TransactionSelector::class;
   protected $transactionDataType = '';
-  public $transaction;
 
   /**
    * @param string[]

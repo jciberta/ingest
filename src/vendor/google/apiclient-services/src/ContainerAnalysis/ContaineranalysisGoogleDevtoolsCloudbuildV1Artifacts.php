@@ -26,13 +26,10 @@ class ContaineranalysisGoogleDevtoolsCloudbuildV1Artifacts extends \Google\Colle
   public $images;
   protected $mavenArtifactsType = ContaineranalysisGoogleDevtoolsCloudbuildV1ArtifactsMavenArtifact::class;
   protected $mavenArtifactsDataType = 'array';
-  public $mavenArtifacts;
   protected $objectsType = ContaineranalysisGoogleDevtoolsCloudbuildV1ArtifactsArtifactObjects::class;
   protected $objectsDataType = '';
-  public $objects;
   protected $pythonPackagesType = ContaineranalysisGoogleDevtoolsCloudbuildV1ArtifactsPythonPackage::class;
   protected $pythonPackagesDataType = 'array';
-  public $pythonPackages;
 
   /**
    * @param string[]

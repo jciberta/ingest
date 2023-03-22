@@ -34,7 +34,6 @@ class KnowledgeAnswersEntityType extends \Google\Collection
   public $id;
   protected $identifierType = KnowledgeAnswersIntentQueryIdentifier::class;
   protected $identifierDataType = 'array';
-  public $identifier;
   /**
    * @var bool
    */
@@ -45,7 +44,6 @@ class KnowledgeAnswersEntityType extends \Google\Collection
   public $includeGeolocationData;
   protected $remodelingsType = NlpMeaningMeaningRemodelings::class;
   protected $remodelingsDataType = '';
-  public $remodelings;
   /**
    * @var string[]
    */

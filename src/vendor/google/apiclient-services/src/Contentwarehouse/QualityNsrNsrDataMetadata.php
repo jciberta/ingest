@@ -46,7 +46,6 @@ class QualityNsrNsrDataMetadata extends \Google\Collection
   public $lastTimeProcessedRaffiaInSeconds;
   protected $nsrChunksWithSourceInfoType = QualityNsrNsrChunksWithSourceInfo::class;
   protected $nsrChunksWithSourceInfoDataType = '';
-  public $nsrChunksWithSourceInfo;
   /**
    * @var string
    */

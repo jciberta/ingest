@@ -22,7 +22,6 @@ class QualityOrbitAsteroidBeltDocumentIntentScores extends \Google\Collection
   protected $collection_key = 'scores';
   protected $imageIntentScoresType = QualityOrbitAsteroidBeltImageIntentScores::class;
   protected $imageIntentScoresDataType = 'map';
-  public $imageIntentScores;
   /**
    * @var string[]
    */

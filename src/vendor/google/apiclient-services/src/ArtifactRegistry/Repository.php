@@ -41,7 +41,6 @@ class Repository extends \Google\Model
   public $labels;
   protected $mavenConfigType = MavenRepositoryConfig::class;
   protected $mavenConfigDataType = '';
-  public $mavenConfig;
   /**
    * @var string
    */
@@ -52,7 +51,6 @@ class Repository extends \Google\Model
   public $name;
   protected $remoteRepositoryConfigType = RemoteRepositoryConfig::class;
   protected $remoteRepositoryConfigDataType = '';
-  public $remoteRepositoryConfig;
   /**
    * @var bool
    */
@@ -67,7 +65,6 @@ class Repository extends \Google\Model
   public $updateTime;
   protected $virtualRepositoryConfigType = VirtualRepositoryConfig::class;
   protected $virtualRepositoryConfigDataType = '';
-  public $virtualRepositoryConfig;
 
   /**
    * @param string

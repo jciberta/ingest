@@ -19,6 +19,9 @@ namespace Google\Service\CCAIPlatform;
 
 class ContactCenter extends \Google\Model
 {
+  protected $adminUserType = AdminUser::class;
+  protected $adminUserDataType = '';
+  public $adminUser;
   /**
    * @var bool
    */
@@ -41,7 +44,7 @@ class ContactCenter extends \Google\Model
   /**
    * @var string[]
    */
-  public $labels;
+  public $labels = [];
   /**
    * @var string
    */
@@ -65,6 +68,20 @@ class ContactCenter extends \Google\Model
    */
   public $userEmail;
 
+  /**
+   * @param AdminUser
+   */
+  public function setAdminUser(AdminUser $adminUser)
+  {
+    $this->adminUser = $adminUser;
+  }
+  /**
+   * @return AdminUser
+   */
+  public function getAdminUser()
+  {
+    return $this->adminUser;
+  }
   /**
    * @param bool
    */

@@ -26,6 +26,10 @@ class ShoppingWebentityShoppingAnnotationInferredImage extends \Google\Model
   /**
    * @var string
    */
+  public $inferredImageSource;
+  /**
+   * @var string
+   */
   public $inferredImageType;
 
   /**
@@ -41,6 +45,20 @@ class ShoppingWebentityShoppingAnnotationInferredImage extends \Google\Model
   public function getInferredImageId()
   {
     return $this->inferredImageId;
+  }
+  /**
+   * @param string
+   */
+  public function setInferredImageSource($inferredImageSource)
+  {
+    $this->inferredImageSource = $inferredImageSource;
+  }
+  /**
+   * @return string
+   */
+  public function getInferredImageSource()
+  {
+    return $this->inferredImageSource;
   }
   /**
    * @param string

@@ -22,20 +22,18 @@ class X509Parameters extends \Google\Collection
   protected $collection_key = 'policyIds';
   protected $additionalExtensionsType = X509Extension::class;
   protected $additionalExtensionsDataType = 'array';
-  public $additionalExtensions;
   /**
    * @var string[]
    */
   public $aiaOcspServers;
   protected $caOptionsType = CaOptions::class;
   protected $caOptionsDataType = '';
-  public $caOptions;
   protected $keyUsageType = KeyUsage::class;
   protected $keyUsageDataType = '';
-  public $keyUsage;
+  protected $nameConstraintsType = NameConstraints::class;
+  protected $nameConstraintsDataType = '';
   protected $policyIdsType = ObjectId::class;
   protected $policyIdsDataType = 'array';
-  public $policyIds;
 
   /**
    * @param X509Extension[]
@@ -92,6 +90,20 @@ class X509Parameters extends \Google\Collection
   public function getKeyUsage()
   {
     return $this->keyUsage;
+  }
+  /**
+   * @param NameConstraints
+   */
+  public function setNameConstraints(NameConstraints $nameConstraints)
+  {
+    $this->nameConstraints = $nameConstraints;
+  }
+  /**
+   * @return NameConstraints
+   */
+  public function getNameConstraints()
+  {
+    return $this->nameConstraints;
   }
   /**
    * @param ObjectId[]

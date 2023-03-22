@@ -30,7 +30,6 @@ class GoogleCloudAssuredworkloadsV1Workload extends \Google\Collection
   public $complianceRegime;
   protected $complianceStatusType = GoogleCloudAssuredworkloadsV1WorkloadComplianceStatus::class;
   protected $complianceStatusDataType = '';
-  public $complianceStatus;
   /**
    * @var string[]
    */
@@ -57,7 +56,6 @@ class GoogleCloudAssuredworkloadsV1Workload extends \Google\Collection
   public $kajEnrollmentState;
   protected $kmsSettingsType = GoogleCloudAssuredworkloadsV1WorkloadKMSSettings::class;
   protected $kmsSettingsDataType = '';
-  public $kmsSettings;
   /**
    * @var string[]
    */
@@ -76,13 +74,10 @@ class GoogleCloudAssuredworkloadsV1Workload extends \Google\Collection
   public $provisionedResourcesParent;
   protected $resourceSettingsType = GoogleCloudAssuredworkloadsV1WorkloadResourceSettings::class;
   protected $resourceSettingsDataType = 'array';
-  public $resourceSettings;
   protected $resourcesType = GoogleCloudAssuredworkloadsV1WorkloadResourceInfo::class;
   protected $resourcesDataType = 'array';
-  public $resources;
   protected $saaEnrollmentResponseType = GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse::class;
   protected $saaEnrollmentResponseDataType = '';
-  public $saaEnrollmentResponse;
 
   /**
    * @param string

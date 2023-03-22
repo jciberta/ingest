@@ -41,7 +41,10 @@ class InstanceTemplate extends \Google\Model
   public $name;
   protected $propertiesType = InstanceProperties::class;
   protected $propertiesDataType = '';
-  public $properties;
+  /**
+   * @var string
+   */
+  public $region;
   /**
    * @var string
    */
@@ -52,7 +55,6 @@ class InstanceTemplate extends \Google\Model
   public $sourceInstance;
   protected $sourceInstanceParamsType = SourceInstanceParams::class;
   protected $sourceInstanceParamsDataType = '';
-  public $sourceInstanceParams;
 
   /**
    * @param string
@@ -137,6 +139,20 @@ class InstanceTemplate extends \Google\Model
   public function getProperties()
   {
     return $this->properties;
+  }
+  /**
+   * @param string
+   */
+  public function setRegion($region)
+  {
+    $this->region = $region;
+  }
+  /**
+   * @return string
+   */
+  public function getRegion()
+  {
+    return $this->region;
   }
   /**
    * @param string

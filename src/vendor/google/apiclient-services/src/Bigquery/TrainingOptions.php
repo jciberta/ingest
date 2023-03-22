@@ -178,7 +178,6 @@ class TrainingOptions extends \Google\Collection
   public $modelUri;
   protected $nonSeasonalOrderType = ArimaOrder::class;
   protected $nonSeasonalOrderDataType = '';
-  public $nonSeasonalOrder;
   /**
    * @var string
    */

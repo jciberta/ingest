@@ -28,29 +28,32 @@ class GoogleCloudIntegrationsV1alphaTaskConfig extends \Google\Collection
    * @var string
    */
   public $displayName;
+  /**
+   * @var string
+   */
+  public $errorCatcherConfigId;
+  /**
+   * @var string
+   */
+  public $externalTaskType;
   protected $failurePolicyType = GoogleCloudIntegrationsV1alphaFailurePolicy::class;
   protected $failurePolicyDataType = '';
-  public $failurePolicy;
   /**
    * @var string
    */
   public $jsonValidationOption;
   protected $nextTasksType = GoogleCloudIntegrationsV1alphaNextTask::class;
   protected $nextTasksDataType = 'array';
-  public $nextTasks;
   /**
    * @var string
    */
   public $nextTasksExecutionPolicy;
   protected $parametersType = GoogleCloudIntegrationsV1alphaEventParameter::class;
   protected $parametersDataType = 'map';
-  public $parameters;
   protected $successPolicyType = GoogleCloudIntegrationsV1alphaSuccessPolicy::class;
   protected $successPolicyDataType = '';
-  public $successPolicy;
   protected $synchronousCallFailurePolicyType = GoogleCloudIntegrationsV1alphaFailurePolicy::class;
   protected $synchronousCallFailurePolicyDataType = '';
-  public $synchronousCallFailurePolicy;
   /**
    * @var string
    */
@@ -95,6 +98,34 @@ class GoogleCloudIntegrationsV1alphaTaskConfig extends \Google\Collection
   public function getDisplayName()
   {
     return $this->displayName;
+  }
+  /**
+   * @param string
+   */
+  public function setErrorCatcherConfigId($errorCatcherConfigId)
+  {
+    $this->errorCatcherConfigId = $errorCatcherConfigId;
+  }
+  /**
+   * @return string
+   */
+  public function getErrorCatcherConfigId()
+  {
+    return $this->errorCatcherConfigId;
+  }
+  /**
+   * @param string
+   */
+  public function setExternalTaskType($externalTaskType)
+  {
+    $this->externalTaskType = $externalTaskType;
+  }
+  /**
+   * @return string
+   */
+  public function getExternalTaskType()
+  {
+    return $this->externalTaskType;
   }
   /**
    * @param GoogleCloudIntegrationsV1alphaFailurePolicy

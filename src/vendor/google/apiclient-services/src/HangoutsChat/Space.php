@@ -20,6 +20,10 @@ namespace Google\Service\HangoutsChat;
 class Space extends \Google\Model
 {
   /**
+   * @var bool
+   */
+  public $adminInstalled;
+  /**
    * @var string
    */
   public $displayName;
@@ -33,7 +37,6 @@ class Space extends \Google\Model
   public $singleUserBotDm;
   protected $spaceDetailsType = SpaceDetails::class;
   protected $spaceDetailsDataType = '';
-  public $spaceDetails;
   /**
    * @var string
    */
@@ -47,6 +50,20 @@ class Space extends \Google\Model
    */
   public $type;
 
+  /**
+   * @param bool
+   */
+  public function setAdminInstalled($adminInstalled)
+  {
+    $this->adminInstalled = $adminInstalled;
+  }
+  /**
+   * @return bool
+   */
+  public function getAdminInstalled()
+  {
+    return $this->adminInstalled;
+  }
   /**
    * @param string
    */

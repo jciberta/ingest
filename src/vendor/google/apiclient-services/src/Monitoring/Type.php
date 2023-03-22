@@ -22,7 +22,6 @@ class Type extends \Google\Collection
   protected $collection_key = 'options';
   protected $fieldsType = Field::class;
   protected $fieldsDataType = 'array';
-  public $fields;
   /**
    * @var string
    */
@@ -33,10 +32,8 @@ class Type extends \Google\Collection
   public $oneofs;
   protected $optionsType = Option::class;
   protected $optionsDataType = 'array';
-  public $options;
   protected $sourceContextType = SourceContext::class;
   protected $sourceContextDataType = '';
-  public $sourceContext;
   /**
    * @var string
    */

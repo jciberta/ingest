@@ -21,7 +21,6 @@ class GoogleCloudContactcenterinsightsV1Settings extends \Google\Model
 {
   protected $analysisConfigType = GoogleCloudContactcenterinsightsV1SettingsAnalysisConfig::class;
   protected $analysisConfigDataType = '';
-  public $analysisConfig;
   /**
    * @var string
    */

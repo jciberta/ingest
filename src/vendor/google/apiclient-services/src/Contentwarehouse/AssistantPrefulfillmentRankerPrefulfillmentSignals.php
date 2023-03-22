@@ -47,7 +47,6 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public $groundabilityScore;
   protected $groundingProviderFeaturesType = AssistantGroundingRankerGroundingProviderFeatures::class;
   protected $groundingProviderFeaturesDataType = '';
-  public $groundingProviderFeatures;
   /**
    * @var float
    */
@@ -63,12 +62,19 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
    */
   public $isFeasible;
   /**
+   * @var bool
+   */
+  public $isFullyGrounded;
+  /**
+   * @var bool
+   */
+  public $isPlayGenericMusic;
+  /**
    * @var int
    */
   public $kscorerRank;
   protected $laaFeaturesType = AssistantGroundingRankerLaaFeatures::class;
   protected $laaFeaturesDataType = '';
-  public $laaFeatures;
   /**
    * @var bool
    */
@@ -274,6 +280,34 @@ class AssistantPrefulfillmentRankerPrefulfillmentSignals extends \Google\Model
   public function getIsFeasible()
   {
     return $this->isFeasible;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsFullyGrounded($isFullyGrounded)
+  {
+    $this->isFullyGrounded = $isFullyGrounded;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsFullyGrounded()
+  {
+    return $this->isFullyGrounded;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsPlayGenericMusic($isPlayGenericMusic)
+  {
+    $this->isPlayGenericMusic = $isPlayGenericMusic;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsPlayGenericMusic()
+  {
+    return $this->isPlayGenericMusic;
   }
   /**
    * @param int

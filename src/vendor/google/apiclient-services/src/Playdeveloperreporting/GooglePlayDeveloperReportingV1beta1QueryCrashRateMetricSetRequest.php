@@ -42,7 +42,6 @@ class GooglePlayDeveloperReportingV1beta1QueryCrashRateMetricSetRequest extends 
   public $pageToken;
   protected $timelineSpecType = GooglePlayDeveloperReportingV1beta1TimelineSpec::class;
   protected $timelineSpecDataType = '';
-  public $timelineSpec;
 
   /**
    * @param string[]

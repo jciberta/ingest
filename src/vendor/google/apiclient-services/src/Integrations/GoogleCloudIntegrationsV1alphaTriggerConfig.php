@@ -22,14 +22,16 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   protected $collection_key = 'startTasks';
   protected $alertConfigType = GoogleCloudIntegrationsV1alphaIntegrationAlertConfig::class;
   protected $alertConfigDataType = 'array';
-  public $alertConfig;
   protected $cloudSchedulerConfigType = GoogleCloudIntegrationsV1alphaCloudSchedulerConfig::class;
   protected $cloudSchedulerConfigDataType = '';
-  public $cloudSchedulerConfig;
   /**
    * @var string
    */
   public $description;
+  /**
+   * @var string
+   */
+  public $errorCatcherConfigId;
   /**
    * @var string
    */
@@ -44,7 +46,6 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   public $properties;
   protected $startTasksType = GoogleCloudIntegrationsV1alphaNextTask::class;
   protected $startTasksDataType = 'array';
-  public $startTasks;
   /**
    * @var string
    */
@@ -99,6 +100,20 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   public function getDescription()
   {
     return $this->description;
+  }
+  /**
+   * @param string
+   */
+  public function setErrorCatcherConfigId($errorCatcherConfigId)
+  {
+    $this->errorCatcherConfigId = $errorCatcherConfigId;
+  }
+  /**
+   * @return string
+   */
+  public function getErrorCatcherConfigId()
+  {
+    return $this->errorCatcherConfigId;
   }
   /**
    * @param string

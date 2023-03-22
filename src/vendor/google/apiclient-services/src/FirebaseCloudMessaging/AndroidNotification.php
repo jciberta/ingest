@@ -74,7 +74,6 @@ class AndroidNotification extends \Google\Collection
   public $image;
   protected $lightSettingsType = LightSettings::class;
   protected $lightSettingsDataType = '';
-  public $lightSettings;
   /**
    * @var bool
    */

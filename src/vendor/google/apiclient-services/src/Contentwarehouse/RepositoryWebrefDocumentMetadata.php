@@ -22,7 +22,6 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
   protected $collection_key = 'repeatedCdocAttachments';
   protected $cdocAttachmentsType = Proto2BridgeMessageSet::class;
   protected $cdocAttachmentsDataType = '';
-  public $cdocAttachments;
   /**
    * @var string
    */
@@ -37,7 +36,6 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
   public $docId;
   protected $forwardingUrlsType = RepositoryWebrefForwardingUrls::class;
   protected $forwardingUrlsDataType = '';
-  public $forwardingUrls;
   /**
    * @var bool
    */
@@ -52,10 +50,8 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
   public $numIncomingAnchors;
   protected $repeatedCdocAttachmentsType = Proto2BridgeMessageSet::class;
   protected $repeatedCdocAttachmentsDataType = 'array';
-  public $repeatedCdocAttachments;
   protected $salientTermsType = QualitySalientTermsSalientTermSet::class;
   protected $salientTermsDataType = '';
-  public $salientTerms;
   /**
    * @var string
    */

@@ -22,21 +22,18 @@ class Instance extends \Google\Collection
   protected $collection_key = 'disabledReason';
   protected $acceleratorsType = Accelerator::class;
   protected $acceleratorsDataType = 'array';
-  public $accelerators;
   /**
    * @var string
    */
   public $apiEndpoint;
   protected $availableVersionType = Version::class;
   protected $availableVersionDataType = 'array';
-  public $availableVersion;
   /**
    * @var string
    */
   public $createTime;
   protected $cryptoKeyConfigType = CryptoKeyConfig::class;
   protected $cryptoKeyConfigDataType = '';
-  public $cryptoKeyConfig;
   /**
    * @var string
    */
@@ -71,7 +68,6 @@ class Instance extends \Google\Collection
   public $enableZoneSeparation;
   protected $eventPublishConfigType = EventPublishConfig::class;
   protected $eventPublishConfigDataType = '';
-  public $eventPublishConfig;
   /**
    * @var string
    */
@@ -86,7 +82,6 @@ class Instance extends \Google\Collection
   public $name;
   protected $networkConfigType = NetworkConfig::class;
   protected $networkConfigDataType = '';
-  public $networkConfig;
   /**
    * @var string[]
    */

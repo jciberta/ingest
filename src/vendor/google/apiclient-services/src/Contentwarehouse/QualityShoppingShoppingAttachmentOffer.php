@@ -38,7 +38,6 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
   public $imageId;
   protected $inferredImagesType = ShoppingWebentityShoppingAnnotationInferredImage::class;
   protected $inferredImagesDataType = 'array';
-  public $inferredImages;
   /**
    * @var bool
    */
@@ -77,7 +76,6 @@ class QualityShoppingShoppingAttachmentOffer extends \Google\Collection
   public $refType;
   protected $soriVersionIdType = ShoppingWebentityShoppingAnnotationSoriVersionId::class;
   protected $soriVersionIdDataType = '';
-  public $soriVersionId;
 
   /**
    * @param string
