@@ -486,8 +486,12 @@ class MenuInGest extends Menu
 				$Retorn .= Menu::Separador();
 			}
 			$Retorn .= Menu::Opcio('Importa usuaris', 'ImportaUsuarisDialeg.php');
-			//$Retorn .= Menu::Opcio('Importa passwords iEduca', 'ImportaPasswordsDialeg.php');
 			$Retorn .= Menu::Opcio('Importa matrícules', 'ImportaMatriculaDialeg.php');
+			if ($Usuari->es_admin) {
+				$Retorn .= Menu::ObreSubMenu('ClickEdu');
+				$Retorn .= Menu::Opcio('Alumnes', 'ClickEdu.php?accio=Alumnes');
+				$Retorn .= Menu::TancaSubMenu();
+			}
 			$Retorn .= Menu::Tanca();
 
 			// Menú Secretaria

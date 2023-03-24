@@ -16,33 +16,33 @@
 class Objecte 
 {
 	/**
-	* Connexió a la base de dades.
-	* @var object
-	*/    
+	 * Connexió a la base de dades.
+	 * @var object
+	 */    
 	public $Connexio = null;
 
 	/**
-	* Usuari autenticat.
-	* @var object
-	*/    
+	 * Usuari autenticat.
+	 * @var object
+	 */    
 	public $Usuari = null;
 
 	/**
-	* Dades de l'aplicació.
-	* @var object
-	*/    
+	 * Dades de l'aplicació.
+	 * @var object
+	 */    
 	public $Sistema = null;
 
 	/**
-	* Identificador de propòsit general.
-	* @var mixed
-	*/    
+	 * Identificador de propòsit general.
+	 * @var mixed
+	 */    
 	public $Id = -1;
 	
 	/**
-	* Registre per a emmagatzemar el resultat d'un DataSet.
-	* @var object
-	*/    
+	 * Registre per a emmagatzemar el resultat d'un DataSet.
+	 * @var object
+	 */    
     public $Registre = null;
 	
 	/**
