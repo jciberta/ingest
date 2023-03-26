@@ -30,8 +30,6 @@ if ($conn->connect_error)
 
 RecuperaGET($_GET);
 
-$MetodeCongelaFilesComunes = (Config::UsaDataTables) ? Notes::tcDataTables : Notes::tcMetodeAntic;
-
 $CursId = mysqli_real_escape_string($conn, $_GET['CursId']);
 $Curs = new Curs($conn, $Usuari);
 $Curs->CarregaRegistre($CursId);
@@ -61,10 +59,13 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
 
-$Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
+//$Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
+
+$Notes = new Notes($conn, $Usuari);
+$Notes->CarregaRegistre($CursId, $Nivell);
 
 //if (Config::UsaDataTables) {
-if ($MetodeCongelaFilesComunes == Notes::tcDataTables) {
+if ($Notes->MetodeCongelaFilesComunes == Notes::tcDataTables) {
 	echo "<script>";
 //echo "alert('Hi!');";
 	echo "$(document).ready(function() {";
@@ -82,6 +83,16 @@ if ($MetodeCongelaFilesComunes == Notes::tcDataTables) {
 	echo "	  } );";
 	echo "} );";
 	echo "</script>";
+}
+else if ($Notes->MetodeCongelaFilesComunes == Notes::tcMetodeNou) {
+	echo "
+		<script>
+		$(document).ready(function() {
+			$('#notes1').css('max-height', $(window).height()-300 + 'px');
+			$('#notes2').css('max-height', $(window).height()-300 + 'px');
+		} );
+		</script>
+	";
 }
 
 // Inicialització de l'ajuda
@@ -104,22 +115,15 @@ if ($Curs->Estat() == Curs::Actiu)
 		"Utilitza les fletxes per moure't lliurement per la graella. ".
 		"Ctrl+rodeta_ratolí per fer zoom.</font></P>";
 
-$Notes = new Notes($conn, $Usuari);
-$Notes->MetodeCongelaFilesComunes = $MetodeCongelaFilesComunes;
-$Notes->CarregaRegistre($CursId, $Nivell);
-//echo $Notes->Estadistiques($CursId, $Nivell);
-//exit;
-
 $Grup = new GrupClasse($conn, $Usuari);
 $Tutoria = new GrupTutoria($conn, $Usuari);
 
 // Filtres
-//$TextAjuda = 'Mostra els alumnes que estan matriculats i que tenen aprovades totes les UF en convocatòries anteriors.';
-$TextAjuda2 = 'Mostra els alumnes que tenen UF pendents';
+$TextAjuda = 'Mostra els alumnes que tenen UF pendents';
 echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 echo '<input type="checkbox" name="chbAlumnesUFPendents" onclick="MostraAlumnesUFPendents(this);">Alumnes UF Pendents &nbsp';
-echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda2);
+echo $Notes->CreaAjuda('Alumnes UF Pendents', $TextAjuda);
 if ($Avaluacio->Estat() != Avaluacio::Tancada) {
 	//echo "<input type='checkbox' name='chbConvocatoriesAnteriors' onclick='MostraConvocatoriesAnteriors(this);'>Convocatòries anteriors";
 	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);

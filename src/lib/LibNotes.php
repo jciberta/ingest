@@ -267,21 +267,9 @@ class Notes extends Form
 	const AMPLADA_HORA = 50;
 	
 	// Mètode congela files i columnes
-	const tcMetodeAntic = 1;
-	const tcDataTables = 2;
-	const tcMetodeDiv = 3;
-
-	/**
-	 * Connexió a la base de dades.
-	 * @var object
-	 */    
-	public $Connexio;
-
-	/**
-	 * Usuari autenticat.
-	 * @var object
-	 */    
-	public $Usuari;
+	const tcMetodeAntic = 1; // Obsolet
+	const tcDataTables = 2; // Obsolet
+	const tcMetodeNou = 3;
 
 	/**
 	 * Registre que conté les notes de 1r. Es carrega amb CarregaRegistre.
@@ -324,7 +312,7 @@ class Notes extends Form
 	 * Mètode congela files i columnes.
 	 * @var int
 	 */    
-	public $MetodeCongelaFilesComunes = self::tcDataTables;
+	public $MetodeCongelaFilesComunes = self::tcMetodeNou;
 
 	/**
 	 * Constructor de l'objecte.
@@ -340,7 +328,7 @@ class Notes extends Form
 	}	
 
 	/**
-	 * Escriu el formulari corresponent a les notes d'un cicle i nivell (versió 1).
+	 * Escriu el formulari corresponent a les notes d'un cicle i nivell (versió 1, mètode antic).
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
 	 * @param object $Notes Dades amb les notes.
@@ -580,6 +568,159 @@ class Notes extends Form
 	}
 
 	/**
+	 * Escriu el formulari corresponent a les notes d'un cicle i nivell (versió 3, mètode nou).
+	 * @param string $CicleId Identificador del cicle formatiu.
+	 * @param string $Nivell Nivell: 1r o 2n.
+	 * @param object $Notes Dades amb les notes.
+	 * @param int $IdGraella Identificador de la graella de notes.
+	 * @param object $Professor Objecte professor.
+	 * @param object $Avaluacio Objecte avaluació.
+	 * @return void.
+	 */
+	public function EscriuFormulari3($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio) {
+		$this->Nivell = $Nivell;
+		$this->IdGraella = $IdGraella;
+
+		echo '
+			<style>
+
+			.div-notes {
+				max-width: 100%;
+				max-height: 600px;
+				overflow: scroll;
+				position: relative;
+			}
+			
+			.taula-notes {
+				position: relative;
+				border-collapse: collapse;
+			}
+			
+			thead th {
+				position: -webkit-sticky; /* for Safari */
+				position: sticky;
+				top: 0;
+				background-image: url("img/blanc.png");
+			}
+			
+			thead th:first-child {
+				left: 0;
+				z-index: 1;
+			}
+			
+			thead th:child-nth(2) {
+				position: sticky;
+				top: 45px;
+			}
+			
+			tbody th {
+				position: -webkit-sticky; /* for Safari */
+				position: sticky;
+				left: 0;
+				background: #FFF;
+				border-right: 1px solid #CCC;
+			}
+			</style>		
+		';
+		
+		// Formulari amb les notes
+		echo "<DIV class='div-notes' id=notes$IdGraella>";
+		echo '<FORM id=form'.$IdGraella.' method="post" action="">';
+		echo '<input type=hidden id=Formulari value=Notes>';
+		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
+		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
+		echo "<TABLE id='TaulaNotes' class='taula-notes'>";
+
+		// Capçalera de la taula
+		$aModuls = [];
+		$aModulsNom = [];
+
+		// CAI2 no existeix com a tal. Tots els crèdits estan posats a 1r
+		if (!property_exists($Notes, 'UF')) return;
+	
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$aModulsId[$j] = $row["IdMP"];
+			$aModuls[$j] = utf8_encodeX($row["CodiMP"]);
+			$aModulsNom[$j] = utf8_encodeX($row["NomMP"]);
+		}
+		$aOcurrenciesModuls = Ocurrencies($aModuls);
+//print_r($aOcurrenciesModuls);
+//print_r($aModulsNom);
+
+		// PEDAÇ. Cal arreglar
+		$Curs = new Curs($this->Connexio, $this->Usuari);
+		$Curs->CarregaRegistre($this->CursId);
+		$NivellCurs = $Curs->ObteNivell();
+		$IdCurs = ($NivellCurs == $Nivell) ? $row["IdCurs"] : $row["IdCurs"]+1;		
+
+		echo '<THEAD>';
+
+		// Mòdul, initat formativa i hores
+		echo "<TR>";
+		echo "<TH style='width:300px'><BR><BR>Alumne</TH><TH></TH>";
+		echo "<TH style='text-align:center'><BR><BR>G</TH>";
+		echo "<TH style='text-align:center'><BR><BR>T</TH>";
+		$TotalHores = 0;
+		$aHores = []; // Array d'hores per posar-ho com a element ocult (format JSON) a l'HTML i poder-ho obtenir des de JavaScript.
+		$IdMPAnt = -1;
+		for($j = 0; $j < count($Notes->UF[0]); $j++) {
+			$row = $Notes->UF[0][$j];
+			$TotalHores += $row["Hores"];
+
+			$TextMP = '<br>';
+			$IdMP = $row["IdMP"];
+			if (($IdMP != $IdMPAnt) && ($row['llei'] == 'LO')) {
+				$Link = GeneraURL('NotesModul.php?CursId='.$row["IdCurs"].'&ModulId='.$row["IdMP"]);
+				if ($Professor->TeMP($IdMP) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
+					$TextModul = "<A target=_blank href=$Link>".$row["CodiMP"]."</A>";
+				else
+					$TextModul = $row["CodiMP"];
+
+				$TextMP = '<span data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomMP"]).'">'.$TextModul.'</span><br>';
+				$IdMPAnt = $IdMP;
+			}
+			
+			$UFId = $row["unitat_pla_estudi_id"];
+			$Link = GeneraURL("FPFitxa.php?accio=UnitatsFormativesPlaEstudis&Id=$UFId");
+			if ($Professor->TeUF($UFId) || $Professor->EsAdmin() || $Professor->EsDireccio() || $Professor->EsCapEstudis())
+				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">'.$TextMP.'<a target=_blank href="'.$Link.'">'.utf8_encodeX($row["CodiUF"]).'</a><br>'.$row["Hores"].'</TH>';
+			else
+				echo '<TH align=center id="uf_'.$j.'" width=50 style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.utf8_encodeX($row["NomUF"]).'">'.$TextMP.utf8_encodeX($row["CodiUF"]).'<br>'.$row["Hores"].'</TH>';
+			array_push($aHores, $row["Hores"]);
+		}
+		echo "<TH width=100 style='text-align:center'>Hores<br>$TotalHores</TH>";
+		echo "<TH width=75 style='text-align:center'>&percnt;</TH>";
+		if ($this->Usuari->es_admin || $this->Usuari->es_cap_estudis) {
+			echo "<TH width=150 style='text-align:center;color:grey;'>UF<br>susp.</TH>";
+			echo "<TH width=150 style='text-align:center;color:grey;'>Nota<br>mitjana</TH>";
+		}
+		echo "<TH></TH>";
+		echo "</TR>";	
+
+		echo "</THEAD>";
+		
+		echo "<TBODY>";
+		for($i = 0; $i < count($Notes->Alumne); $i++) {
+			$row = $Notes->Alumne[$i];
+			if ($row["NivellMAT"] == $Nivell) {
+				echo $this->CreaFilaNotes($IdGraella, $Nivell, $i, $Notes, $row, $Professor, $TotalHores, $Avaluacio);
+			}
+		}		
+		if (($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis))
+			echo $this->CreaEstadistiquesUF($Notes, $Nivell);	
+		echo "</TBODY>";
+		
+		echo "</TABLE>";
+		echo "<input type=hidden name=TempNota value=''>";
+		echo "<input type=hidden id='grd".$IdGraella."_ArrayHores' value='".ArrayIntAJSON($aHores)."'>";
+		echo "<input type=hidden id='grd".$IdGraella."_TotalHores' value=".$TotalHores.">";
+		echo "<input type=hidden id='grd".$IdGraella."_Nivell' value=".$Nivell.">";
+		echo "</FORM>";
+		echo "</DIV>";
+	}
+
+	/**
 	 * Escriu el formulari corresponent a les notes d'un cicle i nivell.
 	 * @param string $CicleId Identificador del cicle formatiu.
 	 * @param string $Nivell Nivell: 1r o 2n.
@@ -597,7 +738,8 @@ class Notes extends Form
 			case self::tcDataTables:
 				$this->EscriuFormulariDT($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
 				break;
-			case self::tcMetodeDiv:
+			case self::tcMetodeNou:
+				$this->EscriuFormulari3($CicleId, $Nivell, $Notes, $IdGraella, $Professor, $Avaluacio);
 				break;
 		}
 	}	
@@ -620,7 +762,6 @@ class Notes extends Form
 
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaNotesXLSX&CursId=$CursId");
 		$sRetorn .= '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
-
 
 		$sRetorn .= '</div>';
 		$sRetorn .= '</div>';		
@@ -658,12 +799,11 @@ class Notes extends Form
 
 		$URL = GeneraURL("UsuariFitxa.php?Id=$AlumneId");
 		if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis || ($Professor->Tutor == 1 && $this->Nivell == $Avaluacio->Nivell))
-			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'><a target=_blank href=$URL>$NomAlumne</a></TD>";
+			$Retorn .= "<TH width=300 id='alumne_".$i."' style='font-weight:normal;text-align:left$Color'><a target=_blank href=$URL>$NomAlumne</a></TH>";
 		else
-			$Retorn .= "<TD width=300 id='alumne_".$i."' style='text-align:left$Color'>$NomAlumne</TD>";
+			$Retorn .= "<TH width=300 id='alumne_".$i."' style='font-weight:normal;text-align:left$Color'>$NomAlumne</TH>";
 
 		$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=".$row["matricula_id"]);
-//		$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=".$row["matricula_id"]);
 		if ($row["BaixaMatricula"] == 1)
 			$Retorn .= "<TD width=20></TD>";
 		else

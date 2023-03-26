@@ -22,10 +22,8 @@ class Config {
 	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
-	const UsaDataTables  = True;
 	const AutenticacioGoogle = True;
 }
-
 
 // Pedaç per la migració del MySQL a la versió 8.0 (pel que fa a la codificació UTF8)
 function utf8_encodeX($Text) {
@@ -34,7 +32,6 @@ function utf8_encodeX($Text) {
 function utf8_decodeX($Text) {
 	return $Text;
 }
-
 
 // Autenticació Google
 $Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
