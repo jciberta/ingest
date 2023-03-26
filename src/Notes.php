@@ -64,27 +64,7 @@ echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript
 $Notes = new Notes($conn, $Usuari);
 $Notes->CarregaRegistre($CursId, $Nivell);
 
-//if (Config::UsaDataTables) {
-if ($Notes->MetodeCongelaFilesComunes == Notes::tcDataTables) {
-	echo "<script>";
-//echo "alert('Hi!');";
-	echo "$(document).ready(function() {";
-	echo "    var table = $('#TaulaNotes').DataTable( {";
-	echo "        scrollY: '500px',";
-	echo "        scrollX: true,";
-	echo "        scrollCollapse: true,";
-	echo "		  searching: false,";
-	echo "		  ordering: false,";
-	echo "		  info: false,";
-	echo "        paging: false,";
-	echo "        fixedColumns: {";
-	echo "            leftColumns: 1,";
-	echo "        }";
-	echo "	  } );";
-	echo "} );";
-	echo "</script>";
-}
-else if ($Notes->MetodeCongelaFilesComunes == Notes::tcMetodeNou) {
+if ($Notes->MetodeCongelaFilesComunes == Notes::tcMetodeNou) {
 	echo "
 		<script>
 		$(document).ready(function() {

@@ -133,10 +133,6 @@ function CreaIniciHTML_JS_CSS($Usuari, $Titol, $JS = '', $CSS = '')
 	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
 	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
 	$Retorn .= $CSS;
-	if (Config::UsaDataTables) {
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
-	}
 	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
 	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
 	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
@@ -148,23 +144,7 @@ function CreaIniciHTML_JS_CSS($Usuari, $Titol, $JS = '', $CSS = '')
 	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
 	$Retorn .= '	<script src="js/Util.js"></script>';
 	$Retorn .= $JS;
-	if (Config::UsaDataTables) {
-		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
-	}
 	$Retorn .= '</HEAD>';
-	
-	if (Config::UsaDataTables) {
-		$Retorn .= "<style>";
-		$Retorn .= "    th, td { white-space: nowrap; } ";
-		$Retorn .= "    div.dataTables_wrapper {";
-		$Retorn .= "        width: 99%;";
-		//$Retorn .= "        width: 1800px;";
-		$Retorn .= "        margin: 0 auto;";
-		$Retorn .= "    }";
-		$Retorn .= "</style>";
-	}	
 
 	$Retorn .= '<BODY>';
 	$Retorn .= Menu::Crea($Usuari);
@@ -190,10 +170,6 @@ function CreaIniciHTML_Notes($Usuari, $Titol)
 //	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">';
 //	$Retorn .= '	<link rel="stylesheet" href="vendor/summernote/summernote-bs4.min.css">';
 	$Retorn .= '	<link rel="stylesheet" href="css/InGest.css?v1.1">';
-	if (Config::UsaDataTables) {
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/datatables.bootstrap4.min.css">';
-		$Retorn .= '	<link rel="stylesheet" href="vendor/DataTables/fixedColumns.bootstrap4.min.css">';
-	}
 	$Retorn .= '	<script src="vendor/jquery.min.js"></script>';
 	$Retorn .= '	<script src="vendor/popper.min.js"></script>';
 	$Retorn .= '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
@@ -204,23 +180,7 @@ function CreaIniciHTML_Notes($Usuari, $Titol)
 //	$Retorn .= '	<script src="vendor/summernote/summernote-bs4.min.js" charset="UTF-8"></script>';
 	$Retorn .= '	<script src="vendor/bootbox.min.js"></script>';
 	$Retorn .= '	<script src="js/Util.js"></script>';
-	if (Config::UsaDataTables) {
-		$Retorn .= '	<script src="vendor/DataTables/jquery.dataTables.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/datatables.bootstrap4.min.js"></script>';
-		$Retorn .= '	<script src="vendor/DataTables/dataTables.fixedColumns.min.js"></script>';
-	}
 	$Retorn .= '</HEAD>';
-	
-	if (Config::UsaDataTables) {
-		$Retorn .= "<style>";
-		$Retorn .= "    th, td { white-space: nowrap; } ";
-		$Retorn .= "    div.dataTables_wrapper {";
-		$Retorn .= "        width: 99%;";
-		//$Retorn .= "        width: 1800px;";
-		$Retorn .= "        margin: 0 auto;";
-		$Retorn .= "    }";
-		$Retorn .= "</style>";
-	}	
 
 	$Retorn .= '<BODY>';
 	$Retorn .= MenuInGest::Crea($Usuari);
