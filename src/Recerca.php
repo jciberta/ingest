@@ -51,8 +51,7 @@ unset($frm);
 
 switch ($accio) {
     case "AnyAcademic":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Any acadèmic';
@@ -68,8 +67,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "Equip":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
@@ -103,10 +101,12 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "HistoricCurs":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$curs = new Curs($conn, $Usuari, $Sistema);
 		$curs->EscriuFormulariRecerca();
         break;		
     case "Avaluacio":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$avaluacio = new Avaluacio($conn, $Usuari, $Sistema);
 		$avaluacio->EscriuFormulariRecerca();
         break;		
@@ -129,8 +129,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;		
     case "Festiu":
-		if (!$Usuari->es_admin)
-				header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Festius';
@@ -147,18 +146,22 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;		
     case "Material":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$Material = new Material($conn, $Usuari, $Sistema);
 		$Material->EscriuFormulariRecerca($Modalitat);
         break;		
     case "TipusMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$TipusMaterial = new TipusMaterial($conn, $Usuari, $Sistema);
 		$TipusMaterial->EscriuFormulariRecerca($Modalitat);
         break;		
     case "ReservaMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->EscriuFormulariRecerca($Modalitat);
         break;
 	case "HistoricPrestecMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Històric de préstecs de material';
