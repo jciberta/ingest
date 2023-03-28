@@ -23,6 +23,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -31,7 +32,7 @@ if ($conn->connect_error)
 RecuperaGET($_GET);
 
 $CursId = mysqli_real_escape_string($conn, $_GET['CursId']);
-$Curs = new Curs($conn, $Usuari);
+$Curs = new Curs($conn, $Usuari, $Sistema);
 $Curs->CarregaRegistre($CursId);
 $CicleId = $Curs->ObteCicleFormatiuId();
 $Nivell = $Curs->ObteNivell();
@@ -41,7 +42,7 @@ $ActivaAdministracio = (isset($_GET) && array_key_exists('ActivaAdministracio', 
 
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
-$Professor = new Professor($conn, $Usuari);
+$Professor = new Professor($conn, $Usuari, $Sistema);
 $Professor->CarregaUFAssignades();
 //if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 if (!$Professor->TeUFEnCicle($CicleId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_administratiu)
@@ -61,7 +62,7 @@ echo '<script language="javascript" src="js/Notes.js?v1.7" type="text/javascript
 
 //$Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
 
-$Notes = new Notes($conn, $Usuari);
+$Notes = new Notes($conn, $Usuari, $Sistema);
 $Notes->CarregaRegistre($CursId, $Nivell);
 
 if ($Notes->MetodeCongelaFilesComunes == Notes::tcMetodeNou) {

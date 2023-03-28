@@ -47,19 +47,19 @@ if ($Usuari->aplicacio == 'InGest') {
 		$curs->EscriuFormulariRecerca();
 	}
 	else if ($Usuari->es_professor) {
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		$Professor->Escriptori();	
 	}
 	else if ($Usuari->es_alumne) {
-		$Alumne = new Alumne($conn, $Usuari);
+		$Alumne = new Alumne($conn, $Usuari, $Sistema);
 		$Alumne->Escriptori();	
 	}
 	else if ($Usuari->es_pare) {
-		$Progenitor = new Progenitor($conn, $Usuari);
+		$Progenitor = new Progenitor($conn, $Usuari, $Sistema);
 		$Progenitor->Escriptori();	
 	}
 	else if ($Usuari->es_administratiu) {
-		$curs = new Curs($conn, $Usuari, $Sistema);
+		$curs = new Curs($conn, $Usuari, $Sistema, $Sistema);
 		$curs->EscriuFormulariRecerca();
 	}
 }
@@ -70,7 +70,7 @@ else if ($Usuari->aplicacio == 'CapGest') {
 	}
 	else if ($Usuari->es_direccio) {
 		// Membre de la junta
-		$mj = new MembreJunta($conn, $Usuari);
+		$mj = new MembreJunta($conn, $Usuari, $Sistema);
 		$mj->Escriptori();	
 	}
 //	else if ($Usuari->es_alumne) {
