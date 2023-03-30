@@ -29,8 +29,6 @@ class Usuari extends Objecte
 	 */
 	function __construct($con = null, $user = null, $system = null) {
 		parent::__construct($con, $user, $system);
-		//$this->Connexio = $con;
-		//$this->Usuari = $user;
 		$this->Registre = $user;
 	}	
 
@@ -80,8 +78,13 @@ class Usuari extends Objecte
 	 * @returns boolean Cert si l'usuari és pare/mare de l'alumne.
 	 */
 	function EsProgenitor(int $alumne): bool {
-		$SQL = ' SELECT * FROM USUARI WHERE usuari_id='.$alumne.' AND (pare_id='.$this->Usuari->usuari_id.' OR mare_id='.$this->Usuari->usuari_id.')';
-		$ResultSet = $this->Connexio->query($SQL);
+		$SQL = ' SELECT * FROM USUARI WHERE usuari_id=? AND (pare_id=? OR mare_id=?)';
+//		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("iii", $alumne, $this->Usuari->usuari_id, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
 		return ($ResultSet->num_rows > 0);
 	}	
 
@@ -90,8 +93,13 @@ class Usuari extends Objecte
      * @param int $UsuariId Identificador de l'usuari.
 	 */
 	public function Carrega(int $UsuariId) {
-		$SQL = " SELECT * FROM USUARI WHERE usuari_id=$UsuariId ";
-		$ResultSet = $this->Connexio->query($SQL);
+		$SQL = " SELECT * FROM USUARI WHERE usuari_id=? ";
+//		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $UsuariId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
 		if ($ResultSet->num_rows > 0) {		
 			$rs = $ResultSet->fetch_object();
 			$this->Registre = $rs;
@@ -217,8 +225,13 @@ class Usuari extends Objecte
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.			
-			' WHERE alumne_id='.$AlumneId.' AND actual=1 ';
-		$ResultSet = $this->Connexio->query($SQL);
+			' WHERE alumne_id=? AND any_academic_id=? ';
+//		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $AlumneId, $this->Sistema->any_academic_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_object();
 			$Retorn = $row->matricula_id;
@@ -325,11 +338,6 @@ class Professor extends Usuari
 	*/    
 	public $Tutor = False;
 
-	function __construct($Connexio = null, $Usuari = null, $Sistema = null)
-	{
-		parent::__construct($Connexio, $Usuari, $Sistema);
-	}
-
 	/**
 	 * Carrega les UF assignades en un array.
 	 */
@@ -344,10 +352,15 @@ class Professor extends Usuari
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-			' WHERE professor_id='.$this->Usuari->usuari_id.
-			' AND AA.actual=1 '.
+			' WHERE AA.any_academic_id=? '.
+			' AND professor_id=? '.
 			' ORDER BY CPE.codi, UPE.nivell ';
-		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$i = 0;
 			while ($obj = $ResultSet->fetch_object()) {
@@ -409,9 +422,14 @@ class Professor extends Usuari
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
-			' WHERE professor_id='.$this->Usuari->usuari_id.
-			' AND curs_id='.$CursId;
-		$ResultSet = $this->Connexio->query($SQL);
+			' WHERE professor_id=? AND curs_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Usuari->usuari_id, $CursId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		$obj = $ResultSet->fetch_object();
 		return ($obj->UF > 0);
 	}
@@ -429,9 +447,14 @@ class Professor extends Usuari
 			' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
 			' LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id) '.
-			' WHERE professor_id='.$this->Usuari->usuari_id.
-			' AND matricula_id='.$MatriculaId;
-		$ResultSet = $this->Connexio->query($SQL);
+			' WHERE professor_id=? AND matricula_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Usuari->usuari_id, $MatriculaId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		$obj = $ResultSet->fetch_object();
 		return ($obj->UF > 0);
 	}
@@ -474,10 +497,13 @@ class Professor extends Usuari
 	 * @param integer $CursId Identificador del curs.
 	 */
 	function CarregaTutor(int $CursId) {
-		$SQL = ' SELECT * FROM TUTOR '.
-			' WHERE professor_id='.$this->Usuari->usuari_id.
-			' AND curs_id='.$CursId;
-		$ResultSet = $this->Connexio->query($SQL);
+		$SQL = ' SELECT * FROM TUTOR WHERE professor_id=? AND curs_id=?	';
+//		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Usuari->usuari_id, $CursId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
 		$bRetorn = ($ResultSet->num_rows > 0);
 		$ResultSet->close();
 		$this->Tutor = $bRetorn;
@@ -493,8 +519,14 @@ class Professor extends Usuari
 			' LEFT JOIN CURS C ON (C.curs_id=T.curs_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-			' WHERE actual=1 AND professor_id='.$this->Usuari->usuari_id;
-		$ResultSet = $this->Connexio->query($SQL);
+			' WHERE AA.any_academic_id=? AND professor_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$obj = $ResultSet->fetch_object();
 			$iRetorn = $obj->curs_id;
@@ -515,8 +547,14 @@ class Professor extends Usuari
 			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
 			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
-			WHERE PUF.professor_id='.$this->Usuari->usuari_id;
-		$ResultSet = $this->Connexio->query($SQL);
+			WHERE PUF.professor_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			while ($obj = $ResultSet->fetch_object()) {
 				array_push($aRetorn, $obj->codi);
@@ -538,10 +576,15 @@ class Professor extends Usuari
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' LEFT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
-			' WHERE AA.actual=1 '.
-			' AND alumne_id='.$AlumneId.
-			' AND professor_id='.$this->Usuari->usuari_id;
-		$ResultSet = $this->Connexio->query($SQL);
+			' WHERE AA.any_academic_id=? '.
+			' AND alumne_id=? AND professor_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("iii", $this->Sistema->any_academic_id, $AlumneId, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		$bRetorn = ($ResultSet->num_rows > 0);
 		$ResultSet->close();
 		return $bRetorn;
@@ -559,12 +602,18 @@ class Professor extends Usuari
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' LEFT JOIN TUTOR TUT ON (C.curs_id=TUT.curs_id) '.
-			' WHERE AA.actual=1 '.
+			' WHERE AA.any_academic_id=? '.
 			' AND alumne_id IN ('.
-			" 	SELECT usuari_id FROM USUARI WHERE pare_id=$PareId OR mare_id=$PareId ".
+			" 	SELECT usuari_id FROM USUARI WHERE pare_id=? OR mare_id=? ".
 			' ) '.
-			' AND professor_id='.$this->Usuari->usuari_id;
-		$ResultSet = $this->Connexio->query($SQL);
+			' AND professor_id=? 
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("iiii", $this->Sistema->any_academic_id, $PareId, $PareId, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		$bRetorn = ($ResultSet->num_rows > 0);
 		$ResultSet->close();
 		return $bRetorn;
@@ -580,9 +629,15 @@ class Professor extends Usuari
 		$SQL = ' 
 			SELECT * FROM EQUIP E
 			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=E.any_academic_id) 
-			WHERE AA.actual=1 AND tipus="DP"
-			AND cap='.$this->Usuari->usuari_id;
-		$ResultSet = $this->Connexio->query($SQL);
+			WHERE AA.any_academic_id=? AND tipus="DP" AND cap=?
+		';
+//		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_object();
 			if (is_null($row->familia_fp_id)) die("CONFIG. Falta especificar la família per al cap de departament.");
@@ -596,16 +651,11 @@ class Professor extends Usuari
 	 * Comprova si és el gestor de la borsa de treball.
 	 * @return boolean Cert si és el gestor de la borsa de treball.
 	 */
-	public function EsGestorBorsa(): bool
-	{
+	public function EsGestorBorsa(): bool {
 		$stmt = $this->Connexio->prepare("SELECT u.usuari_id FROM usuari u INNER JOIN sistema s ON u.usuari_id = s.gestor_borsa_treball_id;");
-
 		$stmt->execute();
-
 		$rs = $stmt->get_result();
-
 		$stmt->close();
-
 		if ($rs->num_rows > 0) {
 			$row = $rs->fetch_assoc();
 			return $row['usuari_id'] === $this->Usuari->Usuari->usuari_id;
@@ -627,13 +677,19 @@ class Professor extends Usuari
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' LEFT JOIN CURS C ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id AND UPE.nivell=C.nivell) '.
-			' WHERE C.estat<>"T" AND actual=1 AND professor_id='.$this->Usuari->usuari_id .
+			' WHERE C.estat<>"T" AND AA.any_academic_id=? AND professor_id=? '.
 			' ORDER BY CPE.codi, UPE.nivell ';
+
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $this->Usuari->usuari_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
 			
 //print $SQL;
 		echo '<h3>Cursos</h3>';
 		echo '<div class="card-columns" style="column-count:6">';
-		$ResultSet = $this->Connexio->query($SQL);
+		//$ResultSet = $this->Connexio->query($SQL);
 //var_dump($ResultSet);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
@@ -1583,9 +1639,14 @@ class Alumne extends Usuari
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
 			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
-			WHERE AA.actual=1 AND M.alumne_id=$AlumneId;		
+			WHERE AA.any_academic_id=? AND M.alumne_id=?;		
 		";
-		$ResultSet = $this->Connexio->query($SQL);
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $AlumneId);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+//		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
 			$rsMatricula = $ResultSet->fetch_object();
 			$bRetorn = (($rsMatricula->estat != 'T') && ($rsMatricula->avaluacio == 'ORD'));
@@ -1869,11 +1930,18 @@ class Progenitor extends Usuari
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-			' WHERE (U.pare_id='.$this->Usuari->usuari_id.' OR U.mare_id='.$this->Usuari->usuari_id.') '.
-			' AND (Edat(U.data_naixement)<18 OR U.permet_tutor=1) AND AA.actual=1 ';
+			' WHERE (U.pare_id=? OR U.mare_id=?) '.
+			' AND (Edat(U.data_naixement)<18 OR U.permet_tutor=1) AND AA.any_academic_id=? ';
 //print $SQL;
+
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("iii", $this->Usuari->usuari_id, $this->Usuari->usuari_id, $this->Sistema->any_academic_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+
 		echo '<div class="card-columns" style="column-count:6">';
-		$ResultSet = $this->Connexio->query($SQL);
+//		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			while($row) {

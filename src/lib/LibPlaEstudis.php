@@ -443,14 +443,6 @@ class PlaEstudisCicleRecerca extends FormRecerca
 			FROM CICLE_PLA_ESTUDI CPE
 			ORDER BY Ordre
 		";
-/*		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			// És professor
-			if ($Usuari->es_professor)
-				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
-					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
-					' WHERE PUF.professor_id='.$Usuari->usuari_id.
-					' AND AA.actual=1 ';*/
-//print '<br><br><br>'.$frm->SQL;
 		$frm->Taula = 'CICLE_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'cicle_pla_estudi_id';
 		$frm->Camps = 'CodiCF, NomCF, grau, codi_xtec';
@@ -537,7 +529,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
-			' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+			' WHERE AA.any_academic_id='.$this->Sistema->any_academic_id.' AND CF.familia_fp_id='.$this->FamiliaFPId;
 		return $SQL;
 	}
 
@@ -587,7 +579,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 			$SubSQL .= 
 				' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 				' LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) '.
-				' WHERE AA.actual=1 AND CF.familia_fp_id='.$this->FamiliaFPId;
+				' WHERE AA.any_academic_id='.$this->Sistema->any_academic_id.' AND CF.familia_fp_id='.$this->FamiliaFPId;
 		}
 		else if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			// És professor
@@ -595,7 +587,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 				$SubSQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
 					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 					' WHERE PUF.professor_id='.$Usuari->usuari_id.
-					' AND AA.actual=1 ';		
+					' AND AA.any_academic_id='.$this->Sistema->any_academic_id;		
 		$SQL = "
 			SELECT 
 				cicle_pla_estudi_id, modul_pla_estudi_id, CodiCF, CodiMP, NomMP, hores, estat, NomEstat
@@ -701,7 +693,7 @@ class PlaEstudisUnitatRecerca extends FormRecerca
 				$frm->SQL .= ' LEFT JOIN PROFESSOR_UF PUF ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
 					' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 					' WHERE PUF.professor_id='.$Usuari->usuari_id.
-					' AND AA.actual=1 ';
+					' AND AA.any_academic_id='.$this->Sistema->any_academic_id;
 //print '<br><br><br>'.$frm->SQL;
 		$frm->Taula = 'UNITAT_PLA_ESTUDI';
 		$frm->ClauPrimaria = 'unitat_pla_estudi_id';
