@@ -431,9 +431,6 @@ class GrupClasse extends Objecte
  */
 class GrupTutoria extends Objecte
 {
-	function __construct($Connexio, $Usuari, $systema = null) {
-		parent::__construct($Connexio, $Usuari, $systema);
-	}
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
