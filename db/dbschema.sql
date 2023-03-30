@@ -550,6 +550,7 @@ CREATE TABLE MATERIAL
     ubicacio VARCHAR(100),
     data_compra DATE,
     es_obsolet BIT NOT NULL DEFAULT 0,
+    es_prestec BIT NOT NULL DEFAULT 1,
 	
 	CONSTRAINT MaterialPK PRIMARY KEY (material_id),
 	CONSTRAINT M_TipusMaterialFK FOREIGN KEY (tipus_material_id) REFERENCES TIPUS_MATERIAL(tipus_material_id),

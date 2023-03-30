@@ -85,8 +85,8 @@ class Material extends Objecte
 		$frm->Camps = 'codi, nom, Tipus, Familia, Responsable, ambit, ubicacio, data_compra, bool:es_obsolet';
 		$frm->Descripcions = 'Codi, Nom, Tipus, Família, Responsable, Àmbit, Ubicació, Data compra, Obsolet';
 		if ($this->Usuari->aplicacio == 'CapGest') {
-			$frm->Camps = 'codi, nom, Tipus, Responsable, data_compra, bool:es_obsolet';
-			$frm->Descripcions = 'Codi, Nom, Tipus, Responsable, Data compra, Obsolet';
+			$frm->Camps = 'codi, nom, Tipus, Responsable, data_compra, bool:es_obsolet, bool:es_prestec';
+			$frm->Descripcions = 'Codi, Nom, Tipus, Responsable, Data compra, Obsolet, Préstec';
 		}
 		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
 		array_unshift($aTMaterials[0] , '');
@@ -123,7 +123,7 @@ class Material extends Objecte
 	private function CreaSQL() {
 		$SQL = "
 			SELECT 
-				M.material_id, M.codi AS codi, M.nom AS nom, M.ambit, M.ubicacio, M.data_compra, M.es_obsolet, 
+				M.material_id, M.codi AS codi, M.nom AS nom, M.ambit, M.ubicacio, M.data_compra, M.es_obsolet, M.es_prestec, 
 				TM.nom AS Tipus, FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS Responsable, FFP.nom AS Familia
 			FROM MATERIAL M 
 			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id) 
