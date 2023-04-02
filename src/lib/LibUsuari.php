@@ -652,13 +652,16 @@ class Professor extends Usuari
 	 * @return boolean Cert si és el gestor de la borsa de treball.
 	 */
 	public function EsGestorBorsa(): bool {
+		if ($this->Usuari === null)
+			return false;
+
 		$stmt = $this->Connexio->prepare("SELECT u.usuari_id FROM usuari u INNER JOIN sistema s ON u.usuari_id = s.gestor_borsa_treball_id;");
 		$stmt->execute();
 		$rs = $stmt->get_result();
 		$stmt->close();
 		if ($rs->num_rows > 0) {
 			$row = $rs->fetch_assoc();
-			return $row['usuari_id'] === $this->Usuari->Usuari->usuari_id;
+			return $row['usuari_id'] === $this->Usuari->usuari_id;
 		} else {
 			return false;
 		}
