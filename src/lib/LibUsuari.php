@@ -781,43 +781,19 @@ class Professor extends Usuari
 
 		// Històric
 		$URL = GeneraURL('Recerca.php?accio=HistoricCurs');
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Històric</h5>';
-		echo '      <p class="card-text">Notes FP</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
+		echo CreaTargeta('Històric', 'Notes FP', $URL);
 
 		// Promoció 1r
 		$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesPromocio1r');
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Promocions 1r</h5>';
-		echo "      <p class='card-text'>Alumnes amb 60% d'hores o més</p>";
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
+		echo CreaTargeta('Promocions 1r', "Alumnes amb 60% d'hores o més", $URL);
 		
 		// Graduació 2n
 		$URL = GeneraURL('UsuariRecerca.php?accio=AlumnesGraduacio2n');
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Graduacions 2n</h5>';
-		echo "      <p class='card-text'>Alumnes amb 100% d'hores</p>";
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
+		echo CreaTargeta('Graduacions 2n', "Alumnes amb 100% d'hores", $URL);
 
 		// Estadístiques FP
 		$URL = GeneraURL('Estadistiques.php?accio=EstadistiquesNotes');
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Estadístiques</h5>';
-		echo '      <p class="card-text">Aprovats per UF</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';		
+		echo CreaTargeta('Estadístiques', "Aprovats per UF", $URL);
 		
 		echo '</div>';
 		echo '<h3>Altres</h3>';
@@ -825,23 +801,13 @@ class Professor extends Usuari
 
 		// Orla
 		$URL = GeneraURL('UsuariRecerca.php?accio=Orla');
-		echo '  <div class="card">';
-		echo '    <div class="card-body">';
-		echo '      <h5 class="card-title">Orla</h5>';
-		echo '      <p class="card-text">Orla alumnes</p>';
-		echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-		echo '    </div>';
-		echo '  </div>';
+		echo CreaTargeta('Orla', "Orla alumnes", $URL);
 		
-		// Borsa treball
-		$URL = GeneraURL('BorsaTreball.php');
-		echo "  <div class='card'>";
-		echo "    <div class='card-body'>";
-		echo "      <h5 class='card-title'>Borsa</h5>";
-		echo "      <p class='card-text'>Borsa alumnes</p>";
-		echo "      <a href='$URL' class='btn btn-primary btn-sm'>Ves-hi</a>";
-		echo "    </div>";
-		echo "  </div>";
+		if ($this->Usuari->usuari_id == $this->Sistema->gestor_borsa_treball_id) {
+			// Borsa treball
+			$URL = GeneraURL('BorsaTreball.php');
+			echo CreaTargeta('Borsa de treball', "Borsa alumnes", $URL);
+		}
 	}
 }
 
