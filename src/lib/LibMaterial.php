@@ -88,19 +88,19 @@ class Material extends Objecte
 			$frm->Camps = 'codi, nom, Tipus, Responsable, data_compra, bool:es_obsolet, bool:es_prestec';
 			$frm->Descripcions = 'Codi, Nom, Tipus, Responsable, Data compra, Obsolet, Préstec';
 		}
-		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
+		$aTMaterials = ObteCodiValorDesDeSQL($this->Connexio,'SELECT tms.tipus_material_id as tmaterial_id, tms.nom as tipus from MATERIAL as m LEFT JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id LEFT JOIN TIPUS_MATERIAL as tms ON m.tipus_material_id = tms.tipus_material_id LEFT JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY tipus, tmaterial_id', "tmaterial_id", "tipus");
 		array_unshift($aTMaterials[0] , '');
 		array_unshift($aTMaterials[1] , 'Tots');
 		$frm->Filtre->AfegeixLlista('TM.tipus_material_id', 'Tipus', 32, $aTMaterials[0], $aTMaterials[1]);
 		
 		if ($this->Usuari->aplicacio == 'InGest') {
-			$aFamilia = ObteCodiValorDesDeSQL($this->Connexio,'SELECT ffp.familia_fp_id as familiafp_id, ffp.nom as familia from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY familia, familiafp_id', "familiafp_id", "familia");
+			$aFamilia = ObteCodiValorDesDeSQL($this->Connexio,'SELECT ffp.familia_fp_id as familiafp_id, ffp.nom as familia from MATERIAL as m LEFT JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id LEFT JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id LEFT JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY familia, familiafp_id', "familiafp_id", "familia");
 			array_unshift($aFamilia[0] , '');
 			array_unshift($aFamilia[1] , 'Tots');
 			$frm->Filtre->AfegeixLlista('FFP.familia_fp_id', 'Família', 50, $aFamilia[0], $aFamilia[1]);
 		}
 		
-		$aResponsable = ObteCodiValorDesDeSQL($this->Connexio,'SELECT u.usuari_id as responsable_id, concat(u.nom," ",u.cognom1," ",u.cognom2) as responsable from MATERIAL as m INNER JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id INNER JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id INNER JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY responsable, responsable_id', "responsable_id", "responsable");
+		$aResponsable = ObteCodiValorDesDeSQL($this->Connexio,'SELECT u.usuari_id as responsable_id, concat(u.nom," ",u.cognom1," ",u.cognom2) as responsable from MATERIAL as m LEFT JOIN FAMILIA_FP as ffp ON m.familia_fp_id = ffp.familia_fp_id LEFT JOIN TIPUS_MATERIAL as tm ON m.tipus_material_id = tm.tipus_material_id LEFT JOIN USUARI as u ON m.responsable_id = u.usuari_id GROUP BY responsable, responsable_id', "responsable_id", "responsable");
 		array_unshift($aResponsable[0] , '');
 		array_unshift($aResponsable[1] , 'Tots');
 		$frm->Filtre->AfegeixLlista('U.usuari_id', 'Responsable', 60, $aResponsable[0], $aResponsable[1]);
