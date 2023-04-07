@@ -6,7 +6,10 @@
  * Llibreria de formularis:
  *  - {@link Form}
  *  - {@link FormRecerca}
+ *  - {@link FormRecercaQBE}
  *  - {@link FormFitxa} 
+ *  - {@link FormDetall} 
+ *  - {@link FormFitxaDetall} 
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -20,6 +23,8 @@ require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibSQL.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/vendor/autoload.php');
+// Sense l'autoload de Composer:
+//require_once(ROOT.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.includes.php');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -88,12 +93,6 @@ class Form extends Objecte
     public $ClauPrimaria = '';	
 
 	/**
-	 * Objecte que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
-	 * @var object
-	 */    
-//    public $Registre = NULL;
-
-	/**
 	 * Fitxers JavaScript.
 	 * @var array
 	 */    
@@ -110,17 +109,6 @@ class Form extends Objecte
 	 * @var boolean
 	 */    
     public $NomesLectura = False; 
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param objecte $conn Connexió a la base de dades.
-	 * @param objecte $user Usuari.
-	 * @param objecte $system Dades de l'aplicació.
-	 */
-/*	function __construct($con = null, $user = null, $system = null) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}*/
 
 	/**
 	 * Afegeix un fitxer JavaScript.
@@ -225,7 +213,7 @@ class Form extends Objecte
 		$MaximCaracters = ($MaximCaracters != 0) ? ' maxlength='.$MaximCaracters : '';
 		$sRetorn = '';
 		if (!in_array(self::offNO_TITOL, $off))
-		$sRetorn .= '<TD><label for="ede_'.$Nom.'">'.$Titol.'</label></TD>';
+			$sRetorn .= '<TD><label for="ede_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD><input class="form-control mr-sm-2" type="text" style="width:'.$Longitud.'px" name="edt_'.$Nom.'"'.$Valor.$Requerit.$NomesLectura.$MaximCaracters.'></TD>';
 		return $sRetorn;
 	}	
@@ -272,7 +260,6 @@ class Form extends Objecte
 	
 	/**
 	 * Crea un camp de tipus checkbox.
-	 *
 	 * @param string $Nom Nom del element.
 	 * @param string $Titol Títol del camp.
 	 * @param boolean $Valor Valor per defecte de l'element.
@@ -296,7 +283,6 @@ class Form extends Objecte
 
 	/**
 	 * Crea un element "data" (element INPUT + BUTTON per cercar les dates).
-	 *
 	 * @param string $Nom Nom del element.
 	 * @param string $Titol Títol del camp.
 	 * @param array $off Opcions del formulari.
@@ -329,10 +315,8 @@ class Form extends Objecte
 	
 	/**
 	 * CreaLlista
-	 *
 	 * Crea una llista desplegable (combobox) HTML com a 2 cel·les d'una taula.
 	 * Ús: CreaLlista(array(1, 2, 3, 4), array("foo", "bar", "hello", "world"));
-	 *
 	 * @param string $Nom Nom del desplegable.
 	 * @param string $Titol Títol del desplegable.
 	 * @param integer $Longitud Longitud del desplegable.
@@ -366,7 +350,6 @@ class Form extends Objecte
 	 *  - Camp amagat on hi haurà els camps a mostrar dels retornats (camp lkh_X_camps).
 	 *  - Camp text on hi haurà la descripció (camp lkp_).
 	 *  - Botó per fer la recerca.	 
-	 *
 	 * @param string $Nom Nom del lookup.
 	 * @param string $Titol Títol del camp.
 	 * @param integer $Longitud Longitud màxima.
@@ -419,7 +402,6 @@ class Form extends Objecte
 	
 	/**
 	 * Crea un camp de tipus camp calculat.
-	 *
 	 * @param string $Calcul Tipus de camp calculat.
 	 * @param string $Nom Nom del element.
 	 * @param string $Titol Títol del camp.
