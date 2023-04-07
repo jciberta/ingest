@@ -25,24 +25,29 @@ class Seguretat
 	  *   - AL: alumne
 	  *   - PM: pare o mare
 	  *   - AD: administratiu
+	  * @param bool $Condicio Condició extra que farà un OR amb els usuaris. És a dir, es permetrà l'accés als usuaris o si es compleix la condició.
 	  */
-	public static function ComprovaAccessUsuari($Usuari, $Array) {
+	public static function ComprovaAccessUsuari($Usuari, $Array, bool $Condicio = false) {
 		$Access = false;
-		foreach($Array as $Valor) 
-			$Valor = strtoupper($Valor);
-		if (in_array('SU', $Array) && $Usuari->es_admin)
-			$Access = true;
-		if (in_array('DI', $Array) && $Usuari->es_direccio)
-			$Access = true;
-		if (in_array('CE', $Array) && $Usuari->es_cap_estudis)
-			$Access = true;
-		if (in_array('PR', $Array) && $Usuari->es_professor)
-			$Access = true;
-		if (in_array('AL', $Array) && $Usuari->es_alumne)
-			$Access = true;
-		if (in_array('PM', $Array) && $Usuari->es_pare)
-			$Access = true;
-		if (in_array('AD', $Array) && $Usuari->es_administratiu)
+		if ($Usuari !== null) {
+			foreach($Array as $Valor) 
+				$Valor = strtoupper($Valor);
+			if (in_array('SU', $Array) && $Usuari->es_admin)
+				$Access = true;
+			if (in_array('DI', $Array) && $Usuari->es_direccio)
+				$Access = true;
+			if (in_array('CE', $Array) && $Usuari->es_cap_estudis)
+				$Access = true;
+			if (in_array('PR', $Array) && $Usuari->es_professor)
+				$Access = true;
+			if (in_array('AL', $Array) && $Usuari->es_alumne)
+				$Access = true;
+			if (in_array('PM', $Array) && $Usuari->es_pare)
+				$Access = true;
+			if (in_array('AD', $Array) && $Usuari->es_administratiu)
+				$Access = true;
+		}
+		if ($Condicio)
 			$Access = true;
 		
 		if (!$Access) {

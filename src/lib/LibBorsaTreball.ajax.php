@@ -86,8 +86,7 @@ if (isset($_GET) && !empty($_GET)) {
 	}
 }
 
-function MostraOferta($BorsaTreball, $con)
-{
+function MostraOferta($BorsaTreball, $con) {
 	if (isset($_POST["id"])) {
 		$id = mysqli_real_escape_string($con, $_POST["id"]);
 		echo $BorsaTreball->ConsultaOferta($id);
@@ -96,8 +95,7 @@ function MostraOferta($BorsaTreball, $con)
 	}
 }
 
-function DesaNovaOferta($BorsaTreball, $con)
-{
+function DesaNovaOferta($BorsaTreball, $con) {
 	if (isset($_POST["empresa"]) && isset($_POST["cicle"]) && isset($_POST["contacte"]) && isset($_POST["telefon"]) && isset($_POST["poblacio"]) && isset($_POST["correu"]) && isset($_POST["descripcio"]) && isset($_POST["web"])) {
 		$empresa = mysqli_real_escape_string($con, $_POST["empresa"]);
 		$cicle = mysqli_real_escape_string($con, $_POST["cicle"]);
@@ -138,8 +136,7 @@ function DesaNovaOferta($BorsaTreball, $con)
 	}
 }
 
-function FiltrarOfertes($BorsaTreball, $con)
-{
+function FiltrarOfertes($BorsaTreball, $con) {
 	if (isset($_POST["cerca"])) {
 		$cerca = mysqli_real_escape_string($con, $_POST["cerca"]);
 
@@ -149,8 +146,7 @@ function FiltrarOfertes($BorsaTreball, $con)
 	}
 }
 
-function EliminaOferta($BorsaTreball, $con)
-{
+function EliminaOferta($BorsaTreball, $con) {
 	if (isset($_POST["id"])) {
 		$id = mysqli_real_escape_string($con, $_POST["id"]);
 
@@ -160,8 +156,7 @@ function EliminaOferta($BorsaTreball, $con)
 	}
 }
 
-function PublicaOferta($BorsaTreball, $con)
-{
+function PublicaOferta($BorsaTreball, $con) {
 	if (isset($_POST["id"])) {
 		$id = mysqli_real_escape_string($con, $_POST["id"]);
 
@@ -171,8 +166,7 @@ function PublicaOferta($BorsaTreball, $con)
 	}
 }
 
-function DesubscriuBorsaTreball($BorsaTreball, $con)
-{
+function DesubscriuBorsaTreball($BorsaTreball, $con) {
 	if (isset($_GET["email"]) && isset($_GET["token"])) {
 		$email = mysqli_real_escape_string($con, $_GET["email"]);
 		$token = mysqli_real_escape_string($con, $_GET["token"]);

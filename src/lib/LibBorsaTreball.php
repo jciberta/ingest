@@ -19,6 +19,7 @@ require_once(ROOT.'/vendor/PHPMailer/Exception.php');
 require_once(ROOT.'/vendor/PHPMailer/SMTP.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 
 class BorsaTreball extends Objecte
 {
@@ -152,11 +153,11 @@ class BorsaTreball extends Objecte
 	 * @param int $id Identificador de l'oferta
 	 * @return string JSON amb el resultat de la operació
 	 */
-	public function PublicaOferta(int $id): string
-	{
-		if ($this->Usuari === null || !$this->EsGestorBorsa) {
-			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
-		}
+	public function PublicaOferta(int $id): string {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE'], $this->EsGestorBorsa);
+//		if ($this->Usuari === null || !$this->EsGestorBorsa) {
+//			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
+//		}
 
 		try {
 			$stmt = $this->Connexio->prepare("UPDATE BORSA_TREBALL SET publicat = 1 WHERE borsa_treball_id = ?;");
@@ -177,13 +178,9 @@ class BorsaTreball extends Objecte
 			INNER JOIN CICLE_PLA_ESTUDI cpe ON c.cicle_formatiu_id = cpe.cicle_pla_estudi_id 
 			INNER JOIN CICLE_FORMATIU cf ON cpe.cicle_formatiu_id = cf.cicle_formatiu_id 
 			WHERE cf.cicle_formatiu_id = ?;");
-
 			$stmt->bind_param("i", $resultSetOferta["cicle_formatiu_id"]);
-
 			$stmt->execute();
-
 			$resultSet = $stmt->get_result();
-
 			$stmt->close();
 
 			while ($row = $resultSet->fetch_assoc()) {
@@ -208,9 +205,10 @@ class BorsaTreball extends Objecte
 	 * @return string JSON amb el resultat de la operació
 	 */
 	public function EliminaOferta(int $id): string {
-		if ($this->Usuari === null || !$this->EsGestorBorsa) {
-			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
-		}
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE'], $this->EsGestorBorsa);
+//		if ($this->Usuari === null || !$this->EsGestorBorsa) {
+//			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
+//		}
 		try {
 			$stmt = $this->Connexio->prepare("DELETE FROM BORSA_TREBALL WHERE borsa_treball_id = ?;");
 			$stmt->bind_param("i", $id);
@@ -565,15 +563,10 @@ class BorsaTreball extends Objecte
 	 * @see DesaNovaOferta()
 	 * @throws Exception Si hi ha algun error al enviar el correu
 	 */
-	private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
-	{
-
+	private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web) {
 		$stmt = $this->Connexio->prepare("SELECT u.email FROM USUARI u INNER JOIN SISTEMA s ON u.usuari_id = s.gestor_borsa_treball_id;");
-
 		$stmt->execute();
-
 		$rs = $stmt->get_result();
-
 		$stmt->close();
 
 		$body = "
@@ -624,8 +617,8 @@ class BorsaTreball extends Objecte
 	 * @see PublicaOferta()
 	 * @throws Exception Si hi ha algun error al enviar el correu
 	 */
-	private function EnviarMailNovaOfertaAlumnes(array $oferta, int $usuari_id, string $emailAlumne)
-	{
+	private function EnviarMailNovaOfertaAlumnes(array $oferta, int $usuari_id, string $emailAlumne) {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE'], $this->EsGestorBorsa);
 		$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
 		$URLHost = "{$Protocol}://{$_SERVER['HTTP_HOST']}";
 		$token = base64_encode($this->GenerarToken($emailAlumne));
@@ -677,8 +670,6 @@ class BorsaTreball extends Objecte
 		$mail->Password = Config::PasswordCorreu;
 		$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
 		$mail->Port = 465;
-
-
 
 		$mail->setFrom(Config::Correu, "No contesteu");
 		$mail->AddAddress($emailAlumne);
