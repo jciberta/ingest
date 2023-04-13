@@ -390,6 +390,7 @@ class MenuInGest extends Menu
 			$Retorn .= Menu::Opcio('Matriculació alumnes', 'FormMatricula.php');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Orla', 'UsuariRecerca.php?accio=Orla');
+			$Retorn .= Menu::Opcio('Borsa de treball', 'BorsaTreball.php');
 			$Retorn .= Menu::Tanca();
 
 			// Menú Professors

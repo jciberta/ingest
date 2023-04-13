@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Classe per gestionar la borsa de treball
+ * LibBorsaTreball.php
  * 
+ * Classe per gestionar la borsa de treball.
  * 
- * @author  shad0wstv
- * @version 1.0
+ * @author  shad0wstv, Josep Ciberta
  * @since   1.13
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
@@ -13,29 +13,34 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once(ROOT . '/vendor/autoload.php');
-require_once(ROOT . '/vendor/PHPMailer/PHPMailer.php');
-require_once(ROOT . '/vendor/PHPMailer/Exception.php');
-require_once(ROOT . '/vendor/PHPMailer/SMTP.php');
-
-require_once(ROOT . '/lib/LibForms.php');
-
+require_once(ROOT.'/vendor/autoload.php');
+require_once(ROOT.'/vendor/PHPMailer/PHPMailer.php');
+require_once(ROOT.'/vendor/PHPMailer/Exception.php');
+require_once(ROOT.'/vendor/PHPMailer/SMTP.php');
+require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 
 class BorsaTreball extends Objecte
 {
-	private $Professor;
+	private $EsGestorBorsa = false;
+
+	function __construct($conn = null, $user = null, $system = null) {
+		parent::__construct($conn, $user, $system);
+		$Professor = new Professor($conn, $user, $system);
+		$this->EsGestorBorsa = $Professor->EsGestorBorsa();
+	}	
 
 	/**
-	 * Constructor de la classe
-	 * @param mysqli $conn Connexió a la base de dades
-	 * @param Usuari $usuari Usuari que ha fet login
-	 * @param Sistema $sistema Objecte amb la informació del sistema
-	 * @param Professor $Professor Objecte amb la informació del professor loguejat
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
-	function __construct($conn = null, $usuari = null, $sistema = null, $Professor = null)
-	{
-		parent::__construct($conn, $usuari, $sistema);
-		$this->Professor = $Professor;
+	public function EscriuHTML() {
+		echo $this->GeneraCapcalera();
+		echo $this->GeneraCerca();
+		echo $this->GeneraTaula();
+		echo $this->GeneraModalDetallOferta();
+		echo $this->GeneraModalNovaOferta();
+		echo $this->GeneraModalEditaOferta();
+		echo $this->GeneraPeu();
 	}
 
 	/**
@@ -45,19 +50,13 @@ class BorsaTreball extends Objecte
 	public function ConsultaCiclesFormatius(): string
 	{
 		$stmt = $this->Connexio->prepare("SELECT cf.nom, cf.cicle_formatiu_id FROM CICLE_FORMATIU cf INNER JOIN FAMILIA_FP fp ON cf.familia_fp_id = fp.familia_fp_id;");
-
 		$stmt->execute();
-
 		$resultSet = $stmt->get_result();
-
 		$stmt->close();
-
-		$output = "<option selected hidden>Escull...</option>";
-
+		$output = "<option selected hidden>Seleccioni...</option>";
 		while ($row = $resultSet->fetch_assoc()) {
 			$output .= "<option value='$row[cicle_formatiu_id]'>$row[nom]</option>";
 		}
-
 		return $output;
 	}
 
@@ -65,21 +64,22 @@ class BorsaTreball extends Objecte
 	 * Retorna la informació de totes les ofertes de la borsa de treball
 	 * @return string HTML amb la informació de les ofertes
 	 */
-	public function ConsultaOfertes(): string
-	{
-		$stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM BORSA_TREBALL bt INNER JOIN CICLE_FORMATIU cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN FAMILIA_FP fp ON cf.familia_fp_id = fp.familia_fp_id;");
-
+	public function CarregaOfertes(): string {
+		$SQL = "
+			SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia 
+			FROM BORSA_TREBALL bt 
+			INNER JOIN CICLE_FORMATIU cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id 
+			INNER JOIN FAMILIA_FP fp ON cf.familia_fp_id = fp.familia_fp_id
+			ORDER BY data_creacio DESC
+		";
+		$stmt = $this->Connexio->prepare($SQL);
 		$stmt->execute();
-
 		$resultSet = $stmt->get_result();
-
 		$stmt->close();
 		$output = "";
-
 		while ($row = $resultSet->fetch_assoc()) {
 			$output .= $this->MostraFilaOferta($row);
 		}
-
 		return $output;
 	}
 
@@ -89,25 +89,17 @@ class BorsaTreball extends Objecte
 	 * @return string HTML amb la informació de les ofertes
 	 */
 
-	public function FiltrarOfertes($filtre): string
-	{
+	public function FiltrarOfertes($filtre): string	{
 		$stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM BORSA_TREBALL bt INNER JOIN CICLE_FORMATIU cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN familia_fp fp ON cf.familia_fp_id = fp.familia_fp_id WHERE fp.nom LIKE ? OR cf.nom LIKE ? OR bt.empresa LIKE ? OR bt.contacte LIKE ? OR bt.poblacio LIKE ?;");
-
 		$filtre = "%" . $filtre . "%";
-
 		$stmt->bind_param("sssss", $filtre, $filtre, $filtre, $filtre, $filtre);
-
 		$stmt->execute();
-
 		$resultSet = $stmt->get_result();
-
 		$stmt->close();
 		$output = "";
-
 		while ($row = $resultSet->fetch_assoc()) {
 			$output .= $this->MostraFilaOferta($row);
 		}
-
 		return $output;
 	}
 
@@ -116,19 +108,13 @@ class BorsaTreball extends Objecte
 	 * @param int $id
 	 * @return string JSON amb la informació de l'oferta
 	 */
-	public function ConsultaOferta(int $id): string
-	{
+	public function ConsultaOferta(int $id): string	{
 		$stmt = $this->Connexio->prepare("SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia FROM borsa_treball bt INNER JOIN CICLE_FORMATIU cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id INNER JOIN FAMILIA_FP fp ON cf.familia_fp_id = fp.familia_fp_id WHERE borsa_treball_id = ?;");
-
 		$stmt->bind_param("i", $id);
-
 		$stmt->execute();
-
 		$resultSet = $stmt->get_result();
 		$resultSet = $resultSet->fetch_all(MYSQLI_ASSOC);
-
 		$stmt->close();
-
 		return json_encode($resultSet);
 	}
 
@@ -144,28 +130,20 @@ class BorsaTreball extends Objecte
 	 * @param string $web
 	 * @return string JSON amb el resultat de la operació
 	 */
-	public function GuardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)
-	{
+	public function DesaNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web) {
 		$web = preg_replace("/^https?:\/\//", "", $web);
 		try {
-
 			$stmt = $this->Connexio->prepare("INSERT INTO BORSA_TREBALL (cicle_formatiu_id, empresa, contacte, telefon, poblacio, email, web, descripcio) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-
 			$stmt->bind_param("isssssss", $cicle, $empresa, $contacte, $telefon, $poblacio, $correu, $web, $descripcio);
-
 			$stmt->execute();
-
 			$stmt->close();
-
-			$this->enviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
+//			$this->enviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
 		} catch (Exception $e) {
 			if (Config::Debug) {
 				return json_encode(array("status" => "error", "message" => $e->getMessage(), "trace" => $e->getTrace()));
 			}
-
-			return json_encode(array("status" => "error", "message" => "Error al enviar el correu"));
+			return json_encode(array("status" => "error", "message" => "Error en enviar el correu."));
 		}
-
 		return json_encode(array("status" => "ok"));
 	}
 
@@ -176,7 +154,7 @@ class BorsaTreball extends Objecte
 	 */
 	public function PublicaOferta(int $id): string
 	{
-		if ($this->Professor === null || !$this->Professor->EsGestorBorsa()) {
+		if ($this->Usuari === null || !$this->EsGestorBorsa) {
 			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
 		}
 
@@ -229,28 +207,21 @@ class BorsaTreball extends Objecte
 	 * @param int $id Identificador de l'oferta
 	 * @return string JSON amb el resultat de la operació
 	 */
-	public function EliminaOferta(int $id): string
-	{
-		if ($this->Professor === null || !$this->Professor->EsGestorBorsa()) {
+	public function EliminaOferta(int $id): string {
+		if ($this->Usuari === null || !$this->EsGestorBorsa) {
 			return json_encode(array("status" => "error", "message" => "No tens permisos per realitzar aquesta acció"));
 		}
-
 		try {
 			$stmt = $this->Connexio->prepare("DELETE FROM BORSA_TREBALL WHERE borsa_treball_id = ?;");
-
 			$stmt->bind_param("i", $id);
-
 			$stmt->execute();
-
 			$stmt->close();
 		} catch (Exception $e) {
 			if (Config::Debug) {
 				return json_encode(array("status" => "error", "message" => $e->getMessage(), "trace" => $e->getTrace()));
 			}
-
 			return json_encode(array("status" => "error", "message" => "Error al eliminar l'oferta"));
 		}
-
 		return json_encode(array("status" => "ok"));
 	}
 
@@ -259,32 +230,267 @@ class BorsaTreball extends Objecte
 	 * @param string $Titol
 	 * @return string HTML amb la capçalera
 	 */
-	public function CreaCapcalera($Titol = 'Borsa de treball'): string
-	{
-		$Retorn = '<!doctype html>' . PHP_EOL;
-		$Retorn .= '<html>' . PHP_EOL;
-		$Retorn .= '<head>' . PHP_EOL;
-		$Retorn .= '  <meta name="viewport" content="width=device-width, initial-scale=1">' . PHP_EOL;
-		$Retorn .= '	<meta charset=UTF8>' . PHP_EOL;
-		$Retorn .= '	<title>InGest</title>' . PHP_EOL;
-		$Retorn .= '	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">' . PHP_EOL;
-		$Retorn .= '</head>' . PHP_EOL;
-		$Retorn .= '<body>' . PHP_EOL;
-		$Retorn .= '<div class="starter-template" style="padding:20px">';
-		$Retorn .= '<h1>' . $Titol . '</h1>';
-		return $Retorn;
+	private function GeneraCapcalera($Titol = 'Borsa de treball'): string {
+		return GeneraIniciHTML($this->Usuari, 'Borsa de treball', $this->Usuari !== null);
 	}
 
-	public function CreaFooter()
-	{
-		echo "</div>" . PHP_EOL;
-		echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>' . PHP_EOL;
-		echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>' . PHP_EOL;
-		echo '<script src="js/BorsaTreball.js"></script>' . PHP_EOL;
-		echo '</body>' . PHP_EOL;
-		echo '</html>' . PHP_EOL;
+	private function GeneraPeu(): string {
+		return '
+			</div>
+			<script src="js/BorsaTreball.js?v1.1"></script>
+			</body>
+			</html>
+		';
 	}
 
+	private function GeneraCerca(): string {
+		return '
+			<div class="container-fluid">
+				<div class="m-4 d-inline">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="w-100 mw-50">
+								<form action="#" method="post" class="cerca">
+									<div class="input-group">
+										<input class="form-control" type="search" name="itemName" placeholder="Nom, cicle, empresa..." aria-label="Search">
+										<span class="input-group-text bg-transparent border-start-0">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+												<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+											</svg>
+										</span>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="col-sm-8 mt-sm-0 mt-3">
+							<button type="button" class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#modalNovaOferta" onclick="carregaCicles()">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+									<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+									<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+								</svg>
+								Nova oferta
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		';
+	}
+
+	private function GeneraTaula(): string {
+		return '
+			<div class="container-fluid">
+				<div class="rounded-2 table-responsive">
+					<table id="taulaCicles" class="table table-striped table-sm table-hover">
+						<thead class="thead-dark">
+							<tr>
+								<th>Empresa</th>
+								<th>Cicle</th>
+								<th>Població</th>
+								<th>Data publicació</th>
+								<th>Accions</th>
+							</tr>
+						</thead>
+						<tbody id="llista-ofertes"></tbody>
+					</table>
+				</div>
+			</div>
+		';
+	}
+
+	private function GeneraModalDetallOferta(): string {
+		return '
+			<!-- Modal detall oferta -->
+			<div class="modal fade" id="modalOferta" tabindex="-1" aria-labelledby="modalOfertaLabel">
+				<div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalOfertaLabel">Oferta</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+						  	</button>							
+						</div>
+						<div class="modal-body">
+							<div class="container">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title" id="modalOfertaEmpresa"></h4>
+										<h6 class="card-subtitle mb-2 text-muted">
+											<span id="modalOfertaPoblacio"></span>
+											-
+											<span id="modalOfertaCicle"></span>
+										</h6>
+										<div class="card-text">
+											<h5>Contacte</h5>
+											<p>
+												<span id="modalOfertaTelefon"></span>
+												-
+												<span id="modalOfertaEmail"></span>
+											</p>
+										</div>
+										<div class="mb-2 form-group">
+											<h5>Descripció</h5>
+											<textarea class="form-control" id="modalOfertaDescripcio" rows="10" readonly></textarea>
+										</div>
+										<a href="#" class="btn btn-primary" target="_blank" id="modalOfertaWeb">Visitar web</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tanca</button>
+						</div>
+					</div>
+				</div>
+			</div>		
+		';
+	}
+
+	private function GeneraModalNovaOferta(): string {
+		return '
+			<!-- Modal nova oferta -->
+			<div class="modal fade" id="modalNovaOferta" tabindex="-1" role="dialog" aria-labelledby="modalNovaOfertaLabel">
+				<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+					<div class=" modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalNovaOfertaLabel">Nova oferta</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+						  	</button>							
+						</div>
+						<div class="modal-body">
+							<div class="container-fluid">
+								<div class="alert alert-danger fade show visually-hidden" role="alert" id="modalError" style="display:none">
+									<span id="modalErrorMessage"></span>
+								</div>
+								<form class="row g-3">
+									<div class="form-group">
+										<label class="form-label" for="inputCicle">Cicle</label>
+										<select id="inputCicle" class="form-select">
+											<option selected hidden>Seleccioni...</option>
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<label class="form-label" for="inputEmpresa">Empresa</label>
+											<input type="text" class="form-control" id="inputEmpresa">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label" for="inputContacte">Contacte</label>
+											<input type="text" class="form-control" id="inputContacte">
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<label class="form-label" for="inputTelefon">Telèfon</label>
+											<input type="tel" class="form-control" id="inputTelefon" pattern="[0-9]{9}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label" for="inputPoblacio">Població</label>
+											<input type="text" class="form-control" id="inputPoblacio">
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<label class="form-label" for="inputCorreu">Correu</label>
+											<input type="email" class="form-control" id="inputCorreu">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label" for="inputWeb">Web</label>
+											<input type="text" class="form-control" id="inputWeb">
+										</div>
+									</div>
+									<div>
+										<label class="form-label" for="inputDescripcio">Descripció</label>
+										<textarea class="form-control" id="inputDescripcio" rows="3"></textarea>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelaNovaOferta()">
+								Tanca
+							</button>
+							<button type="button" class="btn btn-primary" id="DesaOferta" onclick="DesaNovaOferta()">
+								<span id="DesaOfertaText">Desa</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		';
+	}
+
+	private function GeneraModalEditaOferta(): string {
+		return '
+			<!-- Modal edita oferta -->
+			<div class="modal fade" id="modalEditaOferta" tabindex="-1" aria-labelledby="modalEditaOfertaLabel">
+				<div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalEditaOfertaLabel">Oferta</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+						  	</button>							
+						</div>
+						<div class="modal-body">
+							<div class="container">
+								<div class="alert alert-danger fade show visually-hidden" role="alert" id="modalEditaError" style="display:none">
+									<span id="modalEditaErrorMessage"></span>
+								</div>
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title" id="modalEditaOfertaEmpresa"></h4>
+										<h6 class="card-subtitle mb-2 text-muted">
+											<span id="modalEditaOfertaPoblacio"></span>
+											-
+											<span id="modalEditaOfertaCicle"></span>
+										</h6>
+										<div class="card-text">
+											<h5>Contacte</h5>
+											<p>
+												<span id="modalEditaOfertaTelefon"></span>
+												-
+												<span id="modalEditaOfertaEmail"></span>
+											</p>
+										</div>
+										<div class="mb-2 form-group">
+											<h5>Descripció</h5>
+											<textarea class="form-control" id="modalEditaOfertaDescripcio" rows="10" readonly></textarea>
+										</div>
+										<a href="#" class="btn btn-primary" target="_blank" id="modalEditaOfertaWeb">Visitar web</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<input hidden id="modalEditaOfertaId" />
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+									<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+								</svg>
+								Tanca
+							</button>
+							<button type="button" class="btn btn-danger" id="eliminaOferta" onclick="eliminaOferta()">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" id="modalEliminaIcon" class="bi bi-trash" viewBox="0 0 16 16">
+									<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+									<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+								</svg>
+								<span id="eliminarOfertaText">Suprimeix</span>
+							</button>
+							<button type="button" class="btn btn-success" id="publicaOferta" onclick="publicaOferta()">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" id="modalPublicaIcon" class="bi bi-box-arrow-up" viewBox="0 0 16 16">
+									<path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z" />
+									<path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 1.707V10.5a.5.5 0 0 1-1 0V1.707L5.354 3.854a.5.5 0 1 1-.708-.708l3-3z" />
+								</svg>
+								<span id="publicaOfertaText">Publica</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		';
+	}
 
 	/**
 	 * Construeix la fila de la taula amb la informació de la oferta de treball tenint en compte si l'usuari està loguejat o no i si és un gestor de la borsa de treball, només mostrarà les ofertes dels anteriors 6 mesos
@@ -293,12 +499,11 @@ class BorsaTreball extends Objecte
 	 * @see ConsultaOfertes()
 	 * @see FiltrarOfertes()
 	 */
-	private function MostraFilaOferta(array $row): string
-	{
+	private function MostraFilaOferta(array $row): string {
 		$output = "";
 		$data = date_format(date_create($row["data_creacio"]), 'd/m/Y H:i:s');
 		if (date($row["data_creacio"]) > date("Y-m-d H:i:s", strtotime("-6 month"))) {
-			if ($row["publicat"] === 1 && ($this->Professor === null || !$this->Professor->EsGestorBorsa())) {
+			if ($this->Usuari !== null && ($this->Usuari->es_admin || $this->EsGestorBorsa)) {
 				$output .= "
 					<tr>
 						<td>$row[empresa]</td>
@@ -311,24 +516,7 @@ class BorsaTreball extends Objecte
 									<path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
 									<path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
 								</svg>
-								Visualitzar
-							</button>
-						</td>
-					</tr>";
-			} else if ($this->Professor !== null && $this->Professor->EsGestorBorsa()) {
-				$output .= "
-					<tr>
-						<td>$row[empresa]</td>
-						<td>$row[nom_cicle]</td>
-						<td>$row[poblacio]</td>
-						<td>$data</td>
-						<td>
-							<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
-								<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
-									<path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
-									<path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
-								</svg>
-								Visualitzar
+								Visualitza
 							</button>";
 				if ($row["publicat"] === 0) {
 					$output .= "
@@ -337,11 +525,28 @@ class BorsaTreball extends Objecte
 								<path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
 								<path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
 							</svg>
-							Edita
+							Publica
 						</button>";
 				}
-
 				$output .= "</td></tr>";
+			}
+			else if ($row["publicat"] === 1) {
+				$output .= "
+					<tr>
+						<td>$row[empresa]</td>
+						<td>$row[nom_cicle]</td>
+						<td>$row[poblacio]</td>
+						<td>$data</td>
+						<td>
+							<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalOferta' onclick='mostraOferta($row[borsa_treball_id])'>
+								<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='align-self-start' viewBox='0 0 16 16'>
+									<path d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'></path>
+									<path d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'></path>
+								</svg>
+								Visualitza
+							</button>
+						</td>
+					</tr>";
 			}
 		}
 		return $output;
@@ -357,7 +562,7 @@ class BorsaTreball extends Objecte
 	 * @param string $correu
 	 * @param string $descripcio
 	 * @param string $web
-	 * @see GuardarNovaOferta()
+	 * @see DesaNovaOferta()
 	 * @throws Exception Si hi ha algun error al enviar el correu
 	 */
 	private function EnviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web)

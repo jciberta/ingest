@@ -1,14 +1,17 @@
 <?php
 
-/**
+/** 
+ * LibBorsaTreball.ajax.php
+ *
+ * Accions AJAX per a la llibreria de la borsa de treball.
  * Accions:
  * - carregaOfertes: Retorna la informació de totes les ofertes de la borsa de treball
  * - mostraOferta: Retorna la informació d'una oferta de la borsa de treball a partir del seu id
  * - carregaCicles: Retorna la informació de tots els cicles formatius
- * - guardaNovaOferta: Guarda una nova oferta de la borsa de treball
+ * - DesaNovaOferta: Desa una nova oferta de la borsa de treball
  * - filtraOfertes: Retorna la informació de les ofertes de la borsa de treball que compleixen els filtres
  * 
- * @author shad0wstv
+ * @author shad0wstv, Josep Ciberta
  * @version 1.0
  * @since 1.13
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -16,24 +19,21 @@
 
 
 require_once('../Config.php');
-require_once(ROOT . '/lib/LibBorsaTreball.php');
-require_once(ROOT . '/lib/LibUsuari.php');
-require_once(ROOT . '/lib/LibURL.php');
+require_once(ROOT.'/lib/LibBorsaTreball.php');
+require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT.'/lib/LibURL.php');
 
 session_start();
 
 $con = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
-
-if ($con->connect_error) {
-	die("Connection failed: " . $con->connect_error);
-}
+if ($con->connect_error)
+	die("ERROR: No ha estat possible connectar amb la base de dades: " . $con->connect_error);
 
 if (isset($_SESSION["USUARI"]) && isset($_SESSION["usuari_id"])) {
-	$usu = unserialize($_SESSION["USUARI"]);
-	$Usuari = new Usuari($con, $usu, null);
-	$Professor = new Professor($con, $Usuari, null);
-	$BorsaTreball = new BorsaTreball($con, $Usuari, null, $Professor);
-} else {
+	$Usuari = unserialize($_SESSION["USUARI"]);
+	$BorsaTreball = new BorsaTreball($con, $Usuari, null);
+} 
+else {
 	$BorsaTreball = new BorsaTreball($con);
 }
 
@@ -41,8 +41,8 @@ if (isset($_POST["accio"]) && !empty($_POST["accio"])) {
 	$accio = mysqli_real_escape_string($con, $_POST["accio"]);
 
 	switch ($accio) {
-		case "carregaOfertes":
-			echo $BorsaTreball->ConsultaOfertes();
+		case "CarregaOfertes":
+			echo $BorsaTreball->CarregaOfertes();
 			break;
 		case "mostraOferta":
 			MostraOferta($BorsaTreball, $con);
@@ -50,8 +50,8 @@ if (isset($_POST["accio"]) && !empty($_POST["accio"])) {
 		case "carregaCicles":
 			echo $BorsaTreball->ConsultaCiclesFormatius();
 			break;
-		case "guardarNovaOferta":
-			GuardarNovaOferta($BorsaTreball, $con);
+		case "DesaNovaOferta":
+			DesaNovaOferta($BorsaTreball, $con);
 			break;
 		case "filtrarOfertes":
 			FiltrarOfertes($BorsaTreball, $con);
@@ -96,7 +96,7 @@ function MostraOferta($BorsaTreball, $con)
 	}
 }
 
-function GuardarNovaOferta($BorsaTreball, $con)
+function DesaNovaOferta($BorsaTreball, $con)
 {
 	if (isset($_POST["empresa"]) && isset($_POST["cicle"]) && isset($_POST["contacte"]) && isset($_POST["telefon"]) && isset($_POST["poblacio"]) && isset($_POST["correu"]) && isset($_POST["descripcio"]) && isset($_POST["web"])) {
 		$empresa = mysqli_real_escape_string($con, $_POST["empresa"]);
@@ -109,7 +109,7 @@ function GuardarNovaOferta($BorsaTreball, $con)
 		$web = mysqli_real_escape_string($con, $_POST["web"]);
 
 		if (empty($empresa) || empty($cicle) || empty($contacte) || empty($telefon) || empty($poblacio) || empty($correu) || empty($descripcio) || empty($web)) {
-			die(json_encode(array("error" => 404, "missatge" => "No s'han trobat totes les dades de l'oferta")));
+			die(json_encode(array("error" => 404, "missatge" => "S'han d'omplir tots els camps de l'oferta")));
 		}
 
 		if (!is_numeric($cicle) || !preg_match('/^[0-9]+$/', $cicle)) {
@@ -132,7 +132,7 @@ function GuardarNovaOferta($BorsaTreball, $con)
 			die(json_encode(array("error" => 404, "missatge" => "La web no és vàlida")));
 		}
 
-		echo $BorsaTreball->GuardarNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
+		echo $BorsaTreball->DesaNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
 	} else {
 		echo json_encode(array("error" => "No s'han trobat totes les dades de l'oferta"));
 	}
@@ -179,11 +179,11 @@ function DesubscriuBorsaTreball($BorsaTreball, $con)
 
 		//TODO: Redirigir a l'usuari a una pagina de confirmació de desubscripció de la borsa de treball
 		if ($BorsaTreball->DesubscriuBorsaTreball($email, $token)) {
-			echo json_encode(array("success" => "S'ha desubscrit correctament de la borsa de treball"));
+			echo json_encode(array("success" => "S'ha desubscrit correctament de la borsa de treball."));
 		} else {
-			echo json_encode(array("error" => "No s'ha pogut desubscriure de la borsa de treball"));
+			echo json_encode(array("error" => "No s'ha pogut desubscriure de la borsa de treball."));
 		}
 	} else {
-		echo json_encode(array("error" => "No s'ha trobat l'email o el token"));
+		echo json_encode(array("error" => "No s'ha trobat l'email o el token."));
 	}
 }
