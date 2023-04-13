@@ -671,6 +671,30 @@ LEFT JOIN EQUIP EQ ON (EQ.equip_id=PEQ.equip_id)
 WHERE any_academic_id=4;
 
 
+/* 
+ * Curs 2023-2024
+ */
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2023, 2024, 'Curs 2023-2024');
+UPDATE ANY_ACADEMIC SET actual=0;
+UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=6;
 
+-- ...
 
+-- Desmarca MP, UF no actius
+call CreaPlaEstudis(6);
 
+-- Posar data inici i data final
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2023-2024 1r', 'SMX1', 29, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2023-2024 2n', 'SMX2', 29, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2023-2024 1r', 'DAM1', 30, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2023-2024 2n', 'DAM2', 30, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2023-2024 1r', 'FIP1', 31, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2023-2024 2n', 'FIP2', 31, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2023-2024 1r', 'APD1', 32, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2023-2024 2n', 'APD2', 32, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2023-2024 1r', 'CAI1', 33, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2023-2024 2n', 'CAI2', 33, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2023-2024 1r', 'FPB1', 34, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2023-2024 2n', 'FPB2', 34, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2023-2024 1r', 'HBD1', 35, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2023-2024 2n', 'HBD2', 35, 2);
