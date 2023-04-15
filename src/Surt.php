@@ -17,14 +17,13 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: index.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 $ClientGoogle = $_SESSION['GOOGLE_CLIENT'];
 
 if ($ClientGoogle) {
-	//Make object of Google API Client for call Google API
 	$google_client = new Google_Client();
-
-	$google_client->setClientId(GOOGLE_CLIENT_ID);
-	$google_client->setClientSecret(GOOGLE_CLIENT_SECRET);
+	$google_client->setClientId($sistema->google_client_id);
+	$google_client->setClientSecret($sistema->google_client_secret);
 
 	// Reset OAuth access token
 	$google_client->revokeToken();
