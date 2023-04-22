@@ -18,19 +18,19 @@ class DocumentPDF extends TCPDF
 {
 	/**
 	 * FontFamily desada.
-	 * @private
+	 * @var string
 	 */
 	private $FontFamilyDesada = 'helvetica';
 
 	/**
 	 * FontStyle desat.
-	 * @private
+	 * @var string
 	 */
 	private $FontStyleDesat = '';
 
 	/**
 	 * FontSizePt desat.
-	 * @private
+	 * @var int
 	 */
 	private $FontSizePtDesat = 12;
 
@@ -53,8 +53,7 @@ class DocumentPDF extends TCPDF
 		$this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 		// set margins
-		//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$this->SetMargins(PDF_MARGIN_LEFT, 120, PDF_MARGIN_RIGHT);
+		$this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 		$this->SetHeaderMargin(PDF_MARGIN_HEADER);
 		$this->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -183,19 +182,114 @@ class DocumentPDF extends TCPDF
 		$this->SetX($this->original_lMargin + 4*$Pas);
 		$this->writeHTML($Text5, False);
 
-/*		$this->SetX($this->original_lMargin);
-		$this->writeHTML(utf8_encodeX($Text1), False);
-		$this->SetX($this->original_lMargin + 1*$Pas);
-		$this->writeHTML(utf8_encodeX($Text2), False);
-		$this->SetX($this->original_lMargin + 2*$Pas);
-		$this->writeHTML(utf8_encodeX($Text3), False);
-		$this->SetX($this->original_lMargin + 3*$Pas);
-		$this->writeHTML(utf8_encodeX($Text4), False);
-		$this->SetX($this->original_lMargin + 4*$Pas);
-		$this->writeHTML(utf8_encodeX($Text5), False);
-*/
 		$this->SetY($this->GetY() + 6);
 	}
+}
+
+/**
+ * Classe per als documents de l'institut en PDF.
+ */
+abstract class DocumentInstitutPDF extends DocumentPDF
+{
+	/**
+	* Any acadèmic.
+	* @var string
+	*/
+	public $AnyAcademic = '';
+
+	/**
+	* Nom complet de l'alumne.
+	* @var string
+	*/
+	public $NomComplet = '';
+
+	/**
+	* DNI l'alumne.
+	* @var string
+	*/
+	public $DNI = '';
+
+	/**
+	* Nom del cicle formatiu.
+	* @var string
+	*/
+	public $CicleFormatiu = '';
+
+	/**
+	* Grup del curs de l'alumne.
+	* @var string
+	*/
+	public $Grup = '';
+
+	/**
+	* Avaluació.
+	* @var string
+	*/
+	public $Avaluacio = '';
+
+	/**
+	* Llei.
+	* @var string
+	*/
+	public $Llei = 'LO'; // Per defecte, LOE
+
+	public function __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+		$this->SetMargins(PDF_MARGIN_LEFT, 110, PDF_MARGIN_RIGHT);
+	}
+
+    // Capçalera
+    public function Header() {
+        // Logo
+        $image_file = ROOT.'/img/logo-gencat.jpg';
+        $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+        $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
+		$this->SetXY(30, 15);
+        $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+		$this->SetXY(30, 20);
+        $this->Cell(0, 15, "Departament d'Educació", 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+		$this->SetXY(30, 30);
+		$this->GeneraBlocTitol();
+		$this->GeneraBlocCentre();
+		$this->GeneraBlocAlumne();
+		$this->GeneraBlocCicle();
+		$this->GeneraBlocSubtitol();
+    }
+
+    // Peu de pàgina
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', '', 8);
+        // Page number
+        $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+    }
+
+	abstract protected function GeneraBlocTitol();
+
+	protected function GeneraBlocCentre() {
+		$this->Titol2("Dades del centre");
+		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
+		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
+	}
+
+	protected function GeneraBlocAlumne() {
+		$this->Titol2("Dades de l'alumne");
+		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
+		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
+	}
+
+	protected function GeneraBlocCicle() {
+		$this->Titol2("Dades dels estudis");
+		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
+		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
+	}
+
+	protected function GeneraBlocSubtitol() {}
 }
 
 ?>

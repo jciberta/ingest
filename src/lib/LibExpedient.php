@@ -54,9 +54,10 @@ class Expedient extends Form
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($conn, $user = null) {
-		parent::__construct($conn, $user);
+	function __construct($conn, $user, $Sistema) {
+		parent::__construct($conn, $user, $Sistema);
 		//$this->Connexio = $con;
 		$this->NotesMP = [];
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
@@ -398,6 +399,12 @@ class ExpedientSaga extends Expedient
 	private $MatriculaId = -1;
 
 	/**
+	 * Percentatge aprovat d'UF.
+	 * @var float
+	 */
+	private $PercentatgeAprovat = 0.0;
+
+	/**
 	 * Objecte matrícula.
 	 * @var object
 	 */
@@ -422,20 +429,22 @@ class ExpedientSaga extends Expedient
 	 * Constructor de l'objecte.
 	 * @param objecte $conn Connexió a la base de dades.
 	 * @param objecte $user Usuari.
+	 * @param objecte $system Dades de l'aplicació.
 	 * @param int $MatriculaId Identificador de la matrícula.
 	 */
-	function __construct($conn, $user, $MatriculaId) {
-		parent::__construct($conn);
+	function __construct($conn, $user, $Sistema, $MatriculaId) {
+		parent::__construct($conn, $user, $Sistema);
 
-		$this->Connexio = $conn;
-		$this->Usuari = $user;
+//		$this->Connexio = $conn;
+//		$this->Usuari = $user;
+//		$this->Sistema = $Sistema;
 		$this->MatriculaId = $MatriculaId;
 
-		$this->Matricula = new Matricula($conn, $user);
+		$this->Matricula = new Matricula($conn, $user, $Sistema);
 		$this->Matricula->Carrega($this->MatriculaId);
 		$this->RegistreMitjanes = [];
 
-		$this->Professor = new Professor($conn, $user);
+		$this->Professor = new Professor($conn, $user, $Sistema);
 		$this->Professor->CarregaUFAssignades();
 	}
 
@@ -731,7 +740,7 @@ class ExpedientSaga extends Expedient
 		$Retorn = '<BR>';
 		$Retorn .= '<TABLE width="740px"><TR><TD>';
 		
-		$PercentatgeAprovat = $this->CalculaPercentatgeAprovat();
+		$this->PercentatgeAprovat = $this->CalculaPercentatgeAprovat();
 
 		// Dades alumne
 		$Retorn .= '<TABLE style="color:white;" width="450px">';
@@ -794,7 +803,7 @@ class ExpedientSaga extends Expedient
 
 		$Retorn .= '</TD>';
 		$Retorn .= '<TD style="color:white;font-weight:bold;font-size:large;">';
-		$Retorn .= $this->CalculaPercentatgeAprovat().'%';
+		$Retorn .= $this->PercentatgeAprovat.'%';
 		$Retorn .= '</TD>';
 		$Retorn .='</TR></TABLE>';
 
@@ -943,12 +952,14 @@ class ExpedientSaga extends Expedient
 	 * @param int $MatriculaId MatriculaId de la matrícula.
 	 * @param array $RegistreUFSegon UF de 2n.
 	 * @param array $RegistreUFSegonValors UF de 2n de la proposta.
+	 * @param float $PercentatgeAprovat Percentatge aprovat d'UF de 1r.
 	 */
-	private function ComparaRegistreUFSegon(int $MatriculaId, array $RegistreUFSegon, array $RegistreUFSegonValors) {
+	private function ComparaRegistreUFSegon(int $MatriculaId, array $RegistreUFSegon, array $RegistreUFSegonValors, float $PercentatgeAprovat) {
+		$Baixa = ($PercentatgeAprovat >= 60) ? 0 : 1;
 		foreach($RegistreUFSegon as $row) {
 			$IdUF = $row->unitat_formativa_id;
 			if (!array_key_exists($IdUF, $RegistreUFSegonValors)) {
-				$SQL = " INSERT INTO PROPOSTA_MATRICULA (matricula_id, unitat_formativa_id, baixa) VALUES (?, ?, 0)	";
+				$SQL = " INSERT INTO PROPOSTA_MATRICULA (matricula_id, unitat_formativa_id, baixa) VALUES (?, ?, $Baixa) ";
 				$stmt = $this->Connexio->prepare($SQL);
 				$stmt->bind_param("ii", $MatriculaId, $row->unitat_formativa_id);
 				$stmt->execute();				
@@ -992,7 +1003,7 @@ class ExpedientSaga extends Expedient
 //print_h($IdCF);		
 		$RegistreUFSegon = $this->CarregaUFSegon($IdCF);
 		$RegistreUFSegonValors = $this->CarregaUFSegonValors($MatriculaId);
-		$this->ComparaRegistreUFSegon($MatriculaId, $RegistreUFSegon, $RegistreUFSegonValors);
+		$this->ComparaRegistreUFSegon($MatriculaId, $RegistreUFSegon, $RegistreUFSegonValors, $this->PercentatgeAprovat);
 		$RegistreUFSegonValors = $this->CarregaUFSegonValors($MatriculaId); // Tornem a carregar per si no estaven donades d'alta
 		$RegistreUFSegon = $this->FormataUFsegon($RegistreUFSegon);
 
@@ -1007,6 +1018,15 @@ class ExpedientSaga extends Expedient
 		}
 		$sRetorn .= '</div>'.PHP_EOL;
 		return $sRetorn;
+	}
+
+	/**
+	 * Genera el botó per imprimir la proposta.
+	 * @return string HTML del botó.
+	 */
+	private function GeneraBotoProposta(): string {
+		$URL = GeneraURL("Descarrega.php?Accio=PropostaMatriculaPDF&MatriculaId=$this->MatriculaId");
+		return '<div id=BotoProposta><br><a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaProposta" name="btnDescarregaProposta">Descarrrega proposta</a></div>';
 	}
 
 	/**
@@ -1041,102 +1061,93 @@ class ExpedientSaga extends Expedient
 		echo '</div>';
 
 		// Pedaç per proves. Només SMX1
-		if ($this->Registre[0]['CodiCF']=='SMX' && $this->Registre[0]['NivellUF']==1) {
+		if ($this->Registre[0]['CodiCF']=='SMX' && $this->Registre[0]['NivellUF']==1 && $this->PercentatgeAprovat>=60.0 && $this->PercentatgeAprovat<100.0) {
 			echo $this->GeneraComentari();
 			echo $this->GeneraSeleccioUFSegon();
+			echo $this->GeneraBotoProposta();
 		}
 		echo $this->GeneraPeu();
 
 		CreaFinalHTML();
 	}
-}
-
-/**
- * Classe per a l'informe de qualificacions en PDF.
- */
-class QualificacionsPDF extends DocumentPDF
-{
-	/**
-	* Any acadèmic.
-	* @var string
-	*/
-	public $AnyAcademic = '';
 
 	/**
-	* Nom complet de l'alumne.
-	* @var string
-	*/
-	public $NomComplet = '';
+	 * Genera l'expedient en PDF per a un alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
+	 */
+	public function GeneraPDF($MatriculaId) {
+		// De moment només LOE
+		$Llei = 'LO';
 
-	/**
-	* DNI l'alumne.
-	* @var string
-	*/
-	public $DNI = '';
+		$this->Carrega();
+		$this->CarregaMitjanesModuls();
+		$this->CarregaDadesAlumne();
 
-	/**
-	* Nom del cicle formatiu.
-	* @var string
-	*/
-	public $CicleFormatiu = '';
+		// create new PDF document
+		$pdf = new PropostaMatriculaPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-	/**
-	* Grup del curs de l'alumne.
-	* @var string
-	*/
-	public $Grup = '';
+		// set document information
+		$pdf->SetTitle('Proposta matrícula');
+		$pdf->SetSubject('Proposta matrícula');
 
-	/**
-	* Avaluació.
-	* @var string
-	*/
-	public $Avaluacio = '';
+		$RA = $this->RegistreAlumne;
+		$NomAlumne = $RA->NomAlumne;
+		$Cognom1Alumne = $RA->Cognom1Alumne;
+		$Cognom2Alumne = $RA->Cognom2Alumne;
+		//$Llei = $RA["llei"];
+		$pdf->AnyAcademic = $RA->AnyAcademic;
+		$pdf->NomComplet = utf8_encodeX(trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne);
+		$pdf->DNI = $RA->DNI;
+		$pdf->CicleFormatiu = $RA->NomCF;
+		$pdf->Grup = $RA->Grup;
+		//$pdf->Avaluacio = $this->TextAvaluacio($RA["avaluacio"], $RA["trimestre"]);
+		//$pdf->Llei = $Llei;
+		$pdf->AddPage(); // Crida al mètode Header
 
-	/**
-	* Llei.
-	* @var string
-	*/
-	public $Llei = 'LO'; // Per defecte, LOE
-	
-    // Capçalera
-    public function Header() {
-        // Logo
-        $image_file = ROOT.'/img/logo-gencat.jpg';
-        $this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-
-        $this->SetFont('helvetica', 'B', 14); // Helvetica, Bold, 14
-		$this->SetXY(30, 15);
-        $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
-		$this->SetXY(30, 20);
-        $this->Cell(0, 15, "Departament d'Educació", 0, false, 'L', 0, '', 0, false, 'M', 'M');
-
-		$this->SetXY(30, 30);
-		$this->Titol1('Informe de qualificacions del curs escolar '.$this->AnyAcademic);
-
-		$this->Titol2("Dades del centre");
-		$this->Encolumna5("Nom", "", "", "Codi", "Municipi");
-//		$this->Encolumna5(utf8_decodeX("Institut de Palamós"), "", "", "17005352", utf8_decodeX("Palamós"));
-		$this->Encolumna5("Institut de Palamós", "", "", "17005352", "Palamós");
-
-		$this->Titol2("Dades de l'alumne");
-		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
-		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
-
-		$this->Titol2("Dades dels estudis");
-//		$this->Encolumna5("Cicle formatiu", "", "", utf8_decodeX("Avaluació"), "");
-		$this->Encolumna5("Cicle formatiu", "", "", "Avaluació", "");
-		$this->Encolumna5($this->CicleFormatiu, "", "", $this->Avaluacio, "");
-
-		$this->Titol2("Qualificacions");
+		// Carreguem les notes de les UF
+		// Posem les dades del ResultSet en una estructura de dades pròpia
+		$Qualificacions = [];
+		$i = -1;
+		$j = -1;
+			
+		$ModulAnterior = '';
+		foreach($this->Registre as $row) {
+			if ($row["CodiMP"] != $ModulAnterior) {
+				$i++;
+				$Qualificacions[$i] = new stdClass();
+				$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
+				$Qualificacions[$i]->Hores = $row["HoresMP"];
+//					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
+//						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_pla_estudi_id"]]);
+//					else
+//						$Qualificacions[$i]->Qualf = '';
+				$Qualificacions[$i]->Conv = 'Ord.';
+				$Qualificacions[$i]->UF = [];
+				$j = -1;
+			}
+			$ModulAnterior = $row["CodiMP"];
+			$j++;
+			$Qualificacions[$i]->UF[$j] = new stdClass();
+			$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
+			$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
+			if ($row["Convocatoria"] == 0)
+				$Nota = 'A) '.NumeroANotaText(UltimaNota($row));
+			else {
+				$Nota = NumeroANotaText($row["nota".$row["Convocatoria"]]);
+				if ($row["orientativa"])
+					$Nota .= ' *';
+			}
+			$Qualificacions[$i]->UF[$j]->Qualf = $Nota;
+			$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
+		}
 
 		$HTML = '<TABLE>';
 		$HTML .= "<TR>";
-		if ($this->Llei == 'LO') {
+		if ($Llei == 'LO') {
 			// Mòdul professional
 			$HTML .= '<TD style="width:50%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-//			$HTML .= utf8_decodeX('<TD style="width:55%">Mòdul</TD>');
 			$HTML .= '<TD style="width:55%">Mòdul</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
@@ -1161,7 +1172,6 @@ class QualificacionsPDF extends DocumentPDF
 			$HTML .= '<TD style="width:100%">';
 			$HTML .= "<TABLE>";
 			$HTML .= "<TR>";
-//			$HTML .= utf8_decodeX('<TD style="width:55%">Crèdit</TD>');
 			$HTML .= '<TD style="width:55%">Crèdit</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
 			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
@@ -1174,22 +1184,124 @@ class QualificacionsPDF extends DocumentPDF
 		$HTML .= "</TABLE>";
 		$HTML .= "<HR>";
 
-		$this->SetY(110);
-//		$this->writeHTML(utf8_encodeX($HTML), True, True);
-		$this->writeHTML($HTML, True, True);
-    }
+		$pdf->SetY(110);
+		$pdf->writeHTML($HTML, True, True);
 
-    // Peu de pàgina
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Page number
-        $this->Cell(0, 10, 'Segell del centre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
-//        $this->Cell(0, 10, utf8_encodeX('Pàgina ').$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
+		// Realitzem el layout
+		if ($Llei == 'LO') {
+			// LOE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:50%">';
+
+				// Mòdul professional
+				$HTML .= "<TABLE>";
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->Nom."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Hores."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Qualf."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Conv."</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= '<TD style="width:50%">';
+
+				// Unitats formatives
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);
+			}
+		} else {
+			// LOGSE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:100%">';
+
+				// Crèdits
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);		
+			}
+		}
+
+		// Comentaris de l'avaluació
+		$pdf->AddPage(); 
+		$pdf->Titol2("Comentaris de l'avaluació");
+		$pdf->EscriuLinia($this->RegistreAlumne->comentari_matricula_seguent);
+		$pdf->Ln(15);
+
+		// Proposta de matrícula
+		$pdf->Titol2("Proposta de matrícula");
+		$pdf->EscriuLinia("L'equip docent recomana a l'alumne matricular-se de totes les del 1r curs i les següents de 2n:");
+
+		$IdCF = $this->Registre[0]['IdCF'];
+		$MatriculaId = $this->MatriculaId;
+		$RegistreUFSegon = $this->CarregaUFSegon($IdCF);
+		$RegistreUFSegonValors = $this->CarregaUFSegonValors($MatriculaId);
+		$RegistreUFSegon = $this->FormataUFsegon($RegistreUFSegon);
+
+		$HTML = '';
+		foreach($RegistreUFSegon as $MP) {
+			$pdf->EscriuLinia($MP->Codi." ".$MP->Nom);
+			foreach($MP->UF as $row) {
+				$pdf->SetX(20);
+				$pdf->CheckBox('check'.$row->unitat_formativa_id, 5, $RegistreUFSegonValors[$row->unitat_formativa_id]->baixa == 0);
+				$pdf->SetX(30);
+				$pdf->Cell(50, 0, $row->CodiUF.' '.$row->NomUF, '', 0, 'L'); 
+				$pdf->SetY($pdf->GetY() + 6);
+			}
+		}
+		$pdf->Ln(20);
+
+		// Signatures
+		$pdf->Titol2("Acceptació de la proposta");
+		$HTML .= "<TABLE>";
+		$HTML .= "<TR>";
+		$HTML .= "<TD>";
+		$HTML .= $pdf->NomComplet.'<BR>'.$pdf->DNI = $RA->DNI.'<BR>Signatura';
+		$HTML .= "</TD>";
+		$HTML .= "<TD>";
+		$HTML .= 'Pare, mare o tutor<BR>(menors de 18 anys)<BR>Signatura';
+		$HTML .= "</TD>";
+		$HTML .= "</TR>";
+		$HTML .= "</TABLE>";
+		$pdf->writeHTML($HTML, True);		
+
+		// Close and output PDF document
+		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
+		// Clean any content of the output buffer
+		ob_end_clean();
+		$pdf->Output('Proposta_matricula_'.$Nom.'.pdf', 'I');
+	}
 }
 
 /**
@@ -1977,7 +2089,7 @@ class Acta extends Form
 }
 
 /**
- * Classe per a l'informe de les actes en PDF.
+ * Classe per als informes de l'institut en PDF.
  */
 class ActaPDF extends DocumentPDF
 {
@@ -2193,6 +2305,88 @@ class ActaPDF extends DocumentPDF
 		//$this->Cell(($this->w - $this->original_lMargin - $this->original_rMargin), 0, $Text, '', 0, 'L'); 
         $this->Cell(0, 0, $this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
+}
+
+/**
+ * Classe per a l'informe de qualificacions en PDF.
+ */
+class QualificacionsPDF extends DocumentInstitutPDF
+{
+	public function __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+		// Marge de dalt
+		$this->SetMargins(PDF_MARGIN_LEFT, 120, PDF_MARGIN_RIGHT);
+	}
+
+	protected function GeneraBlocTitol() {
+		$this->Titol1('Informe de qualificacions del curs escolar '.$this->AnyAcademic);
+	}
+
+	protected function GeneraBlocSubtitol() {
+		$this->Titol2("Qualificacions");
+
+		$HTML = '<TABLE>';
+		$HTML .= "<TR>";
+		if ($this->Llei == 'LO') {
+			// Mòdul professional
+			$HTML .= '<TD style="width:50%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:55%">Mòdul</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";
+
+			// Unitats formatives
+			$HTML .= '<TD style="width:50%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:55%">Unitat formativa</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";
+		} else {
+			// Crèdits
+			$HTML .= '<TD style="width:100%">';
+			$HTML .= "<TABLE>";
+			$HTML .= "<TR>";
+			$HTML .= '<TD style="width:55%">Crèdit</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Hores</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Qualf.</TD>';
+			$HTML .= '<TD style="width:15%;text-align:center">Conv.</TD>';
+			$HTML .= "</TR>";
+			$HTML .= "</TABLE>";
+			$HTML .= "</TD>";			
+		}
+		$HTML .= "</TR>";
+		$HTML .= "</TABLE>";
+		$HTML .= "<HR>";
+
+		$this->SetY(110);
+		$this->writeHTML($HTML, True, True);
+	}	
+}
+
+/**
+ * Classe per a la proposta de matrícula en PDF.
+ */
+class PropostaMatriculaPDF extends DocumentInstitutPDF
+{
+    public function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('helvetica', '', 8);
+        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+    }
+
+	protected function GeneraBlocTitol() {
+		$this->Titol1('Informe de qualificacions del curs '.$this->AnyAcademic.' i proposta de matrícula');
+	}
 }
 
 /**

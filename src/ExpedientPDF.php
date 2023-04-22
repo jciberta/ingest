@@ -38,6 +38,7 @@ else {
 	if (!isset($_SESSION['usuari_id'])) 
 		header("Location: Surt.php");
 	$Usuari = unserialize($_SESSION['USUARI']);
+	$Sistema = unserialize($_SESSION['SISTEMA']);
 
 	RecuperaGET($_GET);
 
@@ -48,7 +49,7 @@ else {
 		$MatriculaId = -1;
 //		$alumne = -1;
 
-	$Matricula = new Matricula($conn, $Usuari);
+	$Matricula = new Matricula($conn, $Usuari, $Sistema);
 	$Matricula->Carrega($MatriculaId);
 	$alumne = $Matricula->ObteAlumne();
 //print "<br>";	
@@ -70,12 +71,12 @@ else {
 	// L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 	$ButlletiVisible = True;
 	if ($Usuari->es_alumne || $Usuari->es_pare) {
-		$Expedient = new Expedient($conn);
+		$Expedient = new Expedient($conn, $Usuari, $Sistema);
 		$ButlletiVisible = $Expedient->EsVisibleButlleti($MatriculaId);
 	}
 	
 	if ($ButlletiVisible) {
-		$Expedient = new Expedient($conn);
+		$Expedient = new Expedient($conn, $Usuari, $Sistema);
 		$Expedient->GeneraPDF($MatriculaId);
 	}
 	else {
