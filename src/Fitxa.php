@@ -197,11 +197,11 @@ switch ($accio) {
 			header("Location: Surt.php");
 
 		// Comprovem que l'usuari té accés a aquesta pàgina
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		if (!$Professor->TeUFEnMatricula($MatriculaId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 
-		$frm = new ExpedientSaga($conn, $Usuari, $MatriculaId);
+		$frm = new ExpedientSaga($conn, $Usuari, $Sistema, $MatriculaId);
 		$frm->Titol = "Avaluació d'alumnes";
 		$frm->EscriuHTML();
         break;
@@ -223,7 +223,7 @@ switch ($accio) {
 //print_h($aMatricules);
 //exit;
 		if (count($aMatricules) > 0) {
-			$frm = new ExpedientSaga($conn, $Usuari, $aMatricules[0]);
+			$frm = new ExpedientSaga($conn, $Usuari, $Sistema, $aMatricules[0]);
 			$frm->Titol = "Avaluació d'alumnes";
 			$frm->EscriuHTML();
 		}
@@ -253,10 +253,10 @@ switch ($accio) {
 		if ($MatriculaId == -1 && $CursId == -1)
 			header("Location: Surt.php");
 
-		$mat = new Matricula($conn, $Usuari);
+		$mat = new Matricula($conn, $Usuari, $Sistema);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
-		$objUsuari = new Usuari($conn, $Usuari);
+		$objUsuari = new Usuari($conn, $Usuari, $Sistema);
 
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId) || ($objUsuari->EsProgenitor($AlumneId))) {
 			$frm = new PlaTreball($conn, $Usuari, $Sistema);
@@ -273,10 +273,10 @@ switch ($accio) {
 		if ($MatriculaId == -1 && $CursId == -1)
 			header("Location: Surt.php");
 
-		$mat = new Matricula($conn, $Usuari);
+		$mat = new Matricula($conn, $Usuari, $Sistema);
 		$mat->Carrega($MatriculaId);
 		$AlumneId = $mat->ObteAlumne();
-		$objUsuari = new Usuari($conn, $Usuari);
+		$objUsuari = new Usuari($conn, $Usuari, $Sistema);
 		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->usuari_id == $AlumneId) || ($objUsuari->EsProgenitor($AlumneId))) {
 			$frm = new PlaTreballCalendari($conn, $Usuari, $Sistema);
 			$frm->MatriculaId = $MatriculaId;

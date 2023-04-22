@@ -177,7 +177,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		$Professor->CarregaUFAssignades();
 		$FamiliaFPId = $Professor->EsCapDepartament($Usuari->usuari_id); // Si és cap de departament
 
