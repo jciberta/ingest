@@ -12,6 +12,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibBorsaTreball.php');
 
 session_start();
@@ -34,8 +35,9 @@ if ($Usuari !== null) {
     // Usuari identificat
     $Professor = new Professor($conn, $Usuari, $Sistema);
     $EsGestorBorsa = $Professor->EsGestorBorsa();
-    if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$EsGestorBorsa)
-	    header("Location: Surt.php");
+    Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $EsGestorBorsa);
+//    if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$EsGestorBorsa)
+//	    header("Location: Surt.php");
 }
 
 $BorsaTreball = new BorsaTreball($conn, $Usuari, $Sistema);
