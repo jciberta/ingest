@@ -698,3 +698,10 @@ INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàti
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2023-2024 2n', 'FPB2', 34, 2);
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2023-2024 1r', 'HBD1', 35, 1);
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2023-2024 2n', 'HBD2', 35, 2);
+
+UPDATE CURS SET data_inici = '2023-09-12' WHERE curs_id>=79;
+UPDATE CURS SET data_final = '2024-05-31' WHERE curs_id>=79;
+
+-- Còpies del curs passat
+call CopiaTutors(5, 6);
+call CopiaProgramacions(5, 6);
