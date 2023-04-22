@@ -22,8 +22,8 @@ $ClientGoogle = $_SESSION['GOOGLE_CLIENT'];
 
 if ($ClientGoogle) {
 	$google_client = new Google_Client();
-	$google_client->setClientId($sistema->google_client_id);
-	$google_client->setClientSecret($sistema->google_client_secret);
+	$google_client->setClientId($Sistema->google_client_id);
+	$google_client->setClientSecret($Sistema->google_client_secret);
 
 	// Reset OAuth access token
 	$google_client->revokeToken();
