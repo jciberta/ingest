@@ -171,7 +171,8 @@ function DesaNovaOferta() {
 			}
 		},
 		error: (error) => {
-			console.log(`Ajax error -> ${error}`)
+			console.log(`Ajax error -> ${error}`);
+			console.dir(error);
 		},
 	})
 }

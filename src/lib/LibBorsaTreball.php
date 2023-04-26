@@ -17,9 +17,10 @@ require_once(ROOT.'/vendor/autoload.php');
 require_once(ROOT.'/vendor/PHPMailer/PHPMailer.php');
 require_once(ROOT.'/vendor/PHPMailer/Exception.php');
 require_once(ROOT.'/vendor/PHPMailer/SMTP.php');
+require_once(ROOT.'/lib/LibInet.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibUsuari.php');
-require_once(ROOT.'/lib/LibSeguretat.php');
 
 class BorsaTreball extends Objecte
 {
@@ -54,7 +55,7 @@ class BorsaTreball extends Objecte
 		$stmt->execute();
 		$resultSet = $stmt->get_result();
 		$stmt->close();
-		$output = "<option selected hidden>Seleccioni...</option>";
+		$output = "<option selected hidden>Seleccioneu...</option>";
 		while ($row = $resultSet->fetch_assoc()) {
 			$output .= "<option value='$row[cicle_formatiu_id]'>$row[nom]</option>";
 		}
@@ -134,8 +135,9 @@ class BorsaTreball extends Objecte
 	public function DesaNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web) {
 		$web = preg_replace("/^https?:\/\//", "", $web);
 		try {
-			$stmt = $this->Connexio->prepare("INSERT INTO BORSA_TREBALL (cicle_formatiu_id, empresa, contacte, telefon, poblacio, email, web, descripcio) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-			$stmt->bind_param("isssssss", $cicle, $empresa, $contacte, $telefon, $poblacio, $correu, $web, $descripcio);
+			$IP = getUserIP();
+			$stmt = $this->Connexio->prepare("INSERT INTO BORSA_TREBALL (cicle_formatiu_id, empresa, contacte, telefon, poblacio, email, web, descripcio, ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+			$stmt->bind_param("issssssss", $cicle, $empresa, $contacte, $telefon, $poblacio, $correu, $web, $descripcio, $IP);
 			$stmt->execute();
 			$stmt->close();
 //			$this->enviarMailNovaOferta($empresa, $cicle, $contacte, $telefon, $poblacio, $correu, $descripcio, $web);
@@ -235,7 +237,7 @@ class BorsaTreball extends Objecte
 	private function GeneraPeu(): string {
 		return '
 			</div>
-			<script src="js/BorsaTreball.js?v1.1"></script>
+			<script src="js/BorsaTreball.js?v1.2"></script>
 			</body>
 			</html>
 		';
@@ -348,8 +350,8 @@ class BorsaTreball extends Objecte
 		return '
 			<!-- Modal nova oferta -->
 			<div class="modal fade" id="modalNovaOferta" tabindex="-1" role="dialog" aria-labelledby="modalNovaOfertaLabel">
-				<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-					<div class=" modal-content">
+				<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="modalNovaOfertaLabel">Nova oferta</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -360,13 +362,21 @@ class BorsaTreball extends Objecte
 							<div class="container-fluid">
 								<div class="alert alert-danger fade show visually-hidden" role="alert" id="modalError" style="display:none">
 									<span id="modalErrorMessage"></span>
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">&times;</span>									
 								</div>
-								<form class="row g-3">
-									<div class="form-group">
-										<label class="form-label" for="inputCicle">Cicle</label>
-										<select id="inputCicle" class="form-select">
-											<option selected hidden>Seleccioni...</option>
-										</select>
+								<form>
+									<div class="input-group" style="margin-bottom:40px">
+										<table width=50%>
+											<tr style="height:40px;vertical-align:middle;">
+												<td>Cicle</td>
+												<td>
+													<select id="inputCicle" class="custom-select">
+														<option selected hidden>Seleccioneu...</option>
+													</select>
+												</td>
+											</tr>
+										</table>
 									</div>
 									<div class="row">
 										<div class="col-md-6">
@@ -398,19 +408,19 @@ class BorsaTreball extends Objecte
 											<input type="text" class="form-control" id="inputWeb">
 										</div>
 									</div>
-									<div>
+									<div class="form-group">
 										<label class="form-label" for="inputDescripcio">Descripció</label>
-										<textarea class="form-control" id="inputDescripcio" rows="3"></textarea>
+										<textarea class="form-control" id="inputDescripcio" rows="6"></textarea>
 									</div>
 								</form>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelaNovaOferta()">
-								Tanca
-							</button>
 							<button type="button" class="btn btn-primary" id="DesaOferta" onclick="DesaNovaOferta()">
 								<span id="DesaOfertaText">Desa</span>
+							</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelaNovaOferta()">
+								Cancel·la
 							</button>
 						</div>
 					</div>
