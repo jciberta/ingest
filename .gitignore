@@ -7,3 +7,4 @@ src/img/pix
 *.REMOTE
 doc/cache
 *.ser
+*.bak
