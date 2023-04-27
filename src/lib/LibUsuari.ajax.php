@@ -6,7 +6,7 @@
  * Accions AJAX per a la llibreria d'usuaris.
  *
  * Accés:
- *   - Administrador, direcció, cap d'estudis
+ *   - Administrador, direcció, cap d'estudis, professor*
  * Accions:
  *   - BloquejaUsuari
  *   - BaixaMatricula
@@ -24,6 +24,7 @@
  */
 
 require_once('../Config.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibUsuari.php');
@@ -32,9 +33,11 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: ../Surt.php");
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
+//if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+//	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -42,6 +45,7 @@ if ($conn->connect_error)
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'BloquejaUsuari') {
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$Id = $_REQUEST['id'];
 		$check = $_REQUEST['check'];
 		$cerca = $_REQUEST['cerca'];
@@ -60,6 +64,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'BaixaMatricula') {
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$Id = $_REQUEST['id'];
 		$cerca = $_REQUEST['cerca'];
 		$filtre = $_REQUEST['filtre'];
@@ -76,14 +81,14 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaProfessorsUF') {
 		$AnyAcademicId = $_REQUEST['any_academic_id'];
-		$frm = new ProfessorsUF($conn, $Usuari);
+		$frm = new ProfessorsUF($conn, $Usuari, $Sistema);
 		$frm->AnyAcademicId = $AnyAcademicId;
 		print $frm->GeneraAcordio();
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaProfessorsAssignacioUF') {
 		$ProfessorId = $_REQUEST['professor_id'];
 		$AnyAcademicId = $_REQUEST['any_academic_id'];
-		$frm = new ProfessorsAssignacioUF($conn, $Usuari);
+		$frm = new ProfessorsAssignacioUF($conn, $Usuari, $Sistema);
 		$frm->ProfessorId = $ProfessorId;
 		$frm->AnyAcademicId = $AnyAcademicId;
 		print $frm->GeneraAcordio();
@@ -91,7 +96,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaGrupProfessorsAssignacioUF') {
 		$CiclePlaEstudiId = $_REQUEST['codi_cicle_pla_estudi'];
 		$AnyAcademicId = $_REQUEST['any_academic_id'];
-		$frm = new GrupProfessorsAssignacioUF($conn, $Usuari);
+		$frm = new GrupProfessorsAssignacioUF($conn, $Usuari, $Sistema);
 		$frm->CiclePlaEstudiId = $CiclePlaEstudiId;
 		$frm->AnyAcademicId = $AnyAcademicId;
 		print $frm->GeneraAcordio();
@@ -114,6 +119,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		}
 	}	
 	else if ($_REQUEST['accio'] == 'AssignaGrup') {
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$CursId = $_REQUEST['curs'];
 		$AlumneId = $_REQUEST['alumne'];
 		$Grup = $_REQUEST['grup'];
@@ -122,6 +128,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'AssignaGrupTutoria') {
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$CursId = $_REQUEST['curs'];
 		$AlumneId = $_REQUEST['alumne'];
 		$GrupTutoria = $_REQUEST['grup_tutoria'];
@@ -130,6 +137,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'CanviPassword') {
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$UsuariId = $_REQUEST['usuari_id'];
 		$Password = $_REQUEST['password'];
 		$SQL = "UPDATE USUARI SET password='".password_hash($Password, PASSWORD_DEFAULT)."', imposa_canvi_password=1 WHERE usuari_id=". $UsuariId;
@@ -137,13 +145,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print 'Contrasenya canviada correctament.';
 	}
 	else if ($_REQUEST['accio'] == 'ActualitzaTaulaOrla') {
-		
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$AnyAcademicId = $_REQUEST['any_academic_id'];
 		$CicleFormatiuId = $_REQUEST['cicle_formatiu_id'];
 		$Nivell = $_REQUEST['nivell'];
 		$Grup = $_REQUEST['grup'];
 
-		$frm = new Orla($conn, $Usuari);
+		$frm = new Orla($conn, $Usuari, $Sistema);
 		$frm->AnyAcademicId = $AnyAcademicId;
 		$frm->CicleFormatiuId = $CicleFormatiuId;
 		$frm->Nivell = $Nivell;

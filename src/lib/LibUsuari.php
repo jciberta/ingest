@@ -732,21 +732,7 @@ class Professor extends Usuari
 		if ($CursId > 0) {
 			$URL1 = GeneraURL('Grups.php?CursId='.$CursId);
 			$URL2 = GeneraURL('UsuariRecerca.php?accio=UltimLogin');
-			echo '  <div class="card">';
-			echo '    <div class="card-body">';
-			echo '      <h5 class="card-title">Tutoria</h5>';
-			echo '<table style="border-collapse: separate;border-spacing: 0px 6px ">';
-			echo '<tr>';
-			echo '      <td width=100><p class="card-text">Grups</p></td>';
-			echo '      <td><p class="card-text">Darrers accessos</p></td>';
-			echo '</tr>';
-			echo '<tr>';
-			echo '      <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
-			echo '      <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
-			echo '</tr>';
-			echo '</table>';
-			echo '    </div>';
-			echo '  </div>';
+			echo CreaTargeta2('Tutoria', 'Grups', $URL1, 'Darrers accessos', $URL2);
 		}
 		
 		// Les meves UF
@@ -773,6 +759,12 @@ class Professor extends Usuari
 			// Material
 			$URL = GeneraURL('Recerca.php?accio=Material');
 			echo CreaTargeta('Material', 'Inventari', $URL);
+		}
+		
+		if ($this->EsCapDepartament($this->Usuari->usuari_id)) {
+			$URL1 = GeneraURL('AssignaUFs.php?accio=GrupAssignaUF');
+			$URL2 = GeneraURL('AssignaUFs.php?accio=ProfessorsUF');
+			echo CreaTargeta2('Professorat', 'Assignació UF', $URL1, 'Professors UF', $URL2);
 		}
 
 		echo '</div>';
@@ -823,6 +815,31 @@ class ProfessorsUF extends Form
     public $AnyAcademicId = -1; 
 
 	/**
+	 * Indica si l'usuari és cap de departament.
+	 * @var boolean
+	 */
+    private $EsCapDepartament = false;
+
+	/**
+	 * Identificador de la família de FP a la que pertany l'usuari (professor).
+	 * @var int
+	 */
+    private $FamiliaId = -1;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 * @param objecte $system Dades de l'aplicació.
+	 */
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
+		$Professor = new Professor($con, $user, $system);
+		$this->FamiliaId = $Professor->EsCapDepartament($user->usuari_id);
+		$this->EsCapDepartament = $this->FamiliaId > 0;
+	}	
+
+	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
@@ -840,10 +857,18 @@ class ProfessorsUF extends Form
      * @return string Codi HTML del filtre.
 	 */
 	protected function GeneraFiltre() {
-		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-//		$this->AnyAcademicId = $aAnys[0][0]; 
-		$this->AnyAcademicId = $this->Sistema->any_academic_id;
-		return $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsUF(this);"');
+		$Retorn = '';
+		if ($this->EsCapDepartament) {
+			$this->AnyAcademicId = $this->Sistema->any_academic_id;
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY Any DESC', "any_academic_id", "Any");
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+		}
+		else {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$this->AnyAcademicId = $this->Sistema->any_academic_id;
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsUF(this);"');
+		}
+		return $Retorn;
 	}
 
 	/**
@@ -941,7 +966,7 @@ class ProfessorsUF extends Form
 	 * @return string Sentència SQL.
 	 */
 	protected function CreaSQL(int $AnyAcademicId): string {
-		return "
+		$SQL = "
 			SELECT
 				UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.unitat_formativa_id AS UnitatFormativaId, 
 				MPE.codi AS CodiMP, MPE.nom AS NomMP, 
@@ -952,11 +977,16 @@ class ProfessorsUF extends Form
 			FROM UNITAT_PLA_ESTUDI UPE 
 			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) 
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
 			LEFT JOIN PROFESSOR_UF PUF ON (UPE.unitat_pla_estudi_id=PUF.uf_id)
 			LEFT JOIN USUARI U ON (U.usuari_id=PUF.professor_id) 
 			WHERE any_academic_id=$AnyAcademicId
-			ORDER BY CPE.codi, CPE.cicle_pla_estudi_id, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom
 		";
+		if ($this->EsCapDepartament)
+			$SQL .= " AND CF.familia_fp_id=".$this->FamiliaId;
+		
+		$SQL .= " ORDER BY CPE.codi, CPE.cicle_pla_estudi_id, MPE.codi, UPE.codi, U.cognom1, U.cognom2, U.nom ";
+		return $SQL;
 	}
 }
 
@@ -1204,22 +1234,68 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
     private $ProfessorUFAssoc = [];
 
 	/**
+	 * Indica si l'usuari és cap de departament.
+	 * @var boolean
+	 */
+    private $EsCapDepartament = false;
+
+	/**
+	 * Identificador de la família de FP a la que pertany l'usuari (professor).
+	 * @var int
+	 */
+    private $FamiliaId = -1;
+
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 * @param objecte $system Dades de l'aplicació.
+	 */
+	function __construct($con = null, $user = null, $system = null) {
+		parent::__construct($con, $user, $system);
+		$Professor = new Professor($con, $user, $system);
+		$this->FamiliaId = $Professor->EsCapDepartament($user->usuari_id);
+		$this->EsCapDepartament = $this->FamiliaId > 0;
+	}	
+
+	/**
 	 * Genera el filtre del formulari si n'hi ha.
 	 */
 	protected function GeneraFiltre() {
 		$Retorn = '';
-		
-		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-		$this->AnyAcademicId = $this->Sistema->any_academic_id;
-		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+		if ($this->EsCapDepartament) {
+			$this->AnyAcademicId = $this->Sistema->any_academic_id;
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY Any DESC', "any_academic_id", "Any");
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 
-		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY nom', "cicle_pla_estudi_id", "nom");
-		$this->CiclePlaEstudiId = $aCicles[0][0];
-		$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
-			$aCicles[0], 
-			$aCicles[1], 
-			$aCicles[0][0], 
-			'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+			$SQL = '
+				SELECT CPE.cicle_pla_estudi_id, CPE.nom 
+				FROM CICLE_PLA_ESTUDI CPE 
+				LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id) 
+				WHERE CPE.any_academic_id='.$this->AnyAcademicId.' AND CF.familia_fp_id='.$this->FamiliaId.' 
+				ORDER BY nom
+			';
+			$aCicles = ObteCodiValorDesDeSQL($this->Connexio, $SQL, "cicle_pla_estudi_id", "nom");
+			$this->CiclePlaEstudiId = $aCicles[0][0];
+			$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
+				$aCicles[0], 
+				$aCicles[1], 
+				$aCicles[0][0], 
+				'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+		}
+		else {
+			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+			$this->AnyAcademicId = $this->Sistema->any_academic_id;
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+
+			$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY nom', "cicle_pla_estudi_id", "nom");
+			$this->CiclePlaEstudiId = $aCicles[0][0];
+			$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
+				$aCicles[0], 
+				$aCicles[1], 
+				$aCicles[0][0], 
+				'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+		}
 		return $Retorn;
 	}
 	

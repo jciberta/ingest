@@ -101,7 +101,7 @@ switch ($accio) {
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 		$frm->AfegeixLlista('curs_id', 'Curs', 200, $aCurs[0], $aCurs[1]);
 		$frm->AfegeixLookUp('professor_id', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
-		$gt = new GrupTutoria($conn, $Usuari);
+		$gt = new GrupTutoria($conn, $Usuari, $Sistema);
 		$aGrups = $gt->ObteGrupsAnyActual();
 		array_unshift($aGrups, ""); // afegim al principi
 		$frm->AfegeixLlista('grup_tutoria', 'Grup tutoria', 30, $aGrups, $aGrups);
@@ -179,7 +179,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Festiu';
 		$frm->Taula = 'FESTIU';
 		$frm->ClauPrimaria = 'festiu_id';
@@ -214,7 +214,7 @@ switch ($accio) {
 		$CursId = explode(',', $CursIdGrup)[0];
 //echo "CursId: $CursId<br>";
 		// Comprovem que l'usuari té accés a aquesta pàgina
-		$Professor = new Professor($conn, $Usuari);
+		$Professor = new Professor($conn, $Usuari, $Sistema);
 		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 			header("Location: Surt.php");		
 		
@@ -242,7 +242,7 @@ switch ($accio) {
 //		if (!$Professor->TeUFEnCurs($CursId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 //			header("Location: Surt.php");		
 		
-		$acta = new Acta($conn, $Usuari);
+		$acta = new Acta($conn, $Usuari, $Sistema);
 //		$acta = $acta->GeneraPDF($CursId, $Grup);
 		$acta = $acta->EscriuHTML($CursId, $Grup);
 		

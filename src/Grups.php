@@ -18,6 +18,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -27,12 +28,12 @@ RecuperaGET($_GET);
 
 $CursId = $_GET['CursId'];
 
-$Curs = new Curs($conn, $Usuari);
+$Curs = new Curs($conn, $Usuari, $Sistema);
 $Curs->CarregaRegistre($CursId);
 
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
-$Professor = new Professor($conn, $Usuari);
+$Professor = new Professor($conn, $Usuari, $Sistema);
 $CursTutorId = $Professor->ObteCursTutorId();
 if (!($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || ($Usuari->es_professor && $CursId == $CursTutorId)))
 //if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && )
@@ -59,10 +60,10 @@ $stmt->execute();
 
 $ResultSet = $stmt->get_result();
 
-$GrupClasse = new GrupClasse($conn, $Usuari);
+$GrupClasse = new GrupClasse($conn, $Usuari, $Sistema);
 $aGrups = $GrupClasse->ObteGrups($CursId);
 //print_r($aGrups);
-$GrupTutoria = new GrupTutoria($conn, $Usuari);
+$GrupTutoria = new GrupTutoria($conn, $Usuari, $Sistema);
 $aTutoria = $GrupTutoria->ObteGrups($CursId);
 //$aGrups = array('A', 'B', 'C', 'D');
 //$aTutoria = array('AB', 'BC', 'CD');

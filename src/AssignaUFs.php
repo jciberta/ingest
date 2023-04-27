@@ -15,6 +15,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
@@ -26,15 +27,15 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-	header("Location: Surt.php");
-
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
-RecuperaGET($_GET);
+$Professor = new Professor($conn, $Usuari, $Sistema);
+$EsCapDepartament = $Professor->EsCapDepartament($Usuari->usuari_id);
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $EsCapDepartament);
 
+RecuperaGET($_GET);
 $Accio = $_GET['accio'];
 
 if ($Accio == 'AssignaUF') {

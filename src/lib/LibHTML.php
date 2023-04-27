@@ -247,6 +247,26 @@ function CreaTargeta($Titol, $Text, $URL): string
 	return $Retorn;			
 }
 
+function CreaTargeta2($Titol, $Text1, $URL1, $Text2, $URL2): string
+{
+	$Retorn = '<div class="card">';
+	$Retorn .= '    <div class="card-body">';
+	$Retorn .= '      <h5 class="card-title">'.$Titol.'</h5>';
+	$Retorn .= '<table style="cellpadding:10px;border-collapse: separate;border-spacing: 0px 6px ">';
+	$Retorn .= '<tr>';
+	$Retorn .= '      <td><p class="card-text">'.$Text1.'</p></td>';
+	$Retorn .= '      <td><p class="card-text">'.$Text2.'</p></td>';
+	$Retorn .= '</tr>';
+	$Retorn .= '<tr>';
+	$Retorn .= '      <td><a href="'.$URL1.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+	$Retorn .= '      <td><a href="'.$URL2.'" class="btn btn-primary btn-sm">Ves-hi</a></td>';
+	$Retorn .= '</tr>';
+	$Retorn .= '</table>';
+	$Retorn .= '    </div>';
+	$Retorn .= '  </div>';
+	return $Retorn;			
+}
+
 /**
  * Crea la taula 1. Layout:
  * +--------+-------------+
