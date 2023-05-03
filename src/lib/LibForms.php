@@ -51,8 +51,9 @@ class Form extends Objecte
 	const tcSEQUENCIA_FOTOGRAFIES = 12;
 	const tcHTML = 13;
 	const tcLINK = 14;
-	const tcTEXT_RIC = 15;
-	const tcAMAGAT = 16;
+	const tcTEXT_AREA = 15;
+	const tcTEXT_RIC = 16;
+	const tcAMAGAT = 17;
 	const tcPESTANYA = 20;
 	const tcCOLUMNA_INICI = 21;
 	const tcCOLUMNA_SALT = 22;
@@ -507,6 +508,27 @@ class Form extends Objecte
 		}
 		return $sRetorn;
 	}	
+
+	/**
+	 * Crea un text amb àrea (múltiples files).
+	 * @param string $Nom Nom del element.
+	 * @param string $Titol Títol del control.
+	 * @param integer $Longitud Longitud del text.
+	 * @param integer $Altura Altura del text.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Contingut Valor del text per defecte.
+	 * @return string Codi HTML del text enriquit.
+	 */
+	public function CreaTextArea(string $Nom, string $Titol, int $Longitud, int $Altura, $Contingut = '', array $off = []) {
+		$Requerit = (in_array(self::offREQUERIT, $off) ? ' required' : '');
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' readonly' : '';
+		$sNom = 'eta_' . $Nom;
+		$sRetorn = '<TD valign=top><label for='.$sNom.'>'.$Titol.'</label></TD>';
+		$sRetorn .= '<TD>';
+		$sRetorn .= "<textarea cols=$Longitud rows=$Altura name='$sNom'>$Contingut</textarea>";
+		$sRetorn .= '</TD>';
+		return $sRetorn;
+	}
 
 	/**
 	 * Crea un text amb format (RichEdit o RichMemo).
@@ -2112,6 +2134,28 @@ class FormFitxa extends Form
 	}
 
 	/**
+	 * Afegeix un text amb àrea (múltiples files).
+	 * @param string $Camp Camp de la taula.
+	 * @param string $Titol Títol del control.
+	 * @param integer $Longitud Longitud del text.
+	 * @param integer $Altura Altura del text.
+	 * @param array $off Opcions del formulari.
+	 * @param mixed $Contingut Valor del text per defecte.
+	 * @return string Codi HTML del text enriquit.
+	 */
+	public function AfegeixTextArea(string $Camp, string $Titol, int $Longitud, int $Altura, array $off = []) {
+		$i = count($this->Camps);
+		$i++;
+		$this->Camps[$i] = new stdClass();
+		$this->Camps[$i]->Tipus = self::tcTEXT_AREA;
+		$this->Camps[$i]->Camp = $Camp;
+		$this->Camps[$i]->Titol = $Titol;
+		$this->Camps[$i]->Longitud = 5*$Longitud;
+		$this->Camps[$i]->Altura = $Altura;
+		$this->Camps[$i]->Opcions = $off;		
+	}	
+
+	/**
 	 * Afegeix un text amb format (RichEdit o RichMemo).
 	 * @param string $Camp Camp de la taula.
 	 * @param string $Titol Títol del control.
@@ -2422,6 +2466,10 @@ class FormFitxa extends Form
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaSequenciaFotografies($this->Registre[$Valor->Camp] ?? '', $Valor->Prefix, $Valor->Sufix);
 					break;
+				case self::tcTEXT_AREA:
+					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
+					$sRetorn .= $this->CreaTextArea($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					break;
 				case self::tcTEXT_RIC:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
@@ -2615,6 +2663,12 @@ class FormFitxa extends Form
 		
 		$Retorn = '';
 
+		// Convertim els ENTERs del camp TextArea en <br> (per recuperar-los després)
+		$jsonForm = nl2br($jsonForm, false);
+//print('$jsonForm:');
+//print_r($jsonForm);
+//exit;
+		
 		// https://stackoverflow.com/questions/24312715/json-encode-returns-null-json-last-error-msg-gives-control-character-error-po
 		$jsonForm = preg_replace('/[[:cntrl:]]/', '', $jsonForm);
 		
@@ -2642,6 +2696,9 @@ class FormFitxa extends Form
 					case 'edt':
 						// Camp text
 						// XSS: no es permet cap etiqueta HTML
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+//exit;
 						$sCamps .= substr($Valor->name, 4).", ";
 						$Valor->value = strip_tags($Valor->value);
 						$sValues .= TextAMySQL($Valor->value).', ';
@@ -2676,6 +2733,18 @@ class FormFitxa extends Form
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //print_r($Valor);
 						}
+						break;
+					case 'eta':
+						// Camp text àrea
+						// XSS: no es permet cap etiqueta HTML
+						$sCamps .= substr($Valor->name, 4).", ";
+						$Valor->value = strip_tags($Valor->value, '<p><br>');
+						// Recuperem els ENTERs del camp TextArea que eren <br>
+						$Valor->value = br2nl($Valor->value);
+//print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
+//print_r($Valor);
+//exit;
+						$sValues .= TextAMySQL($Valor->value).', ';
 						break;
 					case 'red':
 						// Camp text ric

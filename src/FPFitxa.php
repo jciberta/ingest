@@ -16,10 +16,12 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibPlaEstudis.php');
 require_once(ROOT.'/lib/LibProgramacioDidactica.php');
+require_once(ROOT.'/lib/LibBorsaTreball.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -250,6 +252,15 @@ switch ($accio) {
 		$frm->AfegeixLookup('unitat_formativa_id', 'Unitat formativa', 200, 'FPRecerca.php?accio=UnitatsFormativesCF', 'UNITAT_FORMATIVA', 'unitat_formativa_id', 'nom', [FormFitxa::offREQUERIT]);
 		$frm->EscriuHTML();
 		break;
-}
+	case "BorsaTreball":
+		$Professor = new Professor($conn, $Usuari, $Sistema);
+		$EsGestorBorsa = $Professor->EsGestorBorsa();
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $EsGestorBorsa);
+		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$frm = new BorsaTreball($conn, $Usuari, $Sistema);
+		$frm->Id = $Id;
+		$frm->EscriuFormulariFitxa();
+		break;
+	}
 
 ?>

@@ -36,11 +36,12 @@ if ($Usuari !== null) {
     $Professor = new Professor($conn, $Usuari, $Sistema);
     $EsGestorBorsa = $Professor->EsGestorBorsa();
     Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $EsGestorBorsa);
-//    if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$EsGestorBorsa)
-//	    header("Location: Surt.php");
+    $BorsaTreball = new BorsaTreball($conn, $Usuari, $Sistema);
+    echo $BorsaTreball->EscriuFormulariRecerca();
 }
-
-$BorsaTreball = new BorsaTreball($conn, $Usuari, $Sistema);
-echo $BorsaTreball->EscriuHTML();
+else {
+    $BorsaTreball = new BorsaTreball($conn, $Usuari, $Sistema);
+    echo $BorsaTreball->EscriuHTML();
+}
 
 ?>

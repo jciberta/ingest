@@ -31,6 +31,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -137,7 +138,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$jsonForm = $_REQUEST['form'];
 //print $jsonForm;		
 //exit;
-		$frm = new FormFitxa($conn, $Usuari);
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 //print "Hi";		
 //exit;
 		print $frm->Desa($jsonForm);
@@ -147,7 +148,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$jsonDetalls = $_REQUEST['detalls'];
 //print $jsonDetalls;		
 //exit;
-		$frm = new FormFitxaDetall($conn, $Usuari);
+		$frm = new FormFitxaDetall($conn, $Usuari, $Sistema);
 		print $frm->Desa($jsonForm, $jsonDetalls);
 	}
 	else {

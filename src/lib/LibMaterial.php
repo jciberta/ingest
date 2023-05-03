@@ -75,9 +75,9 @@ class Material extends Objecte
 	 * @param integer $Modalitat Modalitat del formulari.
 	 */
 	public function EscriuFormulariRecerca($Modalitat = FormRecerca::mfLLISTA) {
-		$frm = new FormRecerca($this->Connexio, $this->Usuari);
+		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		$frm->Modalitat = $Modalitat;
-		$frm->AfegeixJavaScript('Matricula.js?v1.2');
+//		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Material';
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'MATERIAL';
@@ -135,7 +135,7 @@ class Material extends Objecte
 	}	
 	
 	public function EscriuFormulariFitxa() {
-		$frm = new FormFitxa($this->Connexio, $this->Usuari);
+		$frm = new FormFitxa($this->Connexio, $this->Usuari, $this->Sistema);
 		$frm->Titol = 'Material';
 		$frm->Taula = 'MATERIAL';
 		$frm->ClauPrimaria = 'material_id';

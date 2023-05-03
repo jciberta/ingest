@@ -729,4 +729,65 @@ class BorsaTreball extends Objecte
 			return false;
 		}
 	}
+
+	/**
+	 * Genera el formulari de la recerca de la borsa de treball.
+	 * @param integer $Modalitat Modalitat del formulari.
+	 */
+	public function EscriuFormulariRecerca($Modalitat = FormRecerca::mfLLISTA) {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE'], $this->EsGestorBorsa);
+		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
+		$frm->Modalitat = $Modalitat;
+		$frm->Titol = 'Borsa de treball';
+		$SQL = "
+			SELECT bt.*, cf.nom AS nom_cicle, fp.nom AS nom_familia 
+			FROM BORSA_TREBALL bt 
+			INNER JOIN CICLE_FORMATIU cf ON bt.cicle_formatiu_id = cf.cicle_formatiu_id 
+			INNER JOIN FAMILIA_FP fp ON cf.familia_fp_id = fp.familia_fp_id
+			ORDER BY data_creacio DESC
+		";
+		$frm->SQL = $SQL;
+		$frm->Taula = 'BORSA_TREBALL';
+		$frm->ClauPrimaria = 'borsa_treball_id';
+		$frm->Camps = 'empresa, nom_cicle, poblacio, data_creacio, bool:publicat';
+		$frm->Descripcions = 'Empresa, Cicle, Població, Data, Publicat';
+
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
+		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
+
+		if ($this->Usuari->es_admin) {
+			$frm->PermetEditar = true;
+			$frm->URLEdicio = 'FPFitxa.php?accio=BorsaTreball';
+			$frm->PermetAfegir = true;
+			$frm->PermetSuprimir = true;
+		}
+		$frm->EscriuHTML();
+	}
+	
+	/**
+	 * Genera el formulari de la fitxa de la borsa de treball.
+	 */
+	public function EscriuFormulariFitxa() {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE'], $this->EsGestorBorsa);
+		$frm = new FormFitxa($this->Connexio, $this->Usuari);
+		$frm->Titol = 'Borsa de treball';
+		$frm->Taula = 'BORSA_TREBALL';
+		$frm->ClauPrimaria = 'borsa_treball_id';
+		$frm->AutoIncrement = false;
+		$frm->Id = $this->Id;
+		$frm->AfegeixLookup('cicle_formatiu_id', 'Cicle formatiu', 200, 'FPRecerca.php?accio=CiclesFormatius', 'CICLE_FORMATIU', 'cicle_formatiu_id', 'nom', [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('empresa', 'Empresa', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('contacte', 'Contacte', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('poblacio', 'Població', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('telefon', 'Telèfon', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('email', 'Correu electrònic', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixText('web', 'Web', 200, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixTextArea('descripcio', 'Descripció', 40, 5, [FormFitxa::offREQUERIT]);
+		$frm->AfegeixCheckBox('publicat', 'Publicat');
+		$frm->AfegeixText('data_creacio', 'Data creació', 50, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixText('ip', 'IP', 50, [FormFitxa::offNOMES_LECTURA]);
+		$frm->EscriuHTML();
+	}
 }
