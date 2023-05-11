@@ -225,7 +225,7 @@ class Usuari extends Objecte
 			' LEFT JOIN CURS C ON (C.curs_id=M.curs_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.			
-			' WHERE alumne_id=? AND any_academic_id=? ';
+			' WHERE alumne_id=? AND AA.any_academic_id=? ';
 //		$ResultSet = $this->Connexio->query($SQL);
 		$stmt = $this->Connexio->prepare($SQL);
 		$stmt->bind_param("ii", $AlumneId, $this->Sistema->any_academic_id);
