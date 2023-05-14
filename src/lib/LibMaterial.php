@@ -248,7 +248,7 @@ class SortidaMaterial extends Form
 		echo '</TABLE>'.PHP_EOL;
 
 		$SQL = '
-			SELECT *, (
+			SELECT M.*, TM.nom AS NomTipus, (
 				SELECT FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2)
 				FROM PRESTEC_MATERIAL PM 
 				LEFT JOIN USUARI U ON (U.usuari_id=PM.usuari_id)
@@ -256,35 +256,40 @@ class SortidaMaterial extends Form
 				LIMIT 1
 			) AS Prestec
 			FROM MATERIAL M
+			LEFT JOIN TIPUS_MATERIAL TM ON (TM.tipus_material_id=M.tipus_material_id)
 			WHERE es_obsolet = 0
-			ORDER BY tipus_material_id
+			ORDER BY M.tipus_material_id, M.codi
 		';
 		$ResultSet = $this->Connexio->query($SQL);
 
-		//echo '<TABLE>';
-		echo '<TABLE class="table table-sm table-striped table-hover">'.PHP_EOL;
-		echo '<thead class="thead-dark">'.PHP_EOL;
-		echo "<TH></TH>".PHP_EOL;
-		echo "<TH>Codi</TH>".PHP_EOL;
-		echo "<TH>Nom</TH>".PHP_EOL;
-		echo "<TH>Préstec</TH>".PHP_EOL;
-		echo '</thead>'.PHP_EOL;
-
+		$TipusMaterialId = -1;
 		while ($row = $ResultSet->fetch_object()) {
+			if ($TipusMaterialId != $row->tipus_material_id) {
+				if ($TipusMaterialId != -1) {
+					echo '</TABLE>'.PHP_EOL;
+				}
+				echo "<H3>".$row->NomTipus."</H3>";
+				echo '<TABLE class="table table-sm table-striped table-hover">'.PHP_EOL;
+				echo '<thead class="thead-dark">'.PHP_EOL;
+				echo "<TH></TH>".PHP_EOL;
+				echo "<TH>Codi</TH>".PHP_EOL;
+				echo "<TH>Nom</TH>".PHP_EOL;
+				echo "<TH>Préstec</TH>".PHP_EOL;
+				echo '</thead>'.PHP_EOL;
+				$TipusMaterialId = $row->tipus_material_id;
+			}
 			$Style = ($row->Prestec == '') ? '' : 'style="color:lightgrey;"';
 			echo "<TR $Style>".PHP_EOL;
 			$Disable = ($row->Prestec == '') ? '' : 'disabled';
-			echo '<TD><input type="checkbox" name="chk_'.$row->material_id.'" '.$Disable.'></TD>'.PHP_EOL;
-			echo '<TD>'.$row->codi.'</TD>'.PHP_EOL;
-			echo '<TD>'.$row->nom.'</TD>'.PHP_EOL;
+			echo '<TD width=50><input type="checkbox" name="chk_'.$row->material_id.'" '.$Disable.'></TD>'.PHP_EOL;
+			echo '<TD width=150>'.$row->codi.'</TD>'.PHP_EOL;
+			echo '<TD width=1000>'.$row->nom.'</TD>'.PHP_EOL;
 			echo '<TD>'.$row->Prestec.'</TD>'.PHP_EOL;
 			echo '</TR>'.PHP_EOL;
 		}
 		echo '</TABLE>'.PHP_EOL;
-
 		echo '<button class="btn btn-primary active" type="submit" value="Submit">Sortida</button>'.PHP_EOL;
 		echo '</FORM>'.PHP_EOL;
-
 
 		CreaFinalHTML();
 	}
