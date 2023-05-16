@@ -107,7 +107,6 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'AfegeixDetall') {
-		
 		$Taula = $_REQUEST['taula'];
 		$ClauPrimaria = $_REQUEST['clau_primaria'];
 		
@@ -126,19 +125,19 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = "INSERT INTO $Taula ($CampMestre, $CampDetall) VALUES ($ValorMestre, $ValorDetal)";
 		$frm->Connexio->query($SQL);
 		
-/*
-		// Esborrem el registre
-		$SQL = 'DELETE FROM '.$Taula.' WHERE '.$ClauPrimaria.'='.$Valor;
-		$frm->Connexio->query($SQL);*/
-		
-		
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
 		$jsonForm = $_REQUEST['form'];
 //print $jsonForm;		
 //exit;
-		$frm = new FormFitxa($conn, $Usuari, $Sistema);
+
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+//		$frm = new FormFitxa($conn, $Usuari, $Sistema);
+		
 //print "Hi";		
 //exit;
 		print $frm->Desa($jsonForm);
@@ -148,7 +147,11 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$jsonDetalls = $_REQUEST['detalls'];
 //print $jsonDetalls;		
 //exit;
-		$frm = new FormFitxaDetall($conn, $Usuari, $Sistema);
+		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+		$frm = unserialize($FormSerialitzat);
+		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+//		$frm = new FormFitxaDetall($conn, $Usuari, $Sistema);
 		print $frm->Desa($jsonForm, $jsonDetalls);
 	}
 	else {
