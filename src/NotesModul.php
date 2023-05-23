@@ -23,6 +23,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -32,7 +33,7 @@ RecuperaGET($_GET);
 
 $CursId = $_GET['CursId'];
 $ModulId = $_GET['ModulId'];
-$Curs = new Curs($conn, $Usuari);
+$Curs = new Curs($conn, $Usuari, $Sistema);
 $Curs->CarregaRegistre($CursId);
 $CicleId = $Curs->ObteCicleFormatiuId();
 $Nivell = $Curs->ObteNivell();
@@ -40,7 +41,7 @@ $Nivell = $Curs->ObteNivell();
 
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
-$Professor = new Professor($conn, $Usuari);
+$Professor = new Professor($conn, $Usuari, $Sistema);
 $Professor->CarregaUFAssignades();
 //if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 if (!$Professor->TeMP($ModulId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
@@ -60,7 +61,7 @@ echo '<script language="javascript" src="js/Notes.js?v1.1" type="text/javascript
 // https://getbootstrap.com/docs/4.0/components/popovers/
 echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
 
-$Avaluacio = new Avaluacio($conn, $Usuari);
+$Avaluacio = new Avaluacio($conn, $Usuari, $Sistema);
 $Avaluacio->Carrega($CursId);
 echo $Avaluacio->CreaDescripcio($CursId);
 
@@ -73,11 +74,11 @@ if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria && $Curs->Estat() == Curs::
 if ($Avaluacio->Estat() != Avaluacio::Tancada)
 	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. Utilitza les fletxes per moure't lliurement per la graella.</font></P>";
 
-$NotesModul = new NotesModul($conn, $Usuari);
+$NotesModul = new NotesModul($conn, $Usuari, $Sistema);
 $NotesModul->CarregaRegistre($CursId, $ModulId);
 $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 
-$Tutoria = new GrupTutoria($conn, $Usuari);
+$Tutoria = new GrupTutoria($conn, $Usuari, $Sistema);
 echo $Tutoria->GeneraMostraGrup($CursId);
 //echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
 echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
