@@ -13,9 +13,11 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibArray.php');
 require_once(ROOT.'/lib/LibClasses.php');
-//require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibMatricula.php');
-require_once(ROOT.'/vendor/autoload.php');
+
+if (PHP_VERSION_ID >= PHP_VERSION_MIN) {
+	require_once(ROOT.'/vendor/autoload.php');
+}
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
