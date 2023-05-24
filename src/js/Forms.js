@@ -393,6 +393,8 @@ function DesaFitxa(element) {
 	var jsonForm = GetFormDataJSON(frm);
 console.dir('jsonForm: ' + jsonForm);
 
+	var frm = document.getElementById('frm');
+	var sFrm = frm.value;	
 
 //	var jsonForm2 = JSON.stringify($('#frmFitxa').serializeArray());
 //console.dir('jsonForm2: ' + jsonForm2);
@@ -427,7 +429,8 @@ console.log(jsonDetalls);
 		data:{
 			'accio': accio,
 			'form': jsonForm,
-			'detalls': jsonDetalls
+			'detalls': jsonDetalls,
+			'frm': sFrm
 		},
         success: function(data) {
 			i = data.indexOf('ERROR DesaFitxa');

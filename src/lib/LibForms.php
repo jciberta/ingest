@@ -614,6 +614,17 @@ class Form extends Objecte
 		$sRetorn .= '</div>';
 		return $sRetorn;
 	}
+	
+	/**
+	 * Genera la part oculta per emmagatzemar valors.
+	 */
+	protected function GeneraPartOculta() {
+		$sRetorn = "";
+		$FormSerialitzat = serialize($this);
+		$FormSerialitzatEncriptat = Encripta($FormSerialitzat);
+		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
+		return $sRetorn;
+	}
 
 	/**
 	 * Genera el subtítol si n'hi ha.
@@ -1396,18 +1407,6 @@ class FormRecerca extends Form
 	 */
 	private function GeneraFiltre() {
 		return $this->Filtre->CreaFiltre();
-	}
-	
-	/**
-	 * Genera la part oculta per emmagatzemar valors.
-	 */
-	protected function GeneraPartOculta() {
-		$sRetorn = "";
-		$FormSerialitzat = serialize($this);
-		$FormSerialitzatEncriptat = Encripta($FormSerialitzat);
-//		$FormSerialitzatEncriptat = SaferCrypto::encrypt($FormSerialitzat, hex2bin(Self::Secret));
-		$sRetorn .= "<input type=hidden id=frm name=frm value='".bin2hex($FormSerialitzatEncriptat)."'>";
-		return $sRetorn;
 	}
 
 	/**
@@ -2365,6 +2364,7 @@ class FormFitxa extends Form
 	protected function GeneraFitxa() {
 		$sRetorn = '<DIV id=Fitxa>'.PHP_EOL;
 		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php" accept-charset="UTF-8">'.PHP_EOL;
+		$sRetorn .= "    ".$this->GeneraPartOculta().PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_Taula value='".$this->Taula."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>".PHP_EOL;
 		$sRetorn .= "    <input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>".PHP_EOL;
@@ -2623,7 +2623,7 @@ class FormFitxa extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol);
-		echo '<script language="javascript" src="js/Forms.js?v1.8" type="text/javascript"></script>'.PHP_EOL;
+		echo '<script language="javascript" src="js/Forms.js?v1.9" type="text/javascript"></script>'.PHP_EOL;
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>'.PHP_EOL;
 
