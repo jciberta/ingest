@@ -116,15 +116,14 @@ switch ($accio) {
 		$frm->AfegeixJavaScript('Inet.js?v1.0');
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Registres';
-		$SQL = ' SELECT registre_id, usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ';
+		$SQL = ' SELECT registre_id, usuari_id, nom_usuari, data, ip, seccio, missatge FROM REGISTRE ORDER BY registre_id DESC ';
 		$frm->SQL = $SQL;
 		$frm->Taula = 'REGISTRE';		
 		$frm->ClauPrimaria = 'registre_id';
 		$frm->Camps = 'usuari_id, nom_usuari, data, ip, seccio, missatge';
 		$frm->Descripcions = 'usuari_id, Usuari, Data, IP, Secció, Missatge';
-
+		$frm->MaximRegistres = 20;
 		$frm->AfegeixOpcioAJAX('Mostra dades IP', 'MostraDadesIP', 'ip', [], '', 'help.svg');
-
 		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
 		$frm->EscriuHTML();
         break;		
