@@ -88,16 +88,6 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			$PD = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $ModulId);
 			$PD->ExportaDOCX($ModulId);
 			break;
-		case "ExportaProgramacioDidacticaODT":
-			$ModulId = $_GET['ModulId'];
-			$PD = new ProgramacioDidactica($conn, $Usuari, $Sistema);
-			$PD->ExportaODT($ModulId);
-			break;
-		case "ExportaProgramacioDidacticaODT":
-			$ModulId = $_GET['ModulId'];
-			$PD = new ProgramacioDidactica($conn, $Usuari, $Sistema);
-			$PD->ExportaODT($ModulId);
-			break;
 		case "PropostaMatriculaPDF":
 			$MatriculaId = $_GET['MatriculaId'];
 			$PM = new ExpedientSaga($conn, $Usuari, $Sistema, $MatriculaId);
