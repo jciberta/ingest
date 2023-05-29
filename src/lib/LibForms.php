@@ -1792,58 +1792,71 @@ class FormRecercaQBE extends FormRecerca
 		$aClauPrimaria = explode(',', $this->ClauPrimaria);
 		$Taula = $this->Taula;
 
-		$sRetorn = '<DIV id=taula>';
+
+		$sRetorn = PHP_EOL.PHP_EOL;
+		$sRetorn .= '<!-- INICI Taula -->'.PHP_EOL;
+		$sRetorn .= '<DIV id=taula>'.PHP_EOL;
 		$SQL = $this->CreaSQL($PARAM);
 //print "<br>$SQL<br>";
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {
-			$sRetorn .= '<input type=hidden id=accio name=accio value="Taula">';
-			$sRetorn .= '<input type=hidden id=taula name=taula value="'.$Taula.'">';
-			$sRetorn .= "<TABLE id='TaulaQBE'>";
+			$sRetorn .= '  <input type=hidden id=accio name=accio value="Taula">'.PHP_EOL;
+			$sRetorn .= '  <input type=hidden id=taula name=taula value="'.$Taula.'">'.PHP_EOL;
+			$sRetorn .= "  <TABLE id='TaulaQBE'>".PHP_EOL;
 			$PrimerCop = True;
 			while($row = $ResultSet->fetch_assoc()) {
 				$keys = array_keys($row);
 				if ($PrimerCop) {
 					// Capçalera de la taula
-					$sRetorn .= "<THEAD>";
+					$sRetorn .= "    <THEAD>".PHP_EOL;
+					$sRetorn .= "      <TR>".PHP_EOL;
+					$sRetorn .= "        <TH></TH>".PHP_EOL;
 					for ($i=0; $i<count($keys); $i++) {
-						$sRetorn .= "<TH>".$keys[$i]."</TH>";
+						$sRetorn .= "        <TH>".$keys[$i]."</TH>".PHP_EOL;
 					}
-					$sRetorn .= "</THEAD>";
+					$sRetorn .= "      </TR>".PHP_EOL;
+					$sRetorn .= "      <TR>".PHP_EOL;
 					// Camps per filtrar, estil QBE
+					$sRetorn .= '        <TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnFiltra" name="btnFiltra" onclick="FiltraQBE(this);">Filtra</a></TD>'.PHP_EOL;
 					for ($i=0; $i<count($keys); $i++) {
 						$Valor = (isset($PARAM) && array_key_exists($keys[$i], $PARAM)) ? $PARAM[$keys[$i]] : '';
-						$sRetorn .= '<TD><input type="text" name="'.$keys[$i].'" value="'.$Valor.'" size="1px" style="width:100%"></TD>';
+						$sRetorn .= '        <TD><input type="text" name="'.$keys[$i].'" value="'.$Valor.'" size="1px" style="width:100%"></TD>'.PHP_EOL;
 					}
+					$sRetorn .= "      </TR>".PHP_EOL;
+					$sRetorn .= "    </THEAD>".PHP_EOL;
 					// Botó per filtrar
-					$sRetorn .= '<TD><a class="btn btn-primary active" role="button" aria-pressed="true" id="btnFiltra" name="btnFiltra" onclick="FiltraQBE(this);">Filtra</a></TD>';
 					$PrimerCop = False;
 				}
-				$sRetorn .= "<TR>";
-				for ($i=0; $i<count($keys); $i++) {
-					$sRetorn .= "<TD>".utf8_encodeX($row[$keys[$i]])."</TD>";
-				}
+				// Registres
+				$sRetorn .= "    <TR>".PHP_EOL;
 				$ClauPrimaria = implode(",", $aClauPrimaria);
 				if ($ClauPrimaria != '') {
 					// Si hi ha clau primària, es pot editar i esborrar
-					$sRetorn .= "<TD>";
+					$sRetorn .= "      <TD>".PHP_EOL;
 					$ClauPrimaria = implode(",", $aClauPrimaria);
 					$aValor = [];
 					for ($i=0; $i<count($aClauPrimaria); $i++)
 						array_push($aValor, $row[$aClauPrimaria[$i]]);
 					$Valor = implode(",", $aValor);
 					$URL = GeneraURL($this->URLEdicio."$Valor");
-					$sRetorn .= "<A href=$URL><IMG src=img/edit.svg></A>&nbsp&nbsp";
+					$sRetorn .= "        <A href=$URL><IMG src=img/edit.svg></A>&nbsp&nbsp".PHP_EOL;
 					$Funcio = 'SuprimeixRegistre("'.$Taula.'", "'.$ClauPrimaria.'", "'.$Valor.'");';
-					$sRetorn .= "<A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp";
-					$sRetorn .= "</TD>";
+					$sRetorn .= "        <A href=# onClick='".$Funcio."' data-toggle='modal' data-target='#confirm-delete'><IMG src=img/delete.svg></A>&nbsp&nbsp".PHP_EOL;
+					$sRetorn .= "      </TD>".PHP_EOL;
 				}
-				$sRetorn .= "</TR>";
+				else 
+					$sRetorn .= "      <TD></TD>".PHP_EOL;
+				// Registres
+				for ($i=0; $i<count($keys); $i++) {
+					$sRetorn .= "      <TD>".utf8_encodeX($row[$keys[$i]])."</TD>".PHP_EOL;
+				}
+				$sRetorn .= "    </TR>".PHP_EOL;
 			}
-			$sRetorn .= "</TABLE>";
+			$sRetorn .= "  </TABLE>".PHP_EOL;
 			$sRetorn .= $this->GeneraPartOculta();
 		}
-		$sRetorn .= '</DIV>';
+		$sRetorn .= '</DIV>'.PHP_EOL;
+		$sRetorn .= '<!-- FINAL Taula -->'.PHP_EOL;
 		return $sRetorn;
 	}
 }
