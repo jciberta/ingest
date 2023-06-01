@@ -30,6 +30,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -48,7 +49,7 @@ else {
 	$MatriculaId = mysqli_real_escape_string($conn, $_GET['MatriculaId']);
 }
 
-$Matricula = new Matricula($conn, $Usuari);
+$Matricula = new Matricula($conn, $Usuari, $Sistema);
 $Matricula->Carrega($MatriculaId);
 $alumne = $Matricula->ObteAlumne();
 $nivell = $Matricula->ObteNivell();
@@ -65,7 +66,7 @@ $ActivaEdicio = (isset($_GET) && array_key_exists('ActivaEdicio', $_GET)) ? $_GE
 if (($Usuari->es_alumne) && ($Usuari->usuari_id != $alumne))
 	header("Location: Surt.php");
 
-$objUsuari = new Usuari($conn, $Usuari);
+$objUsuari = new Usuari($conn, $Usuari, $Sistema);
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_administratiu && !$Usuari->es_alumne && !($Usuari->es_pare && $objUsuari->EsProgenitor($alumne)))
 	header("Location: Surt.php");
 
@@ -87,7 +88,7 @@ echo "<DIV id=debug></DIV>";
 // L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
 $ButlletiVisible = True;
 if ($Usuari->es_alumne || $Usuari->es_pare) {
-	$Expedient = new Expedient($conn);
+	$Expedient = new Expedient($conn, $Usuari, $Sistema);
 	$ButlletiVisible = $Expedient->EsVisibleButlleti($MatriculaId);
 }
 

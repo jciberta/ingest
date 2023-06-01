@@ -56,7 +56,7 @@ class Expedient extends Form
 	 * @param objecte $user Usuari.
 	 * @param objecte $system Dades de l'aplicació.
 	 */
-	function __construct($conn, $user, $Sistema) {
+	function __construct($conn, $user = null, $Sistema = null) {
 		parent::__construct($conn, $user, $Sistema);
 		//$this->Connexio = $con;
 		$this->NotesMP = [];

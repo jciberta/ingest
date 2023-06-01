@@ -22,6 +22,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
@@ -41,14 +42,14 @@ if ($CursId == -1)
 CreaIniciHTML($Usuari, "Generació d'expedients en PDF");
 //echo '<script language="javascript" src="js/Avaluacio.js?v1.5" type="text/javascript"></script>';
 
-$Avaluacio = new Avaluacio($conn, $Usuari);
+$Avaluacio = new Avaluacio($conn, $Usuari, $Sistema);
 $Avaluacio->Carrega($CursId);
 //echo $Avaluacio->CreaMissatges();
 
 echo "<h2>Avaluació actual</h2>";
 $Avaluacio->EscriuTaula();
 
-$Expedient = new Expedient($conn);
+$Expedient = new Expedient($conn, $Usuari, $Sistema);
 $Sufix = $Avaluacio->EstatText();
 
 echo "<HR>";
