@@ -352,8 +352,14 @@ function NotaKeyDown(obj, event) {
 				((sValorAnterior == '') && (event.keyCode === KeyCode.KEY_N)) ||
 				((sValorAnterior == 'N') && (event.keyCode === KeyCode.KEY_A)) 
 				);
-			if (!bPermetreTecla) 
-				event.preventDefault();			
+			if (!bPermetreTecla) {
+				event.preventDefault();
+			}
+			else if (event.keyCode === KeyCode.KEY_N) {
+				// En prémer N, ja surt la combinació NA (No Apte)
+				obj.value = 'NA';
+				event.preventDefault();
+			}
 		}
 		else {
 			// Resta de notes. A dins la casella només es permetes les combinacions: 1, .. 9, 10
