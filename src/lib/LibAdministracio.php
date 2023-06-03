@@ -106,6 +106,9 @@ class Administracio extends Objecte
 				case 'VARCHAR':
 					$frm->AfegeixText($row['Field'], $row['Field'], 200, []);
 					break;
+				case 'TEXT':
+					$frm->AfegeixTextArea($row['Field'], $row['Field'], 25, 5, []);
+					break;
 				case 'BIT':
 					$frm->AfegeixCheckBox($row['Field'], $row['Field']);
 					break;
