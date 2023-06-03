@@ -1,9 +1,7 @@
 
 /* Correcció de text UTF */
 
-
-
-UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã ', 'à');
+UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, concat(char(195,131 using utf8mb4), char(194,160 using utf8mb4)), 'à');
 UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã€', 'À');
 UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã¨', 'è');
 UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã©', 'é');
@@ -18,7 +16,7 @@ UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã“', 'Ó');
 UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ãº', 'ú');
 UPDATE MODUL_PLA_ESTUDI SET metodologia = REPLACE(metodologia, 'Ã¼', 'ü');
 
-UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã ', 'à');
+UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, concat(char(195,131 using utf8mb4), char(194,160 using utf8mb4)), 'à');
 UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã€', 'À');
 UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã¨', 'è');
 UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã©', 'é');
@@ -33,7 +31,7 @@ UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã
 UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ãº', 'ú');
 UPDATE MODUL_PLA_ESTUDI SET criteris_avaluacio = REPLACE(criteris_avaluacio, 'Ã¼', 'ü');
 
-UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã ', 'à');
+UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, concat(char(195,131 using utf8mb4), char(194,160 using utf8mb4)), 'à');
 UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã€', 'À');
 UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã¨', 'è');
 UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã©', 'é');
@@ -48,7 +46,7 @@ UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã“', 'Ó');
 UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ãº', 'ú');
 UPDATE MODUL_PLA_ESTUDI SET recursos = REPLACE(recursos, 'Ã¼', 'ü');
 
-UPDATE MODUL_PLA_ESTUDI SET planificacio = REPLACE(planificacio, 'Ã ', 'à');
+UPDATE MODUL_PLA_ESTUDI SET planificacio = REPLACE(planificacio, concat(char(195,131 using utf8mb4), char(194,160 using utf8mb4)), 'à');
 UPDATE MODUL_PLA_ESTUDI SET planificacio = REPLACE(planificacio, 'Ã€', 'À');
 UPDATE MODUL_PLA_ESTUDI SET planificacio = REPLACE(planificacio, 'Ã¨', 'è');
 UPDATE MODUL_PLA_ESTUDI SET planificacio = REPLACE(planificacio, 'Ã©', 'é');
