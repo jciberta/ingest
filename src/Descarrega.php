@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$DataAvaluacio = $_POST['edd_data_avaluacio'];
 			$DataImpressio = $_POST['edd_data_impressio'];
 //echo "$CursId $Grup $DataAvaluacio $DataImpressio";
-			$acta = new Acta($conn, $Usuari);
+			$acta = new Acta($conn, $Usuari, $Sistema);
 			$acta = $acta->GeneraPDF($CursId, $Grup, $DataAvaluacio, $DataImpressio);
 			break;
 	}

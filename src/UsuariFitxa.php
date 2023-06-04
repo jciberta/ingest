@@ -19,6 +19,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: Surt.php");
@@ -37,13 +38,13 @@ if ($Usuari->es_professor && $Id == -1)
 	header("Location: Surt.php");
 
 // Només poden veure la fitxa els tutors d'aquell alumne.
-$Professor = new Professor($conn, $Usuari);
+$Professor = new Professor($conn, $Usuari, $Sistema);
 $ProfessorSenseCarrecDirectiu = ($Usuari->es_professor) && (!$Usuari->es_direccio) && (!$Usuari->es_cap_estudis);
 if ($ProfessorSenseCarrecDirectiu && (!$Professor->EsTutorAlumne($Id) && !$Professor->EsTutorPare($Id)))
 	header("Location: Surt.php");
 
 // Creació del formulari de la fitxa de l'usuari.
-$frm = new Usuari($conn, $Usuari);
+$frm = new Usuari($conn, $Usuari, $Sistema);
 $frm->EscriuFormulariFitxa($Id);
 
 ?>

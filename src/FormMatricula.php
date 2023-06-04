@@ -18,6 +18,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
@@ -29,7 +30,7 @@ if ($conn->connect_error)
 CreaIniciHTML($Usuari, 'Matriculació');
 echo '<script language="javascript" src="js/Forms.js?v1.5" type="text/javascript"></script>';
 
-$frmMatricula = new Form($conn, $Usuari);
+$frmMatricula = new Form($conn, $Usuari, $Sistema);
 
 echo '<form action="Matricula.php" method="post" id="FormMatricula">';
 echo '<TABLE>';

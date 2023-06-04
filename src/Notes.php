@@ -49,7 +49,7 @@ if (!$Professor->TeUFEnCicle($CicleId) && !$Usuari->es_admin && !$Usuari->es_dir
 	header("Location: Surt.php");
 $Professor->CarregaTutor($CursId);
 
-$cf = new CicleFormatiu($conn);
+$cf = new CicleFormatiu($conn, $Usuari, $Sistema);
 //CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell, True, True, True);
 CreaIniciHTML_Notes($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
 

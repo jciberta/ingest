@@ -41,7 +41,7 @@ echo '<br>';
 
 $accio = (isset($PARAM) && array_key_exists('accio', $PARAM)) ? $PARAM['accio'] : 'BaseDades';
 
-$Administracio = new Administracio($conn, $Usuari);
+$Administracio = new Administracio($conn, $Usuari, $Sistema);
 
 switch ($accio) {
     case "BaseDades":

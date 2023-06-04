@@ -20,6 +20,7 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
 if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 	header("Location: Surt.php");
@@ -70,7 +71,7 @@ if ($uploadOk == 0) {
     }
 }
 
-$ImportaPasswords = new ImportaPasswords($conn, $Usuari);
+$ImportaPasswords = new ImportaPasswords($conn, $Usuari, $Sistema);
 $inputFileName = INGEST_DATA.'/upload/'.$_FILES["FitxerCSV"]["name"];
 $ImportaPasswords->Importa($inputFileName);
 
