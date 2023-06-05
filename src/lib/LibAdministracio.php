@@ -10,12 +10,20 @@
  */
 
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
+
 
 /**
  * Classe que encapsula les utilitats per a l'administració.
  */
 class Administracio extends Objecte
 {
+	function __construct($conn = null, $user = null, $system = null) {
+		// Usuaris que poden instanciar aquesta classe: admin (SU)
+		Seguretat::ComprovaAccessUsuari($user, ['SU']);
+		parent::__construct($conn, $user, $system);
+	}	
+
 	/**
 	 * Obté les metadades d'una taula.
 	 * @param string $Taula Taula.

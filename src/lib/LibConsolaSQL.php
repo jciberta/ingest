@@ -11,6 +11,7 @@
 
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibHTML.php');
 
 
@@ -20,10 +21,16 @@ require_once(ROOT.'/lib/LibHTML.php');
 class ConsolaSQL extends Form
 {
 	/**
-	* Indica que el resultat de la SQL té dades i per tant, es pot descarregar.
-	* @var boolean
-	*/    
+	 * Indica que el resultat de la SQL té dades i per tant, es pot descarregar.
+	 * @var boolean
+	 */    
 	private $TeResultSet = False;
+
+	function __construct($conn = null, $user = null, $system = null) {
+		// Usuaris que poden instanciar aquesta classe: admin (SU)
+		Seguretat::ComprovaAccessUsuari($user, ['SU']);
+		parent::__construct($conn, $user, $system);
+	}	
 
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
