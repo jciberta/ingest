@@ -279,8 +279,8 @@ abstract class DocumentInstitutPDF extends DocumentPDF
 
 	protected function GeneraBlocAlumne() {
 		$this->Titol2("Dades de l'alumne");
-		$this->Encolumna5("Alumne", "", "DNI", "", "Grup");
-		$this->Encolumna5($this->NomComplet, "", $this->DNI, "", $this->Grup);
+		$this->Encolumna5("Alumne", "", "", "DNI", "Grup");
+		$this->Encolumna5($this->NomComplet, "", "", $this->DNI, $this->Grup);
 	}
 
 	protected function GeneraBlocCicle() {
