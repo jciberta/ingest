@@ -263,7 +263,6 @@ class PropostaMatricula extends Objecte
 	}
 
 	private function GeneraDescripcioAlumne(): string {
-//print_r($this->Registre->NomCurs);		
 		$Retorn = "";
 		if ($this->Usuari->es_admin)
 			$Retorn = "<b>Id matrícula:</b>: ".$this->Id."<br>";
@@ -418,7 +417,6 @@ class PropostaMatricula extends Objecte
 					$Qualificacions[$i] = new stdClass();
 					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
-//					$Qualificacions[$i]->Conv = 'Ord.';
 					$Qualificacions[$i]->UF = [];
 					$j = -1;
 				}
@@ -430,8 +428,6 @@ class PropostaMatricula extends Objecte
 				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
 				// Pedaç per fer quadrar amb l'entructura de CarregaNotes
 				$Qualificacions[$i]->UF[$j]->Qualf = ($row["baixa"]) ? 1 : 5;
-//				$Qualificacions[$i]->UF[$j]->Qualf = NumeroANotaText(UltimaNota($row));
-//				$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
 				$row = $ResultSet->fetch_assoc();
 			}
 		}
@@ -441,7 +437,6 @@ class PropostaMatricula extends Objecte
 
 	private function GeneraTaula($Qualificacions): string {
 		$Retorn = '';
-		//$Qualificacions = $this->RegistreNotes;
 		if (empty($Qualificacions)) {
 			$Retorn = 'No hi ha dades';
 		}
