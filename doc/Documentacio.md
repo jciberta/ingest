@@ -10,7 +10,9 @@
 
 ## Documentació del codi
 
- * Nomenclatura de variables, funcions, classes, mètodes, atributs, etc. estil Pascal (totes les inicials en majúscules): NomDeLaVariable, NomDeLaFuncio, etc. No estil Java (nomDeLaVariable) 
+ * Nomenclatura de variables, funcions, classes, mètodes, atributs, etc. estil Pascal (totes les inicials en majúscules): NomDeLaVariable, NomDeLaFuncio, etc. No estil Java (nomDeLaVariable).
+ * [PSR-1: Basic Coding Standard](https://www.php-fig.org/psr/psr-1/).
+ * [PSR-12: Extended Coding Style](https://www.php-fig.org/psr/psr-12/).
 
 ### Classes
 
