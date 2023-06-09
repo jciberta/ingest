@@ -477,6 +477,8 @@ class MenuInGest extends Menu
 
 			// Menú Secretaria
 			$Retorn .= Menu::Obre('Secretaria');
+			$Retorn .= Menu::Opcio('Propostes matrícula', 'Recerca.php?accio=PropostaMatricula');
+			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
 			$Retorn .= Menu::Opcio('Bonificacions matrícula', 'FPRecerca.php?accio=BonificacioMatricula');
 			$Retorn .= Menu::Tanca();
@@ -490,6 +492,14 @@ class MenuInGest extends Menu
 			$Retorn .= Menu::Opcio('Graduació alumnes 2n', 'UsuariRecerca.php?accio=AlumnesGraduacio2n');
 			$Retorn .= Menu::Tanca();
 		}	
+		else if ($Usuari->es_administratiu) {
+			// Menú Secretaria
+			$Retorn .= Menu::Obre('Secretaria');
+			$Retorn .= Menu::Opcio('Propostes matrícula', 'Recerca.php?accio=PropostaMatricula');
+//			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
+//			$Retorn .= Menu::Opcio('Bonificacions matrícula', 'FPRecerca.php?accio=BonificacioMatricula');
+			$Retorn .= Menu::Tanca();
+		}
 		$Retorn .= '		</ul>';
 
 		// Menú usuari

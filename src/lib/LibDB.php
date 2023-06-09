@@ -94,18 +94,15 @@ function ResultSetAJSON($ResultSet)
 class DB
 {
 	/**
-	 * Carrega un registre d'una taula de la base de dades.
+	 * Carrega un registre de la base de dades.
 	 * @param object $Connexio Connexió a la base de dades.
-	 * @param string $Taula Taula de la base de dades.
-	 * @param string $Camp Nom del camp.
-	 * @param string $Valor Valor del camp.
+	 * @param string $SQL SQL a executar.
 	 * @param int $Tipus Tipus d'objecte que retorna (1: objecte, 2: array associatiu)
-	 * @return mixed Registre de la taula.
+	 * @return mixed Registre.
 	 */
-	public static function CarregaRegistre($Connexio, $Taula, $Camp, $Valor, $Tipus = 1)
+	public static function CarregaRegistreSQL($Connexio, $SQL, $Tipus = 1)
 	{
 		$Retorn = NULL;
-		$SQL = "SELECT * FROM $Taula WHERE $Camp='$Valor'";
 		try {
 			$ResultSet = $Connexio->query($SQL);
 			if (!$ResultSet)
@@ -124,6 +121,40 @@ class DB
 			}
 		}	
 		return $Retorn;
+	}
+
+	/**
+	 * Carrega un registre d'una taula de la base de dades.
+	 * @param object $Connexio Connexió a la base de dades.
+	 * @param string $Taula Taula de la base de dades.
+	 * @param string $Camp Nom del camp.
+	 * @param string $Valor Valor del camp.
+	 * @param int $Tipus Tipus d'objecte que retorna (1: objecte, 2: array associatiu)
+	 * @return mixed Registre de la taula.
+	 */
+	public static function CarregaRegistre($Connexio, $Taula, $Camp, $Valor, $Tipus = 1)
+	{
+//		$Retorn = NULL;
+		$SQL = "SELECT * FROM $Taula WHERE $Camp='$Valor'";
+		return Self::CarregaRegistreSQL($Connexio, $SQL, $Tipus);
+/*		try {
+			$ResultSet = $Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception('<p>'.$Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
+		} catch (Exception $e) {
+			die("<p><b>ERROR CarregaRegistre</b>. Causa:</p>".$e->getMessage());
+		}	
+		if ($ResultSet->num_rows > 0) {
+			switch ($Tipus) {
+				case 1:
+					$Retorn = $ResultSet->fetch_object();
+					break;
+				case 2:
+					$Retorn = $ResultSet->fetch_assoc();
+					break;
+			}
+		}	
+		return $Retorn;*/
 	}
 	
 	/**

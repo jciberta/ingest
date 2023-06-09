@@ -329,6 +329,16 @@ switch ($accio) {
 		$sm = new EntradaMaterial($conn, $Usuari, $Sistema);
 		$sm->EscriuHTML();
 		break;
+	case "PropostaMatricula":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
+		// Obtenció de l'identificador, sinó fora.
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		if ($Id == -1)
+			header("Location: Surt.php");
+		$frm = new PropostaMatricula($conn, $Usuari, $Sistema);
+		$frm->Id = $Id;
+		$frm->EscriuFormulariFitxa();
+		break;
 	case "Altre":
         break;
 }

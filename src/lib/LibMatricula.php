@@ -3,52 +3,28 @@
 /** 
  * LibMatricula.php
  *
- * Llibreria d'utilitats per a la matriculaciÛ.
+ * Llibreria d'utilitats per a la matriculaci√≥.
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
+require_once(ROOT.'/lib/LibClasses.php');
+require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibExpedient.php');
+
 /**
- * Classe que encapsula les utilitats per al maneig de la matrÌcula.
+ * Classe que encapsula les utilitats per al maneig de la matr√≠cula.
  */
-class Matricula 
+class Matricula extends Objecte
 {
 	/**
-	* ConnexiÛ a la base de dades.
-	* @access public 
-	* @var object
-	*/    
-	public $Connexio;
-
-	/**
-	* Usuari autenticat.
-	* @access public 
-	* @var object
-	*/    
-	public $Usuari;
-	
-	/**
-	* Registre de la base de dades que contÈ les dades d'una matrÌcula.
-	* @var object
-	*/    
-    private $Registre = null;
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn ConnexiÛ a la base de dades.
-	 * @param object $user Usuari de l'aplicaciÛ.
-	 */
-	function __construct($con, $user) {
-		$this->Connexio = $con;
-		$this->Usuari = $user;
-	}
-
-	/**
 	 * CreaMatricula
-	 * Crea la matrÌcula per a un alumne. Quan es crea la matrÌcula:
+	 * Crea la matr√≠cula per a un alumne. Quan es crea la matr√≠cula:
 	 *   1. Pel nivell que sigui, es creen les notes, una per cada UF d'aquell cicle
-	 *   2. Si l'alumne Ès a 2n, l'aplicaciÛ ha de buscar les que li han quedar de primer per afegir-les.
+	 *   2. Si l'alumne √©s a 2n, l'aplicaci√≥ ha de buscar les que li han quedar de primer per afegir-les.
 	 *
 	 * @param integer $CursId Id del curs.
 	 * @param integer $AlumneId Id de l'alumne.
@@ -62,7 +38,7 @@ class Matricula
 		if (Config::Debug)
 			print $SQL.'<br>';		
 		
-		// ObtenciÛ de la variable d'un procediment emmagatzemat.
+		// Obtenci√≥ de la variable d'un procediment emmagatzemat.
 		// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
 		if (!$this->Connexio->query("SET @retorn = -99") || !$this->Connexio->query($SQL)) {
 			echo "CALL failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
@@ -78,7 +54,7 @@ class Matricula
 
 	/**
 	 * CreaMatriculaDNI
-	 * Crea la matrÌcula per a un alumne a partir del DNI.
+	 * Crea la matr√≠cula per a un alumne a partir del DNI.
 	 *
 	 * @param integer $CursId Id del curs.
 	 * @param string $DNI DNI de l'alumne.
@@ -96,7 +72,7 @@ class Matricula
 		if (Config::Debug)
 			print $SQL.'<br>';		
 		
-		// ObtenciÛ de la variable d'un procediment emmagatzemat.
+		// Obtenci√≥ de la variable d'un procediment emmagatzemat.
 		// http://php.net/manual/en/mysqli.quickstart.stored-procedures.php
 		if (!$this->Connexio->query("SET @retorn = -99") || !$this->Connexio->query($SQL)) {
 			echo "CALL failed: (" . $this->Connexio->errno . ") " . $this->Connexio->error;
@@ -112,10 +88,10 @@ class Matricula
 	
 	/**
 	 * Convalida una UF (no es pot desfer).
-	 * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocatÚria a 0.
-     * @param array Primera lÌnia.
+	 * Posa el camp convalidat de NOTES a cert, posa una nota de 5 i el camp convocat√≤ria a 0.
+     * @param array Primera l√≠nia.
 	 */
-	public function ConvalidaUF(int $NotaId): string {
+	public function ConvalidaUF(int $NotaId) {
 		$SQL = 'SELECT * FROM NOTES WHERE notes_id='.$NotaId;	
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
@@ -133,8 +109,8 @@ class Matricula
 	}
 
 	/**
-	 * Carrega les dades d'una matrÌcula i les emmagatzema en l'atribut Registre.
-     * @param int $MatriculaId Identificador de la matrÌcula.
+	 * Carrega les dades d'una matr√≠cula i les emmagatzema en l'atribut Registre.
+     * @param int $MatriculaId Identificador de la matr√≠cula.
 	 */
 	public function Carrega(int $MatriculaId) {
 		$SQL = " SELECT M.*, C.nivell ".
@@ -149,7 +125,7 @@ class Matricula
 	}
 
 	/**
-	 * ObtÈ l'identificador de l'alumne a partir de les dades en l'atribut Registre.
+	 * Obt√© l'identificador de l'alumne a partir de les dades en l'atribut Registre.
 	 * @return integer Identificador de l'alumne.
 	 */
 	public function ObteAlumne(): int {
@@ -161,7 +137,7 @@ class Matricula
 	}
 
 	/**
-	 * ObtÈ l'identificador del curs a partir de les dades en l'atribut Registre.
+	 * Obt√© l'identificador del curs a partir de les dades en l'atribut Registre.
 	 * @return integer Identificador del curs.
 	 */
 	public function ObteCurs(): int {
@@ -173,7 +149,7 @@ class Matricula
 	}
 
 	/**
-	 * ObtÈ el nivell (1r o 2n) de la matrÌcula a partir de les dades en l'atribut Registre.
+	 * Obt√© el nivell (1r o 2n) de la matr√≠cula a partir de les dades en l'atribut Registre.
 	 * @return integer Nivell.
 	 */
 	public function ObteNivell(): int {
@@ -185,7 +161,7 @@ class Matricula
 	}
 	
 	/**
-	 * ObtÈ el grup de tutoria a partir de les dades en l'atribut Registre.
+	 * Obt√© el grup de tutoria a partir de les dades en l'atribut Registre.
 	 * @return string Grup de tutoria.
 	 */
 	public function ObteGrupTutoria(): string {
@@ -194,6 +170,296 @@ class Matricula
 		else 
 			$iRetorn = $this->Registre->grup_tutoria;
 		return $iRetorn;
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de la proposta de la matr√≠cula.
+ */
+class PropostaMatricula extends Objecte
+{
+	private $RegistreNotes = [];
+	private $PropostaMatricula = [];
+	private $ComentariMatriculaSeguent = "";
+
+	/**
+	 * Crea la sent√®ncia SQL que retorna les matr√≠cules.
+	 * @param integer $MatriculaId Identificador de la matr√≠cula, sin√≥ s'especifica, carrega totes.
+	 * @return string Sent√®ncia SQL.
+	 */
+	private function CreaSQL(int $MatriculaId = -1): string {
+		$SQL = "
+			SELECT 
+				M.matricula_id, 
+				C.nivell, C.nom AS NomCurs,
+				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username,
+				PercentatgeAprovat(M.matricula_id) AS PercentatgeAprovat
+			FROM MATRICULA M
+			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=CPE.cicle_formatiu_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=M.alumne_id)
+		";
+		if ($MatriculaId != -1)
+			$SQL .= " WHERE M.matricula_id=$MatriculaId ";
+		return $SQL;
+	}
+
+	public function EscriuFormulariRecerca() {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD']);
+		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
+		$frm->Titol = 'Proposta matr√≠cula';
+		$frm->SQL = $this->CreaSQL();
+		$frm->Taula = 'MATRICULA';
+		$frm->ClauPrimaria = 'matricula_id';
+		$frm->Camps = 'username, NomAlumne, Cognom1Alumne, Cognom2Alumne, nivell, %2:PercentatgeAprovat';
+		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Nivell, Percentatge aprovat';
+
+		// Filtre any acad√®mic
+		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
+		$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1]);
+		// Filtre cicle
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('CF.cicle_formatiu_id', 'Cicle', 100, $aCicles[0], $aCicles[1]);
+		// Filtre nivell
+		$frm->Filtre->AfegeixLlista('C.nivell', 'Nivell', 30, array('', '1', '2'), array('Tots', '1r', '2n'));
+		// Filtre grup tutoria
+		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT DISTINCT grup_tutoria, grup_tutoria FROM MATRICULA WHERE grup_tutoria IS NOT NULL AND TRIM(grup_tutoria)<>'' ORDER BY grup_tutoria", "grup_tutoria", "grup_tutoria");
+		array_unshift($aCicles[0] , '');
+		array_unshift($aCicles[1] , 'Tots');
+		$CicleFormatiuId = $aCicles[0][0]; 
+		$frm->Filtre->AfegeixLlista('grup_tutoria', 'Grup', 30, $aCicles[0], $aCicles[1]);
+
+		$frm->AfegeixOpcio('Proposta matr√≠cula', 'Fitxa.php?accio=PropostaMatricula&Id=', 'matricula_id');
+		$frm->EscriuHTML();		
+	}
+
+	public function EscriuFormulariFitxa() {
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD']);
+		$SQL = $this->CreaSQL($this->Id);
+		$this->Registre = DB::CarregaRegistreSQL($this->Connexio, $SQL);
+		switch($this->Registre->nivell) {
+			case 1:
+				if ($this->Registre->PercentatgeAprovat == 100)
+					$this->PropostaMatriculaTot2n();
+				else if ($this->Registre->PercentatgeAprovat < 60)
+					$this->PropostaMatricula1r();
+				else
+					$this->PropostaMatricula1r2n();
+				break;
+			case 2:
+				if ($this->Registre->PercentatgeAprovat == 100)
+					$this->PropostaTitol();
+				else
+					$this->PropostaMatricula2n();
+				break;
+			default:
+				throw new Exception("PropostaMatricula: Nivell incorrecte");
+				break;
+		}
+	}
+
+	private function GeneraDescripcioAlumne(): string {
+//print_r($this->Registre->NomCurs);		
+		$Retorn = "";
+		if ($this->Usuari->es_admin)
+			$Retorn = "<b>Id matr√≠cula:</b>: ".$this->Id."<br>";
+		$Retorn .= "
+			<b>Alumne</b>: ".Trim($this->Registre->NomAlumne." ".$this->Registre->Cognom1Alumne." ".$this->Registre->Cognom2Alumne)."<br>
+			<b>Curs</b>: ".$this->Registre->NomCurs."<br>
+			<b>Nivell</b>: ".$this->Registre->nivell."<br>
+			<b>Percentatge hores aprovat</b>: ".number_format($this->Registre->PercentatgeAprovat, 2)."%<br><br>
+		";
+		return $Retorn;
+	}
+
+	private function PropostaMatricula1r() {
+		CreaIniciHTML($this->Usuari, "Proposta matr√≠cula");
+		echo $this->GeneraDescripcioAlumne();
+		echo '<div class="alert alert-primary" role="alert">';
+		echo "Aquest √©s un <b>alumne de 1r</b> que no arriba al 60% del les hores. Per tant, s'ha de <b>matricular del que li queda de 1r</b>.";
+		echo '</div>';
+		$this->CarregaNotes();
+		echo $this->GeneraTaula($this->RegistreNotes);
+		CreaFinalHTML();
+	}
+
+	private function PropostaMatricula1r2n() {
+		CreaIniciHTML($this->Usuari, "Proposta matr√≠cula");
+		echo $this->GeneraDescripcioAlumne();
+		echo '<div class="alert alert-primary" role="alert">';
+		echo "Aquest √©s un <b>alumne de 1r</b> que ha superat el 60% del les hores. Per tant, s'ha de <b>matricular del que li queda de 1r</b> i de la <b>proposta de matr√≠cula de 2n</b>.";
+		echo '</div>';
+		$this->CarregaNotes();
+		$this->CarregaPropostaMatricula();
+
+		echo "<b>Comentari per a la matriculaci√≥ del proper curs</b>: ".$this->ComentariMatriculaSeguent."<br><br>";
+
+		echo "<table width=100% class='table table-striped table-sm table-hover'>";
+		echo '<thead class="thead-dark">';
+		echo "<tr>";
+		echo "<th>Unitats de 1r</th>";
+		echo "<th>Proposta de 2n</th>";
+		echo "</tr>";
+		echo "</thead>";
+		echo "<tr>";
+		echo "<td valign=top>".$this->GeneraTaula($this->RegistreNotes)."</td>";
+		echo "<td valign=top>".$this->GeneraTaula($this->PropostaMatricula)."</td>";
+		echo "<td></td>";
+		echo "</tr>";
+		echo "</table>";
+		CreaFinalHTML();
+	}
+
+	private function PropostaMatricula2n() {
+		CreaIniciHTML($this->Usuari, "Proposta matr√≠cula");
+		echo $this->GeneraDescripcioAlumne();
+		echo '<div class="alert alert-primary" role="alert">';
+		echo "Aquest √©s un <b>alumne de 2n</b> que s'ha de <b>matricular de totes les UF que li queden</b> (tant si en t√© a 1r com a 2n).";
+		echo '</div>';
+		$this->CarregaNotes();
+		echo $this->GeneraTaula($this->RegistreNotes);
+		CreaFinalHTML();
+	}
+
+	private function PropostaMatriculaTot2n() {
+		CreaIniciHTML($this->Usuari, "Proposta matr√≠cula");
+		echo $this->GeneraDescripcioAlumne();
+		echo '<div class="alert alert-primary" role="alert">';
+		echo "Aquest √©s un <b>alumne que ha aprovat tot 1r</b> que s'ha de <b>matricular de totes les UF de 2n</b>.";
+		echo '</div>';
+		CreaFinalHTML();
+	}
+
+	private function PropostaTitol() {
+		CreaIniciHTML($this->Usuari, "Proposta matr√≠cula");
+		echo $this->GeneraDescripcioAlumne();
+		echo '<div class="alert alert-primary" role="alert">';
+		echo "Aquest √©s un <b>alumne que ha aprovat tot el cicle</b>, per tant, <b>no s'ha matricular</b>.";
+		echo '</div>';
+		CreaFinalHTML();
+	}
+
+	private function CarregaNotes() {
+		$SQL = Expedient::SQL($this->Id);
+		$ResultSet = $this->Connexio->query($SQL);
+		// Carreguem les notes de les UF
+		// Posem les dades del ResultSet en una estructura de dades pr√≤pia
+		$Qualificacions = [];
+		$i = -1;
+		$j = -1;
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$NomAlumne = $row["NomAlumne"];
+			$Cognom1Alumne = $row["Cognom1Alumne"];
+			$Cognom2Alumne = $row["Cognom2Alumne"];
+			$Llei = $row["llei"];
+			$ModulAnterior = '';
+			while($row) {
+				if ($row["CodiMP"] != $ModulAnterior) {
+					$i++;
+					$Qualificacions[$i] = new stdClass();
+					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
+					$Qualificacions[$i]->Hores = $row["HoresMP"];
+					$Qualificacions[$i]->Conv = 'Ord.';
+					$Qualificacions[$i]->UF = [];
+					$j = -1;
+				}
+				$ModulAnterior = $row["CodiMP"];
+				$j++;
+				$Qualificacions[$i]->UF[$j] = new stdClass();
+				$Qualificacions[$i]->UF[$j]->Codi = utf8_encodeX($row["CodiUF"]);
+				$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
+				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
+				$Qualificacions[$i]->UF[$j]->Qualf = NumeroANotaText(UltimaNota($row));
+				$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		$ResultSet->close();
+		$this->RegistreNotes = $Qualificacions;
+	}
+
+	private function CarregaPropostaMatricula() {
+		$SQL = "
+			SELECT 
+				UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell AS NivellUF, 
+				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
+				M.comentari_matricula_seguent,
+				PM.* 
+			FROM PROPOSTA_MATRICULA PM
+			LEFT JOIN MATRICULA M ON (M.matricula_id=PM.matricula_id) 
+			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PM.unitat_formativa_id)
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			WHERE PM.matricula_id=?
+			ORDER BY CodiMP, CodiUF;		
+		";
+
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("i", $this->Id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+
+		$Qualificacions = [];
+		$i = -1;
+		$j = -1;
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$this->ComentariMatriculaSeguent = $row["comentari_matricula_seguent"];
+
+			$ModulAnterior = '';
+			while($row) {
+				if ($row["CodiMP"] != $ModulAnterior) {
+					$i++;
+					$Qualificacions[$i] = new stdClass();
+					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
+					$Qualificacions[$i]->Hores = $row["HoresMP"];
+//					$Qualificacions[$i]->Conv = 'Ord.';
+					$Qualificacions[$i]->UF = [];
+					$j = -1;
+				}
+				$ModulAnterior = $row["CodiMP"];
+				$j++;
+				$Qualificacions[$i]->UF[$j] = new stdClass();
+				$Qualificacions[$i]->UF[$j]->Codi = utf8_encodeX($row["CodiUF"]);
+				$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
+				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
+				// Peda√ß per fer quadrar amb l'entructura de CarregaNotes
+				$Qualificacions[$i]->UF[$j]->Qualf = ($row["baixa"]) ? 1 : 5;
+//				$Qualificacions[$i]->UF[$j]->Qualf = NumeroANotaText(UltimaNota($row));
+//				$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		$ResultSet->close();
+		$this->PropostaMatricula = $Qualificacions;
+	}
+
+	private function GeneraTaula($Qualificacions): string {
+		$Retorn = '';
+		//$Qualificacions = $this->RegistreNotes;
+		if (empty($Qualificacions)) {
+			$Retorn = 'No hi ha dades';
+		}
+		else {
+			foreach($Qualificacions as $MP) {
+				$Retorn .= str_repeat('&nbsp', 4)."<b>".$MP->Nom."</b><br>".PHP_EOL;
+				foreach($MP->UF as $row) {
+					$Style = ($row->Qualf < 5) ? "" : "style='color:lightgrey'";
+					$Checked = ($row->Qualf < 5) ? 'checked' : '';
+					$Retorn .= str_repeat('&nbsp', 8)."<input type=checkbox $Checked disabled>&nbsp;";
+					$Retorn .= "<span $Style>".$row->Codi.' '.$row->Nom;
+					if ($row->Qualf >= 5)
+						$Retorn .= " (aprovat: ".$row->Qualf.")";
+					$Retorn .= '</span><br>'.PHP_EOL;
+				}
+			}
+		}
+		return $Retorn;
 	}
 }
 

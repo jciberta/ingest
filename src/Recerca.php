@@ -20,6 +20,7 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
+require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibMaterial.php');
 
 session_start();
@@ -28,7 +29,7 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
-Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -182,6 +183,11 @@ switch ($accio) {
 		$frm->Camps = 'data_sortida, data_entrada, Dies, TipusMaterial, CodiMaterial, NomMaterial, Usuari';
 		$frm->Descripcions = 'Data sortida, Data entrada, Dies, Tipus material, Codi, Material, Usuari';
 		$frm->EscriuHTML();
+		break;
+	case "PropostaMatricula":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
+		$frm = new PropostaMatricula($conn, $Usuari, $Sistema);
+		$frm->EscriuFormulariRecerca();
 		break;
 }
 
