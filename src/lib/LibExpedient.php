@@ -454,7 +454,7 @@ class ExpedientSaga extends Expedient
 	 * @return string Sentència SQL.
 	 */
 	public function SQLDadesAlumne($MatriculaId): string {
-		$SQL = ' SELECT CPE.nom AS NomCF, CPE.nom AS NomCF, '.
+		$SQL = ' SELECT CPE.codi AS CodiCF, CPE.nom AS NomCF, '.
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.document AS DNI, '.
 			' CONCAT(CPE.codi, C.nivell, M.grup) AS Grup, CONCAT(AA.any_inici, "-", AA.any_final) AS AnyAcademic, '.
 			' CPE.*, C.*, M.* '.
@@ -1300,7 +1300,7 @@ class ExpedientSaga extends Expedient
 		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
 		// Clean any content of the output buffer
 		ob_end_clean();
-		$pdf->Output('Proposta_matricula_'.$Nom.'.pdf', 'I');
+		$pdf->Output('Proposta_matricula_'.$RA->Grup.'_'.$Nom.'.pdf', 'I');
 	}
 }
 
