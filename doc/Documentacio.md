@@ -3,9 +3,14 @@
 ## Idioma
 
   * L'idioma de l'aplicació web, el codi i la documentació és el català.
+  * Interacció:
+    * Humà-màquina: 2a persona singular de l'imperatiu: obre, tanca, surt, desa, edita, ves, etc.
+    * Màquina-humà: 2a persona plural del present: desitgeu, esteu segurs, comproveu, etc.
   * [Guia d'estil de SoftCatalà](https://www.softcatala.org/guia-estil-de-softcatala/tota-la-guia/).
 
 ## Documentació del codi
+
+ * Nomenclatura de variables, funcions, classes, mètodes, atributs, etc. estil Pascal (totes les inicials en majúscules): NomDeLaVariable, NomDeLaFuncio, etc. No estil Java (nomDeLaVariable) 
 
 ### Classes
 
