@@ -1060,8 +1060,8 @@ class ExpedientSaga extends Expedient
 		echo '</div>';
 		echo '</div>';
 
-		// Pedaç per proves. Només SMX1
-		if ($this->Registre[0]['CodiCF']=='SMX' && $this->Registre[0]['NivellUF']==1 && $this->PercentatgeAprovat>=60.0 && $this->PercentatgeAprovat<100.0) {
+		// Proposta de matrícula només per als 1r cursos i la nota és superior o igual al 60%
+		if ($this->Registre[0]['NivellUF']==1 && $this->PercentatgeAprovat>=60.0 && $this->PercentatgeAprovat<100.0) {
 			echo $this->GeneraComentari();
 			echo $this->GeneraSeleccioUFSegon();
 			echo $this->GeneraBotoProposta();
