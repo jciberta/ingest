@@ -846,9 +846,10 @@ class Notes extends Form
 			$class .= ' ConvocatoriesAnteriors';
 		
 		if ($TotalPercentatge==100)
-			$class .= ' NoAprovat100';
+			$class .= ' Aprovat100';
 		
-		$style = (($bConvocatoriesAnteriors && $Avaluacio->Estat() != Avaluacio::Tancada) || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
+//		$style = (($bConvocatoriesAnteriors && $Avaluacio->Estat() != Avaluacio::Tancada) || ($row["BaixaMatricula"] == 1)) ? " style='display:none' " : "";
+		$style = ($row["BaixaMatricula"] == 1) ? " style='display:none' " : "";
 
 		$Retorn = "<TR class='$class' $style name='Baixa".$row["BaixaMatricula"]."'>".$Retorn;
 		

@@ -123,8 +123,7 @@ function MostraConvocatoriesAnteriors(obj) {
  * @param obj Objecte que ha provocat la crida.
  */
 function MostraAlumnesUFPendents(obj,id) {
-	// Seleccionem els alumnes que ho tenen UF Pendents i estan matriculats.
-	var tr = $('tr.NoAprovat100');
+	var tr = $('tr.Aprovat100');
 	(obj.checked) ? tr.hide() : tr.show();
 }
 
