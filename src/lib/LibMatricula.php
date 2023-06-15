@@ -265,7 +265,7 @@ class PropostaMatricula extends Objecte
 	private function GeneraDescripcioAlumne(): string {
 		$Retorn = "";
 		if ($this->Usuari->es_admin)
-			$Retorn = "<b>Id matrícula:</b>: ".$this->Id."<br>";
+			$Retorn = "<b>Id matrícula</b>: ".$this->Id."<br>";
 		$Retorn .= "
 			<b>Alumne</b>: ".Trim($this->Registre->NomAlumne." ".$this->Registre->Cognom1Alumne." ".$this->Registre->Cognom2Alumne)."<br>
 			<b>Curs</b>: ".$this->Registre->NomCurs."<br>
@@ -427,7 +427,7 @@ class PropostaMatricula extends Objecte
 				$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
 				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
 				// Pedaç per fer quadrar amb l'entructura de CarregaNotes
-				$Qualificacions[$i]->UF[$j]->Qualf = ($row["baixa"]) ? 1 : 5;
+				$Qualificacions[$i]->UF[$j]->Qualf = ($row["baixa"]) ? 5 : 1;
 				$row = $ResultSet->fetch_assoc();
 			}
 		}
