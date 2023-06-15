@@ -385,14 +385,14 @@ class PropostaMatricula extends Objecte
 	private function CarregaPropostaMatricula() {
 		$SQL = "
 			SELECT 
-				UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS HoresUF, UPE.nivell AS NivellUF, 
-				MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, MPE.hores AS HoresMP, 
-				M.comentari_matricula_seguent,
+				UF.codi AS CodiUF, UF.nom AS NomUF, UF.hores AS HoresUF, UF.nivell AS NivellUF, 
+				MP.modul_pla_estudi_id AS IdMP, MP.codi AS CodiMP, MP.nom AS NomMP, MP.hores AS HoresMP,
+				M.comentari_matricula_seguent, 
 				PM.* 
 			FROM PROPOSTA_MATRICULA PM
 			LEFT JOIN MATRICULA M ON (M.matricula_id=PM.matricula_id) 
-			LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=PM.unitat_formativa_id)
-			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) 
+			LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=PM.unitat_formativa_id) 
+			LEFT JOIN MODUL_PROFESSIONAL MP ON (MP.modul_professional_id=UF.modul_professional_id) 
 			WHERE PM.matricula_id=?
 			ORDER BY CodiMP, CodiUF;		
 		";
