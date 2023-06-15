@@ -71,6 +71,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '<HTML>'.PHP_EOL;
 	$Retorn .= '<HEAD>'.PHP_EOL;
 	$Retorn .= '	<META charset=UTF8>'.PHP_EOL;
+	$Retorn .= '	<meta name="viewport" content="width=device-width, initial-scale=1.0"> '.PHP_EOL;
 	$Retorn .= '	<TITLE>InGest</TITLE>'.PHP_EOL;
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">'.PHP_EOL;
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">'.PHP_EOL;
@@ -307,37 +308,38 @@ class Portal
 	 * Escriu la capçalera de la pàgina web.
 	 */				
 	public function EscriuCapcalera(string $CapcaleraLogin = '') {
-		echo '<html>';
-		echo '<head>';
-		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">';
-		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">';
-		echo '	<script src="vendor/jquery.min.js"></script>';
-		echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>';
-		echo $this->JavaScript;
-		echo '</head>';
-		echo '<body>';
-		echo '<div class="container">';
-		echo '	<div class="header clearfix">';
-		echo '		<nav>';
+		echo '<html>'.PHP_EOL;
+		echo '<head>'.PHP_EOL;
+		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">'.PHP_EOL;
+		echo '	<link rel="stylesheet" href="vendor/bootstrap/css/narrow-jumbotron.css">'.PHP_EOL;
+		echo '	<meta name="viewport" content="width=device-width, initial-scale=1.0"> '.PHP_EOL;
+		echo '	<script src="vendor/jquery.min.js"></script>'.PHP_EOL;
+		echo '	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>'.PHP_EOL;
+		echo $this->JavaScript.PHP_EOL;
+		echo '</head>'.PHP_EOL;
+		echo '<body>'.PHP_EOL;
+		echo '<div class="container">'.PHP_EOL;
+		echo '	<div class="header clearfix">'.PHP_EOL;
+		echo '		<nav>'.PHP_EOL;
 		echo $CapcaleraLogin;
-		echo '		</nav>';
-		echo '	</div>';
+		echo '		</nav>'.PHP_EOL;
+		echo '	</div>'.PHP_EOL;
 	}
 
 	/**
 	 * Escriu el peu de la pàgina web.
 	 */				
 	public function EscriuPeu(string $Nom, bool $bRecuperaContrasenya = True) {
-		echo '	<footer class="footer">';
-		echo '	<p style="text-align:left;">'.$Nom;
+		echo '	<footer class="footer">'.PHP_EOL;
+		echo '	<p style="text-align:left;">'.$Nom.PHP_EOL;
 		if ($bRecuperaContrasenya)
-			echo '		<span style="float:right;"><a href="RecuperaPassword.html">Recupera contrasenya</a></span>';
-		echo '	</p>';
-		echo '	</footer>';
-		echo '</div>';
-		echo "<div id=debug></div>";
-		echo '</body> ';
-		echo '</html>';
+			echo '		<span style="float:right;"><a href="RecuperaPassword.html">Recupera contrasenya</a></span>'.PHP_EOL;
+		echo '	</p>'.PHP_EOL;
+		echo '	</footer>'.PHP_EOL;
+		echo '</div>'.PHP_EOL;
+		echo "<div id=debug></div>".PHP_EOL;
+		echo '</body>'.PHP_EOL;
+		echo '</html>'.PHP_EOL;
 	}
 }
 
