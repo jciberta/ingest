@@ -192,7 +192,7 @@ class PropostaMatricula extends Objecte
 			SELECT 
 				M.matricula_id, 
 				C.nivell, C.nom AS NomCurs,
-				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username,
+				U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, U.email_ins,
 				PercentatgeAprovat(M.matricula_id) AS PercentatgeAprovat
 			FROM MATRICULA M
 			LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
@@ -212,8 +212,8 @@ class PropostaMatricula extends Objecte
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'MATRICULA';
 		$frm->ClauPrimaria = 'matricula_id';
-		$frm->Camps = 'username, NomAlumne, Cognom1Alumne, Cognom2Alumne, nivell, %2:PercentatgeAprovat';
-		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Nivell, Percentatge aprovat';
+		$frm->Camps = 'username, NomAlumne, Cognom1Alumne, Cognom2Alumne, email_ins, nivell, %2:PercentatgeAprovat';
+		$frm->Descripcions = 'Usuari, Nom, 1r cognom, 2n cognom, Correu, Nivell, Percentatge aprovat';
 
 		// Filtre any acadèmic
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
