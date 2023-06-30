@@ -4,6 +4,10 @@
  * LibPDF.php
  *
  * Llibreria d'utilitats per a la impresió en PDF.
+ * 
+ * NOTA: en el mètode writeHTML s'ha d'usar doble cometa per als valors dels atributs, sinó no funciona!
+ * 		<table border="1"> -> SÍ
+ * 		<table border='1'> -> NO
  *
  * @author Josep Ciberta
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
@@ -65,6 +69,18 @@ class DocumentPDF extends TCPDF
 
 		// set font
 		$this->SetFont('helvetica', '', 10);
+    }
+
+	/**
+	 * Capçalera.
+	 */
+    public function Header() {
+	}
+
+	/**
+	 * Peu de pàgina.
+	 */
+    public function Footer() {
     }
 
 	/**
@@ -290,6 +306,53 @@ abstract class DocumentInstitutPDF extends DocumentPDF
 	}
 
 	protected function GeneraBlocSubtitol() {}
+}
+
+/**
+ * Classe per a la generació de la programació didàctica en PDF.
+ */
+class DocumentPDFProgramacioDidactica extends DocumentPDF
+{
+	/**
+	 * Constructor de l'objecte.
+	 */
+	public function __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+		$this->SetMargins(PDF_MARGIN_LEFT, 40, PDF_MARGIN_RIGHT);
+	}
+
+	/**
+	 * Capçalera.
+	 */
+    public function Header() {
+       // Logo
+	   $image_file = ROOT.'/img/logo-gencat.jpg';
+	   $this->Image($image_file, PDF_MARGIN_LEFT, 13, 10, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+	   $this->SetFont('helvetica', 'B', 12); // Helvetica, Bold, 12
+	   $this->SetXY(27, 15);
+	   $this->Cell(0, 15, 'Generalitat de Catalunya', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+	   $this->SetXY(27, 20);
+	   $this->Cell(0, 15, "Departament d'Educació", 0, false, 'L', 0, '', 0, false, 'M', 'M');
+	   $this->SetXY(27, 25);
+	   $this->Cell(0, 15, "Institut de Palamós", 0, false, 'L', 0, '', 0, false, 'M', 'M');
+
+		$image_file = ROOT.'/img/logo-inspalamos.png';
+		$this->Image($image_file, 135, 13, 40, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+		$image_file = ROOT.'/img/logo-ue.png';
+		$this->Image($image_file, 180, 13, 15, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+	}
+
+	/**
+	 * Peu de pàgina.
+	 */
+    public function Footer() {
+        $this->SetY(-15); // Position at 15 mm from bottom
+        $this->SetFont('helvetica', '', 8);
+        $this->Cell(0, 10, 'Pàgina '.$this->getAliasNumPage().' de '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+    }
+
 }
 
 ?>

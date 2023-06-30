@@ -12,6 +12,7 @@
 require_once(ROOT.'/lib/LibDate.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/vendor/autoload.php');
 
 use PhpOffice\PhpWord\Shared\Converter;
@@ -99,6 +100,29 @@ class ProgramacioDidacticaDOCXFactory extends ProgramacioDidacticaFactory
 }
 
 /**
+ * Factoria que genera l'objecte per a l'exportació de la programació didàctica en DOCX depenent de la llei.
+ */
+class ProgramacioDidacticaPDFFactory extends ProgramacioDidacticaFactory
+{
+	public static function Crea($conn, $user, $system, $Id) {
+		$Llei = self::ObteLlei($conn, $Id);
+		switch($Llei) {
+			case "LO":
+				$obj = new ProgramacioDidacticaPDFLOE($conn, $user, $system);
+				break;
+			case "LG":
+				$obj = new ProgramacioDidacticaPDFLOGSE($conn, $user, $system);
+				break;
+			default:
+				throw new Exception("ProgramacioDidacticaPDFFactory: Llei no implementada");
+				break;
+		}
+		$obj->Id = $Id;
+		return $obj;		
+	}
+}
+
+/**
  * Classe que encapsula el formulari de la programació didàctica.
  */
 abstract class ProgramacioDidactica extends Form
@@ -124,8 +148,8 @@ abstract class ProgramacioDidactica extends Form
 		self::pdESTRATEGIES => 'Estratègies metodològiques',
 		self::pdCRITERIS => 'Criteris d’avaluació, qualificació i recuperació',
 		self::pdRECURSOS => 'Recursos i material utilitzat',
-		self::pdSEQUENCIACIO_LOE => 'Seqüenciació i temporitzador de les unitats formatives',
-		self::pdSEQUENCIACIO_LOGSE => 'Seqüenciació i temporitzador de les unitats didàctiques',
+		self::pdSEQUENCIACIO_LOE => 'Seqüenciació i temporització de les unitats formatives',
+		self::pdSEQUENCIACIO_LOGSE => 'Seqüenciació i temporització de les unitats didàctiques',
 		self::pdUNITATS => 'Unitats formatives',
 		self::pdOBJECTIUS_CONTINGUTS => 'Objectius i continguts'
 	);
@@ -219,6 +243,16 @@ abstract class ProgramacioDidactica extends Form
 		$sRetorn = substr($sRetorn, 0, -2); // Treiem la darrera coma
 		return $sRetorn;
 	}		
+
+	/**
+	 * Genera el nom del fitxer  de la programació didàctica.
+	 * @return string Nom del fitxer.
+	 */
+	protected function GeneraNomFitxer() {
+		$Nom = substr($this->Registre->any_inici, -2).''.substr($this->Registre->any_final, -2).'_'.
+			$this->Registre->CodiCF.'_'.$this->Registre->CodiMP;
+		return 'Programacio_didactica_'.$Nom;
+	}
 	
 	/**
 	 * Genera el títol de la programació didàctica.
@@ -317,7 +351,8 @@ abstract class ProgramacioDidactica extends Form
 	
 	private function FormataTaula($Taula) {
 		$sRetorn = "";
-		$dom = new domDocument;
+		//$dom = new domDocument;
+		$dom = new DOMDocument('1.0', 'UTF-8');
 
 		// Some versions of the DOMDocument parser that PHP uses are super-strict about HTML compliance, and will whine 
 		// and regularly do wrong things when confronted with spec violations.
@@ -336,16 +371,18 @@ abstract class ProgramacioDidactica extends Form
 		// Es suposa una única taula
 		$rows = $tables->item(0)->getElementsByTagName('tr'); 
 
-		$sRetorn .= "<TABLE BORDER=1>";
+		$sRetorn .= '<TABLE cellspacing="0" cellpadding="2" border="1">';
 		$PrimeraFila = true;
 		$aFiles = [];
 		foreach ($rows as $row) {
 			if ($PrimeraFila) {
-				$sRetorn .= "<THEAD>";
-				$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
+				$sRetorn .= '<THEAD>';
+				$sRetorn .= '<TR STYLE="background-color:lightgrey;">';
 				$cols = $row->getElementsByTagName('td'); 
 				for($i=0; $i<count($cols); $i++) {
-					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
+//					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
+					$Valor = $cols->item($i)->nodeValue;
+					$Valor = utf8_decode($Valor);
 					$sRetorn .= "<TH>$Valor</TH>";
 				}
 				$sRetorn .= "</TR>";
@@ -356,7 +393,9 @@ abstract class ProgramacioDidactica extends Form
 				$sRetorn .= "<TR>";
 				$cols = $row->getElementsByTagName('td'); 
 				for($i=0; $i<count($cols); $i++) {
-					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
+//					$Valor = utf8_decodeX($cols->item($i)->nodeValue);
+					$Valor = $cols->item($i)->nodeValue;
+					$Valor = utf8_decode($Valor);
 					$sRetorn .= "<TD>$Valor</TD>";
 				}
 				$sRetorn .= "</TR>";
@@ -446,8 +485,8 @@ abstract class ProgramacioDidactica extends Form
 		$sRetorn .= '    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaDOCX&ModulId=$ModulId");
 		$sRetorn .= '      <a id="btnDescarregaDOCX" class="dropdown-item" href="'.$URL.'">DOCX</a>';
-//		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaODT&ModulId=$ModulId");
-//		$sRetorn .= '      <a id="btnDescarregaDOCX" class="dropdown-item" href="'.$URL.'">ODT</a>';
+		$URL = GeneraURL("Descarrega.php?Accio=ExportaProgramacioDidacticaPDF&ModulId=$ModulId");
+		$sRetorn .= '      <a id="btnDescarregaPDF" class="dropdown-item" href="'.$URL.'">PDF</a>';
 		$sRetorn .= '    </div>';
 		$sRetorn .= '  </div>';				
 		return $sRetorn;
@@ -458,9 +497,17 @@ abstract class ProgramacioDidactica extends Form
 	 * @param int $ModulId Identificador del modul del pla d'estudi.
 	 */				
 	public function ExportaDOCX(int $ModulId) {
-//		$PDE = new ProgramacioDidacticaDOCX($this->Connexio, $this->Usuari);
 		$PDE = ProgramacioDidacticaDOCXFactory::Crea($this->Connexio, $this->Usuari, $this->Sistema, $ModulId);
 		$PDE->EscriuDOCX($ModulId);
+	}	
+
+	/**
+	 * Exporta la programació didàctica en format PDF.
+	 * @param int $ModulId Identificador del modul del pla d'estudi.
+	 */				
+	public function ExportaPDF(int $ModulId) {
+		$PDE = ProgramacioDidacticaPDFFactory::Crea($this->Connexio, $this->Usuari, $this->Sistema, $ModulId);
+		$PDE->EscriuPDF($ModulId);
 	}	
 	
 	/**
@@ -516,19 +563,18 @@ class ProgramacioDidacticaLOE extends ProgramacioDidactica
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	protected function GeneraSeccioSequenciacio(&$section = null) {
+	public function GeneraSeccioSequenciacio(&$section = null): string {
 		$ModulPlaEstudiId = $this->Id;
-		$sRetorn = "<BR>";
-		$sRetorn .= "<TABLE BORDER=1'>";
-		$sRetorn .= "<thead>";
-		$sRetorn .= "<TR STYLE='background-color:lightgrey;'>";
-//		$sRetorn .= "<TH STYLE='width:$Max'>Unitat formativa</TH>";
-		$sRetorn .= "<TH>Unitat formativa</TH>";
-		$sRetorn .= "<TH STYLE='text-align:center'>Hores</TH>";
-		$sRetorn .= "<TH>Data inici</TH>";
-		$sRetorn .= "<TH>Data fi</TH>";
-		$sRetorn .= "</TR>";
-		$sRetorn .= "</thead>";
+		$sRetorn = '<BR>';
+		$sRetorn .= '<TABLE BORDER="1">';
+		$sRetorn .= '<thead>';
+		$sRetorn .= '<TR STYLE="background-color:lightgrey;">';
+		$sRetorn .= '<TH>Unitat formativa</TH>';
+		$sRetorn .= '<TH STYLE="text-align:center">Hores</TH>';
+		$sRetorn .= '<TH>Data inici</TH>';
+		$sRetorn .= '<TH>Data fi</TH>';
+		$sRetorn .= '</TR>';
+		$sRetorn .= '</thead>';
 		$SQL = "
 			SELECT UPE.* 
 			FROM UNITAT_PLA_ESTUDI UPE
@@ -536,18 +582,18 @@ class ProgramacioDidacticaLOE extends ProgramacioDidactica
 			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId	
 		";
 		$ResultSet = $this->Connexio->query($SQL);
-		$sRetorn .= "<tbody>";
+		$sRetorn .= '<tbody>';
 		while($row = $ResultSet->fetch_object()) {
-			$sRetorn .= "<TR>";
-			$sRetorn .= "<TD>".CodificaUTF8($row->nom)."</TD>";
-			$sRetorn .= "<TD style='text-align:center;'>".$row->hores."</TD>";
-			$sRetorn .= "<TD>".MySQLAData($row->data_inici)."</TD>";
-			$sRetorn .= "<TD>".MySQLAData($row->data_final)."</TD>";
-			$sRetorn .= "</TR>";
+			$sRetorn .= '<TR>';
+			$sRetorn .= '<TD>'.CodificaUTF8($row->nom).'</TD>';
+			$sRetorn .= '<TD style="text-align:center;">'.$row->hores.'</TD>';
+			$sRetorn .= '<TD>'.MySQLAData($row->data_inici).'</TD>';
+			$sRetorn .= '<TD>'.MySQLAData($row->data_final).'</TD>';
+			$sRetorn .= '</TR>';
 		}
-		$sRetorn .= "</tbody>";
-		$sRetorn .= "</TABLE>";
-		$sRetorn .= "<BR>";
+		$sRetorn .= '</tbody>';
+		$sRetorn .= '</TABLE>';
+		$sRetorn .= '<BR>';
 		return $sRetorn;		
 	}
 }
@@ -571,9 +617,14 @@ class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
 	 * @param integer $SeccioId Identificador de la secció.
 	 * @return string Codi HTML amb la secció.
 	 */
-	protected function GeneraSeccioSequenciacio(&$section = null) {
+	public function GeneraSeccioSequenciacio(&$section = null): string {
 		$sRetorn = $this->Registre->unitats_didactiques;
+print_h($sRetorn);
+echo $sRetorn;
 		$sRetorn = $this->TractaTaules($sRetorn);
+print_h($sRetorn);
+echo $sRetorn;
+exit;
 		return $sRetorn;		
 	}
 }
@@ -615,8 +666,6 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'programacio/color', 'png', ProgramacioDidactica::LlegendaEstat());
 
 		if ($Usuari->es_admin) {
-			
-//	print('<HR><HR><HR><HR><HR><HR><HR><HR>');
 			$frm->AfegeixOpcioAJAX('Elaboració', 'EnviaElaboracio');
 			$frm->AfegeixOpcioAJAX('Departament', 'EnviaDepartament');
 			$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada');
@@ -630,7 +679,6 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 			//$frm->AfegeixOpcioAJAX('Torna a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'T']);
 			
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
-			//$AnyAcademicId = $aAnys[0][0]; 
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		}
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
@@ -843,41 +891,9 @@ abstract class ProgramacioDidacticaDOCX extends ProgramacioDidactica
 
 		$this->GeneraSeccionsDOCX($section);
 
-/*		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdESTRATEGIES.'. '.self::SECCIO[self::pdESTRATEGIES], 1);
-		$html = $this->GeneraSeccioEstrategies();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdCRITERIS.'. '.self::SECCIO[self::pdCRITERIS], 1);
-		$html = $this->GeneraSeccioCriteris();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdRECURSOS.'. '.self::SECCIO[self::pdRECURSOS], 1);
-		$html = $this->GeneraSeccioRecursos();
-		$this->AfegeixHTML($section, $html);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdSEQUENCIACIO.'. '.self::SECCIO[self::pdSEQUENCIACIO], 1);
-		$this->GeneraSeccioSequenciacio($section);
-
-		$section->addPageBreak();
-		$section->addTextBreak(1);
-		$section->addTitle(self::pdUNITATS.'. '.self::SECCIO[self::pdUNITATS], 1);
-		$this->GeneraSeccioUnitats($section);
-*/
-
 		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment;filename="test.docx"');		
-		//header('Content-Disposition: attachment;filename="test.odt"');		
-
+		header('Content-Disposition: attachment;filename="'.$this->GeneraNomFitxer().'.docx"');		
 		$objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-		//$objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'ODText');
 		$objWriter->save('php://output');
 	}
 	
@@ -1369,7 +1385,194 @@ class ProgramacioDidacticaDOCXLOGSE extends ProgramacioDidacticaDOCX
 		$sRetorn = $this->TractaTaules($sRetorn);
 		return $sRetorn;		
 	}
-	
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica en PDF.
+ */
+abstract class ProgramacioDidacticaPDF extends ProgramacioDidactica
+{
+	/**
+	 * Objecte PDF.
+	 * @var object
+	 */
+	protected $PDF = null;
+
+	abstract protected function GeneraSeccions();
+	abstract function GeneraSeccioSequenciacio(&$section = null);
+
+	/**
+	 * Genera el contingut PDF de la programació didàctica.
+	 * @param int $ModulId Identificador del modul del pla d'estudi.
+	 */
+	public function EscriuPDF(int $ModulId) {
+		$this->Id = $ModulId;
+		$this->Carrega();
+
+		$pdf = new DocumentPDFProgramacioDidactica('P', 'mm', 'A4', true, 'UTF-8', false);
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Institut de Palamós');
+		$pdf->SetKeywords('INS Palamós, Palamós');
+		$pdf->SetTitle('ProgramacioDidacticaPDF');
+		$pdf->SetSubject('ProgramacioDidacticaPDF');
+
+		// Portada
+		$pdf->AddPage(); 
+		$this->GeneraPortada($pdf);
+		//$pdf->Escriu('Hola');
+
+		$pdf->AddPage(); 
+		$this->PDF = $pdf;
+		$this->GeneraSeccions();
+
+		// Taula de continguts (índex)
+		// https://tcpdf.org/examples/example_045/
+		$pdf->addTOCPage();
+		// write the TOC title
+		$pdf->SetFont('helvetica', 'B');
+		$pdf->MultiCell(0, 0, 'Índex', 0, 'L', 0, 1, '', '', true, 0);
+		$pdf->Ln();
+		$pdf->SetFont('helvetica', '');
+		// add a simple Table Of Content at first page
+		$pdf->addTOC(2, 'helvetica', '.', 'Índex', '');
+		// end of TOC page
+		$pdf->endTOCPage();
+
+		// Close and output PDF document
+		// Clean any content of the output buffer
+		ob_end_clean();
+		$pdf->Output($this->GeneraNomFitxer().'.pdf', 'I');
+	}
+
+	private function GeneraPortada($pdf) {
+		$pdf->Ln(70);
+		$pdf->SetFont('helvetica', 'B', 13); 
+		$pdf->MultiCell(0, 0, 'PROGRAMACIONS DE CICLES FORMATIUS', 0, 'C', 0, 1, '', '', true, 0);
+		$pdf->SetFont('helvetica', '', 12); 
+		$pdf->Ln(20);
+
+		$HTML = '
+			<table cellspacing="0" cellpadding="2" border="1">
+				<tr>
+					<td align="right">Nom del Cicle Formatiu:</td>
+					<td><b>'.$this->Registre->NomCF.'</b></td>
+				</tr>
+				<tr>
+					<td align="right">Curs:</td>
+					<td><b>'.$this->Registre->NomAA.'</b></td>
+				</tr>
+				<tr>
+					<td align="right">Codi del Mòdul Professional:</td>
+					<td><b>'.$this->Registre->CodiMP.'</b></td>
+				</tr>
+				<tr>
+					<td align="right">Títol del Mòdul Professional:</td>
+					<td><b>'.$this->Registre->NomMP.'</b></td>
+				</tr>
+				<tr>
+					<td align="right">Professors:</td>
+					<td><b>'.$this->ObteProfessorsModul($this->Id).'</b></td>
+				</tr>
+			</table>
+		';
+		$pdf->writeHTML($HTML, True);
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOE en PDF.
+ */
+class ProgramacioDidacticaPDFLOE extends ProgramacioDidacticaPDF
+{
+	protected function GeneraSeccions() {
+		$pdf = $this->PDF;
+		$Comptador = 1;
+		$SeccioId = 1;
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdESTRATEGIES];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioEstrategies($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdCRITERIS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioCriteris($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdRECURSOS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioRecursos($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioSequenciacio($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdUNITATS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioUnitats($SeccioId);
+		$pdf->writeHTML($HTML, True);
+	}
+
+	public function GeneraSeccioSequenciacio(&$section = null): string {
+		$pd = new ProgramacioDidacticaLOE($this->Connexio, $this->Usuari, $this->Sistema);
+		$pd->Id = $this->Id;
+		return $pd->GeneraSeccioSequenciacio($section);
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOE en PDF.
+ */
+class ProgramacioDidacticaPDFLOGSE extends ProgramacioDidacticaPDF
+{
+	protected function GeneraSeccions() {
+		$pdf = $this->PDF;
+		$Comptador = 1;
+		$SeccioId = 1;
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdESTRATEGIES];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioEstrategies($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdCRITERIS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioCriteris($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdRECURSOS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioRecursos($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOGSE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioSequenciacio($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdOBJECTIUS_CONTINGUTS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioObjectiusContinguts($SeccioId);
+		$pdf->writeHTML($HTML, True);
+	}
+
+	public function GeneraSeccioSequenciacio(&$section = null): string {
+		$pd = new ProgramacioDidacticaLOGSE($this->Connexio, $this->Usuari, $this->Sistema);
+		$pd->Registre = $this->Registre;
+		return $pd->GeneraSeccioSequenciacio($section);
+	}
 }
 
 /**
@@ -1578,29 +1781,29 @@ class ResultatsAprenentatge extends Form
 		$sRetorn = '';
 		$this->CreaRegistreModul($ModulId);
 		foreach ($this->Registre as $UF) {
-			$sRetorn .= '<table border=1>';
-			$sRetorn .= "<tr style='background-color:grey;'>";
+			$sRetorn .= '<table border="1">';
+			$sRetorn .= '<tr style="background-color:grey;">';
 			$sRetorn .= '<th>'.$UF->Nom.'</th>';
 			$sRetorn .= '</tr>';
 			foreach ($UF->Dades as $Dades) {
 				if ($Dades->Tipus == 'R') {
-					$sRetorn .= "<tr style='background-color:grey;'>";
+					$sRetorn .= '<tr style="background-color:grey;">';
 					$sRetorn .= '<th>RA'.$Dades->Nom.'</th>';
 					$sRetorn .= '</tr>';
-					$sRetorn .= "<tr style='background-color:lightgrey;'>";
+					$sRetorn .= '<tr style="background-color:lightgrey;">';
 					$sRetorn .= '<th>Resultats d’aprenentatge i criteris d’avaluació</th>';
 					$sRetorn .= '</tr>';
 				}
 				else if ($Dades->Tipus == 'C') {
-					$sRetorn .= "<tr style='background-color:lightgrey;'>";
+					$sRetorn .= '<tr style="background-color:lightgrey;">';
 					$sRetorn .= '<th>Continguts</th>';
 					$sRetorn .= '</tr>';
-					$sRetorn .= "<tr>";
+					$sRetorn .= '<tr>';
 					$sRetorn .= '<td>'.$Dades->Nom.'</td>';
 					$sRetorn .= '</tr>';
 				}
 				foreach ($Dades->Dades as $Dades2) {
-					$sRetorn .= "<tr>";
+					$sRetorn .= '<tr>';
 					$sRetorn .= '<td>'.$Dades2.'</td>';
 					$sRetorn .= '</tr>';
 				}
@@ -1946,52 +2149,6 @@ class ObjectiusContinguts extends Form
 				}
 			}
 		}
-//print_h($this->Registre);
-//exit;		
-		
-		
-		
-		
-		
-		
-		/*
-		$this->Registre = [];
-		$SQL = $this->CreaSQLModul($ModulId);
-		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {
-			$UnitatFormativaId = -1;
-			$DescripcioId = -1;
-			$Tipus = '';
-
-			while($row = $ResultSet->fetch_object()) {
-				if ($row->unitat_formativa_id !== $UnitatFormativaId) {
-					// UF nova
-					$UF = new stdClass();
-					array_push($this->Registre, $UF);
-					$UF->Id = $row->unitat_formativa_id;
-					$UF->Nom = CodificaUTF8($row->NomUF);
-					$UF->Dades = [];
-					
-					$UnitatFormativaId = $row->unitat_formativa_id;
-				}
-				
-				if (($row->DescripcioId !== $DescripcioId) || ($row->Tipus !== $Tipus)) {
-					// RA o contingut nou	
-					$Dades = new stdClass();
-					array_push($UF->Dades, $Dades);
-					$Dades->Id = $row->DescripcioId;
-					$Dades->Nom = CodificaUTF8($row->Descripcio);
-					$Dades->Tipus = $row->Tipus;
-					$Dades->Dades = [];
-
-					$DescripcioId = $row->DescripcioId;							
-					$Tipus = $row->Tipus;							
-				}
-				
-				array_push($Dades->Dades, CodificaUTF8($row->Descripcio2));
-			}
-		}*/
-//print_h($this->Registre);
 	}	
 	
 	/**

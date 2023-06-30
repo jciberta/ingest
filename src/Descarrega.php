@@ -83,10 +83,13 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			break;
 		case "ExportaProgramacioDidacticaDOCX":
 			$ModulId = $_GET['ModulId'];
-	//print('<B>SQL</B>: '.$SQL.'<BR>');
-//			$PD = new ProgramacioDidactica($conn, $Usuari);
 			$PD = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $ModulId);
 			$PD->ExportaDOCX($ModulId);
+			break;
+		case "ExportaProgramacioDidacticaPDF":
+			$ModulId = $_GET['ModulId'];
+			$PD = ProgramacioDidacticaFactory::Crea($conn, $Usuari, $Sistema, $ModulId);
+			$PD->ExportaPDF($ModulId);
 			break;
 		case "PropostaMatriculaPDF":
 			$MatriculaId = $_GET['MatriculaId'];
