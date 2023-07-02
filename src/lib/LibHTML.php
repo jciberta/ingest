@@ -71,7 +71,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 	$Retorn .= '<HTML>'.PHP_EOL;
 	$Retorn .= '<HEAD>'.PHP_EOL;
 	$Retorn .= '	<META charset=UTF8>'.PHP_EOL;
-	$Retorn .= '	<meta name="viewport" content="width=device-width, initial-scale=1.0"> '.PHP_EOL;
+	$Retorn .= '	<META name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"> '.PHP_EOL;
 	$Retorn .= '	<TITLE>InGest</TITLE>'.PHP_EOL;
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">'.PHP_EOL;
 	$Retorn .= '	<link rel="stylesheet" href="vendor/bootstrap-submenu/dist/css/bootstrap-submenu.min.css">'.PHP_EOL;
@@ -524,6 +524,9 @@ class MenuInGest extends Menu
 			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
 			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
+			// Hauria de ser un submenú de depuració, però el submenú no s'obre a l'esquerra!
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Apache error.log', 'Pagina.php?accio=ApacheErrorLog');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}

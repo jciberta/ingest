@@ -10,13 +10,9 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
-//require_once(ROOT.'/lib/LibDB.php');
-//require_once(ROOT.'/lib/LibForms.php');
-//require_once(ROOT.'/lib/LibMatricula.php');
-//require_once(ROOT.'/lib/LibExpedient.php');
-//require_once(ROOT.'/lib/LibCurs.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -92,6 +88,20 @@ switch ($accio) {
 		echo '	</div>';
 		echo '	<input type="submit" name="submit" value="Importa" class="btn btn-primary">';
 		echo '</form>';		
+		break;
+	case 'ApacheErrorLog':
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
+		CreaIniciHTML($Usuari, "Apache error.log");
+		$Ordre = '';
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+			$Ordre = 'tail F:\xampp\apache\logs\error.log';
+		}
+		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+			$Ordre = 'tail /var/log/apache2/error.log';
+		}
+		// https://sourceforge.net/projects/unxutils/: tail per Windows. Cal copiar-lo a C:\Windows\System
+		$Result = shell_exec($Ordre);
+		echo nl2br($Result);
 		break;
 }
 
