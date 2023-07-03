@@ -615,6 +615,9 @@ class MenuCapGest extends Menu
 			$Retorn .= Menu::Opcio('Administra', 'Administra.php');
 			$Retorn .= Menu::Opcio('Consola SQL', 'ConsolaSQL.php');
 			$Retorn .= Menu::Opcio('Registres', 'Recerca.php?accio=Registre');
+			// Hauria de ser un submenú de depuració, però el submenú no s'obre a l'esquerra!
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Apache error.log', 'Pagina.php?accio=ApacheErrorLog');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Quant a...', 'Pagina.php?accio=QuantA');
 		}

@@ -93,13 +93,16 @@ switch ($accio) {
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		CreaIniciHTML($Usuari, "Apache error.log");
 		$Ordre = '';
+		// https://sourceforge.net/projects/unxutils/: tail per Windows. Cal copiar-lo a C:\Windows\System
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 			$Ordre = 'tail F:\xampp\apache\logs\error.log';
 		}
 		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
-			$Ordre = 'tail /var/log/apache2/error.log';
+			if ($Usuari->aplicacio == 'InGest')
+				$Ordre = 'tail /var/log/apache2/error.log';
+			else if ($Usuari->aplicacio == 'CapGest')
+				$Ordre = 'tail ../../log/error.log';
 		}
-		// https://sourceforge.net/projects/unxutils/: tail per Windows. Cal copiar-lo a C:\Windows\System
 		$Result = shell_exec($Ordre);
 		echo nl2br($Result);
 		break;
