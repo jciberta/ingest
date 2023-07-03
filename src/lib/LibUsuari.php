@@ -688,12 +688,9 @@ class Professor extends Usuari
 		$stmt->execute();
 		$ResultSet = $stmt->get_result();
 		$stmt->close();
-			
-//print $SQL;
+
 		echo '<h3>Cursos</h3>';
-		echo '<div class="card-columns" style="column-count:6">';
-		//$ResultSet = $this->Connexio->query($SQL);
-//var_dump($ResultSet);
+		echo '<div class="row">';
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
@@ -724,7 +721,8 @@ class Professor extends Usuari
 
 		echo '</div>';
 		echo '<h3>Gestió</h3>';
-		echo '<div class="card-columns" style="column-count:6">';
+		echo '<div class="row">';
+		//		echo '<div class="card-columns" style="column-count:6">';
 		
 		// Grups tutoria
 		$Professor = new Professor($this->Connexio, $this->Usuari);
@@ -769,7 +767,7 @@ class Professor extends Usuari
 
 		echo '</div>';
 		echo '<h3>Informes</h3>';
-		echo '<div class="card-columns" style="column-count:6">';
+		echo '<div class="row">';
 
 		// Històric
 		$URL = GeneraURL('Recerca.php?accio=HistoricCurs');
@@ -789,7 +787,7 @@ class Professor extends Usuari
 		
 		echo '</div>';
 		echo '<h3>Altres</h3>';
-		echo '<div class="card-columns" style="column-count:6">';
+		echo '<div class="row">';
 
 		// Orla
 		$URL = GeneraURL('UsuariRecerca.php?accio=Orla');
@@ -1637,36 +1635,19 @@ class ProfessorsEquip extends Objecte
 class Alumne extends Usuari
 {
 	/**
-	 * Genera i escriu l'escriptori del professor.
+	 * Genera i escriu l'escriptori de l'alumne.
 	 */
 	public function Escriptori() {
 		CreaIniciHTML($this->Usuari, '');
-		echo '<div class="card-columns" style="column-count:6">';
-
+		echo '<div class="row">';
 		$MatriculaId = $this->ObteMatriculaActiva($this->Usuari->usuari_id);
-
 		// Pla de treball. Només es veu a l'avaluació ordinària
 		if ($this->EsAvaluacioOrdinariaCursActual($this->Usuari->usuari_id)) {
-			$URL = GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId);
-			echo '  <div class="card">';
-			echo '    <div class="card-body">';
-			echo '      <h5 class="card-title">Pla de treball</h5>';
-			echo '      <p class="card-text">Visualitza el teu pla de treball.</p>';
-			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-			echo '    </div>';
-			echo '  </div>';
+			echo CreaTargeta('Pla de treball', 'Visualitza el teu pla de treball.', GeneraURL('Fitxa.php?accio=PlaTreball&Id='.$MatriculaId));
 		}
-
 		// Expedient. Només es veu quan els butlletins estan oberts
 		if ($MatriculaId > 0) {
-			$URL = GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId);
-			echo '  <div class="card">';
-			echo '    <div class="card-body">';
-			echo '      <h5 class="card-title">Expedient</h5>';
-			echo '      <p class="card-text">Visualitza el teu expedient.</p>';
-			echo '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
-			echo '    </div>';
-			echo '  </div>';
+			echo CreaTargeta('Expedient', 'Visualitza el teu expedient.', GeneraURL('MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId));
 		}
 		echo '</div>';
 	}
@@ -1985,8 +1966,7 @@ class Progenitor extends Usuari
 		$ResultSet = $stmt->get_result();
 		$stmt->close();
 
-		echo '<div class="card-columns" style="column-count:6">';
-//		$ResultSet = $this->Connexio->query($SQL);
+		echo '<div class="row">';
 		if ($ResultSet->num_rows > 0) {
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
@@ -2004,6 +1984,7 @@ class Progenitor extends Usuari
 		}
 		else
 			echo 'No hi ha dades a mostrar.';
+		echo '</div>';
 		$ResultSet->close();
 	}
 }
@@ -2018,7 +1999,7 @@ class MembreJunta extends Objecte
 	 */
 	public function Escriptori() {
 		CreaIniciHTML($this->Usuari, '');
-		echo '<div class="card-columns" style="column-count:6">';
+		echo '<div class="row">';
 		echo CreaTargeta('Material', 'Llistat de material', GeneraURL('Recerca.php?accio=Material'));
 		echo CreaTargeta('Sortida', 'Sortida de material', GeneraURL('Fitxa.php?accio=SortidaMaterial'));
 		echo CreaTargeta('Entrada', 'Entrada de material', GeneraURL('Fitxa.php?accio=EntradaMaterial'));

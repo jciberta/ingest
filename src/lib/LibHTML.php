@@ -238,19 +238,22 @@ function PaginaHTMLMissatge($Titol, $Missatge)
  
 function CreaTargeta($Titol, $Text, $URL): string
 {
-	$Retorn = '  <div class="card">';
+	$Retorn = '<div class="col-sm-2">';
+	$Retorn .= '  <div class="card">';
 	$Retorn .= '    <div class="card-body">';
 	$Retorn .= '      <h5 class="card-title">'.$Titol.'</h5>';
 	$Retorn .= '      <p class="card-text">'.$Text.'</p>';
 	$Retorn .= '      <a href="'.$URL.'" class="btn btn-primary btn-sm">Ves-hi</a>';
 	$Retorn .= '    </div>';
 	$Retorn .= '  </div>';
+	$Retorn .= '</div>';
 	return $Retorn;			
 }
 
 function CreaTargeta2($Titol, $Text1, $URL1, $Text2, $URL2): string
 {
-	$Retorn = '<div class="card">';
+	$Retorn = '<div class="col-sm-2">';
+	$Retorn .= '<div class="card">';
 	$Retorn .= '    <div class="card-body">';
 	$Retorn .= '      <h5 class="card-title">'.$Titol.'</h5>';
 	$Retorn .= '<table style="cellpadding:10px;border-collapse: separate;border-spacing: 0px 6px ">';
@@ -265,6 +268,7 @@ function CreaTargeta2($Titol, $Text1, $URL1, $Text2, $URL2): string
 	$Retorn .= '</table>';
 	$Retorn .= '    </div>';
 	$Retorn .= '  </div>';
+	$Retorn .= '</div>';
 	return $Retorn;			
 }
 
