@@ -46,35 +46,15 @@ abstract class GeneraPDF extends Objecte
 	const aEXPEDIENT = 1;
 	const aPROGRAMACIO = 2;
 
-    /**
-	 * Sistema operatiu (Windows, Linux).
-	 * @var string
-	 */
-	private $SistemaOperatiu = '';
-
-	/**
-	 * Constructor de l'objecte.
-	 * @param object $conn Connexió a la base de dades.
-	 * @param object $user Usuari.
-	 * @param object $system Dades de l'aplicació.
-	 */
-	function __construct($conn, $user = null, $Sistema = null) {
-		parent::__construct($conn, $user, $Sistema);
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-			$this->SistemaOperatiu = 'Windows';
-		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN')
-			$this->SistemaOperatiu = 'Linux';
-	}
-
 	/**
 	 * Retorna l'ordre per executar el PHP des de la línia d'ordres depenent del sistema operatiu.
      * @return string Ordre.
 	 */
 	protected function ComandaPHP(): string {
 		$Retorn = '';
-		if ($this->SistemaOperatiu === 'Windows')
+		if ($this->SistemaOperatiu === Objecte::soWINDOWS)
 			$Retorn = UNITAT_XAMPP.':\xampp\php\php.exe';
-		else if ($this->SistemaOperatiu === 'Linux')
+		else if ($this->SistemaOperatiu === Objecte::soLINUX)
 			$Retorn = 'php';
 		return $Retorn;
 	}

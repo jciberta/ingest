@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/vendor/TCPDF/tcpdf.php');
+require_once(ROOT.'/lib/LibClasses.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
@@ -26,12 +27,6 @@ require_once(ROOT.'/lib/LibAvaluacio.php');
  */
 class Expedient extends Form
 {
-	/**
-	 * Sistema operatiu (Windows, Linux).
-	 * @var string
-	 */
-	private $SistemaOperatiu = '';
-
 	/**
 	 * Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
 	 * @var array
@@ -58,12 +53,7 @@ class Expedient extends Form
 	 */
 	function __construct($conn, $user = null, $Sistema = null) {
 		parent::__construct($conn, $user, $Sistema);
-		//$this->Connexio = $con;
 		$this->NotesMP = [];
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-			$this->SistemaOperatiu = 'Windows';
-		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN')
-			$this->SistemaOperatiu = 'Linux';
 	}
 
 	/**
@@ -307,9 +297,9 @@ class Expedient extends Form
 	 */
 	private function ComandaPHP(): string {
 		$Retorn = '';
-		if ($this->SistemaOperatiu === 'Windows')
+		if ($this->SistemaOperatiu === Objecte::soWINDOWS)
 			$Retorn = UNITAT_XAMPP.':\xampp\php\php.exe';
-		else if ($this->SistemaOperatiu === 'Linux')
+		else if ($this->SistemaOperatiu === Objecte::soLINUX)
 			$Retorn = 'php';
 		return $Retorn;
 	}
@@ -434,11 +424,7 @@ class ExpedientSaga extends Expedient
 	function __construct($conn, $user, $Sistema, $MatriculaId) {
 		parent::__construct($conn, $user, $Sistema);
 
-//		$this->Connexio = $conn;
-//		$this->Usuari = $user;
-//		$this->Sistema = $Sistema;
 		$this->MatriculaId = $MatriculaId;
-
 		$this->Matricula = new Matricula($conn, $user, $Sistema);
 		$this->Matricula->Carrega($this->MatriculaId);
 		$this->RegistreMitjanes = [];
