@@ -302,9 +302,8 @@ class Expedient extends Form
 	}
 
 	/**
-	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
-	 * @param integer $Curs Identificador del curs.
-	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
+	 * Retorna l'ordre per executar el PHP des de la línia d'ordres depenent del sistema operatiu.
+     * @return string Ordre.
 	 */
 	private function ComandaPHP(): string {
 		$Retorn = '';

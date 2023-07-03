@@ -453,6 +453,7 @@ class PlaEstudisCicleRecerca extends FormRecerca
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 			$frm->Filtre->AfegeixLlista('any_academic_id', 'Any', 30, $aAnys[0], $aAnys[1], [], $this->Sistema->any_academic_id);
 		}
+		$frm->AfegeixOpcio('Programacions en PDF', 'GeneraPDF.php?accio=Programacio&PlaEstudiId=', '', 'pdf.png');
 		$frm->EscriuHTML();
 	}
 }

@@ -35,9 +35,11 @@ function utf8_decodeX($Text) {
 	return $Text;
 }
 
-// Autenticació Google
-$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
-define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
+if (!defined('STDIN')) {
+	// Autenticació Google
+	$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
+	define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
+}
 
 unset($CFG);
 global $CFG;
@@ -60,7 +62,7 @@ if (defined('STDIN')) {
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		define('ROOT', 'D:\CASA\Xiber\ingest\src');
 		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
-		define('UNITAT_XAMPP', 'D');
+		define('UNITAT_XAMPP', 'F');
 		//define('ROOT', 'D:/jciberta/ingest/src');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
@@ -75,7 +77,7 @@ else {
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		// Windows
 		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
-		define('UNITAT_XAMPP', 'D');
+		define('UNITAT_XAMPP', 'F');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 		define('FONT_FILENAME_ARIAL', 'C:\Windows\Fonts\arial.ttf');
 	}

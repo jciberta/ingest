@@ -1419,7 +1419,6 @@ abstract class ProgramacioDidacticaPDF extends ProgramacioDidactica
 		// Portada
 		$pdf->AddPage(); 
 		$this->GeneraPortada($pdf);
-		//$pdf->Escriu('Hola');
 
 		$pdf->AddPage(); 
 		$this->PDF = $pdf;
