@@ -137,17 +137,18 @@ abstract class ProgramacioDidactica extends Form
 	const pdESTRATEGIES = 1;
 	const pdCRITERIS = 2;
 	const pdRECURSOS = 3;
-//	const pdSEQUENCIACIO = 4;
-	const pdSEQUENCIACIO_LOE = 4;
-	const pdSEQUENCIACIO_LOGSE = 5;
-	const pdUNITATS = 6;
-	const pdOBJECTIUS_CONTINGUTS = 7;
+	const pdPLANIFICACIO_FCT = 4;
+	const pdSEQUENCIACIO_LOE = 5;
+	const pdSEQUENCIACIO_LOGSE = 6;
+	const pdUNITATS = 7;
+	const pdOBJECTIUS_CONTINGUTS = 8;
 
 	// Títol de les seccions de la programació didàctica.
 	const SECCIO = array(
 		self::pdESTRATEGIES => 'Estratègies metodològiques',
 		self::pdCRITERIS => 'Criteris d’avaluació, qualificació i recuperació',
 		self::pdRECURSOS => 'Recursos i material utilitzat',
+		self::pdPLANIFICACIO_FCT => 'Planificació de la FCT',
 		self::pdSEQUENCIACIO_LOE => 'Seqüenciació i temporització de les unitats formatives',
 		self::pdSEQUENCIACIO_LOGSE => 'Seqüenciació i temporització de les unitats didàctiques',
 		self::pdUNITATS => 'Unitats formatives',
@@ -295,6 +296,9 @@ abstract class ProgramacioDidactica extends Form
 			case self::pdRECURSOS:
 				$sRetorn .= $this->GeneraSeccioRecursos();
 				break;
+			case self::pdPLANIFICACIO_FCT:
+				$sRetorn .= $this->GeneraSeccioPlanificacioFCT();
+				break;
 			case self::pdSEQUENCIACIO_LOE:
 			case self::pdSEQUENCIACIO_LOGSE:
 				$sRetorn .= $this->GeneraSeccioSequenciacio();
@@ -436,6 +440,16 @@ abstract class ProgramacioDidactica extends Form
 		return $sRetorn;		
 	}
 
+	/**
+	 * Genera la secció de la planificació de la FCT a la programació didàctica.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioPlanificacioFCT() {
+		$sRetorn = $this->Registre->planificacio;
+		$sRetorn = $this->TractaTaules($sRetorn);
+		return $sRetorn;		
+	}
+
 	abstract protected function GeneraSeccioSequenciacio(&$section = null);
 
 	/**
@@ -554,6 +568,8 @@ class ProgramacioDidacticaLOE extends ProgramacioDidactica
 		echo $this->GeneraSeccio(self::pdESTRATEGIES, $Comptador);
 		echo $this->GeneraSeccio(self::pdCRITERIS, $Comptador);
 		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
+		if ($this->Registre->es_fct)
+			echo $this->GeneraSeccio(self::pdPLANIFICACIO_FCT, $Comptador);
 		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOE, $Comptador);
 		echo $this->GeneraSeccio(self::pdUNITATS, $Comptador);	
 	}
@@ -608,6 +624,8 @@ class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
 		echo $this->GeneraSeccio(self::pdESTRATEGIES, $Comptador);
 		echo $this->GeneraSeccio(self::pdCRITERIS, $Comptador);
 		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
+		if ($this->Registre->es_fct)
+			echo $this->GeneraSeccio(self::pdPLANIFICACIO_FCT, $Comptador);
 		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOGSE, $Comptador);
 		echo $this->GeneraSeccio(self::pdOBJECTIUS_CONTINGUTS, $Comptador);
 	}
@@ -619,12 +637,7 @@ class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
 	 */
 	public function GeneraSeccioSequenciacio(&$section = null): string {
 		$sRetorn = $this->Registre->unitats_didactiques;
-print_h($sRetorn);
-echo $sRetorn;
 		$sRetorn = $this->TractaTaules($sRetorn);
-print_h($sRetorn);
-echo $sRetorn;
-exit;
 		return $sRetorn;		
 	}
 }
@@ -662,6 +675,8 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 		$frm->PermetEditar = True;
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
+		$frm->AfegeixOpcio('Programació didàctica', 'Descarrega.php?Accio=ExportaProgramacioDidacticaPDF&ModulId=', '', 'pdf.png');
+		$frm->AfegeixOpcio('Programació didàctica', 'Descarrega.php?Accio=ExportaProgramacioDidacticaDOCX&ModulId=', '', 'word.png');
 
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'programacio/color', 'png', ProgramacioDidactica::LlegendaEstat());
 
@@ -1273,6 +1288,15 @@ class ProgramacioDidacticaDOCXLOE extends ProgramacioDidacticaDOCX
 		$this->AfegeixHTML($section, $html);
 		$Comptador++;
 
+		if ($this->Registre->es_fct) {
+			$section->addPageBreak();
+			$section->addTextBreak(1);
+			$section->addTitle($Comptador.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT], 1);
+			$html = $this->GeneraSeccioPlanificacioFCT($section);
+			$this->AfegeixHTML($section, $html);
+			$Comptador++;
+		}
+
 		$section->addPageBreak();
 		$section->addTextBreak(1);
 		$section->addTitle($Comptador.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOE], 1);
@@ -1361,6 +1385,15 @@ class ProgramacioDidacticaDOCXLOGSE extends ProgramacioDidacticaDOCX
 		$html = $this->GeneraSeccioRecursos();
 		$this->AfegeixHTML($section, $html);
 		$Comptador++;
+
+		if ($this->Registre->es_fct) {
+			$section->addPageBreak();
+			$section->addTextBreak(1);
+			$section->addTitle($Comptador.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT], 1);
+			$html = $this->GeneraSeccioPlanificacioFCT($section);
+			$this->AfegeixHTML($section, $html);
+			$Comptador++;
+		}
 
 		$section->addPageBreak();
 		$section->addTextBreak(1);
@@ -1506,6 +1539,14 @@ class ProgramacioDidacticaPDFLOE extends ProgramacioDidacticaPDF
 		$HTML = $this->GeneraSeccioRecursos($SeccioId);
 		$pdf->writeHTML($HTML, True);
 
+		if ($this->Registre->es_fct) {
+			$Apartat = $Comptador++.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT];
+			$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+			$pdf->Titol2($Apartat);
+			$HTML = $this->GeneraSeccioPlanificacioFCT($SeccioId);
+			$pdf->writeHTML($HTML, True);
+		}
+
 		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOE];
 		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
 		$pdf->Titol2($Apartat);
@@ -1553,6 +1594,14 @@ class ProgramacioDidacticaPDFLOGSE extends ProgramacioDidacticaPDF
 		$pdf->Titol2($Apartat);
 		$HTML = $this->GeneraSeccioRecursos($SeccioId);
 		$pdf->writeHTML($HTML, True);
+
+		if ($this->Registre->es_fct) {
+			$Apartat = $Comptador++.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT];
+			$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+			$pdf->Titol2($Apartat);
+			$HTML = $this->GeneraSeccioPlanificacioFCT($SeccioId);
+			$pdf->writeHTML($HTML, True);
+		}
 
 		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOGSE];
 		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));

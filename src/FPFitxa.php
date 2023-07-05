@@ -132,6 +132,7 @@ switch ($accio) {
 		$frm->AfegeixTextRic('metodologia', 'Metodologia', 200, 100);
 		$frm->AfegeixTextRic('criteris_avaluacio', "Criteris d'avaluació", 200, 100);
 		$frm->AfegeixTextRic('recursos', 'Recursos', 200, 100);
+		$frm->AfegeixTextRic('planificacio', 'Planificació', 200, 100);
 		$frm->EscriuHTML();
         break;
     case "UnitatsFormatives":
