@@ -295,8 +295,51 @@ function CreaTaula1(array $Dades): string
 	$Retorn .= '</table>';
 	return $Retorn;
 }
- 
- 
+
+/**
+ * Classe que encapsula les utilitats HTML.
+ */
+class HTML
+{
+	// Tipus de missatges.
+	const tmSUCCES = 1;
+	const tmINFORMACIO = 2;
+	const tmAVIS = 3;
+	const tmERROR = 4;
+
+	/**
+	 * Escriu un missatge.
+	 */				
+	public static function EscriuMissatge(int $Tipus, string $Text, bool $Titol = false) {
+		echo '<div class="container">';
+		switch ($Tipus) {
+			case self::tmSUCCES:
+				echo '<div class="alert alert-success" role="alert">';
+				if ($Titol) 
+					echo '<h4 class="alert-heading">Informació</h4>';
+				break;
+			case self::tmINFORMACIO:
+				echo '<div class="alert alert-info" role="alert">';
+				if ($Titol) 
+					echo '<h4 class="alert-heading">Confirmació</h4>';
+				break;
+			case self::tmAVIS:
+				echo '<div class="alert alert-warning" role="alert">';
+				if ($Titol) 
+					echo '<h4 class="alert-heading">Avís</h4>';
+				break;
+			case self::tmERROR:
+				echo '<div class="alert alert-danger" role="alert">';
+				if ($Titol) 
+					echo '<h4 class="alert-heading">Error</h4>';
+				break;
+		}
+		echo '<p>'.$Text.'</p>';
+		echo '</div>';	
+		echo '</div>';	
+	}
+}
+
 /**
  * Classe que encapsula les utilitats per a la pàgina d'entrada.
  */

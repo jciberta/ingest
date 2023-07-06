@@ -35,36 +35,39 @@ $accio = (array_key_exists('accio', $_POST)) ? $_POST['accio'] : '';
 
 switch ($accio) {
     case "SortidaMaterial":
-        CreaIniciHTML($Usuari, 'SortidaMaterial');
-        $UsuariId = mysqli_real_escape_string($conn, $_POST['lkh_usuari']);
 //print_h($_POST);  
-        foreach ($_POST as $key => $value) {
-            if (str_starts_with($key, 'chk_')) {
-                $MaterialId = str_replace('chk_', '', $key);
-                $SQL = "INSERT INTO PRESTEC_MATERIAL (material_id, usuari_id, responsable_id, data_sortida) VALUES (?, ?, ?, NOW())";
-                $stmt = $conn->prepare($SQL);
-                $stmt->bind_param("iii", $MaterialId, $UsuariId, $Usuari->usuari_id);
-                $stmt->execute();
+        $UsuariId = mysqli_real_escape_string($conn, $_POST['cmb_usuari_id']);
+        CreaIniciHTML($Usuari, 'Sortida de material');
+        if ($UsuariId > 0) {
+            // $UsuariId = mysqli_real_escape_string($conn, $_POST['lkh_usuari']);
+            foreach ($_POST as $key => $value) {
+                if (str_starts_with($key, 'chk_')) {
+                    $MaterialId = str_replace('chk_', '', $key);
+                    $SQL = "INSERT INTO PRESTEC_MATERIAL (material_id, usuari_id, responsable_id, data_sortida) VALUES (?, ?, ?, NOW())";
+                    $stmt = $conn->prepare($SQL);
+                    $stmt->bind_param("iii", $MaterialId, $UsuariId, $Usuari->usuari_id);
+                    $stmt->execute();
+                }
             }
+            HTML::EscriuMissatge(HTML::tmSUCCES, "Préstec realitzat amb èxit.");
         }
-        echo "Préstec realitzat amb èxit";
+        else 
+            HTML::EscriuMissatge(HTML::tmERROR, "No s'ha especificat usuari per fer la sortida.");
         CreaFinalHTML();
         break;
     case "EntradaMaterial":
-        CreaIniciHTML($Usuari, 'EntradaMaterial');
-        //$UsuariId = mysqli_real_escape_string($conn, $_POST['lkh_usuari']);
+        CreaIniciHTML($Usuari, 'Entradade material');
 //print_h($_POST);  
         foreach ($_POST as $key => $value) {
             if (str_starts_with($key, 'chk_')) {
                 $PrestecMaterialId = str_replace('chk_', '', $key);
                 $SQL = "UPDATE PRESTEC_MATERIAL SET data_entrada=NOW() WHERE prestec_material_id=?";
-//                $SQL = "INSERT INTO PRESTEC_MATERIAL (material_id, usuari_id, responsable_id, data_sortida) VALUES (?, ?, ?, NOW())";
                 $stmt = $conn->prepare($SQL);
                 $stmt->bind_param("i", $PrestecMaterialId);
                 $stmt->execute();
             }
         }
-        echo "Préstec realitzat amb èxit";
+        HTML::EscriuMissatge(HTML::tmSUCCES, "Préstec retornat amb èxit.");
         CreaFinalHTML();
         break;
     }

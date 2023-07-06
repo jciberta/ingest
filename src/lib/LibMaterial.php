@@ -243,7 +243,11 @@ class SortidaMaterial extends Form
 
 		echo '<TABLE>'.PHP_EOL;
 		echo '<TR>'.PHP_EOL;
-		echo $this->CreaLookUp('usuari', 'Usuari', 500, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2').PHP_EOL;
+//		echo $this->CreaLookUp('usuari', 'Usuari', 500, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2').PHP_EOL;
+		$aUsuaris = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT usuari_id, FormataNomCognom1Cognom2(nom, cognom1, cognom2) AS Nom FROM USUARI ORDER BY cognom1, cognom2, nom', "usuari_id", "Nom");
+		array_unshift($aUsuaris[0] , '');
+		array_unshift($aUsuaris[1] , '');
+		echo $this->CreaLlista('usuari_id', 'Usuari', 500, $aUsuaris[0], $aUsuaris[1]).PHP_EOL;
 		echo '</TR>'.PHP_EOL;
 		echo '</TABLE>'.PHP_EOL;
 
