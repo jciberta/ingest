@@ -121,10 +121,27 @@ if ($ButlletiVisible) {
 			echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraNotes(this, 2);">Notes 2n &nbsp';
 		}		
 		if ($accio == 'MostraExpedient') {
-			//echo "<DIV id=DescarregaExpedientPDF>";
-			$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$MatriculaId");
-			echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
-			if ($Usuari->es_admin) {
+			if (!$Usuari->es_admin) {
+				$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$MatriculaId");
+				echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+			}
+			else {
+				// Descàrregues
+				echo '<div class="btn-group" role="group">';
+				echo '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+				echo 'Descarrega';
+				echo '</button>';
+				echo '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+				$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$MatriculaId");
+				echo '<a id="DescarregaPDF" class="dropdown-item" href="'.$URL.'" name="btnDescarregaPDF_'.$alumne.'">PDF</a>';
+				$SQL = bin2hex(Encripta(TrimX($SQL)));
+				$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+				echo '<a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
+				$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
+				echo '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
+				echo '</div>';
+				echo '</div>';		
+
 				// Pla de treball
 				echo '&nbsp';
 				$URL = GeneraURL("Fitxa.php?accio=PlaTreball&Id=$MatriculaId");
@@ -162,6 +179,14 @@ if ($ButlletiVisible) {
 			echo "<TH width=50 style='text-align:center'>Convalidació</TH>";
 		}
 		echo '</thead>';
+
+		$NumeroUFTotals = 0;
+		$NumeroUFAprovades = 0;
+		$HoresTotals = 0;
+		$HoresAprovades = 0;
+		$HoresMitjana = 0; // Per calcular la mitjana, no podem comptar les hores de la FCT
+		$HoresFCT = 0;
+		$Mitjana = 0;
 
 		$ModulAnterior = '';
 		$j = 1;
@@ -218,6 +243,23 @@ if ($ButlletiVisible) {
 						echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
 					echo "</TD>";
 				}
+				// Càlculs del totalitzador
+				$NumeroUFTotals++;
+				$HoresTotals += $row['HoresUF'];
+				$UltimaNota = UltimaNota($row);
+
+				if ($UltimaNota > 0) {
+					if ($UltimaNota>=5) {
+						$NumeroUFAprovades++;
+						$HoresAprovades += $row['HoresUF'];
+					}
+					if (!$row['es_fct']) {
+						$HoresMitjana += $row['HoresUF'];
+						$Mitjana += $UltimaNota*$row['HoresUF'];
+					}
+					else 
+						$HoresFCT += $row['HoresUF'];
+				}
 			}
 			else {
 				// Columna matriculació
@@ -235,24 +277,29 @@ if ($ButlletiVisible) {
 			$j++;
 			$row = $ResultSet->fetch_assoc();
 		}
-		echo "</TABLE>";
-		echo "<input type=hidden name=TempNota value=''>";
+		echo "</TABLE>".PHP_EOL;
+		echo "<input type=hidden name=TempNota value=''>".PHP_EOL;
+
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+			echo '<DIV name="Total">'.PHP_EOL;
+			echo '<BR><BR><BR><BR><BR><BR>'.PHP_EOL;
+			echo '<H3>Resum</H3>';
+			if ($accio == 'MostraExpedient') {
+				$Dades = array(
+					'Número UF totals' => $NumeroUFTotals,
+					'Número UF aprovades' => $NumeroUFAprovades,
+					'Hores totals' => $HoresTotals,
+					'Hores aprovades' => $HoresAprovades,
+					'Percentatge aprovat' => number_format(100*$HoresAprovades/$HoresTotals, 2).'%',
+//					'Mitjana total' => number_format($Mitjana/($HoresTotals-$HoresFCT), 2), // Té sentit?
+					'Mitjana aprovades' => number_format($Mitjana/$HoresMitjana, 2).'</B> (la nota de la FCT no es compta)<B>'
+				);
+				echo CreaTaula1($Dades);
+			}
+			echo '</DIV>'.PHP_EOL;
+		}
 	};	
 
-/*	if ($accio == 'MostraExpedient') {
-		echo "<DIV id=DescarregaExpedientPDF>";
-		echo '<a href="ExpedientPDF.php?MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
-		if ($Usuari->es_admin) {
-			// Edició de l'expedient
-			echo '&nbsp';
-			if ($ActivaEdicio==1) 
-				echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
-			else
-				echo '<a href="MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId='.$MatriculaId.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
-		}
-		echo "</DIV>";
-	}*/
-	
 	$ResultSet->close();
 }
 else

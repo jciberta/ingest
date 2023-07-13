@@ -44,13 +44,11 @@ $ActivaAdministracio = (isset($_GET) && array_key_exists('ActivaAdministracio', 
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
 $Professor = new Professor($conn, $Usuari, $Sistema);
 $Professor->CarregaUFAssignades();
-//if (!$Professor->TeUFEnCicleNivell($CicleId, $Nivell) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
 if (!$Professor->TeUFEnCicle($CicleId) && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_administratiu)
 	header("Location: Surt.php");
 $Professor->CarregaTutor($CursId);
 
 $cf = new CicleFormatiu($conn, $Usuari, $Sistema);
-//CreaIniciHTML($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell, True, True, True);
 CreaIniciHTML_Notes($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
 
 echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
@@ -59,8 +57,6 @@ echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javas
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Notes.js?v1.9" type="text/javascript"></script>';
 //echo '<script language="javascript" type="text/javascript">let timerId = setInterval(ActualitzaTaulaNotes, 5000);</script>';
-
-//$Columnes = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) ? 5 : 3;
 
 $Notes = new Notes($conn, $Usuari, $Sistema);
 $Notes->CarregaRegistre($CursId, $Nivell);

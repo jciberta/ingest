@@ -150,7 +150,6 @@ function NumeroANotaText($Valor, bool $bFemeni = False)
  */
 function UltimaNota($Registre)
 {
-//print_r($Registre['nota5']);
 	if ($Registre['nota5'] != '') 
 		return $Registre['nota5'];
 	else if ($Registre['nota4'] != '') 
@@ -173,7 +172,7 @@ class EstadistiquesAlumne
 	public $HoresTotals = 0;
 	public $HoresFetes = 0;
 	public $HoresAprovades = 0;
-	public $NotaMitjana = 0;
+	public $NotaMitjana = 0; // Aprovades
 	public $UFTotals = 0;
 	public $UFFetes = 0;
 	public $UFAprovades = 0;
@@ -928,7 +927,7 @@ class Notes extends Form
 		// id: conté les coordenades x, y. Inici a (0, 0).
 		$ValorNota = NumeroANota($Nota);
 		$Id = 'grd'.$IdGraella.'_'.$i.'_'.$j;
-		return "<TD width=".self::AMPLADA_UF." $Class width=2>"
+		return "<TD align='center' width=".self::AMPLADA_UF." $Class width=2>"
 			."<input class='$ClassInput' type=text ".$Deshabilitat." style='".$style."'".
 			" name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"].
 			" id='".$Id."' value='".$ValorNota."' size=1 ".$ToolTip." $Events></TD>";
@@ -1150,7 +1149,6 @@ class Notes extends Form
 		echo '$("#TaulaNotes input").contextMenu({';
 		echo '    menuSelector: "#contextMenu",';
 		echo '    menuSelected: function (invokedOn, selectedMenu) {';
-//echo 'console.dir(selectedMenu);';
 		echo '        if (selectedMenu[0].id == "ddi_IntrodueixRecuperacio")';
 		echo '            IntrodueixRecuperacio(invokedOn);';
 		echo '        else if (selectedMenu[0].id == "ddi_NotaAnterior")';
@@ -1287,6 +1285,7 @@ class Notes extends Form
 			die("<b>ERROR</b>. SQL: ".$SQL); 
 	
 //print_r($ResultSet);	
+		$this->Registre = [];
 
 		if ($ResultSet->num_rows > 0) {
 			// Creem 2 objectes per administrar les notes de 1r i de 2n respectivament
@@ -1296,8 +1295,19 @@ class Notes extends Form
 			$AlumneId = -1;
 			$row = $ResultSet->fetch_assoc();
 			while($row) {
+
+				// Registre: per calcular la nota mitjana
+				if (!array_key_exists($row["AlumneId"], $this->Registre)) {
+					$this->Registre[$row["AlumneId"]] = new stdClass();
+					$this->Registre[$row["AlumneId"]]->Alumne = $row;
+					$this->Registre[$row["AlumneId"]]->UF = [];
+				}
+				array_push($this->Registre[$row["AlumneId"]]->UF, $row);
+
 //print_r($row);
 //print '<hr>';
+
+				// Registre1 i Registre2: per la resta (llençol de notes, altres estadístiques, ...)
 				if ($row["NivellUF"] == 1) {
 					if ($row["AlumneId"] != $AlumneId) {
 						$AlumneId = $row["AlumneId"];
@@ -1324,14 +1334,23 @@ class Notes extends Form
 				}
 				$row = $ResultSet->fetch_assoc();
 			}		
-//print_r($this->Registre1->Alumne[0]);
+//print_h($this->Registre1);
 //print('<hr>');
-//print_r($this->Registre2);
-//print('<hr>');
+//print_h($this->Registre2);
+//exit;
 			$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio);
 			$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio);
-//print_r($this->Registre2);
+
+			// Actualitzem la nota mitjana a les estadístiques 
+			// (es fa a part ja que Registre1 i Registre2 no contenen totes les notes, només les del nivell)
+			$this->CalculaNotaMitjanaAlumne($this->Registre1, $this->Registre);
+			$this->CalculaNotaMitjanaAlumne($this->Registre2, $this->Registre);
+
+
+//print_h($this->Registre2->Alumne);
 //print('<hr>');
+//print_h($this->Registre);
+//exit;
 		}
 	}	
 	
@@ -1349,7 +1368,11 @@ class Notes extends Form
 	 * @param string $Avaluacio Avaluacio ordinària o extraordinària.
 	 */
 	private function CalculaEstadistiquesAlumne(&$Notes, $Avaluacio) {
+//print_r($Notes);			
+//exit;
 		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
+//print_r($NotesAlumne);			
+//exit;
 			$ea = new EstadistiquesAlumne;
 			$NotesAlumne['Estadistiques'] = $ea;
 			$TotalNota = 0;
@@ -1364,13 +1387,32 @@ class Notes extends Form
 //print('<HR>');			
 //exit;
 			if (property_exists($Notes, 'UF') && (array_key_exists($i, $Notes->UF))) {
+				$Mitjana = 0;
+				$HoresMitjana = 0;
+				$HoresFCT = 0;
 				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
 					$row = $Notes->UF[$i][$j];
+//echo $row['CodiMP']." ".$row['NomMP']."<br>";
 //if ($row['AlumneId']==1022)	{
-//	print_r($row);			
+//print_r($row);			
 //	print('<HR>');			
 //}
 //	exit;
+
+					// Càlcul de la mitjana
+					$UltimaNota = UltimaNota($row);
+					if ($UltimaNota>=5) {
+//						$NumeroUFAprovades++;
+//						$HoresAprovades += $row['HoresUF'];
+						if (!$row['FCT']) {
+							$HoresMitjana += $row['Hores'];
+							$Mitjana += $UltimaNota*$row['Hores'];
+						}
+						else 
+							$HoresFCT += $row['Hores'];
+					}					
+
+
 					if ($Avaluacio == 'Ordinària') {
 						$ea->UFTotals++;
 						$ea->HoresTotals += $row['Hores'];
@@ -1423,29 +1465,44 @@ class Notes extends Form
 						}
 						else
 							$ea->UFSuspeses++;
-						/*if ($row['Convocatoria'] > 0) {
-							$Nota = $row['nota'.$row['Convocatoria']];
-	//						if ($Nota > 0 && $Nota < 5)
-							if ($Nota < 5 && $Nota != '')
-								$ea->UFSuspeses++;
-							else if ($Nota >= 5)
-								$ea->UFAprovades++;
-						}
-						if ($row['Convocatoria'] == 0) 
-							$ea->EsRepetidor = true;*/
-						
-	//					if ($TotalNota > 0 && $ea->HoresFetes != 0)
 						if ($TotalNota > 0 && $ea->HoresFetes != 0 && !$row['FCT'])
 							$ea->NotaMitjana = number_format($TotalNota / $ea->HoresFetes, 2);						
 						
 						//$ea->UFSuspeses = $ea->UFTotals - $ea->UFAprovades;
 						//$ea->UFFetes = $ea->UFTotals;
 					}
+
+
 				}
-//if ($row['AlumneId']==1022)	print_r($ea);
-					
-				//$row['HoresTotals'] = 0;
+				
+				$ea->NotaMitjana = -1; // El valor de sota no és correcte, ja que no hi ha totes les notes (dels diferents nivells)
+				// $ea->NotaMitjana = ($HoresMitjana == 0) ? 0 : number_format($Mitjana / $HoresMitjana, 2);			
 			}
+		}
+	}
+
+	/**
+	 * Calcula la nota mitjana d'un alumne (amb les notes que té entrades) i les afegeix al mateix registre de notes.
+	 * NOTA: S'usen variables per referència!
+	 * @param object $Notes Graella de notes.
+	 * @param object $Registre Registre de notes de tots els nivells.
+	 */
+	private function CalculaNotaMitjanaAlumne(&$Notes, $Registre) {
+		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
+			$HoresMitjana = 0;
+			$Mitjana = 0;
+			$RegistreAlumne = $Registre[$NotesAlumne['AlumneId']];
+			for($j = 0; $j < count($RegistreAlumne->UF); $j++) {
+				$row = $RegistreAlumne->UF[$j];
+				$UltimaNota = UltimaNota($row);
+				if ($UltimaNota > 0) {
+					if (!$row['FCT']) {
+						$HoresMitjana += $row['Hores'];
+						$Mitjana += $UltimaNota*$row['Hores'];
+					}
+				}
+			}
+			$NotesAlumne['Estadistiques']->NotaMitjana = ($HoresMitjana == 0) ? 0 : number_format($Mitjana/$HoresMitjana, 2);
 		}
 	}
 

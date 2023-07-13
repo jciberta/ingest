@@ -148,7 +148,7 @@ function CreaIniciHTML_JS_CSS($Usuari, $Titol, $JS = '', $CSS = '')
 	$Retorn .= '</HEAD>';
 
 	$Retorn .= '<BODY>';
-	$Retorn .= Menu::Crea($Usuari);
+	$Retorn .= MenuInGest::Crea($Usuari);
 	$Retorn .= '      <div class="starter-template" style="padding:20px">';
 	$Retorn .= '<H1>'.$Titol.'</H1>';
 	echo $Retorn;
