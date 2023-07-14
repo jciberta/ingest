@@ -18,7 +18,7 @@ require_once(ROOT.'/lib/LibExpedient.php');
 /**
  * Classe que encapsula les utilitats per al maneig de la matrícula.
  */
-class Matricula extends Objecte
+class Matricula extends Expedient
 {
 	/**
 	 * CreaMatricula
@@ -170,6 +170,105 @@ class Matricula extends Objecte
 		else 
 			$iRetorn = $this->Registre->grup_tutoria;
 		return $iRetorn;
+	}
+
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$this->CreaInici();
+
+		$Matricula = new Matricula($this->Connexio, $this->Usuari, $this->Sistema);
+		$Matricula->Carrega($this->Id);
+		$alumne = $Matricula->ObteAlumne();
+		$nivell = $Matricula->ObteNivell();		
+
+		$SQL = Expedient::SQL($this->Id);
+		$ResultSet = $this->Connexio->query($SQL);
+	
+		if ($ResultSet->num_rows > 0) {
+			
+			$row = $ResultSet->fetch_assoc();
+			$NomComplet = trim(utf8_encodeX($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
+			if ($this->Usuari->es_admin) {
+				$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+				echo "Matrícula: <B>[$this->Id]</B>&nbsp;&nbsp;&nbsp;";
+			}
+			echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
+			echo 'Cicle: <B>'.utf8_encodeX($row["NomCF"]).'</B>';
+				
+			echo '<span style="float:right;">';
+			if ($nivell == 2) {
+				echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraNotes(this, 1);">Notes 1r &nbsp';
+				echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraNotes(this, 2);">Notes 2n &nbsp';
+			}	
+			echo '</span>';	
+	
+			echo '<BR><BR>';
+	
+			echo '<TABLE class="table table-fixed table-sm table-striped table-hover">';
+			echo '<thead class="thead-dark">';
+			echo "<TH width=200>Mòdul</TH>";
+			echo "<TH width=200>UF</TH>";
+			echo "<TH width=50>Nivell</TH>";
+			echo "<TH width=50>Hores</TH>";
+			echo "<TH width=50 style='text-align:center'>Matrícula</TH>";
+			echo "<TH width=50 style='text-align:center'>Convalidació</TH>";
+			echo '</thead>';
+	
+			$ModulAnterior = '';
+			$j = 1;
+			while($row) {
+				echo "<TR class='Nivell".$row["NivellUF"]."'>";
+				if ($row["CodiMP"] != $ModulAnterior)
+					echo "<TD width=200>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+				else 
+					echo "<TD width=200></TD>";
+				$ModulAnterior = $row["CodiMP"];
+				echo "<TD width=200>".utf8_encodeX($row["NomUF"])."</TD>";
+				echo "<TD width=50>".$row["NivellUF"]."</TD>";
+				echo "<TD width=50>".$row["HoresUF"]."</TD>";
+				$Baixa = ($row["Baixa"] == True);
+				$Convalidat = ($row["Convalidat"] == True);
+				if ($Baixa) 
+					$sChecked = '';
+				else
+					$sChecked = ' checked';
+				$Convalidat = ($row["Convalidat"] == True);
+				$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
+
+				// Columna matriculació
+				if ($Convalidat || ($row['convocatoria'] == 0))
+					echo "<TD width=50></TD>";
+				else
+					echo "<TD width=50 style='text-align:center'><input type=checkbox name=chbNotaId_".$row["NotaId"].$sChecked." onclick='MatriculaUF(this);'/></TD>";
+				// Columna convalidació
+				if ($row['convocatoria'] == 0)
+					echo "<TD width=50></TD>";
+				else
+					echo "<TD width=50 style='text-align:center'><input type=checkbox name=chbConvalidaUFNotaId_".$row["NotaId"].$sCheckedConvalidat." onclick='ConvalidaUF(this, $alumne);'/></TD>";					
+
+				echo "</TR>";
+				$j++;
+				$row = $ResultSet->fetch_assoc();
+			}
+			echo "</TABLE>".PHP_EOL;
+			echo "<input type=hidden name=TempNota value=''>".PHP_EOL;
+	
+		};	
+	
+		$ResultSet->close();
+	}
+
+	/**
+	 * Crea l'inici de la pàgina HTML.
+	 */
+	private function CreaInici() {
+		CreaIniciHTML($this->Usuari, 'Visualitza matrícula');
+		echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Matricula.js?v1.5" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
+		echo "<DIV id=debug></DIV>";
 	}
 }
 

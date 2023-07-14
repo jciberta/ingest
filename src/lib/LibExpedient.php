@@ -31,7 +31,7 @@ class Expedient extends Form
 	 * Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
 	 * @var array
 	 */
-    public $Registre = [];
+//    public $Registre = [];
 
 	/**
 	 * Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
@@ -44,6 +44,19 @@ class Expedient extends Form
 	 * @var array
 	 */
 	private $NotesMP = null;
+
+	/**
+	 * Indica si el butlletí està visible.
+	 * L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs.
+	 * @var boolean
+	 */
+	private $ButlletiVisible = true;
+
+	/**
+	 * Indica si es pot editar l'expedient.
+	 * @var boolean
+	 */
+	public $ActivaEdicio = false;
 
 	/**
 	 * Constructor de l'objecte.
@@ -132,6 +145,218 @@ class Expedient extends Form
 			$bRetorn = ($row['estat'] == 'O');
 		}
 		return $bRetorn;
+	}
+
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		$this->CreaInici();
+
+		$Matricula = new Matricula($this->Connexio, $this->Usuari, $this->Sistema);
+		$Matricula->Carrega($this->Id);
+		$alumne = $Matricula->ObteAlumne();
+		$nivell = $Matricula->ObteNivell();		
+
+		// L'alumne i el pare només poden veure les notes quan s'ha activat la visibilitat dels butlletins per a aquell curs
+		if ($this->Usuari->es_alumne || $this->Usuari->es_pare) {
+			$Expedient = new Expedient($this->Connexio, $this->Usuari, $this->Sistema);
+			$this->ButlletiVisible = $Expedient->EsVisibleButlleti($this->Id);
+		}
+
+		if ($this->ButlletiVisible) {
+			$SQL = Expedient::SQL($this->Id);
+		//print_r($SQL.'<BR>');
+			$ResultSet = $this->Connexio->query($SQL);
+		
+			if ($ResultSet->num_rows > 0) {
+				
+				$row = $ResultSet->fetch_assoc();
+				$NomComplet = trim(utf8_encodeX($row["NomAlumne"]." ".$row["Cognom1Alumne"]." ".$row["Cognom2Alumne"]));
+				if ($this->Usuari->es_admin) {
+					$NomComplet = $NomComplet." [".$row["usuari_id"]."]";
+					echo "Matrícula: <B>[$this->Id]</B>&nbsp;&nbsp;&nbsp;";
+				}
+				echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
+				echo 'Cicle: <B>'.utf8_encodeX($row["NomCF"]).'</B>';
+					
+				echo '<span style="float:right;">';
+				if ($nivell == 2) {
+					echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraNotes(this, 1);">Notes 1r &nbsp';
+					echo '<input type="checkbox" name="chbNivell2" checked onclick="MostraNotes(this, 2);">Notes 2n &nbsp';
+				}		
+
+				if (!$this->Usuari->es_admin) {
+					$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$this->Id");
+					echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnDescarregaPDF" name="btnDescarregaPDF_'.$alumne.'">Descarrrega PDF</a>';
+				}
+				else {
+					// Descàrregues
+					echo '<div class="btn-group" role="group">';
+					echo '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+					echo 'Descarrega';
+					echo '</button>';
+					echo '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+					$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$this->Id");
+					echo '<a id="DescarregaPDF" class="dropdown-item" href="'.$URL.'" name="btnDescarregaPDF_'.$alumne.'">PDF</a>';
+					$SQL = bin2hex(Encripta(TrimX($SQL)));
+					$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
+					echo '<a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
+					$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
+					echo '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
+					echo '</div>';
+					echo '</div>';		
+	
+					// Pla de treball
+					echo '&nbsp';
+					$URL = GeneraURL("Fitxa.php?accio=PlaTreball&Id=$this->Id");
+					echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnPlaTreball">Pla de treball</a>';
+					
+					// Edició de l'expedient
+					echo '&nbsp';
+					if ($this->ActivaEdicio==1) { 
+						$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=$this->Id");
+						echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Desactiva edició</a>';
+					}
+					else {
+						$URL = GeneraURL("MatriculaAlumne.php?accio=MostraExpedient&ActivaEdicio=1&MatriculaId=$this->Id");
+						echo '<a href="'.$URL.'" class="btn btn-primary active" role="button" aria-pressed="true" id="btnActivaEdicio">Activa edició</a>';
+					}
+				}
+				echo '</span>';
+		
+				echo '<BR><BR>';
+		
+				echo '<TABLE class="table table-fixed table-sm table-striped table-hover">';
+				echo '<thead class="thead-dark">';
+				echo "<TH width=200>Mòdul</TH>";
+				echo "<TH width=200>UF</TH>";
+				echo "<TH width=50>Nivell</TH>";
+				echo "<TH width=50>Hores</TH>";
+				echo "<TH width=250 colspan=5>Notes</TH>";
+				if ($this->ActivaEdicio==1)
+					echo "<TH width=75>Convocatòria</TH>";
+				echo '</thead>';
+		
+				$NumeroUFTotals = 0;
+				$NumeroUFAprovades = 0;
+				$HoresTotals = 0;
+				$HoresAprovades = 0;
+				$HoresMitjana = 0; // Per calcular la mitjana, no podem comptar les hores de la FCT
+				$HoresFCT = 0;
+				$Mitjana = 0;
+		
+				$ModulAnterior = '';
+				$j = 1;
+				while($row) {
+					echo "<TR class='Nivell".$row["NivellUF"]."'>";
+					if ($row["CodiMP"] != $ModulAnterior)
+						echo "<TD width=200>".utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"])."</TD>";
+					else 
+						echo "<TD width=200></TD>";
+					$ModulAnterior = $row["CodiMP"];
+					echo "<TD width=200>".utf8_encodeX($row["NomUF"])."</TD>";
+					echo "<TD width=50>".$row["NivellUF"]."</TD>";
+					echo "<TD width=50>".$row["HoresUF"]."</TD>";
+					$Baixa = ($row["Baixa"] == True);
+					$Convalidat = ($row["Convalidat"] == True);
+					if ($Baixa) 
+						$sChecked = '';
+					else
+						$sChecked = ' checked';
+					$Convalidat = ($row["Convalidat"] == True);
+					$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
+
+					for ($i=1; $i<6; $i++) {
+						$style = 'width:2em;text-align:center';
+						if (($Convalidat) && ($i == 1)) {
+							$Deshabilitat = " disabled ";
+							$style .= ";background-color:blue;color:white";
+						}
+						if (($row['convocatoria'] == $i) && (!$Baixa)) {
+							// Marquem la convocatòria actual
+							$style .= ';border-width:1px;border-color:blue';
+							if ($row['orientativa'])
+								$style .= ";background-color:yellow";
+						}
+						$Nota = NumeroANota($row["Nota".$i]);
+						$Deshabilitat = ($this->ActivaEdicio==1) ? '' : 'disabled';
+						
+						// <INPUT>
+						// name: conté id i convocatòria
+						// id: conté les coordenades x, y. Inici a (0, 0).
+						$Id = 'grd_'.$j.'_'.$i;
+						echo "<TD width=50><input type=text $Deshabilitat style='$style' name=txtNotaId_".$row["NotaId"]."_".$i.
+							" id='$Id' value='$Nota' ".
+							" onfocus='EnEntrarCellaNota(this);' onBlur='EnSortirCellaNota(this);' onkeydown='NotaKeyDown(this, event);'>".
+							"</TD>";
+					}
+					if ($this->ActivaEdicio==1) {
+						echo "<TD width=75>";
+						echo "<A HREF=# onclick='RedueixConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/left.svg data-toggle='tooltip' data-placement='top' title='Redueix convocatòria'></A>&nbsp;";
+						echo "<A HREF=# onclick='AugmentaConvocatoria(".$row["NotaId"].",".$row['convocatoria'].");'><IMG SRC=img/right.svg data-toggle='tooltip' data-placement='top' title='Augmenta convocatòria'></A>&nbsp;";
+						echo "<A HREF=# onclick='ConvocatoriaA0(".$row["NotaId"].");'><IMG SRC=img/check.svg data-toggle='tooltip' data-placement='top' title='Convocatòria a 0 (aprovat)'></A>";
+						if ($Convalidat)
+							echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
+						echo "</TD>";
+					}
+					// Càlculs del totalitzador
+					$NumeroUFTotals++;
+					$HoresTotals += $row['HoresUF'];
+					$UltimaNota = UltimaNota($row);
+	
+					if ($UltimaNota > 0) {
+						if ($UltimaNota>=5) {
+							$NumeroUFAprovades++;
+							$HoresAprovades += $row['HoresUF'];
+						}
+						if (!$row['es_fct']) {
+							$HoresMitjana += $row['HoresUF'];
+							$Mitjana += $UltimaNota*$row['HoresUF'];
+						}
+						else 
+							$HoresFCT += $row['HoresUF'];
+					}
+
+					echo "</TR>";
+					$j++;
+					$row = $ResultSet->fetch_assoc();
+				}
+				echo "</TABLE>".PHP_EOL;
+				echo "<input type=hidden name=TempNota value=''>".PHP_EOL;
+		
+				if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
+					echo '<DIV name="Total">'.PHP_EOL;
+					echo '<BR><BR><BR><BR><BR><BR>'.PHP_EOL;
+					echo '<H3>Resum</H3>';
+					$Dades = array(
+						'Número UF totals' => $NumeroUFTotals,
+						'Número UF aprovades' => $NumeroUFAprovades,
+						'Hores totals' => $HoresTotals,
+						'Hores aprovades' => $HoresAprovades,
+						'Percentatge aprovat' => number_format(100*$HoresAprovades/$HoresTotals, 2).'%',
+						'Mitjana aprovades' => number_format($Mitjana/$HoresMitjana, 2).'</B> (la nota de la FCT no es compta)<B>'
+					);
+					echo CreaTaula1($Dades);
+					echo '</DIV>'.PHP_EOL;
+				}
+			};	
+		
+			$ResultSet->close();
+		}
+		else
+			echo 'El butlletí de notes no està disponible.';	
+	}
+
+	/**
+	 * Crea l'inici de la pàgina HTML.
+	 */
+	private function CreaInici() {
+		CreaIniciHTML($this->Usuari, 'Visualitza expedient');
+		echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Matricula.js?v1.5" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
+		echo "<DIV id=debug></DIV>";
 	}
 
 	/**
