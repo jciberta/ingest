@@ -192,20 +192,14 @@ class Expedient extends Form
 				}
 				else {
 					// Descàrregues
-					echo '<div class="btn-group" role="group">';
-					echo '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
-					echo 'Descarrega';
-					echo '</button>';
-					echo '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
-					$URL = GeneraURL("ExpedientPDF.php?MatriculaId=$this->Id");
-					echo '<a id="DescarregaPDF" class="dropdown-item" href="'.$URL.'" name="btnDescarregaPDF_'.$alumne.'">PDF</a>';
 					$SQL = bin2hex(Encripta(TrimX($SQL)));
-					$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
-					echo '<a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
-					$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
-					echo '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
-					echo '</div>';
-					echo '</div>';		
+					echo HTML::CreaBotoDesplegable('Descarrega', 
+						array(
+							'PDF' => GeneraURL("ExpedientPDF.php?MatriculaId=$this->Id"),
+							'CSV' => GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL"),
+							'XLSX' => GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL")
+						)
+					);
 	
 					// Pla de treball
 					echo '&nbsp';

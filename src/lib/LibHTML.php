@@ -309,6 +309,9 @@ class HTML
 
 	/**
 	 * Escriu un missatge.
+	 * @param int $Tipus Tipus: tmSUCCES, tmINFORMACIO, tmAVIS, tmERROR.
+	 * @param string $Text Text del missatge.
+	 * @param bool $Titol Opció de mostrar el títol.
 	 */				
 	public static function EscriuMissatge(int $Tipus, string $Text, bool $Titol = false) {
 		echo '<div class="container">';
@@ -337,6 +340,27 @@ class HTML
 		echo '<p>'.$Text.'</p>';
 		echo '</div>';	
 		echo '</div>';	
+	}
+
+	/**
+	 * Crea un botó desplegable amb opcions.
+	 * @param string $Titol Títol del botó.
+	 * @param array $Opcions Opcions del desplegable.
+	 * @return string Codi HTML del botó.
+	 */				
+	public static function CreaBotoDesplegable(string $Titol, array $Opcions): string {
+		$Retorn = '';
+		$Retorn .= '<div class="btn-group" role="group">';
+		$Retorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
+		$Retorn .= $Titol;
+		$Retorn .= '</button>';
+		$Retorn .= '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+		foreach ($Opcions as $Text => $URL) {
+			$Retorn .= '<a id="'.Normalitza($Text).'" class="dropdown-item" href="'.$URL.'">'.$Text.'</a>';
+		}
+		$Retorn .= '</div>';
+		$Retorn .= '</div>';		
+		return $Retorn;
 	}
 }
 
