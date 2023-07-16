@@ -345,7 +345,7 @@ class HTML
 	/**
 	 * Crea un botó desplegable amb opcions.
 	 * @param string $Titol Títol del botó.
-	 * @param array $Opcions Opcions del desplegable.
+	 * @param array $Opcions Opcions del desplegable en forma d'array associatiu (text, URL).
 	 * @return string Codi HTML del botó.
 	 */				
 	public static function CreaBotoDesplegable(string $Titol, array $Opcions): string {

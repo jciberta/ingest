@@ -1162,23 +1162,12 @@ class FormRecerca extends Form
 	 * @return string Codi HTML del botó.
 	 */
 	protected function CreaBotoDescarrega(string $SQL): string {
-		$sRetorn = '<div class="btn-group" role="group">';
-		$sRetorn .= '<button id="btnGroupDrop1" type="button" class="btn btn-primary active dropdown-toggle" data-toggle="dropdown">';
-		//$sRetorn .= '    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-		$sRetorn .= 'Descarrega';
-		$sRetorn .= '</button>';
-		$sRetorn .= '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
-		
-		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
-		$sRetorn .= '<a id="DescarregaCSV" class="dropdown-item" href="'.$URL.'">CSV</a>';
-
-		$URL = GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL");
-		$sRetorn .= '<a id="DescarregaXLSX" class="dropdown-item" href="'.$URL.'">XLSX</a>';
-
-
-		$sRetorn .= '</div>';
-		$sRetorn .= '</div>';		
-		return $sRetorn;
+		return HTML::CreaBotoDesplegable('Descarrega', 
+			array(
+				'CSV' => GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL"),
+				'XLSX' => GeneraURL("Descarrega.php?Accio=ExportaXLSX&SQL=$SQL")
+			)
+		);
  	}
 
 	/**
