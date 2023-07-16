@@ -631,7 +631,6 @@ class Professor extends Usuari
 			LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=E.any_academic_id) 
 			WHERE AA.any_academic_id=? AND tipus="DP" AND cap=?
 		';
-//		$ResultSet = $this->Connexio->query($SQL);
 		$stmt = $this->Connexio->prepare($SQL);
 		$stmt->bind_param("ii", $this->Sistema->any_academic_id, $this->Usuari->usuari_id);
 		$stmt->execute();
@@ -759,7 +758,8 @@ class Professor extends Usuari
 			echo CreaTargeta('Material', 'Inventari', $URL);
 		}
 		
-		if ($this->EsCapDepartament($this->Usuari->usuari_id)) {
+		// Cap de departament
+		if ($FamiliaFPId != -1) {
 			$URL1 = GeneraURL('AssignaUFs.php?accio=GrupAssignaUF');
 			$URL2 = GeneraURL('AssignaUFs.php?accio=ProfessorsUF');
 			echo CreaTargeta2('Professorat', 'Assignació UF', $URL1, 'Professors UF', $URL2);
