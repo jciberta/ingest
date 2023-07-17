@@ -376,6 +376,10 @@ class Expedient extends Form
 	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
 	 */
 	public function GeneraPDF($MatriculaId) {
+		$this->Id = $MatriculaId;
+		$this->Carrega();
+		$this->CalculaEstadistiques();
+
 		// create new PDF document
 		$pdf = new QualificacionsPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -508,6 +512,11 @@ class Expedient extends Form
 				$HTML .= "<HR>";
 				$pdf->writeHTML($HTML, True);		
 			}
+		}
+
+		if ($this->NumeroUFAprovades == $this->NumeroUFCicle) {
+			$pdf->Titol2("Promoció");
+			$pdf->EscriuLinia("La nota mitjana del cicle és: ".number_format($this->Mitjana, 2));
 		}
 
 //		$pdf->Titol2(utf8_decodeX("Comentaris de l'avaluació"));
