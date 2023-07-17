@@ -283,15 +283,40 @@ function CreaTargeta2($Titol, $Text1, $URL1, $Text2, $URL2): string
  * @param array $Dades Array associatiu.
  * @return string Codi HTML de la taula.
  */
-function CreaTaula1(array $Dades): string
-{
+function CreaTaula1(array $Dades): string {
 	$Retorn = '<table border=0>';
 	foreach ($Dades as $key => $value) {
 		$Retorn .= "<tr>";
-		$Retorn .= "<td style='padding-right:10px;'>$key:<td>";
-		$Retorn .= "<td><b>".utf8_encodeX($value)."</b><td>";
+		$Retorn .= "<td style='padding-right:10px;'>$key:</td>";
+		$Retorn .= "<td><b>".utf8_encodeX($value)."</b></td>";
 		$Retorn .= "</tr>";
 	}
+	$Retorn .= '</table>';
+	return $Retorn;
+}
+
+/**
+ * Crea la taula 1 trasposada. Layout:
+ * +-------------+-------------+------
+ * |   Titol1    |   Titol2    |  ...
+ * +-------------+-------------+------
+ * | Descripció1 | Descripció2 |  ...
+ * +-------------+-------------+------
+ * @param array $Dades Array associatiu.
+ * @return string Codi HTML de la taula.
+ */
+function CreaTaula1T(array $Dades): string {
+	$Retorn = '<table border="1">';
+	$Retorn .= "<tr>";
+	foreach ($Dades as $key => $value) {
+		$Retorn .= "<td style='text-align:center;padding-right:10px;padding-left:10px;'>$key</td>";
+	}
+	$Retorn .= "</tr>";
+	$Retorn .= "<tr>";
+	foreach ($Dades as $key => $value) {
+		$Retorn .= "<td style='text-align:center;'><b>".utf8_encodeX($value)."</b></td>";
+	}
+	$Retorn .= "</tr>";
 	$Retorn .= '</table>';
 	return $Retorn;
 }

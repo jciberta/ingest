@@ -14,6 +14,7 @@ require_once(ROOT.'/lib/LibClasses.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
+require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPDF.php');
 require_once(ROOT.'/lib/LibNotes.php');
@@ -27,12 +28,6 @@ require_once(ROOT.'/lib/LibAvaluacio.php');
  */
 class Expedient extends Form
 {
-	/**
-	 * Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
-	 * @var array
-	 */
-//    public $Registre = [];
-
 	/**
 	 * Array que emmagatzema el contingut d'un ResultSet carregat de la base de dades.
 	 * @var object
@@ -57,6 +52,15 @@ class Expedient extends Form
 	 * @var boolean
 	 */
 	public $ActivaEdicio = false;
+ 
+	// Estadístiques
+	private $NumeroUFCicle = 0;
+	private $NumeroUFTotals = 0;
+	private $NumeroUFAprovades = 0;
+	private $HoresTotals = 0;
+	private $HoresAprovades = 0;
+	private $PercentatgeAprovat = 0.0;
+	private $Mitjana = 0.0; // La nota de la FCT no es compta
 
 	/**
 	 * Constructor de l'objecte.
@@ -113,6 +117,37 @@ class Expedient extends Form
     }
 
 	/**
+	 * Carrega les dades de l'expedient al Registre.
+	 */
+	protected function Carrega() {
+		$SQL = self::SQL($this->Id);
+//print_r($SQL);
+//exit;
+		try {
+			$ResultSet = $this->Connexio->query($SQL);
+			if (!$ResultSet)
+				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
+		} catch (Exception $e) {
+			die("<BR><b>ERROR Carrega</b>. Causa: ".$e->getMessage());
+		}
+		//$this->Registre = $ResultSet;
+		
+		$this->Registre = [];
+		
+		//$ResultSet = $this->Registre;
+
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			while($row) {
+				array_push($this->Registre, $row); 
+				$row = $ResultSet->fetch_assoc();
+			}
+		};		
+//print_h($this->Registre);
+//exit;
+	}
+
+	/**
 	 * Carrega les notes del mòduls professionals d'un alumne.
 	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
 	 */
@@ -130,7 +165,7 @@ class Expedient extends Form
 	/**
 	 * Indica si el butlletí de notes és visible o no.
 	 * @param integer $MatriculaId Id de la matrícula.
-	 * @return boolena Cert si el butlletí de notes és visible.
+	 * @return boolean Cert si el butlletí de notes és visible.
 	 */
 	public function EsVisibleButlleti(int $MatriculaId): bool {
 		$SQL = ' SELECT * FROM MATRICULA M '.
@@ -152,6 +187,8 @@ class Expedient extends Form
 	 */
 	public function EscriuHTML() {
 		$this->CreaInici();
+		$this->Carrega();
+		$this->CalculaEstadistiques();
 
 		$Matricula = new Matricula($this->Connexio, $this->Usuari, $this->Sistema);
 		$Matricula->Carrega($this->Id);
@@ -179,7 +216,7 @@ class Expedient extends Form
 				}
 				echo 'Alumne: <B>'.$NomComplet.'</B>&nbsp;&nbsp;&nbsp;';
 				echo 'Cicle: <B>'.utf8_encodeX($row["NomCF"]).'</B>';
-					
+
 				echo '<span style="float:right;">';
 				if ($nivell == 2) {
 					echo '<input type="checkbox" name="chbNivell1" checked onclick="MostraNotes(this, 1);">Notes 1r &nbsp';
@@ -232,14 +269,6 @@ class Expedient extends Form
 					echo "<TH width=75>Convocatòria</TH>";
 				echo '</thead>';
 		
-				$NumeroUFTotals = 0;
-				$NumeroUFAprovades = 0;
-				$HoresTotals = 0;
-				$HoresAprovades = 0;
-				$HoresMitjana = 0; // Per calcular la mitjana, no podem comptar les hores de la FCT
-				$HoresFCT = 0;
-				$Mitjana = 0;
-		
 				$ModulAnterior = '';
 				$j = 1;
 				while($row) {
@@ -254,12 +283,6 @@ class Expedient extends Form
 					echo "<TD width=50>".$row["HoresUF"]."</TD>";
 					$Baixa = ($row["Baixa"] == True);
 					$Convalidat = ($row["Convalidat"] == True);
-					if ($Baixa) 
-						$sChecked = '';
-					else
-						$sChecked = ' checked';
-					$Convalidat = ($row["Convalidat"] == True);
-					$sCheckedConvalidat = $Convalidat ? ' checked disabled' : '';
 
 					for ($i=1; $i<6; $i++) {
 						$style = 'width:2em;text-align:center';
@@ -294,46 +317,18 @@ class Expedient extends Form
 							echo "<A HREF=# onclick='Desconvalida(".$row["NotaId"].");'>Desconvalida</A>";
 						echo "</TD>";
 					}
-					// Càlculs del totalitzador
-					$NumeroUFTotals++;
-					$HoresTotals += $row['HoresUF'];
-					$UltimaNota = UltimaNota($row);
-	
-					if ($UltimaNota > 0) {
-						if ($UltimaNota>=5) {
-							$NumeroUFAprovades++;
-							$HoresAprovades += $row['HoresUF'];
-						}
-						if (!$row['es_fct']) {
-							$HoresMitjana += $row['HoresUF'];
-							$Mitjana += $UltimaNota*$row['HoresUF'];
-						}
-						else 
-							$HoresFCT += $row['HoresUF'];
-					}
-
+					
 					echo "</TR>";
 					$j++;
 					$row = $ResultSet->fetch_assoc();
 				}
 				echo "</TABLE>".PHP_EOL;
 				echo "<input type=hidden name=TempNota value=''>".PHP_EOL;
-		
+
 				if ($this->Usuari->es_admin || $this->Usuari->es_direccio || $this->Usuari->es_cap_estudis) {
-					echo '<DIV name="Total">'.PHP_EOL;
-					echo '<BR><BR><BR><BR><BR><BR>'.PHP_EOL;
-					echo '<H3>Resum</H3>';
-					$Dades = array(
-						'Número UF totals' => $NumeroUFTotals,
-						'Número UF aprovades' => $NumeroUFAprovades,
-						'Hores totals' => $HoresTotals,
-						'Hores aprovades' => $HoresAprovades,
-						'Percentatge aprovat' => number_format(100*$HoresAprovades/$HoresTotals, 2).'%',
-						'Mitjana aprovades' => number_format($Mitjana/$HoresMitjana, 2).'</B> (la nota de la FCT no es compta)<B>'
-					);
-					echo CreaTaula1($Dades);
-					echo '</DIV>'.PHP_EOL;
+					echo $this->GeneraTaulaEstadistiques();
 				}
+									
 			};	
 		
 			$ResultSet->close();
@@ -351,6 +346,29 @@ class Expedient extends Form
 		echo '<script language="javascript" src="js/Matricula.js?v1.5" type="text/javascript"></script>';
 		echo '<script language="javascript" src="js/Notes.js?v1.2" type="text/javascript"></script>';
 		echo "<DIV id=debug></DIV>";
+	}
+
+	/**
+	 * Genera la taula de les estadístiques.
+	 * @return string Codi HTML de la taula de les estadístiques.
+	 */
+	private function GeneraTaulaEstadistiques(): string {
+		$Retorn = '<DIV name="Total">'.PHP_EOL;
+		$Retorn .= '<BR><BR><BR><BR><BR><BR>'.PHP_EOL;
+		$Retorn .= '<H3>Resum</H3>';
+		$Dades = array(
+			'Número UF cicle' => $this->NumeroUFCicle,
+			'Número UF totals' => $this->NumeroUFTotals,
+			'Número UF aprovades' => $this->NumeroUFAprovades,
+			'Hores totals' => $this->HoresTotals,
+			'Hores aprovades' => $this->HoresAprovades,
+			'Percentatge aprovat' => number_format($this->PercentatgeAprovat, 2).'%',
+			'Mitjana' => number_format($this->Mitjana, 2)
+		);
+		$Retorn .= CreaTaula1($Dades);
+//		$Retorn = CreaTaula1T($Dades);
+		$Retorn .= '</DIV>'.PHP_EOL;
+		return $Retorn;
 	}
 
 	/**
@@ -504,7 +522,7 @@ class Expedient extends Form
 			$pdf->EscriuLinia("L'anotació * identifica les qualificacions orientatives");
 
 		// Close and output PDF document
-		$Nom = trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne);
+		$Nom = Normalitza(trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne));
 		// Clean any content of the output buffer
 		ob_end_clean();
 		$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
@@ -593,6 +611,61 @@ class Expedient extends Form
 		};
 		return $Retorn;
 	}
+
+	/**
+	 * Calcula les estadístiques de l'expediant.
+	 */
+	protected function CalculaEstadistiques() {
+		$NumeroUFCicle = 0;
+		$NumeroUFTotals = 0;
+		$NumeroUFAprovades = 0;
+		$HoresTotals = 0;
+		$HoresAprovades = 0;
+		$HoresMitjana = 0; // Per calcular la mitjana, no podem comptar les hores de la FCT
+		$HoresFCT = 0;
+		$Mitjana = 0;
+
+		foreach($this->Registre as $row) {
+			$NumeroUFTotals++;
+			$HoresTotals += $row['HoresUF'];
+			$UltimaNota = UltimaNota($row);
+
+			if ($UltimaNota > 0) {
+				if ($UltimaNota>=5) {
+					$NumeroUFAprovades++;
+					$HoresAprovades += $row['HoresUF'];
+				}
+				if (!$row['es_fct']) {
+					$HoresMitjana += $row['HoresUF'];
+					$Mitjana += $UltimaNota*$row['HoresUF'];
+				}
+				else 
+					$HoresFCT += $row['HoresUF'];
+			}
+		}
+
+		// Número d'UF del cicle (per al pla d'estudis corresponent a la matrícula)
+		$SQL = '
+			SELECT COUNT(*) AS NumeroUFCicle
+			FROM UNITAT_PLA_ESTUDI UPE
+			LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+			WHERE MPE.cicle_pla_estudi_id=(
+				SELECT C.cicle_formatiu_id
+				FROM MATRICULA M
+				LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+				WHERE matricula_id='.$this->Id.'				
+			)		
+		';
+		$Registre = DB::CarregaRegistreSQL($this->Connexio, $SQL);
+
+		$this->NumeroUFCicle = $Registre->NumeroUFCicle;
+		$this->NumeroUFTotals = $NumeroUFTotals;
+		$this->NumeroUFAprovades = $NumeroUFAprovades;
+		$this->HoresTotals = $HoresTotals;
+		$this->HoresAprovades = $HoresAprovades;
+		$this->PercentatgeAprovat = ($HoresTotals == 0) ? 0 : 100*$HoresAprovades/$HoresTotals;
+		$this->Mitjana = ($HoresMitjana == 0) ? 0 : $Mitjana/$HoresMitjana;
+	}
 }
 
 /**
@@ -604,7 +677,7 @@ class ExpedientSaga extends Expedient
 	 * Identificador de la matrícula.
 	 * @var integer
 	 */
-	private $MatriculaId = -1;
+	private $MatriculaId = -1; // Cal eliminar!
 
 	/**
 	 * Percentatge aprovat d'UF.
@@ -643,9 +716,11 @@ class ExpedientSaga extends Expedient
 	function __construct($conn, $user, $Sistema, $MatriculaId) {
 		parent::__construct($conn, $user, $Sistema);
 
-		$this->MatriculaId = $MatriculaId;
+		$this->Id = $MatriculaId;
+		$this->MatriculaId = $MatriculaId; // Cal eliminar!
 		$this->Matricula = new Matricula($conn, $user, $Sistema);
-		$this->Matricula->Carrega($this->MatriculaId);
+		$this->Matricula->Id = $this->Id;
+		$this->Matricula->Carrega();
 		$this->RegistreMitjanes = [];
 
 		$this->Professor = new Professor($conn, $user, $Sistema);
@@ -666,8 +741,6 @@ class ExpedientSaga extends Expedient
 			' LEFT JOIN CURS C ON (M.curs_id=C.curs_id) '.
 			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) '.
 			' LEFT JOIN ANY_ACADEMIC AA ON (CPE.any_academic_id=AA.any_academic_id) '.
-//			' LEFT JOIN CICLE_FORMATIU CF ON (C.cicle_formatiu_id=CF.cicle_formatiu_id) '.
-//			' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
 			' LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) '.
 			' WHERE M.matricula_id='.$MatriculaId;
 		return $SQL;
@@ -682,44 +755,12 @@ class ExpedientSaga extends Expedient
 		return $sRetorn;
 	}
 
-
-	/**
-	 * Carrega les dades de l'expedient al Registre.
-	 */
-	private function Carrega() {
-		$SQL = self::SQL($this->MatriculaId);
-//print_r($SQL);
-//exit;
-		try {
-			$ResultSet = $this->Connexio->query($SQL);
-			if (!$ResultSet)
-				throw new Exception($this->Connexio->error.'.<br>SQL: '.$SQL);
-		} catch (Exception $e) {
-			die("<BR><b>ERROR Carrega</b>. Causa: ".$e->getMessage());
-		}
-		//$this->Registre = $ResultSet;
-		
-		$this->Registre = [];
-		
-		//$ResultSet = $this->Registre;
-
-		if ($ResultSet->num_rows > 0) {
-			$row = $ResultSet->fetch_assoc();
-			while($row) {
-				array_push($this->Registre, $row); 
-				$row = $ResultSet->fetch_assoc();
-			}
-		};		
-//print_h($this->Registre);
-//exit;
-	}
-
 	/**
 	 * Carrega les dades de l'alumne al Registre.
 	 */
 	private function CarregaDadesAlumne() {
 		$this->RegistreAlumne = null;
-		$SQL = self::SQLDadesAlumne($this->MatriculaId);
+		$SQL = self::SQLDadesAlumne($this->Id);
 //print_r($SQL);
 //exit;
 		try {
@@ -881,7 +922,7 @@ class ExpedientSaga extends Expedient
 	/**
 	 * Cerca la matrícula anterior d'una matrícula dins un array ordenat per nom de l'alumne.
 	 * @param array $aMatricules Array de matrícules.
-	 * @param integer $$MatriculaId Identificador de la matrícula.
+	 * @param integer $MatriculaId Identificador de la matrícula.
 	 * @return integer Identificador de la matrícula anterior o -1 si no trobat.
 	 */
 	private function MatriculaAnterior(array $aMatricules, int $MatriculaId): int {
@@ -896,7 +937,7 @@ class ExpedientSaga extends Expedient
 	/**
 	 * Cerca la matrícula posterior d'una matrícula dins un array ordenat per nom de l'alumne.
 	 * @param array $aMatricules Array de matrícules.
-	 * @param integer $$MatriculaId Identificador de la matrícula.
+	 * @param integer $MatriculaId Identificador de la matrícula.
 	 * @return integer Identificador de la matrícula posterior o -1 si no trobat.
 	 */
 	private function MatriculaPosterior(array $aMatricules, int $MatriculaId): int {
@@ -971,7 +1012,8 @@ class ExpedientSaga extends Expedient
 		$Retorn .= '</TD><TD>';
 
 		// Botons navegació
-		$av = new Avaluacio($this->Connexio, $this->Usuari);
+		$av = new Avaluacio($this->Connexio, $this->Usuari, $this->Sistema);
+//print_h($this->Matricula);		
 		$CursId = $this->Matricula->ObteCurs();
 		$Grup = $this->Matricula->ObteGrupTutoria();
 		$CursIdGrup = $CursId.','.$Grup;
@@ -988,9 +1030,14 @@ class ExpedientSaga extends Expedient
 		}
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaAnterior");
-			$Retorn .= '<div class="boto" style="width:70px">';
-			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
-			$Retorn .= '</div>';
+
+			$Retorn .= "<a href='$URL' class='btn btn-primary active' role='button' aria-pressed='true' style='width:70px'>";
+			$Retorn .= '&lt;&lt;';
+			$Retorn .= "</a>&nbsp;";
+
+//			$Retorn .= '<div class="boto" style="width:70px">';
+//			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
+//			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td><td>';
 		if ($MatriculaPosterior == -1) {
@@ -999,14 +1046,19 @@ class ExpedientSaga extends Expedient
 		}
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaPosterior");
-			$Retorn .= '<div class="boto" style="width:70px">';
-			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
-			$Retorn .= '</div>';
+
+			$Retorn .= "<a href='$URL' class='btn btn-primary active' role='button' aria-pressed='true' style='width:70px'>";
+			$Retorn .= '&gt;&gt;';
+			$Retorn .= "</a>&nbsp;";
+
+//			$Retorn .= '<div class="boto" style="width:70px">';
+//			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
+//			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td></tr></table>';
 
 		$Retorn .= '</TD>';
-		$Retorn .= '<TD style="color:white;font-weight:bold;font-size:large;">';
+		$Retorn .= '<TD style="color:white;font-weight:bold;font-size:large;width:70px;">';
 		$Retorn .= $this->PercentatgeAprovat.'%';
 		$Retorn .= '</TD>';
 		$Retorn .='</TR></TABLE>';

@@ -110,14 +110,16 @@ class Matricula extends Expedient
 
 	/**
 	 * Carrega les dades d'una matrícula i les emmagatzema en l'atribut Registre.
-     * @param int $MatriculaId Identificador de la matrícula.
+//     * @param int $MatriculaId Identificador de la matrícula.
 	 */
-	public function Carrega(int $MatriculaId) {
+//	public function Carrega(int $MatriculaId) {
+	public function Carrega() {
 		$SQL = " SELECT M.*, C.nivell ".
 			" FROM MATRICULA M ".
 			" LEFT JOIN CURS C ON (C.curs_id=M.curs_id) ".
-			" WHERE matricula_id=$MatriculaId ";	
-		$ResultSet = $this->Connexio->query($SQL);
+			" WHERE matricula_id=".$this->Id;	
+//			" WHERE matricula_id=$MatriculaId ";	
+	$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {		
 			$rsMatricula = $ResultSet->fetch_object();
 			$this->Registre = $rsMatricula;
