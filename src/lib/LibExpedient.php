@@ -519,15 +519,12 @@ class Expedient extends Form
 			$pdf->EscriuLinia("La nota mitjana del cicle és: ".number_format($this->Mitjana, 2));
 		}
 
-//		$pdf->Titol2(utf8_decodeX("Comentaris de l'avaluació"));
 		$pdf->Titol2("Comentaris de l'avaluació");
 		$pdf->EscriuLinia("Sense comentaris");
 
 		$pdf->Titol2("Llegenda");
-//		$pdf->EscriuLinia(utf8_decodeX("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors"));
 		$pdf->EscriuLinia("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
 		if ($Llei == 'LO')
-//			$pdf->EscriuLinia(utf8_decodeX("L'anotació * identifica les qualificacions orientatives"));
 			$pdf->EscriuLinia("L'anotació * identifica les qualificacions orientatives");
 
 		// Close and output PDF document
@@ -1039,14 +1036,10 @@ class ExpedientSaga extends Expedient
 		}
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaAnterior");
-
 			$Retorn .= "<a href='$URL' class='btn btn-primary active' role='button' aria-pressed='true' style='width:70px'>";
-			$Retorn .= '&lt;&lt;';
+			$Retorn .= '<img src="img/previ.svg"><img src="img/previ.svg">';
+//			$Retorn .= '&lt;&lt;';
 			$Retorn .= "</a>&nbsp;";
-
-//			$Retorn .= '<div class="boto" style="width:70px">';
-//			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/esquerre_tots.gif"></a>';
-//			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td><td>';
 		if ($MatriculaPosterior == -1) {
@@ -1055,14 +1048,10 @@ class ExpedientSaga extends Expedient
 		}
 		else {
 			$URL = GeneraURL("Fitxa.php?accio=ExpedientSaga&Id=$MatriculaPosterior");
-
 			$Retorn .= "<a href='$URL' class='btn btn-primary active' role='button' aria-pressed='true' style='width:70px'>";
-			$Retorn .= '&gt;&gt;';
+			$Retorn .= '<img src="img/seguent.svg"><img src="img/seguent.svg">';
+//			$Retorn .= '&gt;&gt;';
 			$Retorn .= "</a>&nbsp;";
-
-//			$Retorn .= '<div class="boto" style="width:70px">';
-//			$Retorn .= '<a href="'.$URL.'"><img style="display:inline;" src="img/dreta_tots.gif"></a>';
-//			$Retorn .= '</div>';
 		}
 		$Retorn .= '</td></tr></table>';
 
