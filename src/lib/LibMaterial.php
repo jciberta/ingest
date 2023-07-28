@@ -120,7 +120,7 @@ class Material extends Objecte
 	 * Crea la SQL pel formulari de la recerca de material.
      * @return string Sentència SQL.
 	 */
-	private function CreaSQL() {
+	protected function CreaSQL() {
 		$SQL = "
 			SELECT 
 				M.material_id, M.codi AS codi, M.nom AS nom, M.ambit, M.ubicacio, M.data_compra, M.es_obsolet, M.es_prestec, 
@@ -130,6 +130,7 @@ class Material extends Objecte
 			LEFT JOIN FAMILIA_FP FFP ON (FFP.familia_fp_id=M.familia_fp_id) 
 			LEFT JOIN USUARI U ON (U.usuari_id=M.responsable_id) 
 			WHERE (0=0) 
+			ORDER BY codi
 		";
 		return $SQL;
 	}	
@@ -350,6 +351,44 @@ class EntradaMaterial extends Form
 		echo '<button class="btn btn-primary active" type="submit" value="Submit">Entrada</button>'.PHP_EOL;
 		echo '</FORM>'.PHP_EOL;
 
+		CreaFinalHTML();
+	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig de les imatges de material.
+ */
+class ImatgeMaterial extends Material
+{
+	/**
+	 * Genera el contingut HTML del formulari i el presenta a la sortida.
+	 */
+	public function EscriuHTML() {
+		CreaIniciHTML($this->Usuari, 'Imatges del material');
+		echo '<script language="javascript" src="js/Forms.js?v1.8" type="text/javascript"></script>'.PHP_EOL;
+		echo '<script language="javascript" src="js/Material.js?v1.0" type="text/javascript"></script>'.PHP_EOL;
+
+		$SQL = $this->CreaSQL();
+		$ResultSet = $this->Connexio->query($SQL);
+
+		$i = 1;
+		echo '<table cellpadding=10>';
+		echo '<tr style="height:275px" valign="top">';
+		while ($row = $ResultSet->fetch_object()) {
+			echo '<td>';
+			if ($this->Usuari->es_admin)
+				echo '<b><a href="Fitxa.php?accio=Material&Id='.$row->material_id.'">'.$row->codi.'</a></b><br>';
+			else
+				echo '<b>'.$row->codi.'</b><br>';
+			echo $row->nom.'<br>';
+			echo '<i>'.HTML::CreaSequenciaFotografies($row->codi, 'material/', '.jpg').'</i>';
+			echo '</td>';
+			if ($i % 4 == 0)
+				echo '</tr><tr style="height:275px" valign="top">';
+			$i++;
+		}
+		echo '</tr">';
+		echo '</table">';
 
 		CreaFinalHTML();
 	}

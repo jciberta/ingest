@@ -155,11 +155,16 @@ switch ($accio) {
 		$TipusMaterial = new TipusMaterial($conn, $Usuari, $Sistema);
 		$TipusMaterial->EscriuFormulariRecerca($Modalitat);
         break;		
-    case "ReservaMaterial":
+	case "ReservaMaterial":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$ReservaMaterial = new ReservaMaterial($conn, $Usuari, $Sistema);
 		$ReservaMaterial->EscriuFormulariRecerca($Modalitat);
-        break;
+		break;
+	case "ImatgeMaterial":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
+		$ImatgeMaterial = new ImatgeMaterial($conn, $Usuari, $Sistema);
+		$ImatgeMaterial->EscriuHTML($Modalitat);
+		break;
 	case "HistoricPrestecMaterial":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);

@@ -2003,6 +2003,7 @@ class MembreJunta extends Objecte
 		echo CreaTargeta('Material', 'Llistat de material', GeneraURL('Recerca.php?accio=Material'));
 		echo CreaTargeta('Sortida', 'Sortida de material', GeneraURL('Fitxa.php?accio=SortidaMaterial'));
 		echo CreaTargeta('Entrada', 'Entrada de material', GeneraURL('Fitxa.php?accio=EntradaMaterial'));
+		echo CreaTargeta('Galeria', 'Imatges del material', GeneraURL('Recerca.php?accio=ImatgeMaterial'));
 		echo CreaTargeta('Històric', 'Històric de material', GeneraURL('Recerca.php?accio=HistoricPrestecMaterial'));
 		echo '</div>';
 	}	

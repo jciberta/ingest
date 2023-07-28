@@ -387,6 +387,68 @@ class HTML
 		$Retorn .= '</div>';		
 		return $Retorn;
 	}
+
+	/**
+	 * Crea un camp que conté una seqüència de fotografies (carousel).
+	 * Fotografies apaisades i 800x600.
+	 * https://getbootstrap.com/docs/4.0/components/carousel/
+	 * @param string $Valor Valor que identifica la fotografia.
+	 * @param string $Prefix Prefix del fitxer que s'afegirà a la carpeta pix/.
+	 * @param string $Sufix Sufix que s'afegeix al valor per completar el fitxer de la fotografia.
+	 * @return string Codi HTML del camp que conté una seqüència de fotografies.
+	 */
+	public static function CreaSequenciaFotografies(string $Valor, string $Prefix, string $Sufix): string {
+		$Fitxer = 'img/pix/'.$Prefix.$Valor.'*'.$Sufix;
+		$list = glob($Fitxer);
+
+		if (count($list) === 0) {
+			$sRetorn = 'No hi ha imatges';
+//			$sRetorn = '<TD>No hi ha imatges</TD>';
+		}
+		else {
+			$sRetorn = '
+				<div id="carousel'.$Valor.'" class="carousel slide" data-ride="carousel" style="height:200px;width:400px;background-color:lightgrey;">
+					<ol class="carousel-indicators">
+			';
+			for ($i=0; $i<count($list); $i++) {
+				if ($i == 0)
+					$sRetorn .= '<li data-target="#carousel'.$Valor.'" data-slide-to="'.$i.'" class="active"></li>';
+				else
+					$sRetorn .= '<li data-target="#carousel'.$Valor.'" data-slide-to="'.$i.'"></li>';
+			}
+			$sRetorn .= '
+					</ol>
+					<div class="carousel-inner">
+			';
+			for ($i=0; $i<count($list); $i++) {
+				if ($i == 0)
+					$sRetorn .= '
+						<div class="carousel-item active" style="height:200px;width:400px">
+							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
+						</div>
+					';
+				else
+					$sRetorn .= '
+						<div class="carousel-item" style="height:200px;width:400px">
+							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
+						</div>
+					';
+			}
+			$sRetorn .= '
+				</div>
+				<a class="carousel-control-prev" href="#carousel'.$Valor.'" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel'.$Valor.'" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+                </a>
+				</div>		
+			';
+		}
+		return $sRetorn;
+	}		
 }
 
 /**
@@ -484,7 +546,8 @@ abstract class Menu
 class MenuInGest extends Menu
 {
 	static public function Crea($Usuari): string {
-		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
+		$Retorn = PHP_EOL;
+		$Retorn .= '<!-- INICI Menú -->'.PHP_EOL;
 		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
 		if ($Usuari->es_admin) 
 			$Retorn .= '	<span class="navbar-brand">'.$Usuari->aplicacio.' '.Config::Versio.'</span>'.PHP_EOL;
@@ -560,6 +623,7 @@ class MenuInGest extends Menu
 				$Retorn .= Menu::ObreSubMenu('Material');
 				$Retorn .= Menu::Opcio('Classificació', 'Recerca.php?accio=TipusMaterial');
 				$Retorn .= Menu::Opcio('Material', 'Recerca.php?accio=Material');
+				$Retorn .= Menu::Opcio('Imatges', 'Recerca.php?accio=ImatgeMaterial');
 				$Retorn .= Menu::Opcio('Reserves', 'Recerca.php?accio=ReservaMaterial');
 				$Retorn .= Menu::TancaSubMenu();
 				$Retorn .= Menu::Separador();
@@ -651,7 +715,8 @@ class MenuInGest extends Menu
 class MenuCapGest extends Menu
 {
 	static public function Crea($Usuari): string {
-		$Retorn = '<!-- INICI Menú -->'.PHP_EOL;
+		$Retorn = PHP_EOL;
+		$Retorn .= '<!-- INICI Menú -->'.PHP_EOL;
 		$Retorn .= '<nav class="navbar navbar-dark bg-dark navbar-expand-sm fixed-top">'.PHP_EOL;
 		if ($Usuari->es_admin) 
 			$Retorn .= '	<span class="navbar-brand">CapGest '.Config::Versio.'</span>'.PHP_EOL;
@@ -675,6 +740,7 @@ class MenuCapGest extends Menu
 			$Retorn .= Menu::Obre('Material');
 			$Retorn .= Menu::Opcio('Classificació', 'Recerca.php?accio=TipusMaterial');
 			$Retorn .= Menu::Opcio('Material', 'Recerca.php?accio=Material');
+			$Retorn .= Menu::Opcio('Imatges', 'Recerca.php?accio=ImatgeMaterial');
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::ObreSubMenu('Préstec');
 			$Retorn .= Menu::Opcio('Sortida material', 'Fitxa.php?accio=SortidaMaterial');

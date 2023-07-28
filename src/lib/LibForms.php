@@ -456,57 +456,7 @@ class Form extends Objecte
 	 * @return string Codi HTML del camp que conté una seqüència de fotografies.
 	 */
 	public function CreaSequenciaFotografies(string $Valor, string $Prefix, string $Sufix): string {
-		$Fitxer = 'img/pix/'.$Prefix.$Valor.'*'.$Sufix;
-		$list = glob($Fitxer);
-
-		if (count($list) === 0) {
-			$sRetorn = '<TD>No hi ha imatges</TD>';
-		}
-		else {
-			$sRetorn = '
-				<style>
-				</style>
-				<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="height:200px;width:400px;background-color:lightgrey;">
-					<ol class="carousel-indicators">
-			';
-			for ($i=0; $i<count($list); $i++) {
-				if ($i == 0)
-					$sRetorn .= '<li data-target="#carouselExampleIndicators" data-slide-to="'.$i.'" class="active"></li>';
-				else
-					$sRetorn .= '<li data-target="#carouselExampleIndicators" data-slide-to="'.$i.'"></li>';
-			}
-			$sRetorn .= '
-					</ol>
-					<div class="carousel-inner">
-			';
-			for ($i=0; $i<count($list); $i++) {
-				if ($i == 0)
-					$sRetorn .= '
-						<div class="carousel-item active" style="height:200px;width:400px">
-							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
-						</div>
-					';
-				else
-					$sRetorn .= '
-						<div class="carousel-item" style="height:200px;width:400px">
-							<img style="height:200px;width:400px;object-fit:contain;" class="d-block w-100 img-fluid" src="'.$list[$i].'">
-						</div>
-					';
-			}
-			$sRetorn .= '
-				</div>
-				<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
-                </a>
-				</div>		
-			';
-		}
-		return $sRetorn;
+		return HTML::CreaSequenciaFotografies($Valor, $Prefix, $Sufix);
 	}	
 
 	/**
