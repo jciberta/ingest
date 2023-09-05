@@ -678,7 +678,50 @@ INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2023, 2024, 'Curs 2
 UPDATE ANY_ACADEMIC SET actual=0;
 UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=6;
 
--- ...
+/* Festius */
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-09-11', '11 de setembre');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-10-12', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-10-13', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-11-01', 'Tots sants');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-06', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-07', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-08', 'Festa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-21', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-22', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-23', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-24', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-25', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-26', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-27', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-28', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-29', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-30', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2023-12-31', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-01', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-02', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-03', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-04', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-05', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-06', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-01-07', 'Nadal');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-02-09', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-02-12', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-03-25', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-03-26', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-03-27', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-03-28', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-03-29', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-04-01', 'Setmana santa');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-05-01', '1 de maig');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-05-02', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-05-03', 'Dia de lliure disposició');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-06-24', 'Sant Joan');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-06-25', 'Festa local');
+INSERT INTO FESTIU (data, motiu) VALUES ('2024-06-26', 'Festa local');
+
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (303, 'Introducció a la programació web', 'MP16', 66, 2, '507', 'A' ,3);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (307, 'UF1. Introducció a la programació web', 'UF1', 66, 2, 303);
+-- Anglès ???? Com a DAM2? un altre cop? SMX2? FIB2? Com queda??????
 
 -- Desmarca MP, UF no actius
 call CreaPlaEstudis(6);

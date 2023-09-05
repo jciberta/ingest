@@ -1182,6 +1182,7 @@ BEGIN
                 FROM MODUL_PLA_ESTUDI MPE2
                 LEFT JOIN CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=MPE2.cicle_pla_estudi_id)
                 WHERE MPE2.modul_professional_id=MPE.modul_professional_id AND CPE2.any_academic_id=AnyAcademicIdDesti
+                LIMIT 1
             ) AS ModulPlaEstudiIdDesti			
             FROM MODUL_PLA_ESTUDI MPE
             LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id)
