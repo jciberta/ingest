@@ -14,7 +14,7 @@
  * Esborra un directori recursivament.
  * https://stackoverflow.com/questions/1653771/how-do-i-remove-a-directory-that-is-not-empty
  * @param integer $dir Directori a esborrar.
- * @return bool Cert si ha anat tot b�.
+ * @return bool Cert si ha anat tot bé.
  */
 function EsborraDirectori($dir): bool {
     if (!file_exists($dir)) {
@@ -49,5 +49,45 @@ function FormataBytes($bytes, $precision = 2) {
 
     return round($bytes, $precision) . ' ' . $units[$pow]; 
 } 
+
+/**
+ * Retorna les darreres línies d'un fitxer.
+ * Adaptat de https://stackoverflow.com/questions/1510141/read-last-line-from-file
+ * @param string $Fitxer Fitxer.
+ * @param integer $Linies Línes a retornar.
+ * @return string Últimes línies.
+ */
+function Tail(string $Fitxer, int $Linies = 5) { 
+    $line = '';
+    $f = fopen($Fitxer, 'r');
+    $cursor = -1;
+    fseek($f, $cursor, SEEK_END);
+    $char = fgetc($f);
+    
+    // Trim trailing newline chars of the file
+    while ($char === "\n" || $char === "\r") {
+        fseek($f, $cursor--, SEEK_END);
+        $char = fgetc($f);
+    }
+    
+    while ($Linies > 0) {
+        // Read until the start of file or first newline char
+        while ($char !== false && $char !== "\n" && $char !== "\r") {
+            $line = $char . $line;
+            fseek($f, $cursor--, SEEK_END);
+            $char = fgetc($f);
+        }
+        // Trim trailing newline chars of the file
+        while ($char === "\n" || $char === "\r") {
+            $line = $char . $line;
+            fseek($f, $cursor--, SEEK_END);
+            $char = fgetc($f);
+        }
+        $Linies--;
+    }
+    
+    fclose($f);
+    return $line;
+}
 
 ?>

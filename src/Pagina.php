@@ -10,6 +10,7 @@
  */
 
 require_once('Config.php');
+require_once(ROOT.'/lib/LibSistema.php');
 require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibHTML.php');
@@ -93,17 +94,16 @@ switch ($accio) {
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		CreaIniciHTML($Usuari, "Apache error.log");
 		$Ordre = '';
-		// https://sourceforge.net/projects/unxutils/: tail per Windows. Cal copiar-lo a C:\Windows\System
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-			$Ordre = 'tail F:\xampp\apache\logs\error.log';
+			$Fitxer = 'F:\xampp\apache\logs\error.log';
 		}
 		else if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
 			if ($Usuari->aplicacio == 'InGest')
-				$Ordre = 'tail /var/log/apache2/error.log';
+				$Fitxer = '/var/log/apache2/error.log';
 			else if ($Usuari->aplicacio == 'CapGest')
-				$Ordre = 'tail ../../log/error.log';
+				$Fitxer = '../../log/error.log';
 		}
-		$Result = shell_exec($Ordre);
+		$Result = Tail($Fitxer);
 		echo nl2br($Result);
 		break;
 }
