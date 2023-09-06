@@ -12,7 +12,7 @@
 define('PHP_VERSION_MIN', 80100); // Versió mínima PHP 8.1.0
 
 class Config {
-	const Versio         = '1.15';
+	const Versio         = '1.16';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
