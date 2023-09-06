@@ -1469,6 +1469,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 				foreach ($this->ProfessorUF as $PUF) {
 					$sRetorn .= '<TH width=40 class="small" style="text-align:center" data-toggle="tooltip" data-placement="top" title="'.$PUF->Nom.'">'.$PUF->Codi.'</TH>'; 
 				}
+				$sRetorn .= '<TH width=20></TH>'; // Espai per la barra d'scroll
 				$sRetorn .= '</thead>';
 				$ModulAnterior = '';
 				for($j = 0; $j < count($Cicles->UF[$i]); $j++) {
@@ -1499,6 +1500,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 						$Nom = 'chbUFId_'.$UFId.'_'.$ProfessorId;
 						$sRetorn .= "<TD width=40 style='text-align:center'><input type=checkbox name=".$Nom.$Checked." onclick='AssignaUF(this);'/></TD>";
 					}
+					$sRetorn .= '<TH width=20></TH>'; // Espai per la barra d'scroll
 					$sRetorn .= "</TR>";
 				}
 				$sRetorn .= "</TABLE>";
