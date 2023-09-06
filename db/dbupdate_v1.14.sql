@@ -113,4 +113,4 @@ DELIMITER ;
 
 
 /* Aplicar a producció */
-UPDATE SISTEMA SET versio_db='1.15';
+UPDATE SISTEMA SET versio_db='1.16';
