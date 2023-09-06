@@ -748,3 +748,7 @@ UPDATE CURS SET data_final = '2024-05-31' WHERE curs_id>=79;
 -- Còpies del curs passat
 call CopiaTutors(5, 6);
 call CopiaProgramacions(5, 6);
+
+-- CopiaEquips 
+INSERT INTO EQUIP (any_academic_id, tipus, nom, cap, familia_fp_id)
+SELECT 6, tipus, nom, cap, familia_fp_id FROM EQUIP WHERE any_academic_id=5;
