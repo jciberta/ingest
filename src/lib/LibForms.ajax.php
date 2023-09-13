@@ -132,14 +132,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 //print $jsonForm;		
 //exit;
 
-		$FormSerialitzatEncriptat = $_REQUEST['frm'];
-		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
-		$frm = unserialize($FormSerialitzat);
-		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
-//		$frm = new FormFitxa($conn, $Usuari, $Sistema);
+// No funciona a producció! Necessari per a events
+//		$FormSerialitzatEncriptat = $_REQUEST['frm'];
+//		$FormSerialitzat = Desencripta($FormSerialitzatEncriptat);
+//		$frm = unserialize($FormSerialitzat);
+//		$frm->Connexio = $conn; // La connexió MySQL no es serialitza/deserialitza bé
+		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		
-//print "Hi";		
-//exit;
 		print $frm->Desa($jsonForm);
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxaDetall') {
