@@ -250,7 +250,8 @@ switch ($accio) {
     case "PlaTreball":
 		$MatriculaId = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
 		$CursId = (array_key_exists('CursId', $_GET)) ? $_GET['CursId'] : -1; 
-		if ($MatriculaId == -1 && $CursId == -1)
+//		if ($MatriculaId == -1 && $CursId == -1)
+		if ($MatriculaId == -1)
 			header("Location: Surt.php");
 
 		$mat = new Matricula($conn, $Usuari, $Sistema);
