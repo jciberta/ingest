@@ -760,6 +760,8 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 		$this->Titol = "Edició UF Pla d'estudis";
 		$this->Taula = 'UNITAT_PLA_ESTUDI';
 		$this->ClauPrimaria = 'unitat_pla_estudi_id';
+		if ($this->Usuari->es_admin)
+			$this->AfegeixText('unitat_pla_estudi_id', 'Id', 20, [FormFitxa::offNOMES_LECTURA]);
 		$this->AfegeixText('codi', 'Codi', 20, $Opcions);
 		$this->AfegeixText('nom', 'Nom', 200, $Opcions);
 		$this->AfegeixEnter('hores', 'Hores', 20, [FormFitxa::offREQUERIT]);
