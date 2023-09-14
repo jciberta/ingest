@@ -1075,6 +1075,11 @@ BEGIN
             WHERE CPE.cicle_pla_estudi_id=@CicleId
             AND UPE.nivell<=@Nivell;
 		CALL CopiaNotesAnteriorMatricula(AlumneId, @MatriculaId, @MatriculaAnteriorId);
+        /* Aplica proposta matrícula */
+        UPDATE NOTES N
+		LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (N.uf_id=UPE.unitat_pla_estudi_id)
+        SET baixa=1
+        WHERE matricula_id=@MatriculaId AND unitat_formativa_id IN (SELECT unitat_formativa_id FROM PROPOSTA_MATRICULA WHERE matricula_id=@MatriculaAnteriorId AND baixa=1);
     END;
     END IF;
 END //
