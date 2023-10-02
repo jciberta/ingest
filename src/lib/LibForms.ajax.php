@@ -28,10 +28,15 @@ require_once(ROOT.'/lib/LibStr.php');
 require_once(ROOT.'/lib/LibDate.php');
 
 session_start();
-if (!isset($_SESSION['usuari_id'])) 
-	header("Location: ../Surt.php");
-$Usuari = unserialize($_SESSION['USUARI']);
-$Sistema = unserialize($_SESSION['SISTEMA']);
+if (!isset($_SESSION['usuari_id'])) {
+	$Usuari = null;
+	$Sistema = null;
+//	header("Location: ../Surt.php");
+}
+else {
+	$Usuari = unserialize($_SESSION['USUARI']);
+	$Sistema = unserialize($_SESSION['SISTEMA']);
+}
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) {
@@ -80,6 +85,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'SuprimeixRegistre') {
+		if ($Usuari === null)
+			header("Location: ../Surt.php");
 		$Taula = $_REQUEST['taula'];
 		$ClauPrimaria = $_REQUEST['clau_primaria'];
 		$Valor = $_REQUEST['valor'];
@@ -94,6 +101,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'DuplicaRegistre') {
+		if ($Usuari === null)
+			header("Location: ../Surt.php");
 		$Taula = $_REQUEST['taula'];
 		$ClauPrimaria = $_REQUEST['clau_primaria'];
 		$Valor = $_REQUEST['valor'];
@@ -107,6 +116,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'AfegeixDetall') {
+		if ($Usuari === null)
+			header("Location: ../Surt.php");
 		$Taula = $_REQUEST['taula'];
 		$ClauPrimaria = $_REQUEST['clau_primaria'];
 		
@@ -128,6 +139,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print $frm->GeneraTaula();
 	}
 	else if ($_REQUEST['accio'] == 'DesaFitxa') {
+		if ($Usuari === null)
+			header("Location: ../Surt.php");
 		$jsonForm = $_REQUEST['form'];
 //print $jsonForm;		
 //exit;

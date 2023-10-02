@@ -23,6 +23,7 @@ require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibMaterial.php');
+require_once(ROOT.'/lib/LibDocument.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -113,7 +114,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 	
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = !array_key_exists("Id", $_GET) ? -1 : $_GET['Id'];
 
 		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Any acadèmic';
@@ -136,7 +137,7 @@ switch ($accio) {
 			header("Location: Surt.php");
 	
 		// Obtenció de l'identificador, sinó registre nou.
-		$Id = empty($_GET) ? -1 : $_GET['Id'];
+		$Id = !array_key_exists("Id", $_GET) ? -1 : $_GET['Id'];
 
 		$frm = new FormFitxa($conn, $Usuari, $Sistema);
 		$frm->Titol = 'Equip';
@@ -148,7 +149,7 @@ switch ($accio) {
 		$SQL = "SELECT AA.any_academic_id, AA.nom FROM ANY_ACADEMIC AA ORDER BY AA.nom DESC;";
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "any_academic_id", "nom");
 		$frm->AfegeixLlista('any_academic_id', 'Any', 200, $aCurs[0], $aCurs[1]);
-		$frm->AfegeixLlista('tipus', 'Tipus', 30, array("DP", "ED", "CM"), array("Departament", "Equip docent", "Comissió"));
+		$frm->AfegeixLlista('tipus', 'Tipus', 50, array("DP", "ED", "CO", "CQ", "CM"), array("Departament", "Equip docent", "Comissió", "Comissió de qualitat", "Comissió de mobilitat"));
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 		$frm->AfegeixLookUp('familia_fp_id', 'Família', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
@@ -329,6 +330,15 @@ switch ($accio) {
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$sm = new EntradaMaterial($conn, $Usuari, $Sistema);
 		$sm->EscriuHTML();
+		break;
+	case "Document":
+		$Professor = new Professor($conn, $Usuari, $Sistema);
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $Professor->EstaAQualitat());
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		$doc = new Document($conn, $Usuari, $Sistema);
+		$doc->Id = $Id;
+		$doc->EscriuFormulariFitxa();
 		break;
 	case "PropostaMatricula":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);

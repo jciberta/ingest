@@ -861,7 +861,13 @@ class FormRecerca extends Form
 	// Tipus d'opcions
 	const toURL = 1;
 	const toAJAX = 2;
-	const toImatge = 3; // Mostra una imatge sense cap tipus d'acció.
+	const toImatge = 3; 	// Mostra una imatge sense cap tipus d'acció.
+	const toLink = 4; 		// Mostra un enllaç.
+	const toLinkImatge = 5; // Mostra un enllaç en forma d'imatge.
+	const toHint = 6;
+
+	// Tipus d'imatges
+	const tiPDF = 1;
 	
 	// Opcions del FormRecerca.
 	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
@@ -1139,7 +1145,7 @@ class FormRecerca extends Form
      * @return string Taula amb les dades.
 	 */
 	public function GeneraTaula() {
-		if ($this->Usuari->es_admin) {
+		if ($this->Usuari !== null && $this->Usuari->es_admin) {
 			$this->Camps = $this->ClauPrimaria.', '.$this->Camps;
 			$this->Descripcions = 'Id, '.$this->Descripcions;
 		}
@@ -1161,7 +1167,7 @@ class FormRecerca extends Form
 				$Ordenacio = $this->CreaFletxaOrdenacio($aCamps[$i]);
 				
 				$ColSpan = "";
-				if (($this->Usuari->es_admin) && ($i == 0)) {
+				if (($this->Usuari !== null && $this->Usuari->es_admin) && ($i == 0)) {
 					$aClauPrimaria = explode(',', $this->ClauPrimaria);
 					$c = count($aClauPrimaria);
 					if ($c > 1)
@@ -1304,7 +1310,7 @@ class FormRecerca extends Form
 			$sRetorn .= '<TD style="align:right">';
 			$sRetorn .= '<span style="float:right;">';
 			// De moment només admin
-			if ($this->Modalitat == self::mfLLISTA && $this->Usuari->es_admin) {
+			if ($this->Modalitat == self::mfLLISTA && ($this->Usuari !== null && $this->Usuari->es_admin)) {
 	//			$sRetorn .= '<TD style="align:right">';
 	//			$sRetorn .= '<span style="float:right;">';
 				$SQL = $this->CreaSQL();	
@@ -1463,6 +1469,51 @@ class FormRecerca extends Form
 		$this->Opcions[$i]->Llegenda = $Llegenda;
 		$this->Opcions[$i]->Opcions = [];
 	}
+
+	/**
+	 * Afegeix un enllaç (emmagatzemat en un registre).
+	 */
+	public function AfegeixEnllac(string $Titol, string $URL, string $CampClau = '', string $Imatge = '') {
+/*		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toURL;
+		$this->Opcions[$i]->Titol = $Titol;
+		$this->Opcions[$i]->URL = $URL;
+		$this->Opcions[$i]->Camp = $CampClau;
+		$this->Opcions[$i]->Imatge = $Imatge;
+		$this->Opcions[$i]->Opcions = [];*/
+	}
+
+	/**
+	 * Afegeix un enllaç (emmagatzemat en un registre) en forma d'imatge.
+	 * @param string $Camp Camp del registre que conté l'enllaç.
+	 * @param string $Imatge Imatge que contindrà l'enllaç.
+	 */
+	public function AfegeixEnllacImatge(string $Camp, int $Imatge) {
+		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toLinkImatge;
+		$this->Opcions[$i]->Titol = '';
+		$this->Opcions[$i]->Camp = $Camp;
+		$this->Opcions[$i]->Imatge = $Imatge;
+		$this->Opcions[$i]->Opcions = [];
+	}
+
+	/**
+	 * Afegeix un suggeriment en forma de hint.
+	 * @param string $Camp Camp del registre que conté el hint.
+	 */
+	public function AfegeixSuggeriment(string $Camp) {
+		$i = count($this->Opcions);
+		$i++;
+		$this->Opcions[$i] = new stdClass();
+		$this->Opcions[$i]->Tipus = self::toHint;
+		$this->Opcions[$i]->Titol = '';
+		$this->Opcions[$i]->Camp = $Camp;
+		$this->Opcions[$i]->Opcions = [];
+	}
 	
 	/**
 	 * Genera les opcions per a cada registre.
@@ -1475,69 +1526,89 @@ class FormRecerca extends Form
 			//$Retorn .= '<TD>';
 			$NomesLectura = (in_array(self::ofrNOMES_LECTURA, $obj->Opcions)) ? ' disabled ' : '';
 			
-			if ($obj->Tipus == self::toURL) {
-				// AfegeixOpcio
-				$URL = ($obj->Camp == '') ? $obj->URL.$Id : $obj->URL.$row[$obj->Camp];
-				$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
-				$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
-				$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
-			}
-			else if ($obj->Tipus == self::toAJAX) {
-				if ($this->MostraOpcioAJAX($row, $obj->Condicio)) {
-					
-					// AfegeixOpcioAJAX
+			switch ($obj->Tipus) {
+				case self::toURL:
+					// AfegeixOpcio
+					$URL = ($obj->Camp == '') ? $obj->URL.$Id : $obj->URL.$row[$obj->Camp];
 					$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
 					$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
-					if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
-						$NoMostrisCheckBox = False;
-						$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
-						if ($obj->Camp == '')
-							$Funcio = $obj->Funcio.'(this, '.$Id.')';
-						else {
-	//echo '$row[$obj->Camp]:'.$row[$obj->Camp].'<BR>';
-							// Si el camp és extern (no la clau primària) pot ser que valgui NULL o res
-							if ($row[$obj->Camp] == '')
-								$NoMostrisCheckBox = True;
-							$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
-						}
-						$Nom = $obj->Funcio.'_'.$Id;
-
-						$Retorn .= '<TD style="text-align:center">';
+					$Retorn .= '<TD><A HREF="'.GeneraURL($URL).'">'.$Text.'<A>';
+					break;
+				case self::toAJAX:
+					if ($this->MostraOpcioAJAX($row, $obj->Condicio)) {
 						
-						if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1) && !$NoMostrisCheckBox)
-							$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
-	//					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
+						// AfegeixOpcioAJAX
+						$ToolTip = ' data-toggle="tooltip" data-placement="top" title="'.$obj->Titol.'" ';
+						$Text = ($obj->Imatge == '') ? $obj->Titol : '<IMG SRC="img/'.$obj->Imatge.'" '.$ToolTip.'>';
+						if (in_array(self::ofrCHECK, $obj->Opcions) || in_array(self::ofrNOMES_CHECK, $obj->Opcions)) {
+							$NoMostrisCheckBox = False;
+							$Checked = ($row[$obj->CampValor] == 1) ? ' checked ' : '';
+							if ($obj->Camp == '')
+								$Funcio = $obj->Funcio.'(this, '.$Id.')';
+							else {
+		//echo '$row[$obj->Camp]:'.$row[$obj->Camp].'<BR>';
+								// Si el camp és extern (no la clau primària) pot ser que valgui NULL o res
+								if ($row[$obj->Camp] == '')
+									$NoMostrisCheckBox = True;
+								$Funcio = $obj->Funcio.'(this, '.$row[$obj->Camp].')';
+							}
+							$Nom = $obj->Funcio.'_'.$Id;
+
+							$Retorn .= '<TD style="text-align:center">';
+							
+							if (!(in_array(self::ofrNOMES_CHECK, $obj->Opcions) && $row[$obj->CampValor] == 1) && !$NoMostrisCheckBox)
+								$Retorn .= '<input type="checkbox" '.$Checked.$NomesLectura.' id='.$Nom.' name='.$Nom.' onClick="'.$Funcio.'">';
+		//					$Retorn .= '<input class="form-control mr-sm-2" type="checkbox" name="chb_'.$Valor->Camp.'" '.$this->ValorCampCheckBox($Valor->Camp).$Requerit.'>';
+							
+						}
+						else {
+							if ($obj->Camp == '')
+		//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+								$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$Text.'<A>';
+							else {
+
+								// Cal posar cometes si no és un número
+								$Valor = $row[$obj->Camp];
+								if (!is_numeric($Valor)) 
+									$Valor = "'$Valor'";
+								
+		//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$obj->Titol.'<A>';
+								$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$Text.'<A>';
+							}					
+		//				$Retorn .= 'AJAX';
+		//				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
+		//				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+						}
 						
 					}
 					else {
-						if ($obj->Camp == '')
-	//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
-							$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$Text.'<A>';
-						else {
-
-							// Cal posar cometes si no és un número
-							$Valor = $row[$obj->Camp];
-							if (!is_numeric($Valor)) 
-								$Valor = "'$Valor'";
-							
-	//						$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$obj->Titol.'<A>';
-							$Retorn .= '<TD><A HREF="#" onClick="'.$obj->Funcio.'('.$Valor.')";>'.$Text.'<A>';
-						}					
-	//				$Retorn .= 'AJAX';
-	//				echo "<TD width=2><input type=text ".$Deshabilitat." style='".$style."' name=txtNotaId_".$row["NotaId"]."_".$row["Convocatoria"]." id='".$Id."' value='".$ValorNota."' size=1 onfocus='ObteNota(this);' onBlur='ActualitzaNota(this);' onkeydown='NotaKeyDown(this, event);'></TD>";
-	//				$Retorn .= '<A HREF="#" onClick="'.$obj->Funcio.'('.$Id.')";>'.$obj->Titol.'<A>';
+						// No mostrem l'opció
+						$Retorn .= '<TD>';
 					}
-					
-				}
-				else {
-					// No mostrem l'opció
-					$Retorn .= '<TD>';
-				}
+					break;
+				case self::toImatge:
+					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
+					$Retorn .= '<IMG SRC="img/'.$obj->Prefix.$row[$obj->Camp].'.'.$obj->Extensio.'">';
+					break;
+				case self::toLink:
+					// ToDo...
+					break;
+				case self::toLinkImatge:
+					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
+					$Retorn .= '<A HREF="'.$row[$obj->Camp].'">';
+					switch ($obj->Imatge) {
+						case self::tiPDF:
+							$Retorn .= '<IMG SRC="img/pdf.png">';
+							break;
+					}
+					//$Retorn .= 'HOLA';
+					$Retorn .= '</A>';
+					break;
+				case self::toHint:
+					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
+					$Retorn .= $this->CreaAjuda('Ajuda', $row[$obj->Camp]);
+					break;
 			}
-			else if ($obj->Tipus == self::toImatge) {
-				$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
-				$Retorn .= '<IMG SRC="img/'.$obj->Prefix.$row[$obj->Camp].'.'.$obj->Extensio.'">';
-			}			
 			$Retorn .= '</TD>';
 		}
 		return $Retorn;

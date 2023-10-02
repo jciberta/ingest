@@ -22,6 +22,7 @@ require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibMaterial.php');
+require_once(ROOT.'/lib/LibDocument.php');
 
 session_start();
 if (!isset($_SESSION['usuari_id'])) 
@@ -76,7 +77,9 @@ switch ($accio) {
 			' CASE EQ.tipus '.
 			'     WHEN "DP" THEN "Departament" '.
 			'     WHEN "ED" THEN "Equip docent" '.
-			'     WHEN "CM" THEN "Comissió" '.
+			'     WHEN "CO" THEN "Comissió" '.
+			'     WHEN "CQ" THEN "Comissió de qualitat" '.
+			'     WHEN "CM" THEN "Comissió de mobilitat" '.
 			' END AS Tipus, '.
 			' EQ.nom AS NomEquip, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, U.email_ins '.
@@ -188,6 +191,12 @@ switch ($accio) {
 		$frm->Camps = 'data_sortida, data_entrada, Dies, TipusMaterial, CodiMaterial, NomMaterial, Usuari';
 		$frm->Descripcions = 'Data sortida, Data entrada, Dies, Tipus material, Codi, Material, Usuari';
 		$frm->EscriuHTML();
+		break;
+	case "Document":
+		$Professor = new Professor($conn, $Usuari, $Sistema);
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $Professor->EstaAQualitat());
+		$doc = new Document($conn, $Usuari, $Sistema);
+		$doc->EscriuFormulariRecerca();
 		break;
 	case "PropostaMatricula":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);

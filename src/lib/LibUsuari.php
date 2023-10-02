@@ -493,6 +493,26 @@ class Professor extends Usuari
 	}
 	
 	/**
+	 * Comprova si el professor està a la comissió de qualitat.
+	 * @returns boolean Cert si hi participa.
+	 */
+	function EstaAQualitat(): bool {
+		$SQL = ' 
+			SELECT COUNT(*) AS Professor
+			FROM PROFESSOR_EQUIP PE
+			LEFT JOIN EQUIP E ON (E.equip_id=PE.equip_id)
+			WHERE professor_id=? AND tipus="CQ" AND any_academic_id=?
+		';
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param("ii", $this->Usuari->usuari_id, $this->Sistema->any_academic_id);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
+		$stmt->close();
+		$obj = $ResultSet->fetch_object();
+		return ($obj->Professor > 0);
+	}
+	
+	/**
 	 * Carrega si és tutor en un curs.
 	 * @param integer $CursId Identificador del curs.
 	 */
@@ -717,6 +737,11 @@ class Professor extends Usuari
 			}
 		}
 		$ResultSet->close();
+
+		if ($this->EstaAQualitat()) {
+			$URL = GeneraURL('Recerca.php?accio=Document');
+			echo CreaTargeta('Qualitat', 'Documents', $URL);
+		}
 
 		echo '</div>';
 		echo '<h3>Gestió</h3>';
@@ -1563,7 +1588,9 @@ class ProfessorsEquip extends Objecte
 			CASE EQ.tipus 
 			    WHEN 'DP' THEN 'Departament' 
 			    WHEN 'ED' THEN 'Equip docent'
-			    WHEN 'CM' THEN 'Comissió' 
+			    WHEN 'CO' THEN 'Comissió' 
+			    WHEN 'CQ' THEN 'Comissió de qualitat' 
+			    WHEN 'CM' THEN 'Comissió de mobilitat' 
 			END AS Tipus, 
 			EQ.nom AS NomEquip, 
 			U.usuari_id, 

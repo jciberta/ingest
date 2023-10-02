@@ -314,7 +314,7 @@ CREATE TABLE EQUIP
     /* EQP */
     equip_id INT NOT NULL AUTO_INCREMENT,
 	any_academic_id INT NOT NULL,
-    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CM: Comissió */
+    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CO: Comissió, CQ: Comissió Qualitat, CM: Comissió Mobilitat */
     nom VARCHAR(50) NOT NULL,
     cap INT NULL,
 
@@ -671,6 +671,19 @@ CREATE TABLE PROPOSTA_MATRICULA
     CONSTRAINT PropostaMatriculaPK PRIMARY KEY (proposta_matricula_id),
     CONSTRAINT PM_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
     CONSTRAINT PM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE DOCUMENT (
+    document_id INT NOT NULL AUTO_INCREMENT,
+    document VARCHAR(255) NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    solicitant VARCHAR(50) NOT NULL,
+    lliurament VARCHAR(50) NOT NULL,
+    custodia VARCHAR(50) NOT NULL,
+    observacions TEXT NOT NULL,
+    filtre VARCHAR(15) NOT NULL,
+
+    CONSTRAINT DocumentPK PRIMARY KEY (document_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

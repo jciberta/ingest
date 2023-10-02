@@ -45,6 +45,20 @@ BEGIN
 END //
 DELIMITER ;
 
+CREATE TABLE DOCUMENT (
+    document_id INT NOT NULL AUTO_INCREMENT,
+    document VARCHAR(255) NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    solicitant VARCHAR(50) NOT NULL,
+    lliurament VARCHAR(50) NOT NULL,
+    custodia VARCHAR(50) NOT NULL,
+    observacions TEXT NOT NULL,
+    filtre VARCHAR(15) NOT NULL,
+
+    CONSTRAINT DocumentPK PRIMARY KEY (document_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 
 /* Aplicar a producció */
