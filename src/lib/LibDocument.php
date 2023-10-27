@@ -18,12 +18,50 @@ require_once(ROOT.'/lib/LibUsuari.php');
  */
 class Document extends Objecte
 {
-/*	function __construct($conn = null, $user = null, $system = null) {
-		// Usuaris que poden instanciar aquesta classe
-		$Professor = new Professor($conn, $user, $system);
-		Seguretat::ComprovaAccessUsuari($user, ['SU', 'DI', 'CE'], $Professor->EstaAQualitat());
-		parent::__construct($conn, $user, $system);
-	}*/
+	// Estudis
+	const ESTUDI = array(
+		'GEN' => 'General', 
+		'ESO' => 'ESO',
+		'BAT' => 'Batxillerat',
+		'CF0' => 'Cicle formatiu',
+		'CFB' => 'Cicle formatiu de grau bàsic',
+		'CFM' => 'Cicle formatiu de grau mig',
+		'CFS' => 'Cicle formatiu de grau superior'
+	);
+
+	// Subestudis
+	const SUBESTUDI = array(
+		'FPB' => 'FPB',
+		'APD' => 'APD',
+		'CAI' => 'CAI',
+		'FIP' => 'FIP',
+		'SMX' => 'SMX',
+		'DAM' => 'DAM',
+		'HBD' => 'HBD'
+	);
+
+	// Categoria
+	const CATEGORIA = array(
+		'D' => 'Document de centre',
+		'I' => 'Imprès de funcionament'
+	);
+
+	// Sol·licitant
+	const SOLICITANT = array(
+		'T' => 'Tutor',
+		'A' => 'Alumne'
+	);
+
+	// Liurament/Custòdia
+	const LLIURAMENT_CUSTODIA = array(
+		'TU' => "Tutor",
+		'TF' => "Tutor FCT",
+		'TD' => "Tutor Dual",
+		'SE' => "Secretaria",
+		'CE' => "Cap d'estudis",
+		'CF' => "Coordinador FP",
+		'CD' => "Coordinador Dual"
+	);
 
 	/**
 	 * Genera el formulari de la recerca.
@@ -38,8 +76,8 @@ class Document extends Objecte
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'DOCUMENT';
 		$frm->ClauPrimaria = 'document_id';
-		$frm->Camps = 'nom, solicitant, lliurament, custodia, filtre';
-		$frm->Descripcions = 'Nom, Sol·licitant, Lliurament, Custòdia, Filtre';
+		$frm->Camps = 'nom, estudi, subestudi, categoria, solicitant, lliurament, custodia';
+		$frm->Descripcions = 'Nom, Estudi, Nivell, Categoria, Sol·licitant, Lliurament, Custòdia';
 		if ($this->Usuari !== null) {
 			if ($this->Usuari->es_admin || $this->Usuari->es_direccio ||$this->Usuari->es_cap_estudis || $Professor->EstaAQualitat()) {
 				$frm->PermetEditar = true;
@@ -48,10 +86,31 @@ class Document extends Objecte
 			}
 		}
 		$frm->AfegeixSuggeriment('observacions');
-		$frm->AfegeixEnllacImatge('document', FormRecerca::tiPDF);
-		$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, array('', 'Tutor', 'Alumne'), array('Tots', 'Tutor', 'Alumne'));
-		$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 30, array('', 'Tutor', 'Tutor FCT', 'Secretaria', "Cap d'estudis"), array('Tots', 'Tutor', 'Tutor FCT', 'Secretaria', "Cap d'estudis"));
-		$frm->Filtre->AfegeixLlista('filtre', 'Filtre', 30, array('', 'Tutor', 'Tutor FCT'), array('Tots', 'Tutor', 'Tutor FCT'));
+		$frm->AfegeixEnllacImatge('enllac', FormRecerca::tiPDF);
+
+		$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
+		$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
+
+		$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
+		$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
+
+		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+
+		$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
+		$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
+
+		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
+
+		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+		$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
 		
 		$frm->EscriuHTML();
 	}
@@ -62,9 +121,20 @@ class Document extends Objecte
 	 */
 	private function CreaSQL() {
 		$SQL = "
-			SELECT *
-			FROM DOCUMENT
-			WHERE (0=0)
+			SELECT 
+				DV.*, 
+				D.*, ".
+				SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
+				SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".
+				SQL::CreaCase('categoria', self::CATEGORIA)." AS categoria, ".
+				SQL::CreaCase('solicitant', self::SOLICITANT)." AS solicitant, ".
+				SQL::CreaCase('lliurament', self::LLIURAMENT_CUSTODIA)." AS lliurament, ".
+				SQL::CreaCase('custodia', self::LLIURAMENT_CUSTODIA)." AS custodia ".
+				"
+			FROM DOCUMENT_VERSIO DV
+			LEFT JOIN DOCUMENT D ON (D.document_id=DV.document_id)
+			WHERE estat='A' AND versio=(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV2 WHERE DV.document_id=DV2.document_id)
+			GROUP BY DV.document_id
 		";
 		return $SQL;
 	}	
