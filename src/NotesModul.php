@@ -78,6 +78,8 @@ $NotesModul = new NotesModul($conn, $Usuari, $Sistema);
 $NotesModul->CarregaRegistre($CursId, $ModulId);
 $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
 
+$Grup = new GrupClasse($conn, $Usuari, $Sistema);
+echo $Grup->GeneraMostraGrup($CursId);
 $Tutoria = new GrupTutoria($conn, $Usuari, $Sistema);
 echo $Tutoria->GeneraMostraGrup($CursId);
 //echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
