@@ -104,9 +104,12 @@ class RecuperaPasswordProfessor extends RecuperaPassword
 	 */
 	public function CreaSQL($email) {
 		$SQL = " SELECT * FROM USUARI ".
-			" WHERE email='$email' ";
+			" WHERE email='$email' ".
+			" OR email_ins='$email' ";
 		return $SQL;
 	}	
+
+	
 }
 
 /**
