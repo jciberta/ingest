@@ -8,3 +8,4 @@ src/img/pix
 doc/cache
 *.ser
 *.bak
+*.log
