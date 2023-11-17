@@ -771,33 +771,36 @@ class ImportaPasswords extends Importa
 class ImportaMatricula extends Importa 
 {
 	/**
-	* Array amb els cursos. S'hauria de poder configurar!
-	* @var array
-	*/    
+	 * Array amb els cursos. S'hauria de poder configurar!
+	 * @var array
+	 */    
 	private static $CURSOS = array(
-		'CFPM IC10 A' => 65, // SMX2
-		'CFPM IC10 B' => 64, // SMX1
-		'CFPM IC10 C' => 64, // SMX1
-		'CFPM IC10 D' => 64, // SMX1
-		'CFPS ICB0 A' => 66, // DAM1
-		'CFPS ICB0 B' => 67, // DAM2
-		'CFPM SA20 A' => 68, // FIP1
-		'CFPM SA20 B' => 69, // FIP2
-		'CFPM SC10 A' => 70, // APD1
-		'CFPM SC10 B' => 71, // APD2
-		'CFPM 1601 A' => 72, // CAI1
-		'CFPM 1601 B' => 72, // CAI1
-		'CFPM 1601 C' => 72, // CAI1
-		'CFPM 1601 J' => 72, // CAI1
-		'CFPM 1601 E' => 73, // CAI2 FCT
-		'CFPS SAH0 A' => 76, // HBD1
-		'CFPS SAH0 B' => 77  // HBD1
+		'CFPM IC10 A' => 79, // SMX 1 A
+		'CFPM IC10 B' => 79, // SMX 1 B
+		'CFPM IC10 C' => 79, // SMX 1 C
+		'CFPM IC10 D' => 80, // SMX 2 A
+		'CFPM IC10 E' => 80, // SMX 2 B
+		'CFPM IC10 F' => 80, // SMX 2 C
+		'CFPS ICB0 A' => 81, // DAM 1
+		'CFPS ICB0 B' => 82, // DAM 2
+		'CFPM SA20 A' => 83, // FIP 1 (AB)
+		'CFPM SA20 B' => 84, // FIP 2
+		'CFPM SC10 A' => 85, // APD 1 (AB)
+		'CFPM SC10 B' => 86, // APD 2 (AB)
+		'CFPM 1601 A' => 87, // CAI A
+		'CFPM 1601 B' => 87, // CAI (DE)
+		'CFPM 1601 C' => 88, // CAI 2 (tardes)
+		'CFPM 1601 D' => 88, // CAI 2 (matins)
+		'CFPM 1601 E' => 87, // CAI B
+		'CFPM 1601 F' => 87, // CAI C
+		'CFPS SAH0 A' => 91, // HBD 1 (AB)
+		'CFPS SAH0 B' => 92  // HBD 2 (AB)
 	);	
 
 	/**
-	* Objecte per a fer les matriculacions.
-	* @var object
-	*/    
+	 * Objecte per a fer les matriculacions.
+	 * @var object
+	 */    
 	private $Mat;
 
 	/**
@@ -818,6 +821,7 @@ class ImportaMatricula extends Importa
 	 */
 	private function ImportaLinia(array $Linia) {
 		echo '<pre>';
+//print_h($Linia);				
 
 		$DNI = trim($Linia[$this->CampsNom['DNI']]);
 		$Curs = trim($Linia[$this->CampsNom['CODI']]);

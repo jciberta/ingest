@@ -105,7 +105,7 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		$Retorn .= '<BODY STYLE="background-color:#ffa70570">'.PHP_EOL;
 	else
 		$Retorn .= '<BODY>'.PHP_EOL;
-	if ($bMenu) {
+	if ($Usuari !== null && $bMenu) {
 		if ($Usuari->aplicacio == 'InGest')
 			$Retorn .= MenuInGest::Crea($Usuari);
 		else if ($Usuari->aplicacio == 'CapGest')
@@ -643,6 +643,8 @@ class MenuInGest extends Menu
 			$Retorn .= Menu::Separador();
 			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
 			$Retorn .= Menu::Opcio('Bonificacions matrícula', 'FPRecerca.php?accio=BonificacioMatricula');
+			$Retorn .= Menu::Separador();
+			$Retorn .= Menu::Opcio('Documents', 'Recerca.php?accio=Document');
 			$Retorn .= Menu::Tanca();
 
 			// Menú Informes

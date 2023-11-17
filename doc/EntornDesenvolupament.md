@@ -190,6 +190,14 @@ Càrrega de dades:
 mysql -u root -p InGest < InGest.sql
 ```
 
+Si surt l'error: 
+This function has none of DETERMINISTIC, NO SQL, or READS SQL DATA in its declaration and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+
+Cal fer:
+```
+mysql ...
+SET GLOBAL log_bin_trust_function_creators = 1;
+```
 
 ## Windows
 

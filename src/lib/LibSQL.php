@@ -14,7 +14,14 @@ require_once(ROOT.'/lib/LibStr.php');
 /**
  * Classe SQL.
  *
- * Classe per a la manipulació de SQL. Només manipula SELECT.
+ * Classe per a la manipulació de SQL. Només manipula SELECT. Sintaxi:
+ *
+ *	SELECT column_name(s)
+ *	FROM table_name
+ *	WHERE condition
+ *	GROUP BY column_name(s)
+ *	HAVING condition
+ *	ORDER BY column_name(s)
  */
 class SQL {
 	/**
@@ -51,6 +58,20 @@ class SQL {
 	* @var string
 	*/    
 	public $Order = '';
+
+	/**
+	* Part GROUP de la sentència SQL.
+	* @access public 
+	* @var string
+	*/    
+	public $Group = '';
+
+	/**
+	* Part HAVING de la sentència SQL.
+	* @access public 
+	* @var string
+	*/    
+	public $Having = '';
 	
 	/**
 	* Array associatiu dels àlies dels camps. La clau és l'àlies i el valor és el nom del camp.
@@ -84,14 +105,28 @@ class SQL {
 		$iLon = strlen($SQLMaj);
 		$iFrom = strpos($SQLMaj, ' FROM ');
 		$iWhere = strrpos($SQLMaj, ' WHERE '); // L'últim WHERE
+		$iGroup = strrpos($SQLMaj, ' GROUP '); // L'últim GROUP
+		$iHaving = strrpos($SQLMaj, ' HAVING '); // L'últim HAVING
 		$iOrder = strrpos($SQLMaj, ' ORDER '); // L'últim ORDER
 		if ($iOrder < $iWhere) 
 			$iOrder = 0;
 
+		// Treiem la part de l'ORDER
 		if ($iOrder != 0) {
 			$this->Order = trim(substr($SQL, $iOrder + 9, strlen($SQL) - $iOrder));
 			$SQL = trim(substr($SQL, 0, $iOrder));
-//print '##'.$SQL.'##';
+		}
+
+		// Treiem la part del HAVING
+		if ($iHaving != 0) {
+			$this->Having = trim(substr($SQL, $iHaving + 8, strlen($SQL) - $iHaving));
+			$SQL = trim(substr($SQL, 0, $iHaving));
+		}
+
+		// Treiem la part del GROUP
+		if ($iGroup != 0) {
+			$this->Group = trim(substr($SQL, $iGroup + 9, strlen($SQL) - $iGroup));
+			$SQL = trim(substr($SQL, 0, $iGroup));
 		}
 
 		if ($iFrom == 0) {
@@ -101,9 +136,11 @@ class SQL {
 		else {
 			$this->Select = substr($SQL, 0, $iFrom);
 //print('<hr>');
+//print($SQL);
 //print($this->Select);
 //print('<hr>');
 			$this->Select = trim(substr($this->Select, 6));
+			$iWhere = strpos($SQL, ' WHERE ');
 			if ($iWhere == 0) {
 				// No hi ha WHERE
 				$this->From = trim(substr($SQL, $iFrom));
@@ -117,16 +154,20 @@ class SQL {
 			}
 		}
 		$this->CreaCampAlies();
-/*print('<hr>');
+/*
+print('<hr>');
 print('<b>SELECT</b>: '.$this->Select.'<br>');
 print('<b>FROM</b>:   '.$this->From.'<br>');
 print('<b>WHERE</b>:  '.$this->Where.'<br>');
+print('<b>GROUP</b>:  '.$this->Group.'<br>');
+print('<b>HAVING</b>:  '.$this->Having.'<br>');
 print('<b>ORDER</b>:  '.$this->Order.'<br>');
-print('<hr>');*/	
+print('<hr>');
+*/
 	}
 
 	/**
-	 * Genera la SQL a partir de les parts SELECT, FROM, WHERE i ORDER.
+	 * Genera la SQL a partir de les parts SELECT, FROM, WHERE, GROUP BY, HAVING i ORDER.
      * @return string.
 	 */
 	public function GeneraSQL() {
@@ -135,6 +176,10 @@ print('<hr>');*/
 			$sRetorn .= ' FROM '.$this->From;
 		if ($this->Where != '')
 			$sRetorn .= ' WHERE '.$this->Where;
+		if ($this->Group != '')
+			$sRetorn .= ' GROUP BY '.$this->Group;
+		if ($this->Having != '')
+			$sRetorn .= ' HAVING '.$this->Having;
 		if ($this->Order != '')
 			$sRetorn .= ' ORDER BY '.$this->Order;
 		return $sRetorn;
@@ -194,8 +239,25 @@ print('<hr>');*/
 		$Retorn = $alies;
 		foreach ($this->AliesCamp as $key => $value) {
 			if ($key == $alies)
+				if (substr($value, 0, 4) != 'CASE')
 				$Retorn = $value;
 		}
+		return $Retorn;
+	}
+	
+	/**
+	 * Crea la part de sentència SQL per a un CASE a partir d'un array associatiu.
+	 * @param string $Camp Camp.
+	 * @param array $Taula Array associatiu amb els valors.
+     * @return string Sentència CASE.
+	 */
+	static public function CreaCase(string $Camp, array $Taula): string {
+		$Retorn = " CASE ".$Camp;
+		foreach ($Taula as $clau => $valor) {
+			$valor = str_replace("'", "\'", $valor);
+			$Retorn .= " WHEN '$clau' THEN '$valor'";
+		}		
+		$Retorn .= " END";
 		return $Retorn;
 	}
 }

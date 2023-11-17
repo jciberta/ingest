@@ -1,4 +1,4 @@
-﻿CREATE DATABASE InGest DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+﻿CREATE DATABASE InGest DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 USE InGest;
 
@@ -9,7 +9,7 @@ CREATE TABLE FAMILIA_FP
     nom VARCHAR(200) NOT NULL,
 
     CONSTRAINT FamiliaFPPK PRIMARY KEY (familia_fp_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE CICLE_FORMATIU
 (
@@ -25,7 +25,7 @@ CREATE TABLE CICLE_FORMATIU
 
     CONSTRAINT CicleFormatiuPK PRIMARY KEY (cicle_formatiu_id),
     CONSTRAINT CF_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE MODUL_PROFESSIONAL
 (
@@ -43,7 +43,7 @@ CREATE TABLE MODUL_PROFESSIONAL
 
     CONSTRAINT ModulProfessionalPK PRIMARY KEY (modul_professional_id),
     CONSTRAINT MP_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE UNITAT_FORMATIVA
 (
@@ -62,7 +62,7 @@ CREATE TABLE UNITAT_FORMATIVA
 
     CONSTRAINT UnitatFormativaPK PRIMARY KEY (unitat_formativa_id),
     CONSTRAINT UF_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE USUARI
 (
@@ -114,7 +114,7 @@ CREATE TABLE USUARI
     CONSTRAINT UsuariPK PRIMARY KEY (usuari_id),
     CONSTRAINT U_PareFK FOREIGN KEY (pare_id) REFERENCES USUARI(usuari_id),
     CONSTRAINT U_MareFK FOREIGN KEY (mare_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE UNIQUE INDEX U_NifIX ON USUARI (document);
 
 CREATE TABLE ANY_ACADEMIC
@@ -129,7 +129,7 @@ CREATE TABLE ANY_ACADEMIC
     actual BIT, /* Indica l'any acadèmic actual. Només n'hi pot haver 1 */
 
     CONSTRAINT AnyAcademicPK PRIMARY KEY (any_academic_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE SISTEMA
 (
@@ -157,7 +157,7 @@ CREATE TABLE SISTEMA
     CONSTRAINT S_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT S_DirectorFK FOREIGN KEY (director_id) REFERENCES USUARI(usuari_id),		
     CONSTRAINT S_GestorBorsaTreballFK FOREIGN KEY (gestor_borsa_treball_id) REFERENCES USUARI(usuari_id)		
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE CICLE_PLA_ESTUDI
 (
@@ -173,7 +173,7 @@ CREATE TABLE CICLE_PLA_ESTUDI
     CONSTRAINT CiclePlaEstudiPK PRIMARY KEY (cicle_pla_estudi_id),
     CONSTRAINT CPE_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id),
     CONSTRAINT CPE_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE MODUL_PLA_ESTUDI
 (
@@ -198,7 +198,7 @@ CREATE TABLE MODUL_PLA_ESTUDI
     CONSTRAINT ModulPlaEstudiPK PRIMARY KEY (modul_pla_estudi_id),
     CONSTRAINT MPE_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id),
     CONSTRAINT MPE_CiclePlaEstudiFK FOREIGN KEY (cicle_pla_estudi_id) REFERENCES CICLE_PLA_ESTUDI(cicle_pla_estudi_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE UNITAT_PLA_ESTUDI
 (
@@ -224,7 +224,7 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     CONSTRAINT UnitatPlaEstudiPK PRIMARY KEY (unitat_pla_estudi_id),
     CONSTRAINT UPE_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id),
     CONSTRAINT UPE_ModulPlaEstudiFK FOREIGN KEY (modul_pla_estudi_id) REFERENCES MODUL_PLA_ESTUDI(modul_pla_estudi_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE CURS
 (
@@ -247,7 +247,7 @@ CREATE TABLE CURS
     CONSTRAINT CursPK PRIMARY KEY (curs_id),
     CONSTRAINT C_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT C_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_PLA_ESTUDI(cicle_pla_estudi_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE MATRICULA
 (
@@ -268,7 +268,7 @@ CREATE TABLE MATRICULA
     CONSTRAINT MatriculaPK PRIMARY KEY (matricula_id),
     CONSTRAINT MAT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
     CONSTRAINT MAT_UsuariFK FOREIGN KEY (alumne_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE NOTES
 (
@@ -294,7 +294,7 @@ CREATE TABLE NOTES
     CONSTRAINT NotesPK PRIMARY KEY (notes_id),
     CONSTRAINT N_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
     CONSTRAINT N_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_PLA_ESTUDI(unitat_pla_estudi_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PROFESSOR_UF
 (
@@ -307,21 +307,21 @@ CREATE TABLE PROFESSOR_UF
     CONSTRAINT ProfessorUFPK PRIMARY KEY (professor_uf_id),
     CONSTRAINT PUF_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
     CONSTRAINT PUF_UnitatFormativaFK FOREIGN KEY (uf_id) REFERENCES UNITAT_PLA_ESTUDI(unitat_pla_estudi_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE EQUIP
 (
     /* EQP */
     equip_id INT NOT NULL AUTO_INCREMENT,
 	any_academic_id INT NOT NULL,
-    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CM: Comissió */
+    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CO: Comissió, CQ: Comissió Qualitat, CM: Comissió Mobilitat */
     nom VARCHAR(50) NOT NULL,
     cap INT NULL,
 
     CONSTRAINT EquipPK PRIMARY KEY (equip_id),
     CONSTRAINT EQP_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT EQP_CapFK FOREIGN KEY (cap) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PROFESSOR_EQUIP
 (
@@ -333,7 +333,7 @@ CREATE TABLE PROFESSOR_EQUIP
     CONSTRAINT ProfessorEquipPK PRIMARY KEY (professor_equip_id),
     CONSTRAINT PEQ_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id),
     CONSTRAINT PEQ_DepartamentFK FOREIGN KEY (equip_id) REFERENCES EQUIP(equip_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE FESTIU
 (
@@ -343,7 +343,7 @@ CREATE TABLE FESTIU
     motiu VARCHAR(50) NOT NULL,
 
     CONSTRAINT FestiuPK PRIMARY KEY (festiu_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE UNIQUE INDEX F_DataIX ON FESTIU (data);
 
 CREATE TABLE DIA_GUARDIA
@@ -355,7 +355,7 @@ CREATE TABLE DIA_GUARDIA
     punter_data DATE,
 
     CONSTRAINT DiaGuardiaPK PRIMARY KEY (dia)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE BLOC_GUARDIA
 (
@@ -369,7 +369,7 @@ CREATE TABLE BLOC_GUARDIA
     CONSTRAINT BlocGuardiaPK PRIMARY KEY (dia, hora),
     CONSTRAINT BG_DiaGuardiaFK FOREIGN KEY (dia) REFERENCES DIA_GUARDIA(dia),
     CONSTRAINT BG_ProfessorLavaboFK FOREIGN KEY (professor_lavabo_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PROFESSOR_GUARDIA
 (
@@ -384,7 +384,7 @@ CREATE TABLE PROFESSOR_GUARDIA
     CONSTRAINT ProfessorGuardiaPK PRIMARY KEY (professor_guardia_id),
     CONSTRAINT PG_BlocGuardiaFK FOREIGN KEY (dia, hora) REFERENCES BLOC_GUARDIA(dia, hora),
     CONSTRAINT PG_UsuariFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE REGISTRE
 (
@@ -398,7 +398,7 @@ CREATE TABLE REGISTRE
     missatge VARCHAR(255) NOT NULL,
 	
     CONSTRAINT RegistrePK PRIMARY KEY (registre_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE TUTOR
 (
@@ -411,7 +411,7 @@ CREATE TABLE TUTOR
     CONSTRAINT TutorPK PRIMARY KEY (tutor_id),
     CONSTRAINT TUT_CursFK FOREIGN KEY (curs_id) REFERENCES CURS(curs_id),
     CONSTRAINT TUT_ProfessorFK FOREIGN KEY (professor_id) REFERENCES USUARI(usuari_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE NOTES_MP
 (
@@ -424,7 +424,7 @@ CREATE TABLE NOTES_MP
     CONSTRAINT NotesMPPK PRIMARY KEY (notes_mp_id),
     CONSTRAINT NMP_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
 	CONSTRAINT NMP_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PLA_ESTUDI(modul_pla_estudi_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PROJECTE
 (
@@ -441,7 +441,7 @@ CREATE TABLE PROJECTE
 
     CONSTRAINT ProjectePK PRIMARY KEY (projecte_id),
     CONSTRAINT PRJ_UsuariFK FOREIGN KEY (coordinador_id) REFERENCES USUARI(usuari_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PASSWORD_RESET_TEMP
 (
@@ -449,7 +449,7 @@ CREATE TABLE PASSWORD_RESET_TEMP
     email           VARCHAR(250) NOT NULL,
     clau            VARCHAR(250) NOT NULL,
     data_expiracio  DATETIME NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE RESULTAT_APRENENTATGE
 (
@@ -460,7 +460,7 @@ CREATE TABLE RESULTAT_APRENENTATGE
 
     CONSTRAINT ResultatAprenentatgePK PRIMARY KEY (resultat_aprenentatge_id),
     CONSTRAINT RA_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE CRITERI_AVALUACIO
 (
@@ -471,7 +471,7 @@ CREATE TABLE CRITERI_AVALUACIO
 
     CONSTRAINT CriteriAvaluacioPK PRIMARY KEY (criteri_avaluacio_id),
     CONSTRAINT CAV_ResultatAprenentatgeFK FOREIGN KEY (resultat_aprenentatge_id) REFERENCES RESULTAT_APRENENTATGE(resultat_aprenentatge_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE CONTINGUT_UF
 (
@@ -482,7 +482,7 @@ CREATE TABLE CONTINGUT_UF
 
     CONSTRAINT ContingutUFPK PRIMARY KEY (contingut_uf_id),
     CONSTRAINT CUF_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE SUBCONTINGUT_UF
 (
@@ -493,7 +493,7 @@ CREATE TABLE SUBCONTINGUT_UF
 
     CONSTRAINT SubContingutUFPK PRIMARY KEY (subcontingut_uf_id),
     CONSTRAINT SCUF_ContingutUFFK FOREIGN KEY (contingut_uf_id) REFERENCES CONTINGUT_UF(contingut_uf_id) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE GEOLOCALITZACIO_IP
 (
@@ -525,7 +525,7 @@ CREATE TABLE GEOLOCALITZACIO_IP
     data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	
     CONSTRAINT GeolocalitzacioIPPK PRIMARY KEY (ip)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE TIPUS_MATERIAL
 (
@@ -534,7 +534,7 @@ CREATE TABLE TIPUS_MATERIAL
     nom VARCHAR(200) NOT NULL,
 
     CONSTRAINT TipusMaterialPK PRIMARY KEY (tipus_material_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE MATERIAL
 (
@@ -556,7 +556,7 @@ CREATE TABLE MATERIAL
 	CONSTRAINT M_TipusMaterialFK FOREIGN KEY (tipus_material_id) REFERENCES TIPUS_MATERIAL(tipus_material_id),
 	CONSTRAINT M_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id),
 	CONSTRAINT M_UsuariFK FOREIGN KEY (responsable_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PRESTEC_MATERIAL
 (
@@ -573,7 +573,7 @@ CREATE TABLE PRESTEC_MATERIAL
 	CONSTRAINT PM_MaterialFK FOREIGN KEY (material_id) REFERENCES MATERIAL(material_id),
     CONSTRAINT PM_UsuariFK FOREIGN KEY (usuari_id) REFERENCES USUARI(usuari_id),
     CONSTRAINT PM_ResponsableFK FOREIGN KEY (responsable_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE RESERVA_MATERIAL
 (
@@ -588,7 +588,7 @@ CREATE TABLE RESERVA_MATERIAL
 	CONSTRAINT ReservaMaterialPK PRIMARY KEY (reserva_material_id),
 	CONSTRAINT RM_MaterialFK FOREIGN KEY (material_id) REFERENCES MATERIAL(material_id),
     CONSTRAINT RM_UsuariFK FOREIGN KEY (usuari_id) REFERENCES USUARI(usuari_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE BORSA_TREBALL
 (
@@ -608,7 +608,7 @@ CREATE TABLE BORSA_TREBALL
 	
     CONSTRAINT BorsaTreballPK PRIMARY KEY (borsa_treball_id),
     CONSTRAINT BT_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE OBJECTIU_CONTINGUT
 (
@@ -627,7 +627,7 @@ CREATE TABLE OBJECTIU_CONTINGUT
 
     CONSTRAINT ObjectiuContingutPK PRIMARY KEY (objectiu_contingut_id),
     CONSTRAINT OC_ModulProfessionalFK FOREIGN KEY (modul_professional_id) REFERENCES MODUL_PROFESSIONAL(modul_professional_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PREU_MATRICULA 
 (
@@ -643,7 +643,7 @@ CREATE TABLE PREU_MATRICULA
     CONSTRAINT PreuMatriculaPK PRIMARY KEY (preu_matricula_id),
     CONSTRAINT PM_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT PM_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE BONIFICACIO_MATRICULA 
 (
@@ -658,7 +658,7 @@ CREATE TABLE BONIFICACIO_MATRICULA
     CONSTRAINT BonificacioMatriculaPK PRIMARY KEY (bonificacio_matricula_id),
     CONSTRAINT BM_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),
     CONSTRAINT BM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE PROPOSTA_MATRICULA
 (
@@ -671,7 +671,48 @@ CREATE TABLE PROPOSTA_MATRICULA
     CONSTRAINT PropostaMatriculaPK PRIMARY KEY (proposta_matricula_id),
     CONSTRAINT PM_MatriculaFK FOREIGN KEY (matricula_id) REFERENCES MATRICULA(matricula_id),
     CONSTRAINT PM_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE DOCUMENT (
+    /* D */
+    document_id INT NOT NULL AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    estudi CHAR(3) NOT NULL DEFAULT 'GEN' CHECK (estudi IN ('GEN', 'ESO', 'BAT', 'CF0,', 'CFB', 'CFM', 'CFS')),
+    subestudi CHAR(3), /* FPB, APD, CAI, DAM, FIP, HBD, SMX, ... */
+    categoria CHAR(1), /* Document de centre, Imprès de funcionament */
+    solicitant CHAR(1) NOT NULL, /* Tutor, Alumne */
+    lliurament CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
+    custodia CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
+    observacions TEXT NOT NULL,
+    data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT DocumentPK PRIMARY KEY (document_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE DOCUMENT_VERSIO (
+    /* DV */
+    document_versio_id INT NOT NULL AUTO_INCREMENT,
+    document_id INT NOT NULL,
+    versio INT NOT NULL DEFAULT 0,
+    descripcio_modificacio VARCHAR(255) NOT NULL,
+    enllac VARCHAR(255) NOT NULL,
+    estat char(1) NOT NULL DEFAULT 'E' CHECK (estat IN ('E', 'R', 'V', 'A')), /* Elaboració, Realitzat, reVisió, Aprovat */
+    data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    usuari_realitzat INT,
+    data_realitzat DATE,
+    usuari_revisat INT,
+    data_revisat DATE,
+    usuari_aprovat INT,
+    data_aprovat DATE,
+
+	CONSTRAINT DocumentPK PRIMARY KEY (document_versio_id),
+    CONSTRAINT DV_DocumentFK FOREIGN KEY (document_id) REFERENCES DOCUMENT(document_id),
+    CONSTRAINT DV_UsuariRealitzatFK FOREIGN KEY (usuari_realitzat) REFERENCES USUARI(usuari_id),
+    CONSTRAINT DV_UsuariRevisatFK FOREIGN KEY (usuari_revisat) REFERENCES USUARI(usuari_id),
+    CONSTRAINT DV_UsuariAprovatFK FOREIGN KEY (usuari_aprovat) REFERENCES USUARI(usuari_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE VIEW CURS_ACTUAL AS
@@ -1023,7 +1064,9 @@ BEGIN
     
     UPDATE NOTES SET convocatoria=0 
         WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)>=5;
-
+		
+    UPDATE NOTES SET convocatoria=convocatoria+1 
+        WHERE matricula_id=MatriculaId AND convocatoria<>0 AND UltimaNota(notes_id)<5 AND UltimaNota(notes_id)!=-1 AND nota1 IS NOT NULL;		
 END //
 DELIMITER ;
 
