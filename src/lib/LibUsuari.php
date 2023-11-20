@@ -884,12 +884,12 @@ class ProfessorsUF extends Form
 		if ($this->EsCapDepartament) {
 			$this->AnyAcademicId = $this->Sistema->any_academic_id;
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY Any DESC', "any_academic_id", "Any");
-			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		}
 		else {
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 			$this->AnyAcademicId = $this->Sistema->any_academic_id;
-			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsUF(this);"');
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsUF(this);"');
 		}
 		return $Retorn;
 	}
@@ -1115,7 +1115,7 @@ class ProfessorsAssignacioUF extends Form
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 //		$this->AnyAcademicId = $aAnys[0][0]; 
 		$this->AnyAcademicId = $this->Sistema->any_academic_id;
-		return $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsAssignacioUF(this);"');
+		return $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaProfessorsAssignacioUF(this);"');
 	}
 
 	/**
@@ -1289,7 +1289,7 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 		if ($this->EsCapDepartament) {
 			$this->AnyAcademicId = $this->Sistema->any_academic_id;
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY Any DESC', "any_academic_id", "Any");
-			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 
 			$SQL = '
 				SELECT CPE.cicle_pla_estudi_id, CPE.nom 
@@ -1303,19 +1303,21 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 			$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
 				$aCicles[0], 
 				$aCicles[1], 
+				[], 
 				$aCicles[0][0], 
 				'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		}
 		else {
 			$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 			$this->AnyAcademicId = $this->Sistema->any_academic_id;
-			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
+			$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 
 			$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_pla_estudi_id, nom FROM CICLE_PLA_ESTUDI WHERE any_academic_id='.$this->AnyAcademicId.' ORDER BY nom', "cicle_pla_estudi_id", "nom");
 			$this->CiclePlaEstudiId = $aCicles[0][0];
 			$Retorn .= $this->CreaLlista('CPE.nom', 'Cicle', 600, 
 				$aCicles[0], 
 				$aCicles[1], 
+				[], 
 				$aCicles[0][0], 
 				'onchange="ActualitzaTaulaGrupProfessorsAssignacioUF(this);"');
 		}
@@ -1876,14 +1878,14 @@ class Orla extends Form
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 //		$this->AnyAcademicId = $aAnys[0][0];
 		$this->AnyAcademicId = $this->Sistema->any_academic_id;
-		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaOrla(this);"');		
+		$Retorn .= $this->CreaLlista('any_academic_id', 'Any', 150, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaOrla(this);"');		
 		
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
-		$Retorn .= $this->CreaLlista('cicle_formatiu_id', 'Cicle', 500, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaOrla(this);"');
+		$Retorn .= $this->CreaLlista('cicle_formatiu_id', 'Cicle', 500, $aCicles[0], $aCicles[1], [], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaOrla(this);"');
 			
-		$Retorn .= $this->CreaLlista('nivell', 'Nivell', 75, array('1', '2'), array('1', '2'), '1', 'onchange="ActualitzaTaulaOrla(this);"');
-		$Retorn .= $this->CreaLlista('grup', 'Grup', 75, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'), '', 'onchange="ActualitzaTaulaOrla(this);"');
+		$Retorn .= $this->CreaLlista('nivell', 'Nivell', 75, array('1', '2'), array('1', '2'), [], '1', 'onchange="ActualitzaTaulaOrla(this);"');
+		$Retorn .= $this->CreaLlista('grup', 'Grup', 75, array('', 'A', 'B', 'C', 'D', 'E'), array('', 'A', 'B', 'C', 'D', 'E'), [], '', 'onchange="ActualitzaTaulaOrla(this);"');
 		
 		return $Retorn;
 	}

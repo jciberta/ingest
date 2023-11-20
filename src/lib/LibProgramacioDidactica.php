@@ -1679,7 +1679,7 @@ class ResultatsAprenentatge extends Form
 	protected function GeneraFiltre(): string {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LO' ORDER BY nom", "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
-		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], [], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
 	}
 
 	/**
@@ -1915,7 +1915,7 @@ class ContingutsUF extends Form
 	protected function GeneraFiltre(): string {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LO' ORDER BY nom", "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
-		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaContingutsUF(this);"');
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], [], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaContingutsUF(this);"');
 	}
 
 	/**
@@ -2024,7 +2024,7 @@ class ObjectiusContinguts extends Form
 	protected function GeneraFiltre(): string {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, "SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU WHERE llei='LG' ORDER BY nom", "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
-		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], [], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaResultatsAprenentatge(this);"');
 	}
 	
 	public function TipusText(string $Tipus): string {

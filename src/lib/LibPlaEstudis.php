@@ -231,7 +231,7 @@ class PlaEstudisAny extends PlaEstudis
 		$aAnys = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
 //		$this->AnyAcademicId = $aAnys[0][0]; 
 		$this->AnyAcademicId = $this->Sistema->any_academic_id;
-		return $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], $this->AnyAcademicId, 'onchange="ActualitzaTaulaPlaEstudisAny(this);"');
+		return $this->CreaLlista('any_academic_id', 'Any', 200, $aAnys[0], $aAnys[1], [], $this->AnyAcademicId, 'onchange="ActualitzaTaulaPlaEstudisAny(this);"');
 	}
 	
 	/**
@@ -349,7 +349,7 @@ class PlaEstudisCicle extends PlaEstudis
 	protected function GeneraFiltre() {
 		$aCicles = ObteCodiValorDesDeSQL($this->Connexio, 'SELECT cicle_formatiu_id, nom FROM CICLE_FORMATIU ORDER BY nom', "cicle_formatiu_id", "nom");
 		$this->CicleFormatiuId = $aCicles[0][0]; 
-		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaPlaEstudisCicle(this);"');
+		return $this->CreaLlista('cicle_formatiu_id', 'Cicle', 800, $aCicles[0], $aCicles[1], [], $this->CicleFormatiuId, 'onchange="ActualitzaTaulaPlaEstudisCicle(this);"');
 	}
 
 	/**
