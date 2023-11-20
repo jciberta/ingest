@@ -64,11 +64,12 @@ function DataAMySQL($date)
  */
 function MySQLAData($date)
 {
+	$date = substr($date, 0, 10); // Per si és DateTime
 	if ($date == '')
 		$Retorn = '';
 	else if (ComprovaData($date, 'Y-m-d')) {
-		$aTemp = explode('-', $date);
-    	$Retorn = $aTemp[2].'/'.$aTemp[1].'/'.$aTemp[0];
+			$aTemp = explode('-', $date);
+			$Retorn = $aTemp[2].'/'.$aTemp[1].'/'.$aTemp[0];
 	}
 	else
 		throw new Exception('Data no vàlida');

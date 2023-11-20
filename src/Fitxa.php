@@ -340,6 +340,19 @@ switch ($accio) {
 		$doc->Id = $Id;
 		$doc->EscriuFormulariFitxa();
 		break;
+	case "DocumentVersio":
+		$Professor = new Professor($conn, $Usuari, $Sistema);
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $Professor->EstaAQualitat());
+		// Obtenció de l'identificador, sinó registre nou.
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		$ClauForanaNom = (array_key_exists('ClauForanaNom', $_GET)) ? $_GET['ClauForanaNom'] : ''; 
+		$ClauForanaValor = (array_key_exists('ClauForanaValor', $_GET)) ? $_GET['ClauForanaValor'] : -1; 
+		$doc = new DocumentVersio($conn, $Usuari, $Sistema);
+		$doc->Id = $Id;
+		$doc->ClauForanaNom = $ClauForanaNom;
+		$doc->ClauForanaValor = $ClauForanaValor;
+		$doc->EscriuFormulariFitxa();
+		break;
 	case "PropostaMatricula":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
 		// Obtenció de l'identificador, sinó fora.

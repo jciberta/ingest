@@ -7,18 +7,21 @@ DROP TABLE DOCUMENT;
 CREATE TABLE DOCUMENT (
     /* D */
     document_id INT NOT NULL AUTO_INCREMENT,
+	codi VARCHAR(100) NOT NULL,
     nom VARCHAR(255) NOT NULL,
     estudi CHAR(3) NOT NULL DEFAULT 'GEN' CHECK (estudi IN ('GEN', 'ESO', 'BAT', 'CF0,', 'CFB', 'CFM', 'CFS')),
     subestudi CHAR(3), /* FPB, APD, CAI, DAM, FIP, HBD, SMX, ... */
     categoria CHAR(1), /* Document de centre, Imprès de funcionament */
+    visibilitat CHAR(1) NOT NULL DEFAULT 'V', /* priVat, púBlic */
     solicitant CHAR(1) NOT NULL, /* Tutor, Alumne */
     lliurament CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
     custodia CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
-    observacions TEXT NOT NULL,
+    observacions TEXT,
     data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
     data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT DocumentPK PRIMARY KEY (document_id)
+    CONSTRAINT DocumentPK PRIMARY KEY (document_id),
+	CONSTRAINT DocumentUC_Codi UNIQUE (codi)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE DOCUMENT_VERSIO (

@@ -323,13 +323,17 @@ class Form extends Objecte
 	 * @param integer $Longitud Longitud del desplegable.
 	 * @param array $Codi Codis de la llista.
 	 * @param array $Valor Valors de la llista.
+	 * @param array $off Opcions del formulari.
 	 * @param mixed $CodiSeleccionat Codi de la llista seleccionat per defecte.
 	 * @param string $onChange Funció que crida l'event onChange (opcional).
 	 * @return void
 	 */
-	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string {
-		$NomesLectura = ($this->NomesLectura) ? ' disabled' : '';
-		$sRetorn = '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
+	public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, array $off = [], $CodiSeleccionat = NULL, $onChange = ''): string {
+		$sRetorn = '';
+//		$NomesLectura = ($this->NomesLectura) ? ' disabled' : '';
+		$NomesLectura = (in_array(self::offNOMES_LECTURA, $off) || $this->NomesLectura) ? ' disabled' : '';
+		if (!in_array(self::offNO_TITOL, $off))
+			$sRetorn .= '<TD><label for="cmb_'.$Nom.'">'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		if (get_class($this) == 'FormRecerca')
 			$onChange = ($onChange = '') ? '' : 'onchange="ActualitzaTaula(this);"';
@@ -775,7 +779,7 @@ exit;*/
 //					$sRetorn .= $this->CreaData($Valor->Camp, $Valor->Titol, $Valor->Opcions, $this->ValorCampData($Valor->Camp));
 					break;
 				case Form::tcSELECCIO:
-					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $Valor->Llista->CodiSeleccionat);
+					$Retorn .= $this->Form->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $Valor->Opcions, $Valor->Llista->CodiSeleccionat);
 					break;
 				case Form::tcLOOKUP:
 					//$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
@@ -1924,6 +1928,18 @@ class FormFitxa extends Form
 	* @var boolean
 	*/    
     public $DetallsEnPestanyes = false;
+	
+	/**
+	 * Nom de la clau forana (per si és una fitxa de detall).
+	 * @var string
+	 */    
+    public $ClauForanaNom = ''; 
+
+	/**
+	 * Valor de la clau forana.
+	 * @var int
+	 */    
+    public $ClauForanaValor = -1; 
 
 	/**
 	 * Afegeix un camp del tipus especificat al formulari.
@@ -2388,10 +2404,16 @@ class FormFitxa extends Form
 		$sRetorn = '<DIV id=Fitxa>'.PHP_EOL;
 		$sRetorn .= '  <FORM class="form-inline my-2 my-lg-0" id="frmFitxa" method="post" action="LibForms.ajax.php" accept-charset="UTF-8">'.PHP_EOL;
 		$sRetorn .= "    ".$this->GeneraPartOculta().PHP_EOL;
-		$sRetorn .= "    <input type=hidden name=hid_Taula value='".$this->Taula."'>".PHP_EOL;
-		$sRetorn .= "    <input type=hidden name=hid_ClauPrimaria value='".$this->ClauPrimaria."'>".PHP_EOL;
-		$sRetorn .= "    <input type=hidden name=hid_AutoIncrement value='".$this->AutoIncrement."'>".PHP_EOL;
-		$sRetorn .= "    <input type=hidden name=hid_Id value='".$this->Id."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name='hid_Taula' value='".$this->Taula."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name='hid_ClauPrimaria' value='".$this->ClauPrimaria."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name='hid_AutoIncrement' value='".$this->AutoIncrement."'>".PHP_EOL;
+		$sRetorn .= "    <input type=hidden name='hid_Id' value='".$this->Id."'>".PHP_EOL;
+			
+		// Si la fitxa és una fitxa de detall, afegim la clau forana perquè es desi
+		if ($this->ClauForanaNom != '') {
+			$sRetorn .= "    <input type=hidden name='hid_ClauForanaNom' value='".$this->ClauForanaNom."'>".PHP_EOL;
+			$sRetorn .= "    <input type=hidden name='hid_ClauForanaValor' value='".$this->ClauForanaValor."'>".PHP_EOL;
+		}
 		
 		// Afegim els altres camps amagats
 		foreach($this->Camps as $Valor) {
@@ -2453,7 +2475,7 @@ class FormFitxa extends Form
 //exit;
 					$CodiSeleccionat = ($this->Registre == NULL) ? '' : $this->Registre[$Valor->Camp];
 //					$CodiSeleccionat = $this->Registre[$Valor->Camp];
-					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $CodiSeleccionat);
+					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $Valor->Opcions, $CodiSeleccionat);
 //					$sRetorn .= $this->CreaLlista($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Llista->Codis, $Valor->Llista->Valors, $this->Registre[$Valor->Camp]);
 					break;
 				case self::tcLOOKUP:
@@ -2491,11 +2513,11 @@ class FormFitxa extends Form
 					break;
 				case self::tcTEXT_AREA:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
-					$sRetorn .= $this->CreaTextArea($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					$sRetorn .= $this->CreaTextArea($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp] ?? '', $Valor->Opcions);
 					break;
 				case self::tcTEXT_RIC:
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
-					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					$sRetorn .= $this->CreaTextRic($Valor->Camp, $Valor->Titol, $Valor->Longitud, $Valor->Altura, $this->Registre[$Valor->Camp] ?? '', $Valor->Opcions);
 //print_r($sRetorn);					
 //					$sRetorn .= $this->CreaTextRic($Valor->Text, $Valor->Titol);
 					break;
@@ -2561,7 +2583,7 @@ class FormFitxa extends Form
 		if ($this->HiHaPestanyes) {
 			$sRetorn .= '</TD></TR></TABLE>'.PHP_EOL;
 			$sRetorn .= '    </div>'.PHP_EOL;
-			if ($this->DetallsEnPestanyes) {
+			if ($this->DetallsEnPestanyes && $this->Id > 0) {
 				$sRetorn .= '  </FORM>'.PHP_EOL;
 				$sRetorn .= $this->GeneraDetalls();
 			}
@@ -2570,7 +2592,7 @@ class FormFitxa extends Form
 		
 		$sRetorn .= '      </TR>';
 		$sRetorn .= '    </TABLE>'.PHP_EOL;
-		if (!$this->DetallsEnPestanyes)
+		if (!$this->DetallsEnPestanyes && $this->Id > 0)
 			$sRetorn .= '  </FORM>'.PHP_EOL;
 		$sRetorn .= '</DIV>'.PHP_EOL;
 		return $sRetorn;
@@ -2704,6 +2726,7 @@ class FormFitxa extends Form
 //exit;
 		$sCamps = '';
 		$sValues = '';
+		$ClauForanaNom = '';
 		foreach($data as $Valor) {
 			if ($Valor->name == 'hid_Taula') 
 				$Taula = $Valor->value;
@@ -2713,6 +2736,10 @@ class FormFitxa extends Form
 				$AutoIncrement = $Valor->value;
 			else if ($Valor->name == 'hid_Id') 
 				$Id = $Valor->value;
+			else if ($Valor->name == 'hid_ClauForanaNom') 
+				$ClauForanaNom= $Valor->value;
+			else if ($Valor->name == 'hid_ClauForanaValor') 
+				$ClauForanaValor= $Valor->value;
 			else {
 				$Tipus = substr($Valor->name, 0, 3);
 				switch ($Tipus) {
@@ -2785,6 +2812,12 @@ class FormFitxa extends Form
 		}
 		$sCamps = substr($sCamps, 0, -2);
 		$sValues = substr($sValues, 0, -2);
+
+		// Si la fitxa és una fitxa de detall, afegim la clau forana perquè es desi
+		if ($ClauForanaNom != '') {
+			$sCamps = $ClauForanaNom.', '.$sCamps;
+			$sValues = $ClauForanaValor.', '.$sValues;
+		}
 //print '<hr>Camps: '.$sCamps . ' <BR> Values: '.$sValues.'<hr>';
 //exit;
 
@@ -2975,12 +3008,15 @@ class FormFitxaDetall extends FormFitxa
 	 * Afegeix un detall, és a dir, una taula relacionada.
 	 * @param string ...
 	 */
-	public function AfegeixDetall($Titol, $Taula, $ClauPrimaria, $ClauForana, $Camps) {
+	public function AfegeixDetall(string $Titol, string $Taula, string $ClauPrimaria, string $ClauForana, string $Camps, string $URLEdicio = '', bool $PermetAfegir = false, bool $PermetSuprimir = false) {
 		$Detall = new stdClass();
 		$Detall->Titol = $Titol; 
 		$Detall->Taula = $Taula; 
 		$Detall->ClauPrimaria = $ClauPrimaria; 
 		$Detall->ClauForana = $ClauForana; 
+		$Detall->URLEdicio = $URLEdicio; 
+		$Detall->PermetAfegir = $PermetAfegir; 
+		$Detall->PermetSuprimir = $PermetSuprimir; 
 
 		$Detall->Camps = '';
 		$Detall->NomCamps = ''; 
@@ -2992,6 +3028,7 @@ class FormFitxaDetall extends FormFitxa
 		$aCamps = explode(',',$Camps);
 		foreach($aCamps as $Camp) {
 			$aCamp = explode(':',trim($Camp));
+//print_h($aCamp);			
 			$Detall->Camps .= $aCamp[0].',';
 			$Detall->NomCamps .= $aCamp[1].','; 
 			$Detall->TipusCamps .= $aCamp[2].','; 
@@ -3004,7 +3041,7 @@ class FormFitxaDetall extends FormFitxa
 		$Detall->TipusCamps = rtrim($Detall->TipusCamps, ',');
 		$Detall->LongitudCamps = rtrim($Detall->LongitudCamps, ',');
 		$Detall->PermisCamps = rtrim($Detall->PermisCamps, ',');
-		
+//print_h($Detall);		
 		array_push($this->Detalls, $Detall);
 	}
 	
@@ -3013,12 +3050,14 @@ class FormFitxaDetall extends FormFitxa
 	 * @param string $Titol Títol del botó.
 	 * @param string $FuncioJS Funció JavaScript que cridarà.
 	 * @param string $Ajuda Ajuda del botó.
+	 * @param string $CodiJS Codi JavaScript que s'incrustarà dins el mateix HTML.
 	 */
-	public function AfegeixBotoJSDetall(string $Titol, string $FuncioJS, string $Ajuda = '') {
+	public function AfegeixBotoJSDetall(string $Titol, string $FuncioJS, string $Ajuda = '', string $CodiJS = '') {
 		$BotoJS = new stdClass();
 		$BotoJS->Titol = $Titol; 
 		$BotoJS->FuncioJS = $FuncioJS; 
 		$BotoJS->Ajuda = $Ajuda; 
+		$BotoJS->CodiJS = $CodiJS; 
 		$i = sizeof($this->Detalls);
 		array_push($this->Detalls[$i-1]->BotonsJS, $BotoJS);
 	}
@@ -3090,7 +3129,12 @@ class FormFitxaDetall extends FormFitxa
 		foreach($Detall->Registre as $row) {
 			$Retorn .= '<TR>';
 			for($i=0; $i < count($aCamps); $i++) {
-				switch (trim($aTipusCamps[$i])) {
+
+//echo "<hr>".trim($aTipusCamps[$i]);				
+				$TipusCamps = $this->ObteTipusCamp($aTipusCamps[$i]);
+//echo ": ".$TipusCamps."<hr>";				
+
+				switch ($TipusCamps) {
 					case 'text':
 						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
 						$Valor = 'value="'.utf8_encodeX($row[$aCamps[$i]]).'" ';
@@ -3115,21 +3159,64 @@ class FormFitxaDetall extends FormFitxa
 							array_push($off, self::offNOMES_LECTURA);
 						$Retorn .= $this->CreaData($Camp, '', $off, $Valor);
 						break;	
+					case 'llista':
+						$Camp = $aCamps[$i]."-".$row[$Detall->ClauPrimaria];
+//						$Valor = 'value="'.$row[$aCamps[$i]].'" ';
+						$Valor = $row[$aCamps[$i]];
+//echo "<hr>".trim($aTipusCamps[$i]);				
+//echo "<br>".trim($aCamps[$i]);				
+//echo "<br>Valor: $Valor<hr>";				
+						$off = [self::offNO_TITOL];
+						if ($aPermisCamps[$i] == 'r')
+							array_push($off, self::offNOMES_LECTURA);
+						
+						$Llistes = $this->ObteLlistes($aTipusCamps[$i]);
+						$Retorn .= $this->CreaLlista($Camp, '', $aLongitudCamps[$i], $Llistes[0], $Llistes[1], $off, $Valor);
+						
+	//public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string {
+						
+						break;						
 					default:
 						break;
 				}				
 			}
+			if ($Detall->URLEdicio != '') {
+				$Retorn .= '<TD>';
+				$Concatena = (strpos($Detall->URLEdicio, '?') > 0) ? '&' : '?';
+				$URL = $Detall->URLEdicio.$Concatena."Id=".$row[$Detall->ClauPrimaria];
+				$Retorn .= "<A href='".GeneraURL($URL)."'><IMG src=img/edit.svg></A>&nbsp&nbsp";
+				$Retorn .= '</TD>'.PHP_EOL;
+			}
+			
+			// FALTA Suprimeix !!!
+			if ($Detall->PermetSuprimir) {
+				// ...
+			}
+			
 			$Retorn .= '</TR>'.PHP_EOL;
 		}
 		$Retorn .= '<TABLE>'.PHP_EOL;
 		$Retorn .= '</FORM>'.PHP_EOL;
 		
-		// Botons JavaScript
 		$Retorn .= '<DIV STYLE="margin-top:10px;">';
+		// Botó afegeix
+		if ($Detall->PermetAfegir) {
+//print_h($Detall);			
+//print_h($this);			
+			$Concatena = (strpos($Detall->URLEdicio, '?') > 0) ? '&' : '?';
+			$URL = $Detall->URLEdicio.$Concatena."ClauForanaNom=".$Detall->ClauForana."&ClauForanaValor=".$this->Id;
+			$Retorn .= '<a href="'.GeneraURL($URL).'" class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn" name="btn" >Afegeix</a>&nbsp;'.PHP_EOL;
+			$Retorn .= '&nbsp;';
+		}
+
+		// Botons JavaScript
 		foreach($Detall->BotonsJS as $BotoJS) {
 			$Retorn .= '<a class="btn btn-primary btn-sm active" role="button" aria-pressed="true" id="btn'.$BotoJS->FuncioJS.'" name="btn'.$BotoJS->FuncioJS.'" onclick="'.$BotoJS->FuncioJS.'();">'.$BotoJS->Titol.'</a>&nbsp;'.PHP_EOL;
 			if ($BotoJS->Ajuda != '') {
 				$Retorn .= $this->CreaAjuda($BotoJS->Titol, $BotoJS->Ajuda);
+			}
+			if ($BotoJS->CodiJS != '') {
+				$Retorn .= '<script>function '.$BotoJS->FuncioJS.'() {'.$BotoJS->CodiJS.'}</script>';
 			}
 			$Retorn .= '&nbsp;';
 		}
@@ -3139,6 +3226,28 @@ class FormFitxaDetall extends FormFitxa
 			$Retorn .= '</div>'.PHP_EOL;
 		}
 		
+		return $Retorn;
+	}
+	
+	function ObteTipusCamp(string $TipusCamps): string {
+		$aTipusCamps = explode('[', $TipusCamps);
+		return trim($aTipusCamps[0]);
+	}
+
+	function ObteLlistes(string $Text): array {
+		$Retorn = [];		
+		$Text = str_replace('llista[', '', $Text);
+		$Text = substr($Text, 0, -1);
+		$Text = str_replace('[', '', $Text);
+		$Text = str_replace(']', '', $Text);
+		$Text = str_replace('"', '', $Text);
+		$aLlistes = explode('|', $Text);
+//print_h($aLlistes);
+		$aCodis = explode(';', $aLlistes[0]);
+		$aValors = explode(';', $aLlistes[1]);
+		array_push($Retorn, $aCodis);
+		array_push($Retorn, $aValors);
+//print_h($Retorn);
 		return $Retorn;
 	}
 
@@ -3237,6 +3346,10 @@ class FormFitxaDetall extends FormFitxa
 					case 'edd':
 						// Camp data
 						$Value = DataAMySQL($Valor->value);
+						break;
+					case 'cmb':
+//						$Valor->value = strip_tags($Valor->value);
+						$Value = TextAMySQL($Valor->value);
 						break;
 				}
 				if ($Taula != '' && $ClauPrimaria != '') {
