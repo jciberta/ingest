@@ -48,12 +48,13 @@ CreaIniciHTML($Usuari, 'Grups', True);
 // https://community.esri.com/thread/187211-how-to-force-a-browser-cache-refresh-after-updating-wab-app
 echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
 
-$SQL = "SELECT * FROM MATRICULA M 
-				LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) 
-				WHERE curs_id = ? 
-				ORDER BY U.cognom1, U.cognom2, U.nom;
-			";
-
+$SQL = "
+	SELECT * FROM MATRICULA M 
+	LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) 
+	WHERE curs_id = ? 
+	ORDER BY U.cognom1, U.cognom2, U.nom;
+";
+//print $SQL;
 $stmt = $conn->prepare($SQL);
 $stmt->bind_param("i", $CursId);
 $stmt->execute();
@@ -71,6 +72,8 @@ $aTutoria = $GrupTutoria->ObteGrups($CursId);
 if ($ResultSet->num_rows > 0) {
 	echo '<TABLE id="taula" class="table table-fixed table-striped table-hover table-sm">';
 	echo '<THEAD class="thead-dark">';
+	if ($Usuari->es_admin) 
+		echo "<TH width=75 style='text-align:center'>Id Mat</TD>";
 	echo '<TH width=300 style="text-align:left">Alumne</TH>';
 	echo '<TH width=75 style="text-align:center">Grup</TH>';
 	foreach($aGrups as $item) 
@@ -78,6 +81,8 @@ if ($ResultSet->num_rows > 0) {
 	echo '<TH width=75 style="text-align:center">Tutoria</TH>';
 	foreach($aTutoria as $item) 
 		echo "<TH width=30>$item</TH>";
+	echo '<TH width=150 style="text-align:center">Matrícula</TH>';
+	echo '<TH width=300>Proposta matrícula curs anterior</TH>';
 	echo '<TH> </TH>';
 	echo '</THEAD>';
 
@@ -85,6 +90,8 @@ if ($ResultSet->num_rows > 0) {
 	while($row) {
 //print_r($row);
 		echo '<TR>';
+		if ($Usuari->es_admin) 
+			echo "<TD width=75 style='text-align:center'>".$row["matricula_id"]."</TD>";
 		echo "<TD width=300 style='text-align:left'>".utf8_encodeX($row["nom"]." ".$row["cognom1"]." ".$row["cognom2"])."</TD>";
 		echo "<TD width=75 style='text-align:center'>".$row["grup"]."</TD>";
 		
@@ -101,6 +108,8 @@ if ($ResultSet->num_rows > 0) {
 			$Checked = ($row["grup_tutoria"] == $item) ? ' checked ' : '';
 			echo '<TD width=30 style="text-align:center"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
+		echo '<TD width=150 style="text-align:center"><a href="MatriculaAlumne.php?MatriculaId='.$row["matricula_id"].'">Matrícula</a></TD>';
+		echo '<TD width=300>Proposta matrícula</TD>';
 		echo '<TD> </TD>';
 		echo '</TR>';
 		$row = $ResultSet->fetch_assoc();

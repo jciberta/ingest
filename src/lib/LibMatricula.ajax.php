@@ -27,8 +27,9 @@ session_start();
 if (!isset($_SESSION['usuari_id'])) 
 	header("Location: ../Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
+$Sistema = unserialize($_SESSION['SISTEMA']);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
+if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
 	header("Location: ../Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
@@ -43,7 +44,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$NotaId = str_replace('chbNotaId_', '', $nom);	
 		$SQL = 'UPDATE NOTES SET baixa='.$Baixa.' WHERE notes_id='.$NotaId;	
 		$conn->query($SQL);
-		print $SQL;
+//		print $SQL;
 	}
 	else if ($_REQUEST['accio'] == 'ConvalidaUF') {
 		$nom = $_REQUEST['nom'];
@@ -52,14 +53,16 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		//$Baixa = ($check == 'true') ? 0 : 1; // Si estava actiu, ara el donem de baixa
 		$NotaId = str_replace('chbConvalidaUFNotaId_', '', $nom);	
 
-		$Matricula = new Matricula($conn, $Usuari);
+		$Matricula = new Matricula($conn, $Usuari, $Sistema);
 		$Matricula->ConvalidaUF($NotaId);
 		
 		//header("Location: MatriculaAlumne.php?AlumneId=".$AlumneId); -> No funciona!
 
-		print 'Id nota convalidada: '.$NotaId;
+//		print 'Id nota convalidada: '.$NotaId;
 	}
 	else if ($_REQUEST['accio'] == 'EliminaMatriculaCurs') {
+		if (!$Usuari->es_admin)
+			header("Location: ../Surt.php");
 		print "EliminaMatriculaCurs<hr>";
 		$CursId = $_REQUEST['id'];
 		
@@ -88,6 +91,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print '<P>'.$SQL1.'<P>'.$SQL2;
 	}
 	else if ($_REQUEST['accio'] == 'EliminaMatriculaAlumne') {
+		if (!$Usuari->es_admin)
+			header("Location: ../Surt.php");
 		print "EliminaMatriculaAlumne<hr>";
 		$MatriculaId = $_REQUEST['id'];
 		
