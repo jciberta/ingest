@@ -307,7 +307,7 @@ class PropostaMatricula extends Objecte
 	}
 
 	public function EscriuFormulariRecerca() {
-		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD']);
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD', 'PR']);
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		$frm->Titol = 'Proposta matrícula';
 		$frm->SQL = $this->CreaSQL();
@@ -339,7 +339,7 @@ class PropostaMatricula extends Objecte
 	}
 
 	public function EscriuFormulariFitxa() {
-		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD']);
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD', 'PR']);
 		$SQL = $this->CreaSQL($this->Id);
 		$this->Registre = DB::CarregaRegistreSQL($this->Connexio, $SQL);
 		switch($this->Registre->nivell) {

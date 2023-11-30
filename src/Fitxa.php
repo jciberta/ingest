@@ -354,7 +354,7 @@ switch ($accio) {
 		$doc->EscriuFormulariFitxa();
 		break;
 	case "PropostaMatricula":
-		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD', 'PR']);
 		// Obtenció de l'identificador, sinó fora.
 		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
 		if ($Id == -1)

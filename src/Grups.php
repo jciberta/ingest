@@ -49,10 +49,24 @@ CreaIniciHTML($Usuari, 'Grups', True);
 echo '<script language="javascript" src="js/Matricula.js?v1.0" type="text/javascript"></script>';
 
 $SQL = "
-	SELECT * FROM MATRICULA M 
+	SELECT 
+		(SELECT any_academic_id FROM ANY_ACADEMIC AA2 WHERE AA2.any_academic_id=(AA.any_academic_id-1)) AS any_academic_anterior_id,
+		(SELECT DISTINCT M2.matricula_id 
+		FROM PROPOSTA_MATRICULA PM2
+		LEFT JOIN MATRICULA M2 ON (M2.matricula_id=PM2.matricula_id)
+		LEFT JOIN CURS C2 ON (C2.curs_id=M2.curs_id)
+		LEFT JOIN CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=C2.cicle_formatiu_id)
+		WHERE CPE2.any_academic_id=any_academic_anterior_id AND M2.alumne_id=U.usuari_id
+		) AS matricula_anterior_id,
+		M.*, 
+		U.*
+	FROM MATRICULA M 
 	LEFT JOIN USUARI U ON (M.alumne_id=U.usuari_id) 
-	WHERE curs_id = ? 
-	ORDER BY U.cognom1, U.cognom2, U.nom;
+	LEFT JOIN CURS C ON (C.curs_id=M.curs_id)
+	LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
+	LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id)
+	WHERE M.curs_id = ?
+	ORDER BY U.cognom1, U.cognom2, U.nom
 ";
 //print $SQL;
 $stmt = $conn->prepare($SQL);
@@ -108,9 +122,17 @@ if ($ResultSet->num_rows > 0) {
 			$Checked = ($row["grup_tutoria"] == $item) ? ' checked ' : '';
 			echo '<TD width=30 style="text-align:center"><input type="radio" id="'.$item.'" name="Tutoria_'.$CursId.'_'.$row["usuari_id"].'" value="'.$item.'" onclick='.$Funcio.$Checked.'></TD>';
 		}
-		echo '<TD width=150 style="text-align:center"><a href="MatriculaAlumne.php?MatriculaId='.$row["matricula_id"].'">Matrícula</a></TD>';
-		echo '<TD width=300>Proposta matrícula</TD>';
-		echo '<TD> </TD>';
+		$URL = GeneraURL('MatriculaAlumne.php?MatriculaId='.$row["matricula_id"]);
+		echo '<TD width=150 style="text-align:center"><a href='.$URL.'>Matrícula</a></TD>';
+		if ($row["matricula_anterior_id"] !== null) {
+			$URL = GeneraURL('Fitxa.php?accio=PropostaMatricula&Id='.$row["matricula_anterior_id"]);
+			echo '<TD width=300><a href='.$URL.'>Proposta matrícula</a></TD>';
+		}
+		else
+		{
+			echo '<TD width=300></TD>';
+		}
+		echo '<TD></TD>';
 		echo '</TR>';
 		$row = $ResultSet->fetch_assoc();
 	}
