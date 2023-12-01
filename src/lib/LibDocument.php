@@ -130,10 +130,47 @@ class Document extends Objecte
 	}
 	
 	/**
-	 * Crea la SQL pel formulari de la recerca de material.
+	 * Crea la SQL dels documents.
      * @return string Sentència SQL.
 	 */
 	private function CreaSQL() {
+		if ($this->Usuari !== null) 
+			return $this->CreaSQLUsuariAutenticat();
+		else
+			return $this->CreaSQLUsuariNoAutenticat();
+	}	
+
+	/**
+	 * Crea la SQL dels documents que pot veure els usuaris autenticats.
+     * @return string Sentència SQL.
+	 */
+	private function CreaSQLUsuariAutenticat() {
+		$SQL = "
+			SELECT 
+				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions, 
+				(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV WHERE DV.document_id=D.document_id AND estat='A') AS versio,
+				(SELECT MAX(enllac) FROM DOCUMENT_VERSIO DV WHERE DV.document_id=D.document_id AND estat='A') AS enllac,
+				".
+				SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
+				SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".
+				SQL::CreaCase('categoria', self::CATEGORIA)." AS categoria, ".
+				SQL::CreaCase('visibilitat', self::VISIBILITAT)." AS visibilitat2, ".
+				SQL::CreaCase('solicitant', self::SOLICITANT)." AS solicitant, ".
+				SQL::CreaCase('lliurament', self::LLIURAMENT_CUSTODIA)." AS lliurament, ".
+				SQL::CreaCase('custodia', self::LLIURAMENT_CUSTODIA)." AS custodia ".
+				"
+			FROM DOCUMENT D
+			WHERE (0=0)
+		";
+//echo "<hr>$SQL<hr>";
+		return $SQL;
+	}
+
+	/**
+	 * Crea la SQL dels documents que pot veure tothom.
+     * @return string Sentència SQL.
+	 */
+	private function CreaSQLUsuariNoAutenticat() {
 		$SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
@@ -149,34 +186,12 @@ class Document extends Objecte
 			FROM DOCUMENT_VERSIO DV
 			LEFT JOIN DOCUMENT D ON (D.document_id=DV.document_id)
 			WHERE versio=(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV2 WHERE DV.document_id=DV2.document_id AND estat='A')
+			AND visibilitat='B'
 		";
-		if ($this->Usuari === null) {
-			$SQL .= " AND visibilitat='B' ";
-		}
 		$SQL .= " GROUP BY DV.document_id ";
-
-		// En el cas de nou, cal afegir els que no tenen cap registre a DOCUMENT_VERSIO
-		if ($this->Usuari !== null) {
-			$SQL2 = "
-				SELECT
-					D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
-					NULL AS document_versio_id, NULL AS versio, NULL AS enllac, ".
-					SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
-					SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".
-					SQL::CreaCase('categoria', self::CATEGORIA)." AS categoria, ".
-					SQL::CreaCase('visibilitat', self::VISIBILITAT)." AS visibilitat2, ".
-					SQL::CreaCase('solicitant', self::SOLICITANT)." AS solicitant, ".
-					SQL::CreaCase('lliurament', self::LLIURAMENT_CUSTODIA)." AS lliurament, ".
-					SQL::CreaCase('custodia', self::LLIURAMENT_CUSTODIA)." AS custodia ".
-					"
-				FROM DOCUMENT D
-				WHERE document_id NOT IN (SELECT document_id FROM DOCUMENT_VERSIO)
-			";
-			$SQL .= " UNION $SQL2";
-		}
 //echo "<hr>$SQL<hr>";
 		return $SQL;
-	}	
+	}
 	
 	public function EscriuFormulariFitxa() {
 		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari, $this->Sistema);

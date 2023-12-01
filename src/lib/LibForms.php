@@ -1610,7 +1610,8 @@ class FormRecerca extends Form
 					break;
 				case self::toHint:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
-					$Retorn .= $this->CreaAjuda('Ajuda', $row[$obj->Camp]);
+					if ($row[$obj->Camp] !== null)
+						$Retorn .= $this->CreaAjuda('Ajuda', $row[$obj->Camp]);
 					break;
 			}
 			$Retorn .= '</TD>';
