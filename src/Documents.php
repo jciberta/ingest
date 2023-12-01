@@ -5,7 +5,12 @@
  * 
  * Pàgina principal dels documents (Qualitat).
  * Es permet l'accés a aquesta pàgina sense estar identificat.
- * 
+ *
+ * Paràmetres URL:
+ *	- CodiDoc: identificador del document. Es visualitza/descarrega la darrera versió aceptada.
+ *	- Filtre (S|N): indica si surt la barra de filtre.
+ *	- Estudi, Nivell, Categoria: només surten els documents especificats pel filtre. 
+ *
  * @author: Josep Ciberta
  * @license: https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
