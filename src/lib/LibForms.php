@@ -501,10 +501,10 @@ class Form extends Objecte
 		$sRetorn = '<TD valign=top><label for='.$sNom.'>'.$Titol.'</label></TD>';
 		$sRetorn .= '<TD>';
 		$sRetorn .= "<textarea class='summernote' name='$sNom'>$Contingut</textarea>";
-//		$sRetorn .= "<span class='summernote' name='$sNom'>$Contingut</span>";
 		$sRetorn .= '</TD>';
 		$this->DocumentReady .= "$('textarea[name=".'"'.$sNom.'"'."]').summernote({lang:'ca-ES',height:$Altura});";
-//		$this->DocumentReady .= "$('.summernote').summernote({lang:'ca-ES',height:100});";
+		if ($NomesLectura)
+			$this->DocumentReady .= "$('textarea[name=".'"'.$sNom.'"'."]').summernote('disable');";
 		return $sRetorn;
 	}
 
@@ -946,7 +946,7 @@ class FormRecerca extends Form
     public $PermetEditar = False; 
 
 	/**
-	 * Permet editar un registre si es dona una condició.
+	 * Permet editar un registre si es dóna una condició.
 	 * @var array
 	 */    
     public $PermetEditarCondicional = []; 

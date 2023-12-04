@@ -709,22 +709,30 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 abstract class ProgramacioDidacticaFitxa extends FormRecerca
 {
 	/**
-	* Registre de l'any acadèmic de la programació didàctica.
-	* @var object
-	*/    
+	 * Registre de l'any acadèmic de la programació didàctica.
+	 * @var object
+	 */    
     protected $AnyAcademic = null;
 
 	/**
-	* Array dels dies festius.
-	* @var array
-	*/    
+	 * Array dels dies festius.
+	 * @var array
+	 */    
     protected $DiesFestius = [];
+
+	/**
+	 * Indica si estem fent el seguiment de les programacions.
+	 * @var boolean
+	 */    
+    protected $Seguiment = false;
 
 	/**
 	 * Genera el contingut HTML del formulari i el presenta a la sortida.
 	 */
 	public function EscriuHTML() {
 		$Registre = DB::CarregaRegistreObj($this->Connexio, 'MODUL_PLA_ESTUDI', 'modul_pla_estudi_id', $this->Id);
+		$this->Seguiment = ($Registre->estat == 'A');
+//print '<hr>'.$this->Seguiment.'<hr>';
 		$this->CarregaAnyAcademic($this->Id);
 		$this->CarregaDiesFestius();
 
@@ -788,18 +796,30 @@ class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
 	 * @param object $Registre Registre amb les dades del mòdul.
 	 */
 	protected function GeneraPestanyes(object $frm, object $Registre) {
+		$off = ($this->Seguiment) ? [FormFitxa::offNOMES_LECTURA] : [];
+		$Permis = ($this->Seguiment) ? 'r' : 'w';
+		if ($this->Usuari->es_admin) {
+			$off = [];
+			$Permis = 'w';
+		}
+
+		if ($this->Seguiment) {
+			$frm->Pestanya("Seguiment");
+			$frm->AfegeixTextRic('seguiment', '', 500, 300);
+		}
+		
 		$frm->Pestanya('Metodologia');
-		$frm->AfegeixTextRic('metodologia', '', 500, 300);
+		$frm->AfegeixTextRic('metodologia', '', 500, 300, $off);
 
 		$frm->Pestanya("Criteris d'avaluació");
-		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300);
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300, $off);
 
 		$frm->Pestanya("Recursos");
-		$frm->AfegeixTextRic('recursos', '', 500, 300);
+		$frm->AfegeixTextRic('recursos', '', 500, 300, $off);
 
 		if ($Registre->es_fct) {
 			$frm->Pestanya("Planificació");
-			$frm->AfegeixTextRic('planificacio', '', 500, 300);
+			$frm->AfegeixTextRic('planificacio', '', 500, 300, $off);
 		}
 		
 		$frm->DetallsEnPestanyes = true;
@@ -807,13 +827,13 @@ class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
 		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
 		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
 		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
-		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', '
+		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', "
 			nom:Nom:text:400:r, 
-			hores:Hores:int:60:w,
+			hores:Hores:int:60:$Permis,
 			nivell:Nivell:int:60:r,
-			data_inici:Data inici:date:0:w,
-			data_final:Data final:date:0:w
-		');
+			data_inici:Data inici:date:0:$Permis,
+			data_final:Data final:date:0:$Permis
+		");
 		$Ajuda = "
 			La proposta de dates es fa de manera <b>seqüencial</b> al llarg del curs, 
 			de forma <b>proporcional</b> al número d'hores, 
@@ -822,8 +842,10 @@ class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
 			Qualsevol altre seqüenciació s'ha de fer a mà.
 		";
 		
-		$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF', $Ajuda);
-		$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
+		if (!$this->Seguiment) {
+			$frm->AfegeixBotoJSDetall('Proposa dates UF', 'ProposaDatesUF', $Ajuda);
+			$frm->AfegeixBotoJSDetall('Esborra dates UF', 'EsborraDatesUF');
+		}
 	}
 }
 
@@ -838,21 +860,30 @@ class ProgramacioDidacticaFitxaLOGSE extends ProgramacioDidacticaFitxa
 	 * @param object $Registre Registre amb les dades del mòdul.
 	 */
 	protected function GeneraPestanyes(object $frm, object $Registre) {
+		$off = ($this->Seguiment) ? [FormFitxa::offNOMES_LECTURA] : [];
+		if ($this->Usuari->es_admin) 
+			$off = [];
+
+		if ($this->Seguiment) {
+			$frm->Pestanya("Seguiment");
+			$frm->AfegeixTextRic('seguiment', '', 500, 300);
+		}
+		
 		$frm->Pestanya('Metodologia');
-		$frm->AfegeixTextRic('metodologia', '', 500, 300);
+		$frm->AfegeixTextRic('metodologia', '', 500, 300, $off);
 
 		$frm->Pestanya("Criteris d'avaluació");
-		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300);
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300, $off);
 
 		$frm->Pestanya("Recursos");
-		$frm->AfegeixTextRic('recursos', '', 500, 300);
+		$frm->AfegeixTextRic('recursos', '', 500, 300, $off);
 
 		$frm->Pestanya("Unitats didàctiques");
-		$frm->AfegeixTextRic('unitats_didactiques', '', 500, 300);
+		$frm->AfegeixTextRic('unitats_didactiques', '', 500, 300, $off);
 
 		if ($Registre->es_fct) {
 			$frm->Pestanya("Planificació");
-			$frm->AfegeixTextRic('planificacio', '', 500, 300);
+			$frm->AfegeixTextRic('planificacio', '', 500, 300, $off);
 		}
 	}
 }
