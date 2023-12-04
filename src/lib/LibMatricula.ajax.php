@@ -19,6 +19,7 @@
 
 require_once('../Config.php');
 require_once(ROOT.'/lib/LibSeguretat.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibUsuari.php');
@@ -45,6 +46,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = 'UPDATE NOTES SET baixa='.$Baixa.' WHERE notes_id='.$NotaId;	
 		$conn->query($SQL);
 //		print $SQL;
+		$log = new Registre($conn, $Usuari, $Sistema);
+		$log->Escriu(Registre::MATR, 'Baixa a '.$Baixa.' per a NOTES.notes_id='.$NotaId);
 	}
 	else if ($_REQUEST['accio'] == 'ConvalidaUF') {
 		$nom = $_REQUEST['nom'];

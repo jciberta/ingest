@@ -10,6 +10,7 @@
  */
 
 require_once(ROOT.'/lib/LibClasses.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibHTML.php');
 require_once(ROOT.'/lib/LibForms.php');
@@ -20,6 +21,23 @@ require_once(ROOT.'/lib/LibExpedient.php');
  */
 class Matricula extends Expedient
 {
+	/**
+	 * Registre de log.
+	 * @var object
+	 */    
+    public $Log = null; 	
+	
+	/**
+	 * Constructor de l'objecte.
+	 * @param objecte $conn Connexió a la base de dades.
+	 * @param object $user Usuari de l'aplicació.
+	 * @param objecte $system Dades de l'aplicació.
+	 */
+	function __construct($conn = null, $user = null, $system = null) {
+		parent::__construct($conn, $user, $system);
+		$this->Log = new Registre($conn, $user, $system);
+	}
+	
 	/**
 	 * CreaMatricula
 	 * Crea la matrícula per a un alumne. Quan es crea la matrícula:
@@ -105,6 +123,8 @@ class Matricula extends Expedient
 
 			$SQL = 'UPDATE NOTES SET convocatoria=0 WHERE notes_id='.$NotaId;	
 			$this->Connexio->query($SQL);
+			
+			$this->Log->Escriu(Registre::MATR, 'Convalidació per a NOTES.notes_id='.$NotaId);
 		}
 	}
 
