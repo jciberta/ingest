@@ -15,7 +15,6 @@
 
 /**
  * Classe Registre.
- *
  * Classe per al registre de log.
  */
 class Registre extends Objecte
@@ -29,16 +28,16 @@ class Registre extends Objecte
 	 * @param string $Seccio Secció del missatge.
 	 * @param string $Missatge Missatge a registrar.
 	 */
-	public function Escriu($Seccio, $Missatge) {
-		$SQL = "INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge) VALUES (".
-			$this->Usuari->usuari_id.", ".
-			"'".trim($this->Usuari->nom." ".$this->Usuari->cognom1." ".$this->Usuari->cognom2)."', ".
-			"'".date('Y-m-d H:i:s')."', ".
-			"'".getUserIP()."', ".
-			"'".utf8_decodeX($Seccio)."', ".
-			"'".utf8_decodeX($Missatge)."'".
-			")";
-		$this->Connexio->query($SQL);
+	public function Escriu(string $Seccio, string $Missatge) {
+		$Nom = trim($this->Usuari->nom." ".$this->Usuari->cognom1." ".$this->Usuari->cognom2);
+		$Data = date('Y-m-d H:i:s');
+		$IP = getUserIP();
+
+		$SQL = "INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge) VALUES (?, ?, ?, ?, ?, ?)";
+		$stmt = $this->Connexio->prepare($SQL);
+		$stmt->bind_param('isssss', $this->Usuari->usuari_id, $Nom,	$Data, $IP,	$Seccio, $Missatge);
+		$stmt->execute();
+		$ResultSet = $stmt->get_result();
 	}
 }
 
