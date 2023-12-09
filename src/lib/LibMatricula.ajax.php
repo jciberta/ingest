@@ -18,6 +18,8 @@
  */
 
 require_once('../Config.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCripto.php');
 require_once(ROOT.'/lib/LibUsuari.php');
@@ -29,8 +31,7 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-	header("Location: ../Surt.php");
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD', 'PR']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -45,6 +46,8 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		$SQL = 'UPDATE NOTES SET baixa='.$Baixa.' WHERE notes_id='.$NotaId;	
 		$conn->query($SQL);
 //		print $SQL;
+		$log = new Registre($conn, $Usuari, $Sistema);
+		$log->Escriu(Registre::MATR, 'Baixa a '.$Baixa.' per a NOTES.notes_id='.$NotaId);
 	}
 	else if ($_REQUEST['accio'] == 'ConvalidaUF') {
 		$nom = $_REQUEST['nom'];
@@ -61,8 +64,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 //		print 'Id nota convalidada: '.$NotaId;
 	}
 	else if ($_REQUEST['accio'] == 'EliminaMatriculaCurs') {
-		if (!$Usuari->es_admin)
-			header("Location: ../Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		print "EliminaMatriculaCurs<hr>";
 		$CursId = $_REQUEST['id'];
 		
@@ -91,8 +93,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 		print '<P>'.$SQL1.'<P>'.$SQL2;
 	}
 	else if ($_REQUEST['accio'] == 'EliminaMatriculaAlumne') {
-		if (!$Usuari->es_admin)
-			header("Location: ../Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU']);
 		print "EliminaMatriculaAlumne<hr>";
 		$MatriculaId = $_REQUEST['id'];
 		

@@ -620,9 +620,10 @@ class PlaEstudisModulRecerca extends FormRecerca
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 
-		if ($this->FamiliaFPId == -1) {
-			// És professor
-			$frm->PermetEditarCondicional(['estat' => 'E']);
+//		if ($this->FamiliaFPId == -1) {
+		if ($this->FamiliaFPId == -1 && !$this->MostraTot) {
+			// És professor: Elaboració per fer la programació, Acceptat per fer el seguiment
+			$frm->PermetEditarCondicional(['estat' => 'E', 'estat' => 'A']);
 			$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
 		}
 		else {

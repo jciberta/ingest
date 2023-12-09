@@ -22,6 +22,7 @@ class Registre extends Objecte
 {
 	const AUTH = 'Autenticació';
 	const AVAL = 'Avaluació';
+	const MATR = 'Matrículació';
 
 	/**
 	 * Registra a la taula de log un missatge.
