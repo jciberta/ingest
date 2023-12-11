@@ -40,6 +40,14 @@ class GoogleCloudFunctionsV2alphaOperationMetadata extends \Google\Collection
    * @var array[]
    */
   public $requestResource;
+  /**
+   * @var string
+   */
+  public $sourceToken;
+  /**
+   * @var GoogleCloudFunctionsV2alphaStage[]
+   */
+  public $stages;
   protected $stagesType = GoogleCloudFunctionsV2alphaStage::class;
   protected $stagesDataType = 'array';
   /**
@@ -124,6 +132,20 @@ class GoogleCloudFunctionsV2alphaOperationMetadata extends \Google\Collection
   public function getRequestResource()
   {
     return $this->requestResource;
+  }
+  /**
+   * @param string
+   */
+  public function setSourceToken($sourceToken)
+  {
+    $this->sourceToken = $sourceToken;
+  }
+  /**
+   * @return string
+   */
+  public function getSourceToken()
+  {
+    return $this->sourceToken;
   }
   /**
    * @param GoogleCloudFunctionsV2alphaStage[]

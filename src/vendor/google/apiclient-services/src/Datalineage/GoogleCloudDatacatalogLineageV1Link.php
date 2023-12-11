@@ -27,16 +27,22 @@ class GoogleCloudDatacatalogLineageV1Link extends \Google\Model
    * @var string
    */
   public $name;
+  /**
+   * @var GoogleCloudDatacatalogLineageV1EntityReference
+   */
+  public $source;
   protected $sourceType = GoogleCloudDatacatalogLineageV1EntityReference::class;
   protected $sourceDataType = '';
-  public $source;
   /**
    * @var string
    */
   public $startTime;
+  /**
+   * @var GoogleCloudDatacatalogLineageV1EntityReference
+   */
+  public $target;
   protected $targetType = GoogleCloudDatacatalogLineageV1EntityReference::class;
   protected $targetDataType = '';
-  public $target;
 
   /**
    * @param string

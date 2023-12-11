@@ -36,6 +36,10 @@ class ConfigManagementPolicyController extends \Google\Collection
    * @var bool
    */
   public $logDeniesEnabled;
+  /**
+   * @var ConfigManagementPolicyControllerMonitoring
+   */
+  public $monitoring;
   protected $monitoringType = ConfigManagementPolicyControllerMonitoring::class;
   protected $monitoringDataType = '';
   /**
@@ -50,6 +54,10 @@ class ConfigManagementPolicyController extends \Google\Collection
    * @var bool
    */
   public $templateLibraryInstalled;
+  /**
+   * @var string
+   */
+  public $updateTime;
 
   /**
    * @param string
@@ -162,6 +170,20 @@ class ConfigManagementPolicyController extends \Google\Collection
   public function getTemplateLibraryInstalled()
   {
     return $this->templateLibraryInstalled;
+  }
+  /**
+   * @param string
+   */
+  public function setUpdateTime($updateTime)
+  {
+    $this->updateTime = $updateTime;
+  }
+  /**
+   * @return string
+   */
+  public function getUpdateTime()
+  {
+    return $this->updateTime;
   }
 }
 

@@ -21,6 +21,12 @@ class UpdateDatabaseDdlMetadata extends \Google\Collection
 {
   protected $collection_key = 'statements';
   /**
+   * @var DdlStatementActionInfo[]
+   */
+  public $actions;
+  protected $actionsType = DdlStatementActionInfo::class;
+  protected $actionsDataType = 'array';
+  /**
    * @var string[]
    */
   public $commitTimestamps;
@@ -28,6 +34,10 @@ class UpdateDatabaseDdlMetadata extends \Google\Collection
    * @var string
    */
   public $database;
+  /**
+   * @var OperationProgress[]
+   */
+  public $progress;
   protected $progressType = OperationProgress::class;
   protected $progressDataType = 'array';
   /**
@@ -39,6 +49,20 @@ class UpdateDatabaseDdlMetadata extends \Google\Collection
    */
   public $throttled;
 
+  /**
+   * @param DdlStatementActionInfo[]
+   */
+  public function setActions($actions)
+  {
+    $this->actions = $actions;
+  }
+  /**
+   * @return DdlStatementActionInfo[]
+   */
+  public function getActions()
+  {
+    return $this->actions;
+  }
   /**
    * @param string[]
    */

@@ -23,13 +23,16 @@ class Operation extends \Google\Model
    * @var bool
    */
   public $done;
+  /**
+   * @var Status
+   */
+  public $error;
   protected $errorType = Status::class;
   protected $errorDataType = '';
-  public $error;
   /**
    * @var array[]
    */
-  public $metadata = [];
+  public $metadata;
   /**
    * @var string
    */
@@ -37,7 +40,7 @@ class Operation extends \Google\Model
   /**
    * @var array[]
    */
-  public $response = [];
+  public $response;
 
   /**
    * @param bool

@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class FstabEntryList extends \Google\Collection
 {
   protected $collection_key = 'entries';
+  /**
+   * @var FstabEntry[]
+   */
+  public $entries;
   protected $entriesType = FstabEntry::class;
   protected $entriesDataType = 'array';
-  public $entries = [];
 
   /**
    * @param FstabEntry[]

@@ -20,6 +20,10 @@ namespace Google\Service\CloudFunctions;
 class CloudfunctionsFunction extends \Google\Collection
 {
   protected $collection_key = 'stateMessages';
+  /**
+   * @var BuildConfig
+   */
+  public $buildConfig;
   protected $buildConfigType = BuildConfig::class;
   protected $buildConfigDataType = '';
   /**
@@ -30,6 +34,10 @@ class CloudfunctionsFunction extends \Google\Collection
    * @var string
    */
   public $environment;
+  /**
+   * @var EventTrigger
+   */
+  public $eventTrigger;
   protected $eventTriggerType = EventTrigger::class;
   protected $eventTriggerDataType = '';
   /**
@@ -44,18 +52,34 @@ class CloudfunctionsFunction extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var bool
+   */
+  public $satisfiesPzs;
+  /**
+   * @var ServiceConfig
+   */
+  public $serviceConfig;
   protected $serviceConfigType = ServiceConfig::class;
   protected $serviceConfigDataType = '';
   /**
    * @var string
    */
   public $state;
+  /**
+   * @var GoogleCloudFunctionsV2StateMessage[]
+   */
+  public $stateMessages;
   protected $stateMessagesType = GoogleCloudFunctionsV2StateMessage::class;
   protected $stateMessagesDataType = 'array';
   /**
    * @var string
    */
   public $updateTime;
+  /**
+   * @var string
+   */
+  public $url;
 
   /**
    * @param BuildConfig
@@ -156,6 +180,20 @@ class CloudfunctionsFunction extends \Google\Collection
     return $this->name;
   }
   /**
+   * @param bool
+   */
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  /**
+   * @return bool
+   */
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
+  }
+  /**
    * @param ServiceConfig
    */
   public function setServiceConfig(ServiceConfig $serviceConfig)
@@ -210,6 +248,20 @@ class CloudfunctionsFunction extends \Google\Collection
   public function getUpdateTime()
   {
     return $this->updateTime;
+  }
+  /**
+   * @param string
+   */
+  public function setUrl($url)
+  {
+    $this->url = $url;
+  }
+  /**
+   * @return string
+   */
+  public function getUrl()
+  {
+    return $this->url;
   }
 }
 

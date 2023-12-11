@@ -19,14 +19,26 @@ namespace Google\Service\CloudDeploy;
 
 class JobRun extends \Google\Model
 {
+  /**
+   * @var AdvanceChildRolloutJobRun
+   */
+  public $advanceChildRolloutJobRun;
   protected $advanceChildRolloutJobRunType = AdvanceChildRolloutJobRun::class;
   protected $advanceChildRolloutJobRunDataType = '';
+  /**
+   * @var CreateChildRolloutJobRun
+   */
+  public $createChildRolloutJobRun;
   protected $createChildRolloutJobRunType = CreateChildRolloutJobRun::class;
   protected $createChildRolloutJobRunDataType = '';
   /**
    * @var string
    */
   public $createTime;
+  /**
+   * @var DeployJobRun
+   */
+  public $deployJobRun;
   protected $deployJobRunType = DeployJobRun::class;
   protected $deployJobRunDataType = '';
   /**
@@ -50,6 +62,18 @@ class JobRun extends \Google\Model
    */
   public $phaseId;
   /**
+   * @var PostdeployJobRun
+   */
+  public $postdeployJobRun;
+  protected $postdeployJobRunType = PostdeployJobRun::class;
+  protected $postdeployJobRunDataType = '';
+  /**
+   * @var PredeployJobRun
+   */
+  public $predeployJobRun;
+  protected $predeployJobRunType = PredeployJobRun::class;
+  protected $predeployJobRunDataType = '';
+  /**
    * @var string
    */
   public $startTime;
@@ -61,6 +85,10 @@ class JobRun extends \Google\Model
    * @var string
    */
   public $uid;
+  /**
+   * @var VerifyJobRun
+   */
+  public $verifyJobRun;
   protected $verifyJobRunType = VerifyJobRun::class;
   protected $verifyJobRunDataType = '';
 
@@ -189,6 +217,34 @@ class JobRun extends \Google\Model
   public function getPhaseId()
   {
     return $this->phaseId;
+  }
+  /**
+   * @param PostdeployJobRun
+   */
+  public function setPostdeployJobRun(PostdeployJobRun $postdeployJobRun)
+  {
+    $this->postdeployJobRun = $postdeployJobRun;
+  }
+  /**
+   * @return PostdeployJobRun
+   */
+  public function getPostdeployJobRun()
+  {
+    return $this->postdeployJobRun;
+  }
+  /**
+   * @param PredeployJobRun
+   */
+  public function setPredeployJobRun(PredeployJobRun $predeployJobRun)
+  {
+    $this->predeployJobRun = $predeployJobRun;
+  }
+  /**
+   * @return PredeployJobRun
+   */
+  public function getPredeployJobRun()
+  {
+    return $this->predeployJobRun;
   }
   /**
    * @param string

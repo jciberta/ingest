@@ -19,14 +19,40 @@ namespace Google\Service\PlayIntegrity;
 
 class TokenPayloadExternal extends \Google\Model
 {
+  /**
+   * @var AccountDetails
+   */
+  public $accountDetails;
   protected $accountDetailsType = AccountDetails::class;
   protected $accountDetailsDataType = '';
+  /**
+   * @var AppIntegrity
+   */
+  public $appIntegrity;
   protected $appIntegrityType = AppIntegrity::class;
   protected $appIntegrityDataType = '';
+  /**
+   * @var DeviceIntegrity
+   */
+  public $deviceIntegrity;
   protected $deviceIntegrityType = DeviceIntegrity::class;
   protected $deviceIntegrityDataType = '';
+  /**
+   * @var EnvironmentDetails
+   */
+  public $environmentDetails;
+  protected $environmentDetailsType = EnvironmentDetails::class;
+  protected $environmentDetailsDataType = '';
+  /**
+   * @var RequestDetails
+   */
+  public $requestDetails;
   protected $requestDetailsType = RequestDetails::class;
   protected $requestDetailsDataType = '';
+  /**
+   * @var TestingDetails
+   */
+  public $testingDetails;
   protected $testingDetailsType = TestingDetails::class;
   protected $testingDetailsDataType = '';
 
@@ -71,6 +97,20 @@ class TokenPayloadExternal extends \Google\Model
   public function getDeviceIntegrity()
   {
     return $this->deviceIntegrity;
+  }
+  /**
+   * @param EnvironmentDetails
+   */
+  public function setEnvironmentDetails(EnvironmentDetails $environmentDetails)
+  {
+    $this->environmentDetails = $environmentDetails;
+  }
+  /**
+   * @return EnvironmentDetails
+   */
+  public function getEnvironmentDetails()
+  {
+    return $this->environmentDetails;
   }
   /**
    * @param RequestDetails

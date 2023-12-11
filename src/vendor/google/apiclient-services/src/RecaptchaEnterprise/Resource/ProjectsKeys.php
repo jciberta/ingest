@@ -38,7 +38,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * Creates a new reCAPTCHA Enterprise key. (keys.create)
    *
    * @param string $parent Required. The name of the project in which the key will
-   * be created, in the format "projects/{project}".
+   * be created, in the format `projects/{project}`.
    * @param GoogleCloudRecaptchaenterpriseV1Key $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRecaptchaenterpriseV1Key
@@ -53,7 +53,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * Deletes the specified key. (keys.delete)
    *
    * @param string $name Required. The name of the key to be deleted, in the
-   * format "projects/{project}/keys/{key}".
+   * format `projects/{project}/keys/{key}`.
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
    */
@@ -67,7 +67,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * Returns the specified key. (keys.get)
    *
    * @param string $name Required. The name of the requested key, in the format
-   * "projects/{project}/keys/{key}".
+   * `projects/{project}/keys/{key}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRecaptchaenterpriseV1Key
    */
@@ -82,7 +82,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * dashboards. (keys.getMetrics)
    *
    * @param string $name Required. The name of the requested metrics, in the
-   * format "projects/{project}/keys/{key}/metrics".
+   * format `projects/{project}/keys/{key}/metrics`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRecaptchaenterpriseV1Metrics
    */
@@ -97,7 +97,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * (keys.listProjectsKeys)
    *
    * @param string $parent Required. The name of the project that contains the
-   * keys that will be listed, in the format "projects/{project}".
+   * keys that will be listed, in the format `projects/{project}`.
    * @param array $optParams Optional parameters.
    *
    * @opt_param int pageSize Optional. The maximum number of keys to return.
@@ -116,12 +116,11 @@ class ProjectsKeys extends \Google\Service\Resource
    * Migrates an existing key from reCAPTCHA to reCAPTCHA Enterprise. Once a key
    * is migrated, it can be used from either product. SiteVerify requests are
    * billed as CreateAssessment calls. You must be authenticated as one of the
-   * current owners of the reCAPTCHA Site Key, and your user must have the
-   * reCAPTCHA Enterprise Admin IAM role in the destination project.
-   * (keys.migrate)
+   * current owners of the reCAPTCHA Key, and your user must have the reCAPTCHA
+   * Enterprise Admin IAM role in the destination project. (keys.migrate)
    *
    * @param string $name Required. The name of the key to be migrated, in the
-   * format "projects/{project}/keys/{key}".
+   * format `projects/{project}/keys/{key}`.
    * @param GoogleCloudRecaptchaenterpriseV1MigrateKeyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRecaptchaenterpriseV1Key
@@ -135,8 +134,8 @@ class ProjectsKeys extends \Google\Service\Resource
   /**
    * Updates the specified key. (keys.patch)
    *
-   * @param string $name The resource name for the Key in the format
-   * "projects/{project}/keys/{key}".
+   * @param string $name Identifier. The resource name for the Key in the format
+   * `projects/{project}/keys/{key}`.
    * @param GoogleCloudRecaptchaenterpriseV1Key $postBody
    * @param array $optParams Optional parameters.
    *
@@ -156,7 +155,7 @@ class ProjectsKeys extends \Google\Service\Resource
    * (keys.retrieveLegacySecretKey)
    *
    * @param string $key Required. The public key name linked to the requested
-   * secret key in the format "projects/{project}/keys/{key}".
+   * secret key in the format `projects/{project}/keys/{key}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudRecaptchaenterpriseV1RetrieveLegacySecretKeyResponse
    */

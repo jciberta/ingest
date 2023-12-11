@@ -19,7 +19,7 @@ namespace Google\Service\BackupforGKE;
 
 class RestoreConfig extends \Google\Collection
 {
-  protected $collection_key = 'substitutionRules';
+  protected $collection_key = 'transformationRules';
   /**
    * @var bool
    */
@@ -28,18 +28,50 @@ class RestoreConfig extends \Google\Collection
    * @var string
    */
   public $clusterResourceConflictPolicy;
+  /**
+   * @var ClusterResourceRestoreScope
+   */
+  public $clusterResourceRestoreScope;
   protected $clusterResourceRestoreScopeType = ClusterResourceRestoreScope::class;
   protected $clusterResourceRestoreScopeDataType = '';
+  /**
+   * @var Namespaces
+   */
+  public $excludedNamespaces;
+  protected $excludedNamespacesType = Namespaces::class;
+  protected $excludedNamespacesDataType = '';
   /**
    * @var string
    */
   public $namespacedResourceRestoreMode;
+  /**
+   * @var bool
+   */
+  public $noNamespaces;
+  /**
+   * @var NamespacedNames
+   */
+  public $selectedApplications;
   protected $selectedApplicationsType = NamespacedNames::class;
   protected $selectedApplicationsDataType = '';
+  /**
+   * @var Namespaces
+   */
+  public $selectedNamespaces;
   protected $selectedNamespacesType = Namespaces::class;
   protected $selectedNamespacesDataType = '';
+  /**
+   * @var SubstitutionRule[]
+   */
+  public $substitutionRules;
   protected $substitutionRulesType = SubstitutionRule::class;
   protected $substitutionRulesDataType = 'array';
+  /**
+   * @var TransformationRule[]
+   */
+  public $transformationRules;
+  protected $transformationRulesType = TransformationRule::class;
+  protected $transformationRulesDataType = 'array';
   /**
    * @var string
    */
@@ -88,6 +120,20 @@ class RestoreConfig extends \Google\Collection
     return $this->clusterResourceRestoreScope;
   }
   /**
+   * @param Namespaces
+   */
+  public function setExcludedNamespaces(Namespaces $excludedNamespaces)
+  {
+    $this->excludedNamespaces = $excludedNamespaces;
+  }
+  /**
+   * @return Namespaces
+   */
+  public function getExcludedNamespaces()
+  {
+    return $this->excludedNamespaces;
+  }
+  /**
    * @param string
    */
   public function setNamespacedResourceRestoreMode($namespacedResourceRestoreMode)
@@ -100,6 +146,20 @@ class RestoreConfig extends \Google\Collection
   public function getNamespacedResourceRestoreMode()
   {
     return $this->namespacedResourceRestoreMode;
+  }
+  /**
+   * @param bool
+   */
+  public function setNoNamespaces($noNamespaces)
+  {
+    $this->noNamespaces = $noNamespaces;
+  }
+  /**
+   * @return bool
+   */
+  public function getNoNamespaces()
+  {
+    return $this->noNamespaces;
   }
   /**
    * @param NamespacedNames
@@ -142,6 +202,20 @@ class RestoreConfig extends \Google\Collection
   public function getSubstitutionRules()
   {
     return $this->substitutionRules;
+  }
+  /**
+   * @param TransformationRule[]
+   */
+  public function setTransformationRules($transformationRules)
+  {
+    $this->transformationRules = $transformationRules;
+  }
+  /**
+   * @return TransformationRule[]
+   */
+  public function getTransformationRules()
+  {
+    return $this->transformationRules;
   }
   /**
    * @param string

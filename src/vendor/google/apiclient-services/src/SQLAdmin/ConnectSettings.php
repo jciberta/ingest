@@ -28,6 +28,14 @@ class ConnectSettings extends \Google\Collection
    * @var string
    */
   public $databaseVersion;
+  /**
+   * @var string
+   */
+  public $dnsName;
+  /**
+   * @var IpMapping[]
+   */
+  public $ipAddresses;
   protected $ipAddressesType = IpMapping::class;
   protected $ipAddressesDataType = 'array';
   /**
@@ -35,9 +43,17 @@ class ConnectSettings extends \Google\Collection
    */
   public $kind;
   /**
+   * @var bool
+   */
+  public $pscEnabled;
+  /**
    * @var string
    */
   public $region;
+  /**
+   * @var SslCert
+   */
+  public $serverCaCert;
   protected $serverCaCertType = SslCert::class;
   protected $serverCaCertDataType = '';
 
@@ -70,6 +86,20 @@ class ConnectSettings extends \Google\Collection
     return $this->databaseVersion;
   }
   /**
+   * @param string
+   */
+  public function setDnsName($dnsName)
+  {
+    $this->dnsName = $dnsName;
+  }
+  /**
+   * @return string
+   */
+  public function getDnsName()
+  {
+    return $this->dnsName;
+  }
+  /**
    * @param IpMapping[]
    */
   public function setIpAddresses($ipAddresses)
@@ -96,6 +126,20 @@ class ConnectSettings extends \Google\Collection
   public function getKind()
   {
     return $this->kind;
+  }
+  /**
+   * @param bool
+   */
+  public function setPscEnabled($pscEnabled)
+  {
+    $this->pscEnabled = $pscEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getPscEnabled()
+  {
+    return $this->pscEnabled;
   }
   /**
    * @param string

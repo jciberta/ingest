@@ -24,13 +24,16 @@ class ListRepositoriesResponse extends \Google\Collection
    * @var string
    */
   public $nextPageToken;
+  /**
+   * @var Repository[]
+   */
+  public $repositories;
   protected $repositoriesType = Repository::class;
   protected $repositoriesDataType = 'array';
-  public $repositories = [];
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
 
   /**
    * @param string

@@ -24,9 +24,12 @@ class GoogleCloudDatacatalogLineageV1ListProcessesResponse extends \Google\Colle
    * @var string
    */
   public $nextPageToken;
+  /**
+   * @var GoogleCloudDatacatalogLineageV1Process[]
+   */
+  public $processes;
   protected $processesType = GoogleCloudDatacatalogLineageV1Process::class;
   protected $processesDataType = 'array';
-  public $processes = [];
 
   /**
    * @param string

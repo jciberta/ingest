@@ -19,6 +19,10 @@ namespace Google\Service\OrgPolicyAPI;
 
 class GoogleCloudOrgpolicyV2Constraint extends \Google\Model
 {
+  /**
+   * @var GoogleCloudOrgpolicyV2ConstraintBooleanConstraint
+   */
+  public $booleanConstraint;
   protected $booleanConstraintType = GoogleCloudOrgpolicyV2ConstraintBooleanConstraint::class;
   protected $booleanConstraintDataType = '';
   /**
@@ -33,12 +37,20 @@ class GoogleCloudOrgpolicyV2Constraint extends \Google\Model
    * @var string
    */
   public $displayName;
+  /**
+   * @var GoogleCloudOrgpolicyV2ConstraintListConstraint
+   */
+  public $listConstraint;
   protected $listConstraintType = GoogleCloudOrgpolicyV2ConstraintListConstraint::class;
   protected $listConstraintDataType = '';
   /**
    * @var string
    */
   public $name;
+  /**
+   * @var bool
+   */
+  public $supportsDryRun;
 
   /**
    * @param GoogleCloudOrgpolicyV2ConstraintBooleanConstraint
@@ -123,6 +135,20 @@ class GoogleCloudOrgpolicyV2Constraint extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param bool
+   */
+  public function setSupportsDryRun($supportsDryRun)
+  {
+    $this->supportsDryRun = $supportsDryRun;
+  }
+  /**
+   * @return bool
+   */
+  public function getSupportsDryRun()
+  {
+    return $this->supportsDryRun;
   }
 }
 

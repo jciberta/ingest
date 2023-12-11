@@ -23,6 +23,14 @@ class GoogleChromePolicyVersionsV1ListGroupPriorityOrderingRequest extends \Goog
    * @var string
    */
   public $policyNamespace;
+  /**
+   * @var string
+   */
+  public $policySchema;
+  /**
+   * @var GoogleChromePolicyVersionsV1PolicyTargetKey
+   */
+  public $policyTargetKey;
   protected $policyTargetKeyType = GoogleChromePolicyVersionsV1PolicyTargetKey::class;
   protected $policyTargetKeyDataType = '';
 
@@ -39,6 +47,20 @@ class GoogleChromePolicyVersionsV1ListGroupPriorityOrderingRequest extends \Goog
   public function getPolicyNamespace()
   {
     return $this->policyNamespace;
+  }
+  /**
+   * @param string
+   */
+  public function setPolicySchema($policySchema)
+  {
+    $this->policySchema = $policySchema;
+  }
+  /**
+   * @return string
+   */
+  public function getPolicySchema()
+  {
+    return $this->policySchema;
   }
   /**
    * @param GoogleChromePolicyVersionsV1PolicyTargetKey

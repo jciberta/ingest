@@ -22,23 +22,27 @@ class GoogleCloudRetailV2ExperimentInfo extends \Google\Model
   /**
    * @var string
    */
-  public $experimentName;
+  public $experiment;
+  /**
+   * @var GoogleCloudRetailV2ExperimentInfoServingConfigExperiment
+   */
+  public $servingConfigExperiment;
   protected $servingConfigExperimentType = GoogleCloudRetailV2ExperimentInfoServingConfigExperiment::class;
   protected $servingConfigExperimentDataType = '';
 
   /**
    * @param string
    */
-  public function setExperimentName($experimentName)
+  public function setExperiment($experiment)
   {
-    $this->experimentName = $experimentName;
+    $this->experiment = $experiment;
   }
   /**
    * @return string
    */
-  public function getExperimentName()
+  public function getExperiment()
   {
-    return $this->experimentName;
+    return $this->experiment;
   }
   /**
    * @param GoogleCloudRetailV2ExperimentInfoServingConfigExperiment

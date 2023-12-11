@@ -41,6 +41,12 @@ class GoogleCloudRetailV2alphaModel extends \Google\Collection
    */
   public $lastTuneTime;
   /**
+   * @var GoogleCloudRetailV2alphaModelModelFeaturesConfig
+   */
+  public $modelFeaturesConfig;
+  protected $modelFeaturesConfigType = GoogleCloudRetailV2alphaModelModelFeaturesConfig::class;
+  protected $modelFeaturesConfigDataType = '';
+  /**
    * @var string
    */
   public $name;
@@ -48,12 +54,20 @@ class GoogleCloudRetailV2alphaModel extends \Google\Collection
    * @var string
    */
   public $optimizationObjective;
+  /**
+   * @var GoogleCloudRetailV2alphaModelPageOptimizationConfig
+   */
+  public $pageOptimizationConfig;
   protected $pageOptimizationConfigType = GoogleCloudRetailV2alphaModelPageOptimizationConfig::class;
   protected $pageOptimizationConfigDataType = '';
   /**
    * @var string
    */
   public $periodicTuningState;
+  /**
+   * @var GoogleCloudRetailV2alphaModelServingConfigList[]
+   */
+  public $servingConfigLists;
   protected $servingConfigListsType = GoogleCloudRetailV2alphaModelServingConfigList::class;
   protected $servingConfigListsDataType = 'array';
   /**
@@ -146,6 +160,20 @@ class GoogleCloudRetailV2alphaModel extends \Google\Collection
   public function getLastTuneTime()
   {
     return $this->lastTuneTime;
+  }
+  /**
+   * @param GoogleCloudRetailV2alphaModelModelFeaturesConfig
+   */
+  public function setModelFeaturesConfig(GoogleCloudRetailV2alphaModelModelFeaturesConfig $modelFeaturesConfig)
+  {
+    $this->modelFeaturesConfig = $modelFeaturesConfig;
+  }
+  /**
+   * @return GoogleCloudRetailV2alphaModelModelFeaturesConfig
+   */
+  public function getModelFeaturesConfig()
+  {
+    return $this->modelFeaturesConfig;
   }
   /**
    * @param string

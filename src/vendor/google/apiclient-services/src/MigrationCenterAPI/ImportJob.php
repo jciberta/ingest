@@ -35,19 +35,16 @@ class ImportJob extends \Google\Model
    * @var string
    */
   public $displayName;
+  /**
+   * @var ExecutionReport
+   */
+  public $executionReport;
   protected $executionReportType = ExecutionReport::class;
   protected $executionReportDataType = '';
-  public $executionReport;
-  protected $gcsPayloadType = GCSPayloadInfo::class;
-  protected $gcsPayloadDataType = '';
-  public $gcsPayload;
-  protected $inlinePayloadType = InlinePayloadInfo::class;
-  protected $inlinePayloadDataType = '';
-  public $inlinePayload;
   /**
    * @var string[]
    */
-  public $labels = [];
+  public $labels;
   /**
    * @var string
    */
@@ -60,9 +57,12 @@ class ImportJob extends \Google\Model
    * @var string
    */
   public $updateTime;
+  /**
+   * @var ValidationReport
+   */
+  public $validationReport;
   protected $validationReportType = ValidationReport::class;
   protected $validationReportDataType = '';
-  public $validationReport;
 
   /**
    * @param string
@@ -133,34 +133,6 @@ class ImportJob extends \Google\Model
   public function getExecutionReport()
   {
     return $this->executionReport;
-  }
-  /**
-   * @param GCSPayloadInfo
-   */
-  public function setGcsPayload(GCSPayloadInfo $gcsPayload)
-  {
-    $this->gcsPayload = $gcsPayload;
-  }
-  /**
-   * @return GCSPayloadInfo
-   */
-  public function getGcsPayload()
-  {
-    return $this->gcsPayload;
-  }
-  /**
-   * @param InlinePayloadInfo
-   */
-  public function setInlinePayload(InlinePayloadInfo $inlinePayload)
-  {
-    $this->inlinePayload = $inlinePayload;
-  }
-  /**
-   * @return InlinePayloadInfo
-   */
-  public function getInlinePayload()
-  {
-    return $this->inlinePayload;
   }
   /**
    * @param string[]

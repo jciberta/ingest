@@ -20,12 +20,18 @@ namespace Google\Service\Advisorynotifications;
 class GoogleCloudAdvisorynotificationsV1Message extends \Google\Collection
 {
   protected $collection_key = 'attachments';
+  /**
+   * @var GoogleCloudAdvisorynotificationsV1Attachment[]
+   */
+  public $attachments;
   protected $attachmentsType = GoogleCloudAdvisorynotificationsV1Attachment::class;
   protected $attachmentsDataType = 'array';
-  public $attachments = [];
+  /**
+   * @var GoogleCloudAdvisorynotificationsV1MessageBody
+   */
+  public $body;
   protected $bodyType = GoogleCloudAdvisorynotificationsV1MessageBody::class;
   protected $bodyDataType = '';
-  public $body;
   /**
    * @var string
    */

@@ -20,6 +20,10 @@ namespace Google\Service\Storage;
 class StorageObject extends \Google\Collection
 {
   protected $collection_key = 'acl';
+  /**
+   * @var ObjectAccessControl[]
+   */
+  public $acl;
   protected $aclType = ObjectAccessControl::class;
   protected $aclDataType = 'array';
   /**
@@ -58,6 +62,10 @@ class StorageObject extends \Google\Collection
    * @var string
    */
   public $customTime;
+  /**
+   * @var StorageObjectCustomerEncryption
+   */
+  public $customerEncryption;
   protected $customerEncryptionType = StorageObjectCustomerEncryption::class;
   protected $customerEncryptionDataType = '';
   /**
@@ -72,6 +80,10 @@ class StorageObject extends \Google\Collection
    * @var string
    */
   public $generation;
+  /**
+   * @var string
+   */
+  public $hardDeleteTime;
   /**
    * @var string
    */
@@ -104,8 +116,18 @@ class StorageObject extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var StorageObjectOwner
+   */
+  public $owner;
   protected $ownerType = StorageObjectOwner::class;
   protected $ownerDataType = '';
+  /**
+   * @var StorageObjectRetention
+   */
+  public $retention;
+  protected $retentionType = StorageObjectRetention::class;
+  protected $retentionDataType = '';
   /**
    * @var string
    */
@@ -118,6 +140,10 @@ class StorageObject extends \Google\Collection
    * @var string
    */
   public $size;
+  /**
+   * @var string
+   */
+  public $softDeleteTime;
   /**
    * @var string
    */
@@ -342,6 +368,20 @@ class StorageObject extends \Google\Collection
   /**
    * @param string
    */
+  public function setHardDeleteTime($hardDeleteTime)
+  {
+    $this->hardDeleteTime = $hardDeleteTime;
+  }
+  /**
+   * @return string
+   */
+  public function getHardDeleteTime()
+  {
+    return $this->hardDeleteTime;
+  }
+  /**
+   * @param string
+   */
   public function setId($id)
   {
     $this->id = $id;
@@ -466,6 +506,20 @@ class StorageObject extends \Google\Collection
     return $this->owner;
   }
   /**
+   * @param StorageObjectRetention
+   */
+  public function setRetention(StorageObjectRetention $retention)
+  {
+    $this->retention = $retention;
+  }
+  /**
+   * @return StorageObjectRetention
+   */
+  public function getRetention()
+  {
+    return $this->retention;
+  }
+  /**
    * @param string
    */
   public function setRetentionExpirationTime($retentionExpirationTime)
@@ -506,6 +560,20 @@ class StorageObject extends \Google\Collection
   public function getSize()
   {
     return $this->size;
+  }
+  /**
+   * @param string
+   */
+  public function setSoftDeleteTime($softDeleteTime)
+  {
+    $this->softDeleteTime = $softDeleteTime;
+  }
+  /**
+   * @return string
+   */
+  public function getSoftDeleteTime()
+  {
+    return $this->softDeleteTime;
   }
   /**
    * @param string

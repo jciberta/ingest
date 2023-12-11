@@ -28,6 +28,12 @@ class GitRemoteSettings extends \Google\Model
    */
   public $defaultBranch;
   /**
+   * @var SshAuthenticationConfig
+   */
+  public $sshAuthenticationConfig;
+  protected $sshAuthenticationConfigType = SshAuthenticationConfig::class;
+  protected $sshAuthenticationConfigDataType = '';
+  /**
    * @var string
    */
   public $tokenStatus;
@@ -63,6 +69,20 @@ class GitRemoteSettings extends \Google\Model
   public function getDefaultBranch()
   {
     return $this->defaultBranch;
+  }
+  /**
+   * @param SshAuthenticationConfig
+   */
+  public function setSshAuthenticationConfig(SshAuthenticationConfig $sshAuthenticationConfig)
+  {
+    $this->sshAuthenticationConfig = $sshAuthenticationConfig;
+  }
+  /**
+   * @return SshAuthenticationConfig
+   */
+  public function getSshAuthenticationConfig()
+  {
+    return $this->sshAuthenticationConfig;
   }
   /**
    * @param string

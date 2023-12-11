@@ -28,9 +28,12 @@ class ListUsableWorkstationConfigsResponse extends \Google\Collection
    * @var string[]
    */
   public $unreachable;
+  /**
+   * @var WorkstationConfig[]
+   */
+  public $workstationConfigs;
   protected $workstationConfigsType = WorkstationConfig::class;
   protected $workstationConfigsDataType = 'array';
-  public $workstationConfigs;
 
   /**
    * @param string

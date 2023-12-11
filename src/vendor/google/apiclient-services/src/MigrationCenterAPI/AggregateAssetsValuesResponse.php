@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class AggregateAssetsValuesResponse extends \Google\Collection
 {
   protected $collection_key = 'results';
+  /**
+   * @var AggregationResult[]
+   */
+  public $results;
   protected $resultsType = AggregationResult::class;
   protected $resultsDataType = 'array';
-  public $results = [];
 
   /**
    * @param AggregationResult[]

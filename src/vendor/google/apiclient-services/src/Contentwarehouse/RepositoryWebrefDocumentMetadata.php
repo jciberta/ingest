@@ -17,11 +17,8 @@
 
 namespace Google\Service\Contentwarehouse;
 
-class RepositoryWebrefDocumentMetadata extends \Google\Collection
+class RepositoryWebrefDocumentMetadata extends \Google\Model
 {
-  protected $collection_key = 'repeatedCdocAttachments';
-  protected $cdocAttachmentsType = Proto2BridgeMessageSet::class;
-  protected $cdocAttachmentsDataType = '';
   /**
    * @var string
    */
@@ -34,6 +31,10 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
    * @var string
    */
   public $docId;
+  /**
+   * @var RepositoryWebrefForwardingUrls
+   */
+  public $forwardingUrls;
   protected $forwardingUrlsType = RepositoryWebrefForwardingUrls::class;
   protected $forwardingUrlsDataType = '';
   /**
@@ -48,8 +49,10 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
    * @var float
    */
   public $numIncomingAnchors;
-  protected $repeatedCdocAttachmentsType = Proto2BridgeMessageSet::class;
-  protected $repeatedCdocAttachmentsDataType = 'array';
+  /**
+   * @var QualitySalientTermsSalientTermSet
+   */
+  public $salientTerms;
   protected $salientTermsType = QualitySalientTermsSalientTermSet::class;
   protected $salientTermsDataType = '';
   /**
@@ -65,20 +68,6 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
    */
   public $url;
 
-  /**
-   * @param Proto2BridgeMessageSet
-   */
-  public function setCdocAttachments(Proto2BridgeMessageSet $cdocAttachments)
-  {
-    $this->cdocAttachments = $cdocAttachments;
-  }
-  /**
-   * @return Proto2BridgeMessageSet
-   */
-  public function getCdocAttachments()
-  {
-    return $this->cdocAttachments;
-  }
   /**
    * @param string
    */
@@ -176,20 +165,6 @@ class RepositoryWebrefDocumentMetadata extends \Google\Collection
   public function getNumIncomingAnchors()
   {
     return $this->numIncomingAnchors;
-  }
-  /**
-   * @param Proto2BridgeMessageSet[]
-   */
-  public function setRepeatedCdocAttachments($repeatedCdocAttachments)
-  {
-    $this->repeatedCdocAttachments = $repeatedCdocAttachments;
-  }
-  /**
-   * @return Proto2BridgeMessageSet[]
-   */
-  public function getRepeatedCdocAttachments()
-  {
-    return $this->repeatedCdocAttachments;
   }
   /**
    * @param QualitySalientTermsSalientTermSet

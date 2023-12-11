@@ -20,12 +20,24 @@ namespace Google\Service\Apigee;
 class GoogleCloudApigeeV1App extends \Google\Collection
 {
   protected $collection_key = 'scopes';
+  /**
+   * @var GoogleCloudApigeeV1ApiProductRef[]
+   */
+  public $apiProducts;
   protected $apiProductsType = GoogleCloudApigeeV1ApiProductRef::class;
   protected $apiProductsDataType = 'array';
   /**
    * @var string
    */
+  public $appGroup;
+  /**
+   * @var string
+   */
   public $appId;
+  /**
+   * @var GoogleCloudApigeeV1Attribute[]
+   */
+  public $attributes;
   protected $attributesType = GoogleCloudApigeeV1Attribute::class;
   protected $attributesDataType = 'array';
   /**
@@ -40,8 +52,16 @@ class GoogleCloudApigeeV1App extends \Google\Collection
    * @var string
    */
   public $createdAt;
+  /**
+   * @var GoogleCloudApigeeV1Credential[]
+   */
+  public $credentials;
   protected $credentialsType = GoogleCloudApigeeV1Credential::class;
   protected $credentialsDataType = 'array';
+  /**
+   * @var string
+   */
+  public $developerEmail;
   /**
    * @var string
    */
@@ -80,6 +100,20 @@ class GoogleCloudApigeeV1App extends \Google\Collection
   public function getApiProducts()
   {
     return $this->apiProducts;
+  }
+  /**
+   * @param string
+   */
+  public function setAppGroup($appGroup)
+  {
+    $this->appGroup = $appGroup;
+  }
+  /**
+   * @return string
+   */
+  public function getAppGroup()
+  {
+    return $this->appGroup;
   }
   /**
    * @param string
@@ -164,6 +198,20 @@ class GoogleCloudApigeeV1App extends \Google\Collection
   public function getCredentials()
   {
     return $this->credentials;
+  }
+  /**
+   * @param string
+   */
+  public function setDeveloperEmail($developerEmail)
+  {
+    $this->developerEmail = $developerEmail;
+  }
+  /**
+   * @return string
+   */
+  public function getDeveloperEmail()
+  {
+    return $this->developerEmail;
   }
   /**
    * @param string

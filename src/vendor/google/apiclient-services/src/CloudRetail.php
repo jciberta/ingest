@@ -93,6 +93,10 @@ class CloudRetail extends \Google\Service
                   'location' => 'query',
                   'type' => 'string',
                 ],
+                'entity' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
                 'languageCodes' => [
                   'location' => 'query',
                   'type' => 'string',
@@ -389,6 +393,16 @@ class CloudRetail extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'purge' => [
+              'path' => 'v2/{+parent}/products:purge',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'removeFulfillmentPlaces' => [
               'path' => 'v2/{+product}:removeFulfillmentPlaces',
               'httpMethod' => 'POST',
@@ -546,6 +560,16 @@ class CloudRetail extends \Google\Service
             ],'delete' => [
               'path' => 'v2/{+name}',
               'httpMethod' => 'DELETE',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get' => [
+              'path' => 'v2/{+name}',
+              'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
                   'location' => 'path',

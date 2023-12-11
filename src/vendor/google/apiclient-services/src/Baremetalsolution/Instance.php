@@ -25,6 +25,10 @@ class Instance extends \Google\Collection
    */
   public $createTime;
   /**
+   * @var string
+   */
+  public $firmwareVersion;
+  /**
    * @var bool
    */
   public $hyperthreadingEnabled;
@@ -37,15 +41,27 @@ class Instance extends \Google\Collection
    */
   public $interactiveSerialConsoleEnabled;
   /**
+   * @var string
+   */
+  public $kmsKeyVersion;
+  /**
    * @var string[]
    */
   public $labels;
+  /**
+   * @var GoogleCloudBaremetalsolutionV2LogicalInterface[]
+   */
+  public $logicalInterfaces;
   protected $logicalInterfacesType = GoogleCloudBaremetalsolutionV2LogicalInterface::class;
   protected $logicalInterfacesDataType = 'array';
   /**
    * @var string
    */
   public $loginInfo;
+  /**
+   * @var Lun[]
+   */
+  public $luns;
   protected $lunsType = Lun::class;
   protected $lunsDataType = 'array';
   /**
@@ -60,6 +76,10 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $networkTemplate;
+  /**
+   * @var Network[]
+   */
+  public $networks;
   protected $networksType = Network::class;
   protected $networksDataType = 'array';
   /**
@@ -71,6 +91,10 @@ class Instance extends \Google\Collection
    */
   public $pod;
   /**
+   * @var string[]
+   */
+  public $sshKeys;
+  /**
    * @var string
    */
   public $state;
@@ -78,6 +102,10 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $updateTime;
+  /**
+   * @var Volume[]
+   */
+  public $volumes;
   protected $volumesType = Volume::class;
   protected $volumesDataType = 'array';
   /**
@@ -98,6 +126,20 @@ class Instance extends \Google\Collection
   public function getCreateTime()
   {
     return $this->createTime;
+  }
+  /**
+   * @param string
+   */
+  public function setFirmwareVersion($firmwareVersion)
+  {
+    $this->firmwareVersion = $firmwareVersion;
+  }
+  /**
+   * @return string
+   */
+  public function getFirmwareVersion()
+  {
+    return $this->firmwareVersion;
   }
   /**
    * @param bool
@@ -140,6 +182,20 @@ class Instance extends \Google\Collection
   public function getInteractiveSerialConsoleEnabled()
   {
     return $this->interactiveSerialConsoleEnabled;
+  }
+  /**
+   * @param string
+   */
+  public function setKmsKeyVersion($kmsKeyVersion)
+  {
+    $this->kmsKeyVersion = $kmsKeyVersion;
+  }
+  /**
+   * @return string
+   */
+  public function getKmsKeyVersion()
+  {
+    return $this->kmsKeyVersion;
   }
   /**
    * @param string[]
@@ -280,6 +336,20 @@ class Instance extends \Google\Collection
   public function getPod()
   {
     return $this->pod;
+  }
+  /**
+   * @param string[]
+   */
+  public function setSshKeys($sshKeys)
+  {
+    $this->sshKeys = $sshKeys;
+  }
+  /**
+   * @return string[]
+   */
+  public function getSshKeys()
+  {
+    return $this->sshKeys;
   }
   /**
    * @param string

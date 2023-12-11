@@ -19,8 +19,22 @@ namespace Google\Service\Integrations;
 
 class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
 {
+  /**
+   * @var EnterpriseCrmEventbusProtoSuspensionResolutionInfoAudit
+   */
+  public $audit;
   protected $auditType = EnterpriseCrmEventbusProtoSuspensionResolutionInfoAudit::class;
   protected $auditDataType = '';
+  /**
+   * @var string
+   */
+  public $clientId;
+  /**
+   * @var EnterpriseCrmEventbusProtoCloudKmsConfig
+   */
+  public $cloudKmsConfig;
+  protected $cloudKmsConfigType = EnterpriseCrmEventbusProtoCloudKmsConfig::class;
+  protected $cloudKmsConfigDataType = '';
   /**
    * @var string
    */
@@ -28,7 +42,15 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
   /**
    * @var string
    */
+  public $encryptedSuspensionResolutionInfo;
+  /**
+   * @var string
+   */
   public $eventExecutionInfoId;
+  /**
+   * @var EnterpriseCrmEventbusProtoExternalTraffic
+   */
+  public $externalTraffic;
   protected $externalTrafficType = EnterpriseCrmEventbusProtoExternalTraffic::class;
   protected $externalTrafficDataType = '';
   /**
@@ -43,6 +65,10 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
    * @var string
    */
   public $status;
+  /**
+   * @var EnterpriseCrmEventbusProtoSuspensionConfig
+   */
+  public $suspensionConfig;
   protected $suspensionConfigType = EnterpriseCrmEventbusProtoSuspensionConfig::class;
   protected $suspensionConfigDataType = '';
   /**
@@ -57,6 +83,10 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
    * @var string
    */
   public $workflowName;
+  /**
+   * @var string
+   */
+  public $wrappedDek;
 
   /**
    * @param EnterpriseCrmEventbusProtoSuspensionResolutionInfoAudit
@@ -75,6 +105,34 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
   /**
    * @param string
    */
+  public function setClientId($clientId)
+  {
+    $this->clientId = $clientId;
+  }
+  /**
+   * @return string
+   */
+  public function getClientId()
+  {
+    return $this->clientId;
+  }
+  /**
+   * @param EnterpriseCrmEventbusProtoCloudKmsConfig
+   */
+  public function setCloudKmsConfig(EnterpriseCrmEventbusProtoCloudKmsConfig $cloudKmsConfig)
+  {
+    $this->cloudKmsConfig = $cloudKmsConfig;
+  }
+  /**
+   * @return EnterpriseCrmEventbusProtoCloudKmsConfig
+   */
+  public function getCloudKmsConfig()
+  {
+    return $this->cloudKmsConfig;
+  }
+  /**
+   * @param string
+   */
   public function setCreatedTimestamp($createdTimestamp)
   {
     $this->createdTimestamp = $createdTimestamp;
@@ -85,6 +143,20 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
   public function getCreatedTimestamp()
   {
     return $this->createdTimestamp;
+  }
+  /**
+   * @param string
+   */
+  public function setEncryptedSuspensionResolutionInfo($encryptedSuspensionResolutionInfo)
+  {
+    $this->encryptedSuspensionResolutionInfo = $encryptedSuspensionResolutionInfo;
+  }
+  /**
+   * @return string
+   */
+  public function getEncryptedSuspensionResolutionInfo()
+  {
+    return $this->encryptedSuspensionResolutionInfo;
   }
   /**
    * @param string
@@ -211,6 +283,20 @@ class EnterpriseCrmEventbusProtoSuspensionResolutionInfo extends \Google\Model
   public function getWorkflowName()
   {
     return $this->workflowName;
+  }
+  /**
+   * @param string
+   */
+  public function setWrappedDek($wrappedDek)
+  {
+    $this->wrappedDek = $wrappedDek;
+  }
+  /**
+   * @return string
+   */
+  public function getWrappedDek()
+  {
+    return $this->wrappedDek;
   }
 }
 

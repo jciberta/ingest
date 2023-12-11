@@ -19,10 +19,24 @@ namespace Google\Service\Document;
 
 class GoogleCloudDocumentaiV1BatchProcessRequest extends \Google\Model
 {
+  /**
+   * @var GoogleCloudDocumentaiV1DocumentOutputConfig
+   */
+  public $documentOutputConfig;
   protected $documentOutputConfigType = GoogleCloudDocumentaiV1DocumentOutputConfig::class;
   protected $documentOutputConfigDataType = '';
+  /**
+   * @var GoogleCloudDocumentaiV1BatchDocumentsInputConfig
+   */
+  public $inputDocuments;
   protected $inputDocumentsType = GoogleCloudDocumentaiV1BatchDocumentsInputConfig::class;
   protected $inputDocumentsDataType = '';
+  /**
+   * @var GoogleCloudDocumentaiV1ProcessOptions
+   */
+  public $processOptions;
+  protected $processOptionsType = GoogleCloudDocumentaiV1ProcessOptions::class;
+  protected $processOptionsDataType = '';
   /**
    * @var bool
    */
@@ -55,6 +69,20 @@ class GoogleCloudDocumentaiV1BatchProcessRequest extends \Google\Model
   public function getInputDocuments()
   {
     return $this->inputDocuments;
+  }
+  /**
+   * @param GoogleCloudDocumentaiV1ProcessOptions
+   */
+  public function setProcessOptions(GoogleCloudDocumentaiV1ProcessOptions $processOptions)
+  {
+    $this->processOptions = $processOptions;
+  }
+  /**
+   * @return GoogleCloudDocumentaiV1ProcessOptions
+   */
+  public function getProcessOptions()
+  {
+    return $this->processOptions;
   }
   /**
    * @param bool

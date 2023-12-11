@@ -23,14 +23,30 @@ class TranslateDocumentRequest extends \Google\Model
    * @var string
    */
   public $customizedAttribution;
+  /**
+   * @var DocumentInputConfig
+   */
+  public $documentInputConfig;
   protected $documentInputConfigType = DocumentInputConfig::class;
   protected $documentInputConfigDataType = '';
+  /**
+   * @var DocumentOutputConfig
+   */
+  public $documentOutputConfig;
   protected $documentOutputConfigType = DocumentOutputConfig::class;
   protected $documentOutputConfigDataType = '';
   /**
    * @var bool
    */
+  public $enableRotationCorrection;
+  /**
+   * @var bool
+   */
   public $enableShadowRemovalNativePdf;
+  /**
+   * @var TranslateTextGlossaryConfig
+   */
+  public $glossaryConfig;
   protected $glossaryConfigType = TranslateTextGlossaryConfig::class;
   protected $glossaryConfigDataType = '';
   /**
@@ -95,6 +111,20 @@ class TranslateDocumentRequest extends \Google\Model
   public function getDocumentOutputConfig()
   {
     return $this->documentOutputConfig;
+  }
+  /**
+   * @param bool
+   */
+  public function setEnableRotationCorrection($enableRotationCorrection)
+  {
+    $this->enableRotationCorrection = $enableRotationCorrection;
+  }
+  /**
+   * @return bool
+   */
+  public function getEnableRotationCorrection()
+  {
+    return $this->enableRotationCorrection;
   }
   /**
    * @param bool

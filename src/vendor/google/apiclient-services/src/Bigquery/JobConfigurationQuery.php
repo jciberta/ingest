@@ -24,10 +24,22 @@ class JobConfigurationQuery extends \Google\Collection
    * @var bool
    */
   public $allowLargeResults;
+  /**
+   * @var Clustering
+   */
+  public $clustering;
   protected $clusteringType = Clustering::class;
   protected $clusteringDataType = '';
+  /**
+   * @var ConnectionProperty[]
+   */
+  public $connectionProperties;
   protected $connectionPropertiesType = ConnectionProperty::class;
   protected $connectionPropertiesDataType = 'array';
+  /**
+   * @var bool
+   */
+  public $continuous;
   /**
    * @var string
    */
@@ -36,10 +48,22 @@ class JobConfigurationQuery extends \Google\Collection
    * @var bool
    */
   public $createSession;
+  /**
+   * @var DatasetReference
+   */
+  public $defaultDataset;
   protected $defaultDatasetType = DatasetReference::class;
   protected $defaultDatasetDataType = '';
+  /**
+   * @var EncryptionConfiguration
+   */
+  public $destinationEncryptionConfiguration;
   protected $destinationEncryptionConfigurationType = EncryptionConfiguration::class;
   protected $destinationEncryptionConfigurationDataType = '';
+  /**
+   * @var TableReference
+   */
+  public $destinationTable;
   protected $destinationTableType = TableReference::class;
   protected $destinationTableDataType = '';
   /**
@@ -70,16 +94,32 @@ class JobConfigurationQuery extends \Google\Collection
    * @var string
    */
   public $query;
+  /**
+   * @var QueryParameter[]
+   */
+  public $queryParameters;
   protected $queryParametersType = QueryParameter::class;
   protected $queryParametersDataType = 'array';
+  /**
+   * @var RangePartitioning
+   */
+  public $rangePartitioning;
   protected $rangePartitioningType = RangePartitioning::class;
   protected $rangePartitioningDataType = '';
   /**
    * @var string[]
    */
   public $schemaUpdateOptions;
+  /**
+   * @var ExternalDataConfiguration[]
+   */
+  public $tableDefinitions;
   protected $tableDefinitionsType = ExternalDataConfiguration::class;
   protected $tableDefinitionsDataType = 'map';
+  /**
+   * @var TimePartitioning
+   */
+  public $timePartitioning;
   protected $timePartitioningType = TimePartitioning::class;
   protected $timePartitioningDataType = '';
   /**
@@ -90,6 +130,10 @@ class JobConfigurationQuery extends \Google\Collection
    * @var bool
    */
   public $useQueryCache;
+  /**
+   * @var UserDefinedFunctionResource[]
+   */
+  public $userDefinedFunctionResources;
   protected $userDefinedFunctionResourcesType = UserDefinedFunctionResource::class;
   protected $userDefinedFunctionResourcesDataType = 'array';
   /**
@@ -138,6 +182,20 @@ class JobConfigurationQuery extends \Google\Collection
   public function getConnectionProperties()
   {
     return $this->connectionProperties;
+  }
+  /**
+   * @param bool
+   */
+  public function setContinuous($continuous)
+  {
+    $this->continuous = $continuous;
+  }
+  /**
+   * @return bool
+   */
+  public function getContinuous()
+  {
+    return $this->continuous;
   }
   /**
    * @param string

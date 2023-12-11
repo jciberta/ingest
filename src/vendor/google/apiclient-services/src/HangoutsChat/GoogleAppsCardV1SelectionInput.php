@@ -20,6 +20,16 @@ namespace Google\Service\HangoutsChat;
 class GoogleAppsCardV1SelectionInput extends \Google\Collection
 {
   protected $collection_key = 'items';
+  /**
+   * @var GoogleAppsCardV1Action
+   */
+  public $externalDataSource;
+  protected $externalDataSourceType = GoogleAppsCardV1Action::class;
+  protected $externalDataSourceDataType = '';
+  /**
+   * @var GoogleAppsCardV1SelectionItem[]
+   */
+  public $items;
   protected $itemsType = GoogleAppsCardV1SelectionItem::class;
   protected $itemsDataType = 'array';
   /**
@@ -27,16 +37,48 @@ class GoogleAppsCardV1SelectionInput extends \Google\Collection
    */
   public $label;
   /**
+   * @var int
+   */
+  public $multiSelectMaxSelectedItems;
+  /**
+   * @var int
+   */
+  public $multiSelectMinQueryLength;
+  /**
    * @var string
    */
   public $name;
+  /**
+   * @var GoogleAppsCardV1Action
+   */
+  public $onChangeAction;
   protected $onChangeActionType = GoogleAppsCardV1Action::class;
   protected $onChangeActionDataType = '';
+  /**
+   * @var GoogleAppsCardV1PlatformDataSource
+   */
+  public $platformDataSource;
+  protected $platformDataSourceType = GoogleAppsCardV1PlatformDataSource::class;
+  protected $platformDataSourceDataType = '';
   /**
    * @var string
    */
   public $type;
 
+  /**
+   * @param GoogleAppsCardV1Action
+   */
+  public function setExternalDataSource(GoogleAppsCardV1Action $externalDataSource)
+  {
+    $this->externalDataSource = $externalDataSource;
+  }
+  /**
+   * @return GoogleAppsCardV1Action
+   */
+  public function getExternalDataSource()
+  {
+    return $this->externalDataSource;
+  }
   /**
    * @param GoogleAppsCardV1SelectionItem[]
    */
@@ -66,6 +108,34 @@ class GoogleAppsCardV1SelectionInput extends \Google\Collection
     return $this->label;
   }
   /**
+   * @param int
+   */
+  public function setMultiSelectMaxSelectedItems($multiSelectMaxSelectedItems)
+  {
+    $this->multiSelectMaxSelectedItems = $multiSelectMaxSelectedItems;
+  }
+  /**
+   * @return int
+   */
+  public function getMultiSelectMaxSelectedItems()
+  {
+    return $this->multiSelectMaxSelectedItems;
+  }
+  /**
+   * @param int
+   */
+  public function setMultiSelectMinQueryLength($multiSelectMinQueryLength)
+  {
+    $this->multiSelectMinQueryLength = $multiSelectMinQueryLength;
+  }
+  /**
+   * @return int
+   */
+  public function getMultiSelectMinQueryLength()
+  {
+    return $this->multiSelectMinQueryLength;
+  }
+  /**
    * @param string
    */
   public function setName($name)
@@ -92,6 +162,20 @@ class GoogleAppsCardV1SelectionInput extends \Google\Collection
   public function getOnChangeAction()
   {
     return $this->onChangeAction;
+  }
+  /**
+   * @param GoogleAppsCardV1PlatformDataSource
+   */
+  public function setPlatformDataSource(GoogleAppsCardV1PlatformDataSource $platformDataSource)
+  {
+    $this->platformDataSource = $platformDataSource;
+  }
+  /**
+   * @return GoogleAppsCardV1PlatformDataSource
+   */
+  public function getPlatformDataSource()
+  {
+    return $this->platformDataSource;
   }
   /**
    * @param string

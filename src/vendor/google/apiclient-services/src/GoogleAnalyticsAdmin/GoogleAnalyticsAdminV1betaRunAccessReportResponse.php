@@ -20,22 +20,34 @@ namespace Google\Service\GoogleAnalyticsAdmin;
 class GoogleAnalyticsAdminV1betaRunAccessReportResponse extends \Google\Collection
 {
   protected $collection_key = 'rows';
+  /**
+   * @var GoogleAnalyticsAdminV1betaAccessDimensionHeader[]
+   */
+  public $dimensionHeaders;
   protected $dimensionHeadersType = GoogleAnalyticsAdminV1betaAccessDimensionHeader::class;
   protected $dimensionHeadersDataType = 'array';
-  public $dimensionHeaders = [];
+  /**
+   * @var GoogleAnalyticsAdminV1betaAccessMetricHeader[]
+   */
+  public $metricHeaders;
   protected $metricHeadersType = GoogleAnalyticsAdminV1betaAccessMetricHeader::class;
   protected $metricHeadersDataType = 'array';
-  public $metricHeaders = [];
+  /**
+   * @var GoogleAnalyticsAdminV1betaAccessQuota
+   */
+  public $quota;
   protected $quotaType = GoogleAnalyticsAdminV1betaAccessQuota::class;
   protected $quotaDataType = '';
-  public $quota;
   /**
    * @var int
    */
   public $rowCount;
+  /**
+   * @var GoogleAnalyticsAdminV1betaAccessRow[]
+   */
+  public $rows;
   protected $rowsType = GoogleAnalyticsAdminV1betaAccessRow::class;
   protected $rowsDataType = 'array';
-  public $rows = [];
 
   /**
    * @param GoogleAnalyticsAdminV1betaAccessDimensionHeader[]

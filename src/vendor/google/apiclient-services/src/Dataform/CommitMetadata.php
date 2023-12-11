@@ -19,9 +19,12 @@ namespace Google\Service\Dataform;
 
 class CommitMetadata extends \Google\Model
 {
+  /**
+   * @var CommitAuthor
+   */
+  public $author;
   protected $authorType = CommitAuthor::class;
   protected $authorDataType = '';
-  public $author;
   /**
    * @var string
    */

@@ -19,8 +19,22 @@ namespace Google\Service\Bigquery;
 
 class StandardSqlDataType extends \Google\Model
 {
+  /**
+   * @var StandardSqlDataType
+   */
+  public $arrayElementType;
   protected $arrayElementTypeType = StandardSqlDataType::class;
   protected $arrayElementTypeDataType = '';
+  /**
+   * @var StandardSqlDataType
+   */
+  public $rangeElementType;
+  protected $rangeElementTypeType = StandardSqlDataType::class;
+  protected $rangeElementTypeDataType = '';
+  /**
+   * @var StandardSqlStructType
+   */
+  public $structType;
   protected $structTypeType = StandardSqlStructType::class;
   protected $structTypeDataType = '';
   /**
@@ -41,6 +55,20 @@ class StandardSqlDataType extends \Google\Model
   public function getArrayElementType()
   {
     return $this->arrayElementType;
+  }
+  /**
+   * @param StandardSqlDataType
+   */
+  public function setRangeElementType(StandardSqlDataType $rangeElementType)
+  {
+    $this->rangeElementType = $rangeElementType;
+  }
+  /**
+   * @return StandardSqlDataType
+   */
+  public function getRangeElementType()
+  {
+    return $this->rangeElementType;
   }
   /**
    * @param StandardSqlStructType

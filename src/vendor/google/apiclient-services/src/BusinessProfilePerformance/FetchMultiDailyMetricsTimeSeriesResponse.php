@@ -20,9 +20,12 @@ namespace Google\Service\BusinessProfilePerformance;
 class FetchMultiDailyMetricsTimeSeriesResponse extends \Google\Collection
 {
   protected $collection_key = 'multiDailyMetricTimeSeries';
+  /**
+   * @var MultiDailyMetricTimeSeries[]
+   */
+  public $multiDailyMetricTimeSeries;
   protected $multiDailyMetricTimeSeriesType = MultiDailyMetricTimeSeries::class;
   protected $multiDailyMetricTimeSeriesDataType = 'array';
-  public $multiDailyMetricTimeSeries = [];
 
   /**
    * @param MultiDailyMetricTimeSeries[]

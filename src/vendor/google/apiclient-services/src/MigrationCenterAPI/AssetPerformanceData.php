@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class AssetPerformanceData extends \Google\Collection
 {
   protected $collection_key = 'dailyResourceUsageAggregations';
+  /**
+   * @var DailyResourceUsageAggregation[]
+   */
+  public $dailyResourceUsageAggregations;
   protected $dailyResourceUsageAggregationsType = DailyResourceUsageAggregation::class;
   protected $dailyResourceUsageAggregationsDataType = 'array';
-  public $dailyResourceUsageAggregations = [];
 
   /**
    * @param DailyResourceUsageAggregation[]

@@ -38,7 +38,7 @@ class GoogleCloudKmsV1CryptoKey extends \Google\Model
   /**
    * @var string[]
    */
-  public $labels = [];
+  public $labels;
   /**
    * @var string
    */
@@ -47,9 +47,12 @@ class GoogleCloudKmsV1CryptoKey extends \Google\Model
    * @var string
    */
   public $nextRotationTime;
+  /**
+   * @var GoogleCloudKmsV1CryptoKeyVersion
+   */
+  public $primary;
   protected $primaryType = GoogleCloudKmsV1CryptoKeyVersion::class;
   protected $primaryDataType = '';
-  public $primary;
   /**
    * @var string
    */
@@ -58,9 +61,12 @@ class GoogleCloudKmsV1CryptoKey extends \Google\Model
    * @var string
    */
   public $rotationPeriod;
+  /**
+   * @var GoogleCloudKmsV1CryptoKeyVersionTemplate
+   */
+  public $versionTemplate;
   protected $versionTemplateType = GoogleCloudKmsV1CryptoKeyVersionTemplate::class;
   protected $versionTemplateDataType = '';
-  public $versionTemplate;
 
   /**
    * @param string

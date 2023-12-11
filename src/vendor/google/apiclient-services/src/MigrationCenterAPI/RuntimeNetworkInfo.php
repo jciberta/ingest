@@ -19,16 +19,16 @@ namespace Google\Service\MigrationCenterAPI;
 
 class RuntimeNetworkInfo extends \Google\Model
 {
+  /**
+   * @var NetworkConnectionList
+   */
+  public $connections;
   protected $connectionsType = NetworkConnectionList::class;
   protected $connectionsDataType = '';
-  public $connections;
   /**
    * @var string
    */
-  public $netstat;
-  protected $netstatTimeType = DateTime::class;
-  protected $netstatTimeDataType = '';
-  public $netstatTime;
+  public $scanTime;
 
   /**
    * @param NetworkConnectionList
@@ -47,30 +47,16 @@ class RuntimeNetworkInfo extends \Google\Model
   /**
    * @param string
    */
-  public function setNetstat($netstat)
+  public function setScanTime($scanTime)
   {
-    $this->netstat = $netstat;
+    $this->scanTime = $scanTime;
   }
   /**
    * @return string
    */
-  public function getNetstat()
+  public function getScanTime()
   {
-    return $this->netstat;
-  }
-  /**
-   * @param DateTime
-   */
-  public function setNetstatTime(DateTime $netstatTime)
-  {
-    $this->netstatTime = $netstatTime;
-  }
-  /**
-   * @return DateTime
-   */
-  public function getNetstatTime()
-  {
-    return $this->netstatTime;
+    return $this->scanTime;
   }
 }
 

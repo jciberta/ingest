@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class ListGroupsResponse extends \Google\Collection
 {
   protected $collection_key = 'unreachable';
+  /**
+   * @var Group[]
+   */
+  public $groups;
   protected $groupsType = Group::class;
   protected $groupsDataType = 'array';
-  public $groups = [];
   /**
    * @var string
    */
@@ -30,7 +33,7 @@ class ListGroupsResponse extends \Google\Collection
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
 
   /**
    * @param Group[]

@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class AggregationResultHistogram extends \Google\Collection
 {
   protected $collection_key = 'buckets';
+  /**
+   * @var AggregationResultHistogramBucket[]
+   */
+  public $buckets;
   protected $bucketsType = AggregationResultHistogramBucket::class;
   protected $bucketsDataType = 'array';
-  public $buckets = [];
 
   /**
    * @param AggregationResultHistogramBucket[]

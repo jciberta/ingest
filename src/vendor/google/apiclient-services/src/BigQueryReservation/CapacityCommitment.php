@@ -31,8 +31,16 @@ class CapacityCommitment extends \Google\Model
    * @var string
    */
   public $edition;
+  /**
+   * @var Status
+   */
+  public $failureStatus;
   protected $failureStatusType = Status::class;
   protected $failureStatusDataType = '';
+  /**
+   * @var bool
+   */
+  public $isFlatRate;
   /**
    * @var bool
    */
@@ -113,6 +121,20 @@ class CapacityCommitment extends \Google\Model
   public function getFailureStatus()
   {
     return $this->failureStatus;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsFlatRate($isFlatRate)
+  {
+    $this->isFlatRate = $isFlatRate;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsFlatRate()
+  {
+    return $this->isFlatRate;
   }
   /**
    * @param bool

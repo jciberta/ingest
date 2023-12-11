@@ -20,9 +20,31 @@ namespace Google\Service\Cloudchannel;
 class GoogleCloudChannelV1Row extends \Google\Collection
 {
   protected $collection_key = 'values';
+  /**
+   * @var string
+   */
+  public $partitionKey;
+  /**
+   * @var GoogleCloudChannelV1ReportValue[]
+   */
+  public $values;
   protected $valuesType = GoogleCloudChannelV1ReportValue::class;
   protected $valuesDataType = 'array';
 
+  /**
+   * @param string
+   */
+  public function setPartitionKey($partitionKey)
+  {
+    $this->partitionKey = $partitionKey;
+  }
+  /**
+   * @return string
+   */
+  public function getPartitionKey()
+  {
+    return $this->partitionKey;
+  }
   /**
    * @param GoogleCloudChannelV1ReportValue[]
    */

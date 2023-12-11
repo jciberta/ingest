@@ -20,9 +20,12 @@ namespace Google\Service\DriveLabels;
 class GoogleAppsDriveLabelsV2BatchDeleteLabelPermissionsRequest extends \Google\Collection
 {
   protected $collection_key = 'requests';
+  /**
+   * @var GoogleAppsDriveLabelsV2DeleteLabelPermissionRequest[]
+   */
+  public $requests;
   protected $requestsType = GoogleAppsDriveLabelsV2DeleteLabelPermissionRequest::class;
   protected $requestsDataType = 'array';
-  public $requests = [];
   /**
    * @var bool
    */

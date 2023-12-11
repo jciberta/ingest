@@ -19,28 +19,46 @@ namespace Google\Service\Dataform;
 
 class CompilationResultAction extends \Google\Model
 {
+  /**
+   * @var Assertion
+   */
+  public $assertion;
   protected $assertionType = Assertion::class;
   protected $assertionDataType = '';
-  public $assertion;
+  /**
+   * @var Target
+   */
+  public $canonicalTarget;
   protected $canonicalTargetType = Target::class;
   protected $canonicalTargetDataType = '';
-  public $canonicalTarget;
+  /**
+   * @var Declaration
+   */
+  public $declaration;
   protected $declarationType = Declaration::class;
   protected $declarationDataType = '';
-  public $declaration;
   /**
    * @var string
    */
   public $filePath;
+  /**
+   * @var Operations
+   */
+  public $operations;
   protected $operationsType = Operations::class;
   protected $operationsDataType = '';
-  public $operations;
+  /**
+   * @var Relation
+   */
+  public $relation;
   protected $relationType = Relation::class;
   protected $relationDataType = '';
-  public $relation;
+  /**
+   * @var Target
+   */
+  public $target;
   protected $targetType = Target::class;
   protected $targetDataType = '';
-  public $target;
 
   /**
    * @param Assertion

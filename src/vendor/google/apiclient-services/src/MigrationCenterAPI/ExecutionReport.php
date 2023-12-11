@@ -17,19 +17,18 @@
 
 namespace Google\Service\MigrationCenterAPI;
 
-class ExecutionReport extends \Google\Collection
+class ExecutionReport extends \Google\Model
 {
-  protected $collection_key = 'jobErrors';
+  /**
+   * @var ValidationReport
+   */
+  public $executionErrors;
   protected $executionErrorsType = ValidationReport::class;
   protected $executionErrorsDataType = '';
-  public $executionErrors;
   /**
    * @var int
    */
   public $framesReported;
-  protected $jobErrorsType = ImportError::class;
-  protected $jobErrorsDataType = 'array';
-  public $jobErrors = [];
   /**
    * @var int
    */
@@ -62,20 +61,6 @@ class ExecutionReport extends \Google\Collection
   public function getFramesReported()
   {
     return $this->framesReported;
-  }
-  /**
-   * @param ImportError[]
-   */
-  public function setJobErrors($jobErrors)
-  {
-    $this->jobErrors = $jobErrors;
-  }
-  /**
-   * @return ImportError[]
-   */
-  public function getJobErrors()
-  {
-    return $this->jobErrors;
   }
   /**
    * @param int

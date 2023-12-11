@@ -20,9 +20,12 @@ namespace Google\Service\WorkloadManager;
 class SapValidation extends \Google\Collection
 {
   protected $collection_key = 'validationDetails';
+  /**
+   * @var SapValidationValidationDetail[]
+   */
+  public $validationDetails;
   protected $validationDetailsType = SapValidationValidationDetail::class;
   protected $validationDetailsDataType = 'array';
-  public $validationDetails;
 
   /**
    * @param SapValidationValidationDetail[]

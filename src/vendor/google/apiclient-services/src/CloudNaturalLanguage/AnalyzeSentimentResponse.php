@@ -20,12 +20,24 @@ namespace Google\Service\CloudNaturalLanguage;
 class AnalyzeSentimentResponse extends \Google\Collection
 {
   protected $collection_key = 'sentences';
+  /**
+   * @var Sentiment
+   */
+  public $documentSentiment;
   protected $documentSentimentType = Sentiment::class;
   protected $documentSentimentDataType = '';
   /**
    * @var string
    */
-  public $language;
+  public $languageCode;
+  /**
+   * @var bool
+   */
+  public $languageSupported;
+  /**
+   * @var Sentence[]
+   */
+  public $sentences;
   protected $sentencesType = Sentence::class;
   protected $sentencesDataType = 'array';
 
@@ -46,16 +58,30 @@ class AnalyzeSentimentResponse extends \Google\Collection
   /**
    * @param string
    */
-  public function setLanguage($language)
+  public function setLanguageCode($languageCode)
   {
-    $this->language = $language;
+    $this->languageCode = $languageCode;
   }
   /**
    * @return string
    */
-  public function getLanguage()
+  public function getLanguageCode()
   {
-    return $this->language;
+    return $this->languageCode;
+  }
+  /**
+   * @param bool
+   */
+  public function setLanguageSupported($languageSupported)
+  {
+    $this->languageSupported = $languageSupported;
+  }
+  /**
+   * @return bool
+   */
+  public function getLanguageSupported()
+  {
+    return $this->languageSupported;
   }
   /**
    * @param Sentence[]

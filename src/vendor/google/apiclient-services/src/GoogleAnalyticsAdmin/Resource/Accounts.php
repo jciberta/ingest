@@ -22,6 +22,8 @@ use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaDataSharingSet
 use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaListAccountsResponse;
 use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaProvisionAccountTicketRequest;
 use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaProvisionAccountTicketResponse;
+use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaRunAccessReportRequest;
+use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaRunAccessReportResponse;
 use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsRequest;
 use Google\Service\GoogleAnalyticsAdmin\GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponse;
 use Google\Service\GoogleAnalyticsAdmin\GoogleProtobufEmpty;
@@ -41,7 +43,7 @@ class Accounts extends \Google\Service\Resource
    * does not have a method to restore soft-deleted accounts. However, they can be
    * restored using the Trash Can UI. If the accounts are not restored before the
    * expiration time, the account and all child resources (eg: Properties,
-   * GoogleAdsLinks, Streams, UserLinks) will be permanently purged.
+   * GoogleAdsLinks, Streams, AccessBindings) will be permanently purged.
    * https://support.google.com/analytics/answer/6154772 Returns an error if the
    * target is not found. (accounts.delete)
    *
@@ -145,6 +147,36 @@ class Accounts extends \Google\Service\Resource
     $params = ['postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('provisionAccountTicket', [$params], GoogleAnalyticsAdminV1betaProvisionAccountTicketResponse::class);
+  }
+  /**
+   * Returns a customized report of data access records. The report provides
+   * records of each time a user reads Google Analytics reporting data. Access
+   * records are retained for up to 2 years. Data Access Reports can be requested
+   * for a property. The property must be in Google Analytics 360. This method is
+   * only available to Administrators. These data access records include GA4 UI
+   * Reporting, GA4 UI Explorations, GA4 Data API, and other products like
+   * Firebase & Admob that can retrieve data from Google Analytics through a
+   * linkage. These records don't include property configuration changes like
+   * adding a stream or changing a property's time zone. For configuration change
+   * history, see [searchChangeHistoryEvents](https://developers.google.com/analyt
+   * ics/devguides/config/admin/v1/rest/v1alpha/accounts/searchChangeHistoryEvents
+   * ). (accounts.runAccessReport)
+   *
+   * @param string $entity The Data Access Report supports requesting at the
+   * property level or account level. If requested at the account level, Data
+   * Access Reports include all access for all properties under that account. To
+   * request at the property level, entity should be for example 'properties/123'
+   * if "123" is your GA4 property ID. To request at the account level, entity
+   * should be for example 'accounts/1234' if "1234" is your GA4 Account ID.
+   * @param GoogleAnalyticsAdminV1betaRunAccessReportRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleAnalyticsAdminV1betaRunAccessReportResponse
+   */
+  public function runAccessReport($entity, GoogleAnalyticsAdminV1betaRunAccessReportRequest $postBody, $optParams = [])
+  {
+    $params = ['entity' => $entity, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('runAccessReport', [$params], GoogleAnalyticsAdminV1betaRunAccessReportResponse::class);
   }
   /**
    * Searches through all changes to an account or its children given the

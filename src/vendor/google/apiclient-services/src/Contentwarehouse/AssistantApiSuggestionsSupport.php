@@ -27,14 +27,6 @@ class AssistantApiSuggestionsSupport extends \Google\Collection
   /**
    * @var bool
    */
-  public $coloredChipBackgroundBorderSupported;
-  /**
-   * @var bool
-   */
-  public $coloredChipTextSupported;
-  /**
-   * @var bool
-   */
   public $debugDataSupported;
   /**
    * @var bool
@@ -52,6 +44,10 @@ class AssistantApiSuggestionsSupport extends \Google\Collection
    * @var bool
    */
   public $executionContextSupported;
+  /**
+   * @var AssistantApiFeatureSpecificActionSupport
+   */
+  public $featureSpecificActionSupport;
   protected $featureSpecificActionSupportType = AssistantApiFeatureSpecificActionSupport::class;
   protected $featureSpecificActionSupportDataType = '';
   /**
@@ -74,6 +70,10 @@ class AssistantApiSuggestionsSupport extends \Google\Collection
    * @var bool
    */
   public $showTranslationSupported;
+  /**
+   * @var AssistantApiSuggestionsSupportDisplayTargetSupport[]
+   */
+  public $supportedDisplayTargets;
   protected $supportedDisplayTargetsType = AssistantApiSuggestionsSupportDisplayTargetSupport::class;
   protected $supportedDisplayTargetsDataType = 'array';
   /**
@@ -94,34 +94,6 @@ class AssistantApiSuggestionsSupport extends \Google\Collection
   public function getClickImpersonationSupported()
   {
     return $this->clickImpersonationSupported;
-  }
-  /**
-   * @param bool
-   */
-  public function setColoredChipBackgroundBorderSupported($coloredChipBackgroundBorderSupported)
-  {
-    $this->coloredChipBackgroundBorderSupported = $coloredChipBackgroundBorderSupported;
-  }
-  /**
-   * @return bool
-   */
-  public function getColoredChipBackgroundBorderSupported()
-  {
-    return $this->coloredChipBackgroundBorderSupported;
-  }
-  /**
-   * @param bool
-   */
-  public function setColoredChipTextSupported($coloredChipTextSupported)
-  {
-    $this->coloredChipTextSupported = $coloredChipTextSupported;
-  }
-  /**
-   * @return bool
-   */
-  public function getColoredChipTextSupported()
-  {
-    return $this->coloredChipTextSupported;
   }
   /**
    * @param bool

@@ -20,9 +20,12 @@ namespace Google\Service\Datalineage;
 class GoogleCloudDatacatalogLineageV1SearchLinksResponse extends \Google\Collection
 {
   protected $collection_key = 'links';
+  /**
+   * @var GoogleCloudDatacatalogLineageV1Link[]
+   */
+  public $links;
   protected $linksType = GoogleCloudDatacatalogLineageV1Link::class;
   protected $linksDataType = 'array';
-  public $links = [];
   /**
    * @var string
    */

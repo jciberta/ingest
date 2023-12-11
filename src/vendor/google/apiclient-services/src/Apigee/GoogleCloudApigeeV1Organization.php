@@ -20,12 +20,24 @@ namespace Google\Service\Apigee;
 class GoogleCloudApigeeV1Organization extends \Google\Collection
 {
   protected $collection_key = 'environments';
+  /**
+   * @var GoogleCloudApigeeV1AddonsConfig
+   */
+  public $addonsConfig;
   protected $addonsConfigType = GoogleCloudApigeeV1AddonsConfig::class;
   protected $addonsConfigDataType = '';
   /**
    * @var string
    */
   public $analyticsRegion;
+  /**
+   * @var string
+   */
+  public $apiConsumerDataEncryptionKeyName;
+  /**
+   * @var string
+   */
+  public $apiConsumerDataLocation;
   /**
    * @var string
    */
@@ -49,6 +61,10 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
   /**
    * @var string
    */
+  public $controlPlaneEncryptionKeyName;
+  /**
+   * @var string
+   */
   public $createdAt;
   /**
    * @var string
@@ -58,6 +74,10 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
    * @var string
    */
   public $description;
+  /**
+   * @var bool
+   */
+  public $disableVpcPeering;
   /**
    * @var string
    */
@@ -86,6 +106,10 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
    * @var string
    */
   public $projectId;
+  /**
+   * @var GoogleCloudApigeeV1Properties
+   */
+  public $properties;
   protected $propertiesType = GoogleCloudApigeeV1Properties::class;
   protected $propertiesDataType = '';
   /**
@@ -100,6 +124,10 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
    * @var string
    */
   public $state;
+  /**
+   * @var string
+   */
+  public $subscriptionPlan;
   /**
    * @var string
    */
@@ -136,6 +164,34 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
   public function getAnalyticsRegion()
   {
     return $this->analyticsRegion;
+  }
+  /**
+   * @param string
+   */
+  public function setApiConsumerDataEncryptionKeyName($apiConsumerDataEncryptionKeyName)
+  {
+    $this->apiConsumerDataEncryptionKeyName = $apiConsumerDataEncryptionKeyName;
+  }
+  /**
+   * @return string
+   */
+  public function getApiConsumerDataEncryptionKeyName()
+  {
+    return $this->apiConsumerDataEncryptionKeyName;
+  }
+  /**
+   * @param string
+   */
+  public function setApiConsumerDataLocation($apiConsumerDataLocation)
+  {
+    $this->apiConsumerDataLocation = $apiConsumerDataLocation;
+  }
+  /**
+   * @return string
+   */
+  public function getApiConsumerDataLocation()
+  {
+    return $this->apiConsumerDataLocation;
   }
   /**
    * @param string
@@ -210,6 +266,20 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
   /**
    * @param string
    */
+  public function setControlPlaneEncryptionKeyName($controlPlaneEncryptionKeyName)
+  {
+    $this->controlPlaneEncryptionKeyName = $controlPlaneEncryptionKeyName;
+  }
+  /**
+   * @return string
+   */
+  public function getControlPlaneEncryptionKeyName()
+  {
+    return $this->controlPlaneEncryptionKeyName;
+  }
+  /**
+   * @param string
+   */
   public function setCreatedAt($createdAt)
   {
     $this->createdAt = $createdAt;
@@ -248,6 +318,20 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
   public function getDescription()
   {
     return $this->description;
+  }
+  /**
+   * @param bool
+   */
+  public function setDisableVpcPeering($disableVpcPeering)
+  {
+    $this->disableVpcPeering = $disableVpcPeering;
+  }
+  /**
+   * @return bool
+   */
+  public function getDisableVpcPeering()
+  {
+    return $this->disableVpcPeering;
   }
   /**
    * @param string
@@ -402,6 +486,20 @@ class GoogleCloudApigeeV1Organization extends \Google\Collection
   public function getState()
   {
     return $this->state;
+  }
+  /**
+   * @param string
+   */
+  public function setSubscriptionPlan($subscriptionPlan)
+  {
+    $this->subscriptionPlan = $subscriptionPlan;
+  }
+  /**
+   * @return string
+   */
+  public function getSubscriptionPlan()
+  {
+    return $this->subscriptionPlan;
   }
   /**
    * @param string

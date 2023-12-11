@@ -23,6 +23,10 @@ class CryptoKeyVersion extends \Google\Model
    * @var string
    */
   public $algorithm;
+  /**
+   * @var KeyOperationAttestation
+   */
+  public $attestation;
   protected $attestationType = KeyOperationAttestation::class;
   protected $attestationDataType = '';
   /**
@@ -37,12 +41,24 @@ class CryptoKeyVersion extends \Google\Model
    * @var string
    */
   public $destroyTime;
+  /**
+   * @var string
+   */
+  public $externalDestructionFailureReason;
+  /**
+   * @var ExternalProtectionLevelOptions
+   */
+  public $externalProtectionLevelOptions;
   protected $externalProtectionLevelOptionsType = ExternalProtectionLevelOptions::class;
   protected $externalProtectionLevelOptionsDataType = '';
   /**
    * @var string
    */
   public $generateTime;
+  /**
+   * @var string
+   */
+  public $generationFailureReason;
   /**
    * @var string
    */
@@ -143,6 +159,20 @@ class CryptoKeyVersion extends \Google\Model
     return $this->destroyTime;
   }
   /**
+   * @param string
+   */
+  public function setExternalDestructionFailureReason($externalDestructionFailureReason)
+  {
+    $this->externalDestructionFailureReason = $externalDestructionFailureReason;
+  }
+  /**
+   * @return string
+   */
+  public function getExternalDestructionFailureReason()
+  {
+    return $this->externalDestructionFailureReason;
+  }
+  /**
    * @param ExternalProtectionLevelOptions
    */
   public function setExternalProtectionLevelOptions(ExternalProtectionLevelOptions $externalProtectionLevelOptions)
@@ -169,6 +199,20 @@ class CryptoKeyVersion extends \Google\Model
   public function getGenerateTime()
   {
     return $this->generateTime;
+  }
+  /**
+   * @param string
+   */
+  public function setGenerationFailureReason($generationFailureReason)
+  {
+    $this->generationFailureReason = $generationFailureReason;
+  }
+  /**
+   * @return string
+   */
+  public function getGenerationFailureReason()
+  {
+    return $this->generationFailureReason;
   }
   /**
    * @param string

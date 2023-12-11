@@ -19,12 +19,30 @@ namespace Google\Service\MigrationCenterAPI;
 
 class GuestOsDetails extends \Google\Model
 {
+  /**
+   * @var GuestConfigDetails
+   */
+  public $config;
   protected $configType = GuestConfigDetails::class;
   protected $configDataType = '';
-  public $config;
+  /**
+   * @var string
+   */
+  public $family;
+  /**
+   * @var string
+   */
+  public $osName;
+  /**
+   * @var GuestRuntimeDetails
+   */
+  public $runtime;
   protected $runtimeType = GuestRuntimeDetails::class;
   protected $runtimeDataType = '';
-  public $runtime;
+  /**
+   * @var string
+   */
+  public $version;
 
   /**
    * @param GuestConfigDetails
@@ -41,6 +59,34 @@ class GuestOsDetails extends \Google\Model
     return $this->config;
   }
   /**
+   * @param string
+   */
+  public function setFamily($family)
+  {
+    $this->family = $family;
+  }
+  /**
+   * @return string
+   */
+  public function getFamily()
+  {
+    return $this->family;
+  }
+  /**
+   * @param string
+   */
+  public function setOsName($osName)
+  {
+    $this->osName = $osName;
+  }
+  /**
+   * @return string
+   */
+  public function getOsName()
+  {
+    return $this->osName;
+  }
+  /**
    * @param GuestRuntimeDetails
    */
   public function setRuntime(GuestRuntimeDetails $runtime)
@@ -53,6 +99,20 @@ class GuestOsDetails extends \Google\Model
   public function getRuntime()
   {
     return $this->runtime;
+  }
+  /**
+   * @param string
+   */
+  public function setVersion($version)
+  {
+    $this->version = $version;
+  }
+  /**
+   * @return string
+   */
+  public function getVersion()
+  {
+    return $this->version;
   }
 }
 

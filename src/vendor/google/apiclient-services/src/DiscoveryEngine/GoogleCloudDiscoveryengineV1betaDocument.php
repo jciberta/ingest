@@ -20,6 +20,16 @@ namespace Google\Service\DiscoveryEngine;
 class GoogleCloudDiscoveryengineV1betaDocument extends \Google\Model
 {
   /**
+   * @var GoogleCloudDiscoveryengineV1betaDocumentContent
+   */
+  public $content;
+  protected $contentType = GoogleCloudDiscoveryengineV1betaDocumentContent::class;
+  protected $contentDataType = '';
+  /**
+   * @var array[]
+   */
+  public $derivedStructData;
+  /**
    * @var string
    */
   public $id;
@@ -44,6 +54,34 @@ class GoogleCloudDiscoveryengineV1betaDocument extends \Google\Model
    */
   public $structData;
 
+  /**
+   * @param GoogleCloudDiscoveryengineV1betaDocumentContent
+   */
+  public function setContent(GoogleCloudDiscoveryengineV1betaDocumentContent $content)
+  {
+    $this->content = $content;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1betaDocumentContent
+   */
+  public function getContent()
+  {
+    return $this->content;
+  }
+  /**
+   * @param array[]
+   */
+  public function setDerivedStructData($derivedStructData)
+  {
+    $this->derivedStructData = $derivedStructData;
+  }
+  /**
+   * @return array[]
+   */
+  public function getDerivedStructData()
+  {
+    return $this->derivedStructData;
+  }
   /**
    * @param string
    */

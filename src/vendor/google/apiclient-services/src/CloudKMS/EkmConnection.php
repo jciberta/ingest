@@ -27,11 +27,23 @@ class EkmConnection extends \Google\Collection
   /**
    * @var string
    */
+  public $cryptoSpacePath;
+  /**
+   * @var string
+   */
   public $etag;
   /**
    * @var string
    */
+  public $keyManagementMode;
+  /**
+   * @var string
+   */
   public $name;
+  /**
+   * @var ServiceResolver[]
+   */
+  public $serviceResolvers;
   protected $serviceResolversType = ServiceResolver::class;
   protected $serviceResolversDataType = 'array';
 
@@ -52,6 +64,20 @@ class EkmConnection extends \Google\Collection
   /**
    * @param string
    */
+  public function setCryptoSpacePath($cryptoSpacePath)
+  {
+    $this->cryptoSpacePath = $cryptoSpacePath;
+  }
+  /**
+   * @return string
+   */
+  public function getCryptoSpacePath()
+  {
+    return $this->cryptoSpacePath;
+  }
+  /**
+   * @param string
+   */
   public function setEtag($etag)
   {
     $this->etag = $etag;
@@ -62,6 +88,20 @@ class EkmConnection extends \Google\Collection
   public function getEtag()
   {
     return $this->etag;
+  }
+  /**
+   * @param string
+   */
+  public function setKeyManagementMode($keyManagementMode)
+  {
+    $this->keyManagementMode = $keyManagementMode;
+  }
+  /**
+   * @return string
+   */
+  public function getKeyManagementMode()
+  {
+    return $this->keyManagementMode;
   }
   /**
    * @param string

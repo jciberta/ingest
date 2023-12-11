@@ -20,6 +20,10 @@ namespace Google\Service\Integrations;
 class EnterpriseCrmFrontendsEventbusProtoTaskConfig extends \Google\Collection
 {
   protected $collection_key = 'nextTasks';
+  /**
+   * @var EnterpriseCrmEventbusProtoTaskAlertConfig[]
+   */
+  public $alertConfigs;
   protected $alertConfigsType = EnterpriseCrmEventbusProtoTaskAlertConfig::class;
   protected $alertConfigsDataType = 'array';
   /**
@@ -41,11 +45,15 @@ class EnterpriseCrmFrontendsEventbusProtoTaskConfig extends \Google\Collection
   /**
    * @var string
    */
-  public $errorCatcherConfigId;
+  public $errorCatcherId;
   /**
    * @var string
    */
   public $externalTaskType;
+  /**
+   * @var EnterpriseCrmEventbusProtoFailurePolicy
+   */
+  public $failurePolicy;
   protected $failurePolicyType = EnterpriseCrmEventbusProtoFailurePolicy::class;
   protected $failurePolicyDataType = '';
   /**
@@ -64,14 +72,26 @@ class EnterpriseCrmFrontendsEventbusProtoTaskConfig extends \Google\Collection
    * @var string
    */
   public $lastModifiedTime;
+  /**
+   * @var EnterpriseCrmEventbusProtoNextTask[]
+   */
+  public $nextTasks;
   protected $nextTasksType = EnterpriseCrmEventbusProtoNextTask::class;
   protected $nextTasksDataType = 'array';
   /**
    * @var string
    */
   public $nextTasksExecutionPolicy;
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoParameterEntry[]
+   */
+  public $parameters;
   protected $parametersType = EnterpriseCrmFrontendsEventbusProtoParameterEntry::class;
   protected $parametersDataType = 'map';
+  /**
+   * @var EnterpriseCrmEventbusProtoCoordinate
+   */
+  public $position;
   protected $positionType = EnterpriseCrmEventbusProtoCoordinate::class;
   protected $positionDataType = '';
   /**
@@ -82,12 +102,28 @@ class EnterpriseCrmFrontendsEventbusProtoTaskConfig extends \Google\Collection
    * @var string
    */
   public $preconditionLabel;
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoRollbackStrategy
+   */
+  public $rollbackStrategy;
   protected $rollbackStrategyType = EnterpriseCrmFrontendsEventbusProtoRollbackStrategy::class;
   protected $rollbackStrategyDataType = '';
+  /**
+   * @var EnterpriseCrmEventbusProtoSuccessPolicy
+   */
+  public $successPolicy;
   protected $successPolicyType = EnterpriseCrmEventbusProtoSuccessPolicy::class;
   protected $successPolicyDataType = '';
+  /**
+   * @var EnterpriseCrmEventbusProtoFailurePolicy
+   */
+  public $synchronousCallFailurePolicy;
   protected $synchronousCallFailurePolicyType = EnterpriseCrmEventbusProtoFailurePolicy::class;
   protected $synchronousCallFailurePolicyDataType = '';
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoTaskEntity
+   */
+  public $taskEntity;
   protected $taskEntityType = EnterpriseCrmFrontendsEventbusProtoTaskEntity::class;
   protected $taskEntityDataType = '';
   /**
@@ -188,16 +224,16 @@ class EnterpriseCrmFrontendsEventbusProtoTaskConfig extends \Google\Collection
   /**
    * @param string
    */
-  public function setErrorCatcherConfigId($errorCatcherConfigId)
+  public function setErrorCatcherId($errorCatcherId)
   {
-    $this->errorCatcherConfigId = $errorCatcherConfigId;
+    $this->errorCatcherId = $errorCatcherId;
   }
   /**
    * @return string
    */
-  public function getErrorCatcherConfigId()
+  public function getErrorCatcherId()
   {
-    return $this->errorCatcherConfigId;
+    return $this->errorCatcherId;
   }
   /**
    * @param string

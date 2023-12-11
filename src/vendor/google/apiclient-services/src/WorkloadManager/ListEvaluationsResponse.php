@@ -20,9 +20,12 @@ namespace Google\Service\WorkloadManager;
 class ListEvaluationsResponse extends \Google\Collection
 {
   protected $collection_key = 'unreachable';
+  /**
+   * @var Evaluation[]
+   */
+  public $evaluations;
   protected $evaluationsType = Evaluation::class;
   protected $evaluationsDataType = 'array';
-  public $evaluations;
   /**
    * @var string
    */

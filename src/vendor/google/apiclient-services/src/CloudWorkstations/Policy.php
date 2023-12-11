@@ -20,12 +20,18 @@ namespace Google\Service\CloudWorkstations;
 class Policy extends \Google\Collection
 {
   protected $collection_key = 'bindings';
+  /**
+   * @var AuditConfig[]
+   */
+  public $auditConfigs;
   protected $auditConfigsType = AuditConfig::class;
   protected $auditConfigsDataType = 'array';
-  public $auditConfigs;
+  /**
+   * @var Binding[]
+   */
+  public $bindings;
   protected $bindingsType = Binding::class;
   protected $bindingsDataType = 'array';
-  public $bindings;
   /**
    * @var string
    */

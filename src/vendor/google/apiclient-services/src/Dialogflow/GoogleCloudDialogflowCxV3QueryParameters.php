@@ -37,9 +37,17 @@ class GoogleCloudDialogflowCxV3QueryParameters extends \Google\Collection
    */
   public $disableWebhook;
   /**
+   * @var array[]
+   */
+  public $endUserMetadata;
+  /**
    * @var string[]
    */
   public $flowVersions;
+  /**
+   * @var GoogleTypeLatLng
+   */
+  public $geoLocation;
   protected $geoLocationType = GoogleTypeLatLng::class;
   protected $geoLocationDataType = '';
   /**
@@ -50,8 +58,22 @@ class GoogleCloudDialogflowCxV3QueryParameters extends \Google\Collection
    * @var array[]
    */
   public $payload;
+  /**
+   * @var GoogleCloudDialogflowCxV3SearchConfig
+   */
+  public $searchConfig;
+  protected $searchConfigType = GoogleCloudDialogflowCxV3SearchConfig::class;
+  protected $searchConfigDataType = '';
+  /**
+   * @var GoogleCloudDialogflowCxV3SessionEntityType[]
+   */
+  public $sessionEntityTypes;
   protected $sessionEntityTypesType = GoogleCloudDialogflowCxV3SessionEntityType::class;
   protected $sessionEntityTypesDataType = 'array';
+  /**
+   * @var string
+   */
+  public $sessionTtl;
   /**
    * @var string
    */
@@ -118,6 +140,20 @@ class GoogleCloudDialogflowCxV3QueryParameters extends \Google\Collection
     return $this->disableWebhook;
   }
   /**
+   * @param array[]
+   */
+  public function setEndUserMetadata($endUserMetadata)
+  {
+    $this->endUserMetadata = $endUserMetadata;
+  }
+  /**
+   * @return array[]
+   */
+  public function getEndUserMetadata()
+  {
+    return $this->endUserMetadata;
+  }
+  /**
    * @param string[]
    */
   public function setFlowVersions($flowVersions)
@@ -174,6 +210,20 @@ class GoogleCloudDialogflowCxV3QueryParameters extends \Google\Collection
     return $this->payload;
   }
   /**
+   * @param GoogleCloudDialogflowCxV3SearchConfig
+   */
+  public function setSearchConfig(GoogleCloudDialogflowCxV3SearchConfig $searchConfig)
+  {
+    $this->searchConfig = $searchConfig;
+  }
+  /**
+   * @return GoogleCloudDialogflowCxV3SearchConfig
+   */
+  public function getSearchConfig()
+  {
+    return $this->searchConfig;
+  }
+  /**
    * @param GoogleCloudDialogflowCxV3SessionEntityType[]
    */
   public function setSessionEntityTypes($sessionEntityTypes)
@@ -186,6 +236,20 @@ class GoogleCloudDialogflowCxV3QueryParameters extends \Google\Collection
   public function getSessionEntityTypes()
   {
     return $this->sessionEntityTypes;
+  }
+  /**
+   * @param string
+   */
+  public function setSessionTtl($sessionTtl)
+  {
+    $this->sessionTtl = $sessionTtl;
+  }
+  /**
+   * @return string
+   */
+  public function getSessionTtl()
+  {
+    return $this->sessionTtl;
   }
   /**
    * @param string

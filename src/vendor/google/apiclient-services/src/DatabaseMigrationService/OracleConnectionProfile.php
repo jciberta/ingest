@@ -23,6 +23,10 @@ class OracleConnectionProfile extends \Google\Model
    * @var string
    */
   public $databaseService;
+  /**
+   * @var ForwardSshTunnelConnectivity
+   */
+  public $forwardSshConnectivity;
   protected $forwardSshConnectivityType = ForwardSshTunnelConnectivity::class;
   protected $forwardSshConnectivityDataType = '';
   /**
@@ -41,8 +45,22 @@ class OracleConnectionProfile extends \Google\Model
    * @var int
    */
   public $port;
+  /**
+   * @var PrivateConnectivity
+   */
+  public $privateConnectivity;
   protected $privateConnectivityType = PrivateConnectivity::class;
   protected $privateConnectivityDataType = '';
+  /**
+   * @var SslConfig
+   */
+  public $ssl;
+  protected $sslType = SslConfig::class;
+  protected $sslDataType = '';
+  /**
+   * @var StaticServiceIpConnectivity
+   */
+  public $staticServiceIpConnectivity;
   protected $staticServiceIpConnectivityType = StaticServiceIpConnectivity::class;
   protected $staticServiceIpConnectivityDataType = '';
   /**
@@ -147,6 +165,20 @@ class OracleConnectionProfile extends \Google\Model
   public function getPrivateConnectivity()
   {
     return $this->privateConnectivity;
+  }
+  /**
+   * @param SslConfig
+   */
+  public function setSsl(SslConfig $ssl)
+  {
+    $this->ssl = $ssl;
+  }
+  /**
+   * @return SslConfig
+   */
+  public function getSsl()
+  {
+    return $this->ssl;
   }
   /**
    * @param StaticServiceIpConnectivity

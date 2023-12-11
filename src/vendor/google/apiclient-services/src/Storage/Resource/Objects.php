@@ -17,8 +17,10 @@
 
 namespace Google\Service\Storage\Resource;
 
+use Google\Service\Storage\BulkRestoreObjectsRequest;
 use Google\Service\Storage\Channel;
 use Google\Service\Storage\ComposeRequest;
+use Google\Service\Storage\GoogleLongrunningOperation;
 use Google\Service\Storage\Objects as ObjectsModel;
 use Google\Service\Storage\Policy;
 use Google\Service\Storage\RewriteResponse;
@@ -36,14 +38,29 @@ use Google\Service\Storage\TestIamPermissionsResponse;
 class Objects extends \Google\Service\Resource
 {
   /**
+   * Initiates a long-running bulk restore operation on the specified bucket.
+   * (objects.bulkRestore)
+   *
+   * @param string $bucket Name of the bucket in which the object resides.
+   * @param BulkRestoreObjectsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleLongrunningOperation
+   */
+  public function bulkRestore($bucket, BulkRestoreObjectsRequest $postBody, $optParams = [])
+  {
+    $params = ['bucket' => $bucket, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('bulkRestore', [$params], GoogleLongrunningOperation::class);
+  }
+  /**
    * Concatenates a list of existing objects into a new object in the same bucket.
    * (objects.compose)
    *
    * @param string $destinationBucket Name of the bucket containing the source
    * objects. The destination object is stored in this bucket.
    * @param string $destinationObject Name of the new object. For information
-   * about how to URL encode object names to be path safe, see Encoding URI Path
-   * Parts.
+   * about how to URL encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param ComposeRequest $postBody
    * @param array $optParams Optional parameters.
    *
@@ -75,11 +92,13 @@ class Objects extends \Google\Service\Resource
    * @param string $sourceBucket Name of the bucket in which to find the source
    * object.
    * @param string $sourceObject Name of the source object. For information about
-   * how to URL encode object names to be path safe, see Encoding URI Path Parts.
+   * how to URL encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param string $destinationBucket Name of the bucket in which to store the new
    * object. Overrides the provided object metadata's bucket value, if any.For
    * information about how to URL encode object names to be path safe, see
-   * Encoding URI Path Parts.
+   * [Encoding URI Path Parts](https://cloud.google.com/storage/docs/request-
+   * endpoints#encoding).
    * @param string $destinationObject Name of the new object. Required when the
    * object metadata is not otherwise provided. Overrides the object metadata's
    * name value, if any.
@@ -87,9 +106,9 @@ class Objects extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string destinationKmsKeyName Resource name of the Cloud KMS key,
-   * of the form projects/my-project/locations/global/keyRings/my-kr/cryptoKeys
-   * /my-key, that will be used to encrypt the object. Overrides the object
-   * metadata's kms_key_name value, if any.
+   * of the form projects/my-project/locations/global/keyRings/my-
+   * kr/cryptoKeys/my-key, that will be used to encrypt the object. Overrides the
+   * object metadata's kms_key_name value, if any.
    * @opt_param string destinationPredefinedAcl Apply a predefined set of access
    * controls to the destination object.
    * @opt_param string ifGenerationMatch Makes the operation conditional on
@@ -139,7 +158,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param array $optParams Optional parameters.
    *
    * @opt_param string generation If present, permanently deletes a specific
@@ -169,7 +189,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param array $optParams Optional parameters.
    *
    * @opt_param string generation If present, selects a specific revision of this
@@ -186,6 +207,8 @@ class Objects extends \Google\Service\Resource
    * @opt_param string ifMetagenerationNotMatch Makes the operation conditional on
    * whether the object's current metageneration does not match the given value.
    * @opt_param string projection Set of properties to return. Defaults to noAcl.
+   * @opt_param bool softDeleted If true, only soft-deleted object versions will
+   * be listed. The default is false. For more information, see Soft Delete.
    * @opt_param string userProject The project to be billed for this request.
    * Required for Requester Pays buckets.
    * @return StorageObject
@@ -201,7 +224,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param array $optParams Optional parameters.
    *
    * @opt_param string generation If present, selects a specific revision of this
@@ -247,7 +271,8 @@ class Objects extends \Google\Service\Resource
    * @opt_param string name Name of the object. Required when the object metadata
    * is not otherwise provided. Overrides the object metadata's name value, if
    * any. For information about how to URL encode object names to be path safe,
-   * see Encoding URI Path Parts.
+   * see [Encoding URI Path Parts](https://cloud.google.com/storage/docs/request-
+   * endpoints#encoding).
    * @opt_param string predefinedAcl Apply a predefined set of access controls to
    * this object.
    * @opt_param string projection Set of properties to return. Defaults to noAcl,
@@ -278,9 +303,14 @@ class Objects extends \Google\Service\Resource
    * lexicographically before endOffset. If startOffset is also set, the objects
    * listed will have names between startOffset (inclusive) and endOffset
    * (exclusive).
+   * @opt_param bool includeFoldersAsPrefixes Only applicable if delimiter is set
+   * to '/'. If true, will also include folders and managed folders (besides
+   * objects) in the returned prefixes.
    * @opt_param bool includeTrailingDelimiter If true, objects that end in exactly
    * one instance of delimiter will have their metadata included in items in
    * addition to prefixes.
+   * @opt_param string matchGlob Filter results to objects and prefixes that match
+   * this glob pattern.
    * @opt_param string maxResults Maximum number of items plus prefixes to return
    * in a single page of responses. As duplicate prefixes are omitted, fewer total
    * results may be returned than requested. The service will use this parameter
@@ -290,6 +320,8 @@ class Objects extends \Google\Service\Resource
    * @opt_param string prefix Filter results to objects whose names begin with
    * this prefix.
    * @opt_param string projection Set of properties to return. Defaults to noAcl.
+   * @opt_param bool softDeleted If true, only soft-deleted object versions will
+   * be listed. The default is false. For more information, see Soft Delete.
    * @opt_param string startOffset Filter results to objects whose names are
    * lexicographically equal to or after startOffset. If endOffset is also set,
    * the objects listed will have names between startOffset (inclusive) and
@@ -311,7 +343,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param StorageObject $postBody
    * @param array $optParams Optional parameters.
    *
@@ -328,6 +361,9 @@ class Objects extends \Google\Service\Resource
    * whether the object's current metageneration matches the given value.
    * @opt_param string ifMetagenerationNotMatch Makes the operation conditional on
    * whether the object's current metageneration does not match the given value.
+   * @opt_param bool overrideUnlockedRetention Must be true to remove the
+   * retention configuration, reduce its unlocked retention period, or change its
+   * mode from unlocked to locked.
    * @opt_param string predefinedAcl Apply a predefined set of access controls to
    * this object.
    * @opt_param string projection Set of properties to return. Defaults to full.
@@ -342,26 +378,63 @@ class Objects extends \Google\Service\Resource
     return $this->call('patch', [$params], StorageObject::class);
   }
   /**
+   * Restores a soft-deleted object. (objects.restore)
+   *
+   * @param string $bucket Name of the bucket in which the object resides.
+   * @param string $object Name of the object. For information about how to URL
+   * encode object names to be path safe, see Encoding URI Path Parts.
+   * @param string $generation Selects a specific revision of this object.
+   * @param StorageObject $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool copySourceAcl If true, copies the source object's ACL;
+   * otherwise, uses the bucket's default object ACL. The default is false.
+   * @opt_param string ifGenerationMatch Makes the operation conditional on
+   * whether the object's one live generation matches the given value. Setting to
+   * 0 makes the operation succeed only if there are no live versions of the
+   * object.
+   * @opt_param string ifGenerationNotMatch Makes the operation conditional on
+   * whether none of the object's live generations match the given value. If no
+   * live object exists, the precondition fails. Setting to 0 makes the operation
+   * succeed only if there is a live version of the object.
+   * @opt_param string ifMetagenerationMatch Makes the operation conditional on
+   * whether the object's one live metageneration matches the given value.
+   * @opt_param string ifMetagenerationNotMatch Makes the operation conditional on
+   * whether none of the object's live metagenerations match the given value.
+   * @opt_param string projection Set of properties to return. Defaults to full.
+   * @opt_param string userProject The project to be billed for this request.
+   * Required for Requester Pays buckets.
+   * @return StorageObject
+   */
+  public function restore($bucket, $object, $generation, StorageObject $postBody, $optParams = [])
+  {
+    $params = ['bucket' => $bucket, 'object' => $object, 'generation' => $generation, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('restore', [$params], StorageObject::class);
+  }
+  /**
    * Rewrites a source object to a destination object. Optionally overrides
    * metadata. (objects.rewrite)
    *
    * @param string $sourceBucket Name of the bucket in which to find the source
    * object.
    * @param string $sourceObject Name of the source object. For information about
-   * how to URL encode object names to be path safe, see Encoding URI Path Parts.
+   * how to URL encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param string $destinationBucket Name of the bucket in which to store the new
    * object. Overrides the provided object metadata's bucket value, if any.
    * @param string $destinationObject Name of the new object. Required when the
    * object metadata is not otherwise provided. Overrides the object metadata's
    * name value, if any. For information about how to URL encode object names to
-   * be path safe, see Encoding URI Path Parts.
+   * be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param StorageObject $postBody
    * @param array $optParams Optional parameters.
    *
    * @opt_param string destinationKmsKeyName Resource name of the Cloud KMS key,
-   * of the form projects/my-project/locations/global/keyRings/my-kr/cryptoKeys
-   * /my-key, that will be used to encrypt the object. Overrides the object
-   * metadata's kms_key_name value, if any.
+   * of the form projects/my-project/locations/global/keyRings/my-
+   * kr/cryptoKeys/my-key, that will be used to encrypt the object. Overrides the
+   * object metadata's kms_key_name value, if any.
    * @opt_param string destinationPredefinedAcl Apply a predefined set of access
    * controls to the destination object.
    * @opt_param string ifGenerationMatch Makes the operation conditional on
@@ -420,7 +493,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param Policy $postBody
    * @param array $optParams Optional parameters.
    *
@@ -442,7 +516,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param string|array $permissions Permissions to test.
    * @param array $optParams Optional parameters.
    *
@@ -463,7 +538,8 @@ class Objects extends \Google\Service\Resource
    *
    * @param string $bucket Name of the bucket in which the object resides.
    * @param string $object Name of the object. For information about how to URL
-   * encode object names to be path safe, see Encoding URI Path Parts.
+   * encode object names to be path safe, see [Encoding URI Path
+   * Parts](https://cloud.google.com/storage/docs/request-endpoints#encoding).
    * @param StorageObject $postBody
    * @param array $optParams Optional parameters.
    *
@@ -480,6 +556,9 @@ class Objects extends \Google\Service\Resource
    * whether the object's current metageneration matches the given value.
    * @opt_param string ifMetagenerationNotMatch Makes the operation conditional on
    * whether the object's current metageneration does not match the given value.
+   * @opt_param bool overrideUnlockedRetention Must be true to remove the
+   * retention configuration, reduce its unlocked retention period, or change its
+   * mode from unlocked to locked.
    * @opt_param string predefinedAcl Apply a predefined set of access controls to
    * this object.
    * @opt_param string projection Set of properties to return. Defaults to full.

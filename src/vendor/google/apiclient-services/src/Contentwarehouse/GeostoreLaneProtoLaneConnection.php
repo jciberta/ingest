@@ -20,14 +20,26 @@ namespace Google\Service\Contentwarehouse;
 class GeostoreLaneProtoLaneConnection extends \Google\Collection
 {
   protected $collection_key = 'boundingMarker';
+  /**
+   * @var GeostoreBoundingMarkerProto[]
+   */
+  public $boundingMarker;
   protected $boundingMarkerType = GeostoreBoundingMarkerProto::class;
   protected $boundingMarkerDataType = 'array';
   /**
    * @var string
    */
   public $connectionToken;
+  /**
+   * @var GeostoreCurveConnectionProto
+   */
+  public $curve;
   protected $curveType = GeostoreCurveConnectionProto::class;
   protected $curveDataType = '';
+  /**
+   * @var GeostoreFlowLineProto
+   */
+  public $flow;
   protected $flowType = GeostoreFlowLineProto::class;
   protected $flowDataType = '';
   /**
@@ -38,8 +50,16 @@ class GeostoreLaneProtoLaneConnection extends \Google\Collection
    * @var bool
    */
   public $primaryConnection;
+  /**
+   * @var GeostoreFeatureIdProto
+   */
+  public $segment;
   protected $segmentType = GeostoreFeatureIdProto::class;
   protected $segmentDataType = '';
+  /**
+   * @var bool
+   */
+  public $yieldToOtherConnections;
 
   /**
    * @param GeostoreBoundingMarkerProto[]
@@ -138,6 +158,20 @@ class GeostoreLaneProtoLaneConnection extends \Google\Collection
   public function getSegment()
   {
     return $this->segment;
+  }
+  /**
+   * @param bool
+   */
+  public function setYieldToOtherConnections($yieldToOtherConnections)
+  {
+    $this->yieldToOtherConnections = $yieldToOtherConnections;
+  }
+  /**
+   * @return bool
+   */
+  public function getYieldToOtherConnections()
+  {
+    return $this->yieldToOtherConnections;
   }
 }
 

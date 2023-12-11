@@ -23,10 +23,13 @@ class RelationDescriptor extends \Google\Collection
   /**
    * @var string[]
    */
-  public $bigqueryLabels = [];
+  public $bigqueryLabels;
+  /**
+   * @var ColumnDescriptor[]
+   */
+  public $columns;
   protected $columnsType = ColumnDescriptor::class;
   protected $columnsDataType = 'array';
-  public $columns = [];
   /**
    * @var string
    */

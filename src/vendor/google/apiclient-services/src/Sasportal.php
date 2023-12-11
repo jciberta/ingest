@@ -34,6 +34,9 @@ use Google\Client;
  */
 class Sasportal extends \Google\Service
 {
+  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  const CLOUD_PLATFORM =
+      "https://www.googleapis.com/auth/cloud-platform";
   /** Read, create, update, and delete your SAS Portal data.. */
   const SASPORTAL =
       "https://www.googleapis.com/auth/sasportal";
@@ -81,7 +84,11 @@ class Sasportal extends \Google\Service
         'customers',
         [
           'methods' => [
-            'get' => [
+            'checkHasProvisionedDeployment' => [
+              'path' => 'v1alpha1/customers:checkHasProvisionedDeployment',
+              'httpMethod' => 'GET',
+              'parameters' => [],
+            ],'get' => [
               'path' => 'v1alpha1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
@@ -104,6 +111,10 @@ class Sasportal extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'migrateOrganization' => [
+              'path' => 'v1alpha1/customers:migrateOrganization',
+              'httpMethod' => 'POST',
+              'parameters' => [],
             ],'patch' => [
               'path' => 'v1alpha1/{+name}',
               'httpMethod' => 'PATCH',
@@ -120,6 +131,10 @@ class Sasportal extends \Google\Service
               ],
             ],'provisionDeployment' => [
               'path' => 'v1alpha1/customers:provisionDeployment',
+              'httpMethod' => 'POST',
+              'parameters' => [],
+            ],'setupSasAnalytics' => [
+              'path' => 'v1alpha1/customers:setupSasAnalytics',
               'httpMethod' => 'POST',
               'parameters' => [],
             ],

@@ -28,6 +28,10 @@ class GoogleCloudApigeeV1ApiProduct extends \Google\Collection
    * @var string
    */
   public $approvalType;
+  /**
+   * @var GoogleCloudApigeeV1Attribute[]
+   */
+  public $attributes;
   protected $attributesType = GoogleCloudApigeeV1Attribute::class;
   protected $attributesDataType = 'array';
   /**
@@ -46,8 +50,18 @@ class GoogleCloudApigeeV1ApiProduct extends \Google\Collection
    * @var string[]
    */
   public $environments;
+  /**
+   * @var GoogleCloudApigeeV1GraphQLOperationGroup
+   */
+  public $graphqlOperationGroup;
   protected $graphqlOperationGroupType = GoogleCloudApigeeV1GraphQLOperationGroup::class;
   protected $graphqlOperationGroupDataType = '';
+  /**
+   * @var GoogleCloudApigeeV1GrpcOperationGroup
+   */
+  public $grpcOperationGroup;
+  protected $grpcOperationGroupType = GoogleCloudApigeeV1GrpcOperationGroup::class;
+  protected $grpcOperationGroupDataType = '';
   /**
    * @var string
    */
@@ -56,6 +70,10 @@ class GoogleCloudApigeeV1ApiProduct extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var GoogleCloudApigeeV1OperationGroup
+   */
+  public $operationGroup;
   protected $operationGroupType = GoogleCloudApigeeV1OperationGroup::class;
   protected $operationGroupDataType = '';
   /**
@@ -194,6 +212,20 @@ class GoogleCloudApigeeV1ApiProduct extends \Google\Collection
   public function getGraphqlOperationGroup()
   {
     return $this->graphqlOperationGroup;
+  }
+  /**
+   * @param GoogleCloudApigeeV1GrpcOperationGroup
+   */
+  public function setGrpcOperationGroup(GoogleCloudApigeeV1GrpcOperationGroup $grpcOperationGroup)
+  {
+    $this->grpcOperationGroup = $grpcOperationGroup;
+  }
+  /**
+   * @return GoogleCloudApigeeV1GrpcOperationGroup
+   */
+  public function getGrpcOperationGroup()
+  {
+    return $this->grpcOperationGroup;
   }
   /**
    * @param string

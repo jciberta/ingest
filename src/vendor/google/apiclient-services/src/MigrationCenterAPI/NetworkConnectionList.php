@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class NetworkConnectionList extends \Google\Collection
 {
   protected $collection_key = 'entries';
+  /**
+   * @var NetworkConnection[]
+   */
+  public $entries;
   protected $entriesType = NetworkConnection::class;
   protected $entriesDataType = 'array';
-  public $entries = [];
 
   /**
    * @param NetworkConnection[]

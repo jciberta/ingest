@@ -20,6 +20,16 @@ namespace Google\Service\CloudDataplex;
 class GoogleCloudDataplexV1DataQualityResult extends \Google\Collection
 {
   protected $collection_key = 'rules';
+  /**
+   * @var GoogleCloudDataplexV1DataQualityColumnResult[]
+   */
+  public $columns;
+  protected $columnsType = GoogleCloudDataplexV1DataQualityColumnResult::class;
+  protected $columnsDataType = 'array';
+  /**
+   * @var GoogleCloudDataplexV1DataQualityDimensionResult[]
+   */
+  public $dimensions;
   protected $dimensionsType = GoogleCloudDataplexV1DataQualityDimensionResult::class;
   protected $dimensionsDataType = 'array';
   /**
@@ -27,14 +37,46 @@ class GoogleCloudDataplexV1DataQualityResult extends \Google\Collection
    */
   public $passed;
   /**
+   * @var GoogleCloudDataplexV1DataQualityResultPostScanActionsResult
+   */
+  public $postScanActionsResult;
+  protected $postScanActionsResultType = GoogleCloudDataplexV1DataQualityResultPostScanActionsResult::class;
+  protected $postScanActionsResultDataType = '';
+  /**
    * @var string
    */
   public $rowCount;
+  /**
+   * @var GoogleCloudDataplexV1DataQualityRuleResult[]
+   */
+  public $rules;
   protected $rulesType = GoogleCloudDataplexV1DataQualityRuleResult::class;
   protected $rulesDataType = 'array';
+  /**
+   * @var GoogleCloudDataplexV1ScannedData
+   */
+  public $scannedData;
   protected $scannedDataType = GoogleCloudDataplexV1ScannedData::class;
   protected $scannedDataDataType = '';
+  /**
+   * @var float
+   */
+  public $score;
 
+  /**
+   * @param GoogleCloudDataplexV1DataQualityColumnResult[]
+   */
+  public function setColumns($columns)
+  {
+    $this->columns = $columns;
+  }
+  /**
+   * @return GoogleCloudDataplexV1DataQualityColumnResult[]
+   */
+  public function getColumns()
+  {
+    return $this->columns;
+  }
   /**
    * @param GoogleCloudDataplexV1DataQualityDimensionResult[]
    */
@@ -62,6 +104,20 @@ class GoogleCloudDataplexV1DataQualityResult extends \Google\Collection
   public function getPassed()
   {
     return $this->passed;
+  }
+  /**
+   * @param GoogleCloudDataplexV1DataQualityResultPostScanActionsResult
+   */
+  public function setPostScanActionsResult(GoogleCloudDataplexV1DataQualityResultPostScanActionsResult $postScanActionsResult)
+  {
+    $this->postScanActionsResult = $postScanActionsResult;
+  }
+  /**
+   * @return GoogleCloudDataplexV1DataQualityResultPostScanActionsResult
+   */
+  public function getPostScanActionsResult()
+  {
+    return $this->postScanActionsResult;
   }
   /**
    * @param string
@@ -104,6 +160,20 @@ class GoogleCloudDataplexV1DataQualityResult extends \Google\Collection
   public function getScannedData()
   {
     return $this->scannedData;
+  }
+  /**
+   * @param float
+   */
+  public function setScore($score)
+  {
+    $this->score = $score;
+  }
+  /**
+   * @return float
+   */
+  public function getScore()
+  {
+    return $this->score;
   }
 }
 

@@ -20,41 +20,121 @@ namespace Google\Service\DatabaseMigrationService;
 class DatabaseEntity extends \Google\Collection
 {
   protected $collection_key = 'mappings';
+  /**
+   * @var DatabaseInstanceEntity
+   */
+  public $database;
+  protected $databaseType = DatabaseInstanceEntity::class;
+  protected $databaseDataType = '';
+  /**
+   * @var FunctionEntity
+   */
+  public $databaseFunction;
   protected $databaseFunctionType = FunctionEntity::class;
   protected $databaseFunctionDataType = '';
+  /**
+   * @var PackageEntity
+   */
+  public $databasePackage;
   protected $databasePackageType = PackageEntity::class;
   protected $databasePackageDataType = '';
+  /**
+   * @var EntityDdl[]
+   */
+  public $entityDdl;
+  protected $entityDdlType = EntityDdl::class;
+  protected $entityDdlDataType = 'array';
   /**
    * @var string
    */
   public $entityType;
+  /**
+   * @var EntityIssue[]
+   */
+  public $issues;
+  protected $issuesType = EntityIssue::class;
+  protected $issuesDataType = 'array';
+  /**
+   * @var EntityMapping[]
+   */
+  public $mappings;
   protected $mappingsType = EntityMapping::class;
   protected $mappingsDataType = 'array';
+  /**
+   * @var MaterializedViewEntity
+   */
+  public $materializedView;
+  protected $materializedViewType = MaterializedViewEntity::class;
+  protected $materializedViewDataType = '';
   /**
    * @var string
    */
   public $parentEntity;
+  /**
+   * @var SchemaEntity
+   */
+  public $schema;
   protected $schemaType = SchemaEntity::class;
   protected $schemaDataType = '';
+  /**
+   * @var SequenceEntity
+   */
+  public $sequence;
   protected $sequenceType = SequenceEntity::class;
   protected $sequenceDataType = '';
   /**
    * @var string
    */
   public $shortName;
+  /**
+   * @var StoredProcedureEntity
+   */
+  public $storedProcedure;
   protected $storedProcedureType = StoredProcedureEntity::class;
   protected $storedProcedureDataType = '';
+  /**
+   * @var SynonymEntity
+   */
+  public $synonym;
   protected $synonymType = SynonymEntity::class;
   protected $synonymDataType = '';
+  /**
+   * @var TableEntity
+   */
+  public $table;
   protected $tableType = TableEntity::class;
   protected $tableDataType = '';
   /**
    * @var string
    */
   public $tree;
+  /**
+   * @var UDTEntity
+   */
+  public $udt;
+  protected $udtType = UDTEntity::class;
+  protected $udtDataType = '';
+  /**
+   * @var ViewEntity
+   */
+  public $view;
   protected $viewType = ViewEntity::class;
   protected $viewDataType = '';
 
+  /**
+   * @param DatabaseInstanceEntity
+   */
+  public function setDatabase(DatabaseInstanceEntity $database)
+  {
+    $this->database = $database;
+  }
+  /**
+   * @return DatabaseInstanceEntity
+   */
+  public function getDatabase()
+  {
+    return $this->database;
+  }
   /**
    * @param FunctionEntity
    */
@@ -84,6 +164,20 @@ class DatabaseEntity extends \Google\Collection
     return $this->databasePackage;
   }
   /**
+   * @param EntityDdl[]
+   */
+  public function setEntityDdl($entityDdl)
+  {
+    $this->entityDdl = $entityDdl;
+  }
+  /**
+   * @return EntityDdl[]
+   */
+  public function getEntityDdl()
+  {
+    return $this->entityDdl;
+  }
+  /**
    * @param string
    */
   public function setEntityType($entityType)
@@ -98,6 +192,20 @@ class DatabaseEntity extends \Google\Collection
     return $this->entityType;
   }
   /**
+   * @param EntityIssue[]
+   */
+  public function setIssues($issues)
+  {
+    $this->issues = $issues;
+  }
+  /**
+   * @return EntityIssue[]
+   */
+  public function getIssues()
+  {
+    return $this->issues;
+  }
+  /**
    * @param EntityMapping[]
    */
   public function setMappings($mappings)
@@ -110,6 +218,20 @@ class DatabaseEntity extends \Google\Collection
   public function getMappings()
   {
     return $this->mappings;
+  }
+  /**
+   * @param MaterializedViewEntity
+   */
+  public function setMaterializedView(MaterializedViewEntity $materializedView)
+  {
+    $this->materializedView = $materializedView;
+  }
+  /**
+   * @return MaterializedViewEntity
+   */
+  public function getMaterializedView()
+  {
+    return $this->materializedView;
   }
   /**
    * @param string
@@ -222,6 +344,20 @@ class DatabaseEntity extends \Google\Collection
   public function getTree()
   {
     return $this->tree;
+  }
+  /**
+   * @param UDTEntity
+   */
+  public function setUdt(UDTEntity $udt)
+  {
+    $this->udt = $udt;
+  }
+  /**
+   * @return UDTEntity
+   */
+  public function getUdt()
+  {
+    return $this->udt;
   }
   /**
    * @param ViewEntity

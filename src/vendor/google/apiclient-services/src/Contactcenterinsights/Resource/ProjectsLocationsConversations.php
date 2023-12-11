@@ -18,10 +18,12 @@
 namespace Google\Service\Contactcenterinsights\Resource;
 
 use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1BulkAnalyzeConversationsRequest;
+use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1BulkDeleteConversationsRequest;
 use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1CalculateStatsResponse;
 use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1Conversation;
 use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1IngestConversationsRequest;
 use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1ListConversationsResponse;
+use Google\Service\Contactcenterinsights\GoogleCloudContactcenterinsightsV1UploadConversationRequest;
 use Google\Service\Contactcenterinsights\GoogleLongrunningOperation;
 use Google\Service\Contactcenterinsights\GoogleProtobufEmpty;
 
@@ -49,6 +51,22 @@ class ProjectsLocationsConversations extends \Google\Service\Resource
     $params = ['parent' => $parent, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('bulkAnalyze', [$params], GoogleLongrunningOperation::class);
+  }
+  /**
+   * Deletes multiple conversations in a single request.
+   * (conversations.bulkDelete)
+   *
+   * @param string $parent Required. The parent resource to delete conversations
+   * from. Format: projects/{project}/locations/{location}
+   * @param GoogleCloudContactcenterinsightsV1BulkDeleteConversationsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleLongrunningOperation
+   */
+  public function bulkDelete($parent, GoogleCloudContactcenterinsightsV1BulkDeleteConversationsRequest $postBody, $optParams = [])
+  {
+    $params = ['parent' => $parent, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('bulkDelete', [$params], GoogleLongrunningOperation::class);
   }
   /**
    * Gets conversation statistics. (conversations.calculateStats)
@@ -177,6 +195,22 @@ class ProjectsLocationsConversations extends \Google\Service\Resource
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('patch', [$params], GoogleCloudContactcenterinsightsV1Conversation::class);
+  }
+  /**
+   * Create a longrunning conversation upload operation. This method differs from
+   * CreateConversation by allowing audio transcription and optional DLP
+   * redaction. (conversations.upload)
+   *
+   * @param string $parent Required. The parent resource of the conversation.
+   * @param GoogleCloudContactcenterinsightsV1UploadConversationRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleLongrunningOperation
+   */
+  public function upload($parent, GoogleCloudContactcenterinsightsV1UploadConversationRequest $postBody, $optParams = [])
+  {
+    $params = ['parent' => $parent, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('upload', [$params], GoogleLongrunningOperation::class);
   }
 }
 

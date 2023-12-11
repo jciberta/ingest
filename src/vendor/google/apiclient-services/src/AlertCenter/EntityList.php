@@ -20,9 +20,12 @@ namespace Google\Service\AlertCenter;
 class EntityList extends \Google\Collection
 {
   protected $collection_key = 'headers';
+  /**
+   * @var Entity[]
+   */
+  public $entities;
   protected $entitiesType = Entity::class;
   protected $entitiesDataType = 'array';
-  public $entities;
   /**
    * @var string[]
    */

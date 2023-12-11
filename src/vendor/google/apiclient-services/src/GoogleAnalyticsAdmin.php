@@ -23,7 +23,13 @@ use Google\Client;
  * Service definition for GoogleAnalyticsAdmin (v1beta).
  *
  * <p>
-</p>
+ * Manage properties in Google Analytics. Warning: Creating multiple Customer
+ * Applications, Accounts, or Projects to simulate or act as a single Customer
+ * Application, Account, or Project (respectively) or to circumvent Service-
+ * specific usage limits or quotas is a direct violation of Google Cloud
+ * Platform Terms of Service as well as Google APIs Terms of Service. These
+ * actions can result in immediate termination of your GCP project(s) without
+ * any warning.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -162,6 +168,16 @@ class GoogleAnalyticsAdmin extends \Google\Service
               'path' => 'v1beta/accounts:provisionAccountTicket',
               'httpMethod' => 'POST',
               'parameters' => [],
+            ],'runAccessReport' => [
+              'path' => 'v1beta/{+entity}:runAccessReport',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'entity' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'searchChangeHistoryEvents' => [
               'path' => 'v1beta/{+account}:searchChangeHistoryEvents',
               'httpMethod' => 'POST',
@@ -261,6 +277,16 @@ class GoogleAnalyticsAdmin extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'runAccessReport' => [
+              'path' => 'v1beta/{+entity}:runAccessReport',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'entity' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'updateDataRetentionSettings' => [
               'path' => 'v1beta/{+name}',
               'httpMethod' => 'PATCH',
@@ -329,6 +355,20 @@ class GoogleAnalyticsAdmin extends \Google\Service
                   'type' => 'integer',
                 ],
                 'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'patch' => [
+              'path' => 'v1beta/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'updateMask' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

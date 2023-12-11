@@ -41,8 +41,8 @@ class ProjectsHistoriesExecutionsSteps extends \Google\Service\Resource
    * e.g. if the locale format is incorrect - NOT_FOUND - if the containing Step
    * does not exist (steps.accessibilityClusters)
    *
-   * @param string $name A full resource name of the step. For example, projects
-   * /my-project/histories/bh.1234567890abcdef/executions/
+   * @param string $name A full resource name of the step. For example,
+   * projects/my-project/histories/bh.1234567890abcdef/executions/
    * 1234567890123456789/steps/bs.1234567890abcdef Required.
    * @param array $optParams Optional parameters.
    *
@@ -176,7 +176,7 @@ class ProjectsHistoriesExecutionsSteps extends \Google\Service\Resource
    * Publish xml files to an existing Step. May return any of the following
    * canonical error codes: - PERMISSION_DENIED - if the user is not authorized to
    * write project - INVALID_ARGUMENT - if the request is malformed -
-   * FAILED_PRECONDITION - if the requested state transition is illegal, e.g try
+   * FAILED_PRECONDITION - if the requested state transition is illegal, e.g. try
    * to upload a duplicate xml file or a file too large. - NOT_FOUND - if the
    * containing Execution does not exist (steps.publishXunitXmlFiles)
    *

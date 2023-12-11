@@ -56,12 +56,18 @@ class GoogleCloudChannelV1EntitlementChange extends \Google\Collection
    * @var string
    */
   public $otherChangeReason;
+  /**
+   * @var GoogleCloudChannelV1Parameter[]
+   */
+  public $parameters;
   protected $parametersType = GoogleCloudChannelV1Parameter::class;
   protected $parametersDataType = 'array';
-  public $parameters = [];
+  /**
+   * @var GoogleCloudChannelV1ProvisionedService
+   */
+  public $provisionedService;
   protected $provisionedServiceType = GoogleCloudChannelV1ProvisionedService::class;
   protected $provisionedServiceDataType = '';
-  public $provisionedService;
   /**
    * @var string
    */

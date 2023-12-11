@@ -23,6 +23,14 @@ class ManagedProductTaxAndComplianceSettings extends \Google\Model
    * @var string
    */
   public $eeaWithdrawalRightType;
+  /**
+   * @var bool
+   */
+  public $isTokenizedDigitalAsset;
+  /**
+   * @var RegionalTaxRateInfo[]
+   */
+  public $taxRateInfoByRegionCode;
   protected $taxRateInfoByRegionCodeType = RegionalTaxRateInfo::class;
   protected $taxRateInfoByRegionCodeDataType = 'map';
 
@@ -39,6 +47,20 @@ class ManagedProductTaxAndComplianceSettings extends \Google\Model
   public function getEeaWithdrawalRightType()
   {
     return $this->eeaWithdrawalRightType;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsTokenizedDigitalAsset($isTokenizedDigitalAsset)
+  {
+    $this->isTokenizedDigitalAsset = $isTokenizedDigitalAsset;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsTokenizedDigitalAsset()
+  {
+    return $this->isTokenizedDigitalAsset;
   }
   /**
    * @param RegionalTaxRateInfo[]

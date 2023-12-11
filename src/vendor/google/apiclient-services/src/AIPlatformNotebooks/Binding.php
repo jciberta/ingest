@@ -20,13 +20,16 @@ namespace Google\Service\AIPlatformNotebooks;
 class Binding extends \Google\Collection
 {
   protected $collection_key = 'members';
+  /**
+   * @var Expr
+   */
+  public $condition;
   protected $conditionType = Expr::class;
   protected $conditionDataType = '';
-  public $condition;
   /**
    * @var string[]
    */
-  public $members = [];
+  public $members;
   /**
    * @var string
    */

@@ -19,9 +19,12 @@ namespace Google\Service\DriveLabels;
 
 class GoogleAppsDriveLabelsV2DeltaUpdateLabelRequestCreateSelectionChoiceRequest extends \Google\Model
 {
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldSelectionOptionsChoice
+   */
+  public $choice;
   protected $choiceType = GoogleAppsDriveLabelsV2FieldSelectionOptionsChoice::class;
   protected $choiceDataType = '';
-  public $choice;
   /**
    * @var string
    */
