@@ -1544,6 +1544,16 @@ class GrupProfessorsAssignacioUF extends ProfessorsAssignacioUF
 //class ProfessorsEquip extends Form
 class ProfessorsEquip extends Objecte
 {
+	// Tipus d'equip
+	const TIPUS_EQUIP = array(
+		'DP' => 'Departament', 
+		'ED' => 'Equip docent',
+		'EX' => 'Equip de documentació',
+		'CO' => 'Comissió',
+		'CQ' => 'Comissió de qualitat',
+		'CM' => 'Comissió de mobilitat'
+	);
+	
 	/**
 	* Identificador de l'equip.
 	* @var array
@@ -1586,18 +1596,13 @@ class ProfessorsEquip extends Objecte
 	 */
 	private function CreaSQL(int $EquipId): string {
 		return "
-			SELECT EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, 
-			CASE EQ.tipus 
-			    WHEN 'DP' THEN 'Departament' 
-			    WHEN 'ED' THEN 'Equip docent'
-			    WHEN 'CO' THEN 'Comissió' 
-			    WHEN 'CQ' THEN 'Comissió de qualitat' 
-			    WHEN 'CM' THEN 'Comissió de mobilitat' 
-			END AS Tipus, 
-			EQ.nom AS NomEquip, 
-			U.usuari_id, 
-			FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor,
-			U.username 
+			SELECT 
+				EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, ".
+				SQL::CreaCase('EQ.tipus', self::TIPUS_EQUIP)." AS Tipus, 
+				EQ.nom AS NomEquip, 
+				U.usuari_id, 
+				FormataNomCognom1Cognom2(U.nom, U.cognom1, U.cognom2) AS NomProfessor,
+				U.username 
 			FROM EQUIP EQ 
 			LEFT JOIN ANY_ACADEMIC AA ON (EQ.any_academic_id=AA.any_academic_id) 
 			LEFT JOIN USUARI U ON (EQ.cap=U.usuari_id)

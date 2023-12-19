@@ -24,6 +24,12 @@ class Document extends Objecte
 		'B' => 'Públic'
 	);
 
+	// Categoria
+	const CATEGORIA = array(
+		'D' => 'Document de centre',
+		'I' => 'Imprès de funcionament'
+	);
+
 	// Estudis
 	const ESTUDI = array(
 		'GEN' => 'General', 
@@ -44,12 +50,6 @@ class Document extends Objecte
 		'SMX' => 'SMX',
 		'DAM' => 'DAM',
 		'HBD' => 'HBD'
-	);
-
-	// Categoria
-	const CATEGORIA = array(
-		'D' => 'Document de centre',
-		'I' => 'Imprès de funcionament'
 	);
 
 	// Sol·licitant
@@ -192,6 +192,25 @@ class Document extends Objecte
 //echo "<hr>$SQL<hr>";
 		return $SQL;
 	}
+
+	private function CreaAjudaFormat() {
+		$Retorn = 'Categoria:<ul>';
+		foreach(self::CATEGORIA as $key => $value)
+			$Retorn .= "<li>$key: $value</li>";
+		$Retorn .= "</ul>";
+
+		$Retorn .= 'Estudi:<ul>';
+		foreach(self::ESTUDI as $key => $value)
+			$Retorn .= "<li>$key: $value</li>";
+		$Retorn .= "</ul>";
+
+		$Retorn .= 'Nivell:<ul>';
+		foreach(self::SUBESTUDI as $key => $value)
+			$Retorn .= "<li>$key: $value</li>";
+		$Retorn .= "</ul>";
+		
+		return $Retorn;
+	}
 	
 	public function EscriuFormulariFitxa() {
 		$frm = new FormFitxaDetall($this->Connexio, $this->Usuari, $this->Sistema);
@@ -200,8 +219,14 @@ class Document extends Objecte
 		$frm->ClauPrimaria = 'document_id';
 		$frm->AutoIncrement = true;
 		$frm->Id = $this->Id;
+
+		$frm->SubTitol = 'Format del codi del document: <b>Categoria_Estudi_[Nivell]_Descripció_...</b>&nbsp;'.$frm->CreaAjuda('Format', $this->CreaAjudaFormat());
+
 		$frm->AfegeixText('document_id', 'Id', 20, [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixText('codi', 'Codi', 50, [FormFitxa::offREQUERIT]);
+		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
+		$frm->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 
 		$aClaus = array_keys(self::VISIBILITAT);
@@ -218,12 +243,6 @@ class Document extends Objecte
 		$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
 		$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
 		$frm->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
-		$frm->FinalitzaColumnes();
-
-		$frm->IniciaColumnes();
-		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
-		$frm->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
 		$frm->FinalitzaColumnes();
 
 		$frm->IniciaColumnes();
@@ -380,7 +399,7 @@ class DocumentVersio extends Objecte
 		$frm->AfegeixData('data_creacio', 'Data creació', [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixData('data_modificacio', 'Data modificació', [FormFitxa::offNOMES_LECTURA]);
 	
-		$aProfessors = ObteCodiValorDesDeSQL($this->Connexio, $this->CreaSQLProfessorsQualitat(), "usuari_id", "nom");
+		$aProfessors = ObteCodiValorDesDeSQL($this->Connexio, $this->CreaSQLProfessorsDocumentacio(), "usuari_id", "nom");
 		array_unshift($aProfessors[0] , '');
 		array_unshift($aProfessors[1] , '');
 
@@ -407,7 +426,20 @@ class DocumentVersio extends Objecte
 			WHERE E.tipus='CQ' AND E.any_academic_id=".$this->Sistema->any_academic_id;		
 		return $SQL;
 	}	
-	
+
+	/**
+	 * Crea la SQL peper obtenir els professors de documentació.
+     * @return string Sentència SQL.
+	 */
+	private function CreaSQLProfessorsDocumentacio() {
+		$SQL = "
+			SELECT usuari_id, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS nom
+			FROM PROFESSOR_EQUIP PE
+			LEFT JOIN EQUIP E ON (E.equip_id=PE.equip_id)
+			LEFT JOIN USUARI U ON (U.usuari_id=PE.professor_id)
+			WHERE E.tipus='EX' AND E.any_academic_id=".$this->Sistema->any_academic_id;		
+		return $SQL;
+	}	
 }
 
  ?>
