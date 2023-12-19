@@ -19,6 +19,27 @@ namespace Google\Service\GKEHub;
 
 class FleetObservabilityFeatureSpec extends \Google\Model
 {
+  /**
+   * @var FleetObservabilityLoggingConfig
+   */
+  public $loggingConfig;
+  protected $loggingConfigType = FleetObservabilityLoggingConfig::class;
+  protected $loggingConfigDataType = '';
+
+  /**
+   * @param FleetObservabilityLoggingConfig
+   */
+  public function setLoggingConfig(FleetObservabilityLoggingConfig $loggingConfig)
+  {
+    $this->loggingConfig = $loggingConfig;
+  }
+  /**
+   * @return FleetObservabilityLoggingConfig
+   */
+  public function getLoggingConfig()
+  {
+    return $this->loggingConfig;
+  }
 }
 
 // Adding a class alias for backwards compatibility with the previous class name.

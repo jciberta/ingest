@@ -20,24 +20,54 @@ namespace Google\Service\DLP;
 class GooglePrivacyDlpV2CustomInfoType extends \Google\Collection
 {
   protected $collection_key = 'detectionRules';
+  /**
+   * @var GooglePrivacyDlpV2DetectionRule[]
+   */
+  public $detectionRules;
   protected $detectionRulesType = GooglePrivacyDlpV2DetectionRule::class;
   protected $detectionRulesDataType = 'array';
+  /**
+   * @var GooglePrivacyDlpV2Dictionary
+   */
+  public $dictionary;
   protected $dictionaryType = GooglePrivacyDlpV2Dictionary::class;
   protected $dictionaryDataType = '';
   /**
    * @var string
    */
   public $exclusionType;
+  /**
+   * @var GooglePrivacyDlpV2InfoType
+   */
+  public $infoType;
   protected $infoTypeType = GooglePrivacyDlpV2InfoType::class;
   protected $infoTypeDataType = '';
   /**
    * @var string
    */
   public $likelihood;
+  /**
+   * @var GooglePrivacyDlpV2Regex
+   */
+  public $regex;
   protected $regexType = GooglePrivacyDlpV2Regex::class;
   protected $regexDataType = '';
+  /**
+   * @var GooglePrivacyDlpV2SensitivityScore
+   */
+  public $sensitivityScore;
+  protected $sensitivityScoreType = GooglePrivacyDlpV2SensitivityScore::class;
+  protected $sensitivityScoreDataType = '';
+  /**
+   * @var GooglePrivacyDlpV2StoredType
+   */
+  public $storedType;
   protected $storedTypeType = GooglePrivacyDlpV2StoredType::class;
   protected $storedTypeDataType = '';
+  /**
+   * @var GooglePrivacyDlpV2SurrogateType
+   */
+  public $surrogateType;
   protected $surrogateTypeType = GooglePrivacyDlpV2SurrogateType::class;
   protected $surrogateTypeDataType = '';
 
@@ -124,6 +154,20 @@ class GooglePrivacyDlpV2CustomInfoType extends \Google\Collection
   public function getRegex()
   {
     return $this->regex;
+  }
+  /**
+   * @param GooglePrivacyDlpV2SensitivityScore
+   */
+  public function setSensitivityScore(GooglePrivacyDlpV2SensitivityScore $sensitivityScore)
+  {
+    $this->sensitivityScore = $sensitivityScore;
+  }
+  /**
+   * @return GooglePrivacyDlpV2SensitivityScore
+   */
+  public function getSensitivityScore()
+  {
+    return $this->sensitivityScore;
   }
   /**
    * @param GooglePrivacyDlpV2StoredType

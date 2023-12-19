@@ -20,9 +20,12 @@ namespace Google\Service\GoogleAnalyticsAdmin;
 class GoogleAnalyticsAdminV1betaAccessFilterExpressionList extends \Google\Collection
 {
   protected $collection_key = 'expressions';
+  /**
+   * @var GoogleAnalyticsAdminV1betaAccessFilterExpression[]
+   */
+  public $expressions;
   protected $expressionsType = GoogleAnalyticsAdminV1betaAccessFilterExpression::class;
   protected $expressionsDataType = 'array';
-  public $expressions = [];
 
   /**
    * @param GoogleAnalyticsAdminV1betaAccessFilterExpression[]

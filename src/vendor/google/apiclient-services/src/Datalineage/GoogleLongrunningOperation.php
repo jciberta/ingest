@@ -23,13 +23,16 @@ class GoogleLongrunningOperation extends \Google\Model
    * @var bool
    */
   public $done;
+  /**
+   * @var GoogleRpcStatus
+   */
+  public $error;
   protected $errorType = GoogleRpcStatus::class;
   protected $errorDataType = '';
-  public $error;
   /**
    * @var array[]
    */
-  public $metadata = [];
+  public $metadata;
   /**
    * @var string
    */
@@ -37,7 +40,7 @@ class GoogleLongrunningOperation extends \Google\Model
   /**
    * @var array[]
    */
-  public $response = [];
+  public $response;
 
   /**
    * @param bool

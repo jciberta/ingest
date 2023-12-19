@@ -19,6 +19,103 @@ namespace Google\Service\CloudDataplex;
 
 class GoogleCloudDataplexV1DataProfileSpec extends \Google\Model
 {
+  /**
+   * @var GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public $excludeFields;
+  protected $excludeFieldsType = GoogleCloudDataplexV1DataProfileSpecSelectedFields::class;
+  protected $excludeFieldsDataType = '';
+  /**
+   * @var GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public $includeFields;
+  protected $includeFieldsType = GoogleCloudDataplexV1DataProfileSpecSelectedFields::class;
+  protected $includeFieldsDataType = '';
+  /**
+   * @var GoogleCloudDataplexV1DataProfileSpecPostScanActions
+   */
+  public $postScanActions;
+  protected $postScanActionsType = GoogleCloudDataplexV1DataProfileSpecPostScanActions::class;
+  protected $postScanActionsDataType = '';
+  /**
+   * @var string
+   */
+  public $rowFilter;
+  /**
+   * @var float
+   */
+  public $samplingPercent;
+
+  /**
+   * @param GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public function setExcludeFields(GoogleCloudDataplexV1DataProfileSpecSelectedFields $excludeFields)
+  {
+    $this->excludeFields = $excludeFields;
+  }
+  /**
+   * @return GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public function getExcludeFields()
+  {
+    return $this->excludeFields;
+  }
+  /**
+   * @param GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public function setIncludeFields(GoogleCloudDataplexV1DataProfileSpecSelectedFields $includeFields)
+  {
+    $this->includeFields = $includeFields;
+  }
+  /**
+   * @return GoogleCloudDataplexV1DataProfileSpecSelectedFields
+   */
+  public function getIncludeFields()
+  {
+    return $this->includeFields;
+  }
+  /**
+   * @param GoogleCloudDataplexV1DataProfileSpecPostScanActions
+   */
+  public function setPostScanActions(GoogleCloudDataplexV1DataProfileSpecPostScanActions $postScanActions)
+  {
+    $this->postScanActions = $postScanActions;
+  }
+  /**
+   * @return GoogleCloudDataplexV1DataProfileSpecPostScanActions
+   */
+  public function getPostScanActions()
+  {
+    return $this->postScanActions;
+  }
+  /**
+   * @param string
+   */
+  public function setRowFilter($rowFilter)
+  {
+    $this->rowFilter = $rowFilter;
+  }
+  /**
+   * @return string
+   */
+  public function getRowFilter()
+  {
+    return $this->rowFilter;
+  }
+  /**
+   * @param float
+   */
+  public function setSamplingPercent($samplingPercent)
+  {
+    $this->samplingPercent = $samplingPercent;
+  }
+  /**
+   * @return float
+   */
+  public function getSamplingPercent()
+  {
+    return $this->samplingPercent;
+  }
 }
 
 // Adding a class alias for backwards compatibility with the previous class name.

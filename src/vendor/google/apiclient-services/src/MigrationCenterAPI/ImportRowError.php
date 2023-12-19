@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class ImportRowError extends \Google\Collection
 {
   protected $collection_key = 'errors';
+  /**
+   * @var ImportError[]
+   */
+  public $errors;
   protected $errorsType = ImportError::class;
   protected $errorsDataType = 'array';
-  public $errors = [];
   /**
    * @var int
    */

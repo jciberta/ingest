@@ -19,32 +19,50 @@ namespace Google\Service\DriveLabels;
 
 class GoogleAppsDriveLabelsV2DeltaUpdateLabelRequestUpdateFieldTypeRequest extends \Google\Model
 {
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldDateOptions
+   */
+  public $dateOptions;
   protected $dateOptionsType = GoogleAppsDriveLabelsV2FieldDateOptions::class;
   protected $dateOptionsDataType = '';
-  public $dateOptions;
   /**
    * @var string
    */
   public $id;
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldIntegerOptions
+   */
+  public $integerOptions;
   protected $integerOptionsType = GoogleAppsDriveLabelsV2FieldIntegerOptions::class;
   protected $integerOptionsDataType = '';
-  public $integerOptions;
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldLongTextOptions
+   */
+  public $longTextOptions;
   protected $longTextOptionsType = GoogleAppsDriveLabelsV2FieldLongTextOptions::class;
   protected $longTextOptionsDataType = '';
-  public $longTextOptions;
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldSelectionOptions
+   */
+  public $selectionOptions;
   protected $selectionOptionsType = GoogleAppsDriveLabelsV2FieldSelectionOptions::class;
   protected $selectionOptionsDataType = '';
-  public $selectionOptions;
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldTextOptions
+   */
+  public $textOptions;
   protected $textOptionsType = GoogleAppsDriveLabelsV2FieldTextOptions::class;
   protected $textOptionsDataType = '';
-  public $textOptions;
   /**
    * @var string
    */
   public $updateMask;
+  /**
+   * @var GoogleAppsDriveLabelsV2FieldUserOptions
+   */
+  public $userOptions;
   protected $userOptionsType = GoogleAppsDriveLabelsV2FieldUserOptions::class;
   protected $userOptionsDataType = '';
-  public $userOptions;
 
   /**
    * @param GoogleAppsDriveLabelsV2FieldDateOptions

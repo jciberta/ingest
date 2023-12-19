@@ -20,16 +20,22 @@ namespace Google\Service\CivicInfo;
 class Official extends \Google\Collection
 {
   protected $collection_key = 'urls';
+  /**
+   * @var SimpleAddressType[]
+   */
+  public $address;
   protected $addressType = SimpleAddressType::class;
   protected $addressDataType = 'array';
+  /**
+   * @var Channel[]
+   */
+  public $channels;
   protected $channelsType = Channel::class;
   protected $channelsDataType = 'array';
   /**
    * @var string[]
    */
   public $emails;
-  protected $geocodingSummariesType = GeocodingSummary::class;
-  protected $geocodingSummariesDataType = 'array';
   /**
    * @var string
    */
@@ -92,20 +98,6 @@ class Official extends \Google\Collection
   public function getEmails()
   {
     return $this->emails;
-  }
-  /**
-   * @param GeocodingSummary[]
-   */
-  public function setGeocodingSummaries($geocodingSummaries)
-  {
-    $this->geocodingSummaries = $geocodingSummaries;
-  }
-  /**
-   * @return GeocodingSummary[]
-   */
-  public function getGeocodingSummaries()
-  {
-    return $this->geocodingSummaries;
   }
   /**
    * @param string

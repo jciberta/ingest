@@ -23,9 +23,12 @@ class GoogleCloudKmsV1CryptoKeyVersion extends \Google\Model
    * @var string
    */
   public $algorithm;
+  /**
+   * @var GoogleCloudKmsV1KeyOperationAttestation
+   */
+  public $attestation;
   protected $attestationType = GoogleCloudKmsV1KeyOperationAttestation::class;
   protected $attestationDataType = '';
-  public $attestation;
   /**
    * @var string
    */
@@ -38,13 +41,24 @@ class GoogleCloudKmsV1CryptoKeyVersion extends \Google\Model
    * @var string
    */
   public $destroyTime;
+  /**
+   * @var string
+   */
+  public $externalDestructionFailureReason;
+  /**
+   * @var GoogleCloudKmsV1ExternalProtectionLevelOptions
+   */
+  public $externalProtectionLevelOptions;
   protected $externalProtectionLevelOptionsType = GoogleCloudKmsV1ExternalProtectionLevelOptions::class;
   protected $externalProtectionLevelOptionsDataType = '';
-  public $externalProtectionLevelOptions;
   /**
    * @var string
    */
   public $generateTime;
+  /**
+   * @var string
+   */
+  public $generationFailureReason;
   /**
    * @var string
    */
@@ -145,6 +159,20 @@ class GoogleCloudKmsV1CryptoKeyVersion extends \Google\Model
     return $this->destroyTime;
   }
   /**
+   * @param string
+   */
+  public function setExternalDestructionFailureReason($externalDestructionFailureReason)
+  {
+    $this->externalDestructionFailureReason = $externalDestructionFailureReason;
+  }
+  /**
+   * @return string
+   */
+  public function getExternalDestructionFailureReason()
+  {
+    return $this->externalDestructionFailureReason;
+  }
+  /**
    * @param GoogleCloudKmsV1ExternalProtectionLevelOptions
    */
   public function setExternalProtectionLevelOptions(GoogleCloudKmsV1ExternalProtectionLevelOptions $externalProtectionLevelOptions)
@@ -171,6 +199,20 @@ class GoogleCloudKmsV1CryptoKeyVersion extends \Google\Model
   public function getGenerateTime()
   {
     return $this->generateTime;
+  }
+  /**
+   * @param string
+   */
+  public function setGenerationFailureReason($generationFailureReason)
+  {
+    $this->generationFailureReason = $generationFailureReason;
+  }
+  /**
+   * @return string
+   */
+  public function getGenerationFailureReason()
+  {
+    return $this->generationFailureReason;
   }
   /**
    * @param string

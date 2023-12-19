@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class BatchUpdateAssetsRequest extends \Google\Collection
 {
   protected $collection_key = 'requests';
+  /**
+   * @var UpdateAssetRequest[]
+   */
+  public $requests;
   protected $requestsType = UpdateAssetRequest::class;
   protected $requestsDataType = 'array';
-  public $requests = [];
 
   /**
    * @param UpdateAssetRequest[]

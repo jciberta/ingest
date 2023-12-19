@@ -23,16 +23,38 @@ class VirtualMachinePreferences extends \Google\Model
    * @var string
    */
   public $commitmentPlan;
+  /**
+   * @var ComputeEnginePreferences
+   */
+  public $computeEnginePreferences;
   protected $computeEnginePreferencesType = ComputeEnginePreferences::class;
   protected $computeEnginePreferencesDataType = '';
-  public $computeEnginePreferences;
+  /**
+   * @var RegionPreferences
+   */
+  public $regionPreferences;
   protected $regionPreferencesType = RegionPreferences::class;
   protected $regionPreferencesDataType = '';
-  public $regionPreferences;
   /**
    * @var string
    */
   public $sizingOptimizationStrategy;
+  /**
+   * @var SoleTenancyPreferences
+   */
+  public $soleTenancyPreferences;
+  protected $soleTenancyPreferencesType = SoleTenancyPreferences::class;
+  protected $soleTenancyPreferencesDataType = '';
+  /**
+   * @var string
+   */
+  public $targetProduct;
+  /**
+   * @var VmwareEnginePreferences
+   */
+  public $vmwareEnginePreferences;
+  protected $vmwareEnginePreferencesType = VmwareEnginePreferences::class;
+  protected $vmwareEnginePreferencesDataType = '';
 
   /**
    * @param string
@@ -89,6 +111,48 @@ class VirtualMachinePreferences extends \Google\Model
   public function getSizingOptimizationStrategy()
   {
     return $this->sizingOptimizationStrategy;
+  }
+  /**
+   * @param SoleTenancyPreferences
+   */
+  public function setSoleTenancyPreferences(SoleTenancyPreferences $soleTenancyPreferences)
+  {
+    $this->soleTenancyPreferences = $soleTenancyPreferences;
+  }
+  /**
+   * @return SoleTenancyPreferences
+   */
+  public function getSoleTenancyPreferences()
+  {
+    return $this->soleTenancyPreferences;
+  }
+  /**
+   * @param string
+   */
+  public function setTargetProduct($targetProduct)
+  {
+    $this->targetProduct = $targetProduct;
+  }
+  /**
+   * @return string
+   */
+  public function getTargetProduct()
+  {
+    return $this->targetProduct;
+  }
+  /**
+   * @param VmwareEnginePreferences
+   */
+  public function setVmwareEnginePreferences(VmwareEnginePreferences $vmwareEnginePreferences)
+  {
+    $this->vmwareEnginePreferences = $vmwareEnginePreferences;
+  }
+  /**
+   * @return VmwareEnginePreferences
+   */
+  public function getVmwareEnginePreferences()
+  {
+    return $this->vmwareEnginePreferences;
   }
 }
 

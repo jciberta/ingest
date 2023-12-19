@@ -25,6 +25,10 @@ class AssistantLogsNearbyDevicesLog extends \Google\Collection
    */
   public $deviceArbitrationCreationTimestampMs;
   /**
+   * @var string
+   */
+  public $deviceTargetingInputCreationTimestampMs;
+  /**
    * @var int
    */
   public $eliminatedByFurtherDistance;
@@ -40,8 +44,16 @@ class AssistantLogsNearbyDevicesLog extends \Google\Collection
    * @var int
    */
   public $eliminatedByUnregisteredDevice;
+  /**
+   * @var AssistantLogsDeviceInfoLog
+   */
+  public $localDevice;
   protected $localDeviceType = AssistantLogsDeviceInfoLog::class;
   protected $localDeviceDataType = '';
+  /**
+   * @var AssistantLogsDeviceInfoLog[]
+   */
+  public $nearbyDevices;
   protected $nearbyDevicesType = AssistantLogsDeviceInfoLog::class;
   protected $nearbyDevicesDataType = 'array';
   /**
@@ -78,6 +90,20 @@ class AssistantLogsNearbyDevicesLog extends \Google\Collection
   public function getDeviceArbitrationCreationTimestampMs()
   {
     return $this->deviceArbitrationCreationTimestampMs;
+  }
+  /**
+   * @param string
+   */
+  public function setDeviceTargetingInputCreationTimestampMs($deviceTargetingInputCreationTimestampMs)
+  {
+    $this->deviceTargetingInputCreationTimestampMs = $deviceTargetingInputCreationTimestampMs;
+  }
+  /**
+   * @return string
+   */
+  public function getDeviceTargetingInputCreationTimestampMs()
+  {
+    return $this->deviceTargetingInputCreationTimestampMs;
   }
   /**
    * @param int

@@ -20,26 +20,68 @@ namespace Google\Service\NetworkServices;
 class HttpRouteRouteAction extends \Google\Collection
 {
   protected $collection_key = 'destinations';
+  /**
+   * @var HttpRouteCorsPolicy
+   */
+  public $corsPolicy;
   protected $corsPolicyType = HttpRouteCorsPolicy::class;
   protected $corsPolicyDataType = '';
+  /**
+   * @var HttpRouteDestination[]
+   */
+  public $destinations;
   protected $destinationsType = HttpRouteDestination::class;
   protected $destinationsDataType = 'array';
+  /**
+   * @var HttpRouteFaultInjectionPolicy
+   */
+  public $faultInjectionPolicy;
   protected $faultInjectionPolicyType = HttpRouteFaultInjectionPolicy::class;
   protected $faultInjectionPolicyDataType = '';
+  /**
+   * @var HttpRouteRedirect
+   */
+  public $redirect;
   protected $redirectType = HttpRouteRedirect::class;
   protected $redirectDataType = '';
+  /**
+   * @var HttpRouteHeaderModifier
+   */
+  public $requestHeaderModifier;
   protected $requestHeaderModifierType = HttpRouteHeaderModifier::class;
   protected $requestHeaderModifierDataType = '';
+  /**
+   * @var HttpRouteRequestMirrorPolicy
+   */
+  public $requestMirrorPolicy;
   protected $requestMirrorPolicyType = HttpRouteRequestMirrorPolicy::class;
   protected $requestMirrorPolicyDataType = '';
+  /**
+   * @var HttpRouteHeaderModifier
+   */
+  public $responseHeaderModifier;
   protected $responseHeaderModifierType = HttpRouteHeaderModifier::class;
   protected $responseHeaderModifierDataType = '';
+  /**
+   * @var HttpRouteRetryPolicy
+   */
+  public $retryPolicy;
   protected $retryPolicyType = HttpRouteRetryPolicy::class;
   protected $retryPolicyDataType = '';
+  /**
+   * @var HttpRouteStatefulSessionAffinityPolicy
+   */
+  public $statefulSessionAffinity;
+  protected $statefulSessionAffinityType = HttpRouteStatefulSessionAffinityPolicy::class;
+  protected $statefulSessionAffinityDataType = '';
   /**
    * @var string
    */
   public $timeout;
+  /**
+   * @var HttpRouteURLRewrite
+   */
+  public $urlRewrite;
   protected $urlRewriteType = HttpRouteURLRewrite::class;
   protected $urlRewriteDataType = '';
 
@@ -154,6 +196,20 @@ class HttpRouteRouteAction extends \Google\Collection
   public function getRetryPolicy()
   {
     return $this->retryPolicy;
+  }
+  /**
+   * @param HttpRouteStatefulSessionAffinityPolicy
+   */
+  public function setStatefulSessionAffinity(HttpRouteStatefulSessionAffinityPolicy $statefulSessionAffinity)
+  {
+    $this->statefulSessionAffinity = $statefulSessionAffinity;
+  }
+  /**
+   * @return HttpRouteStatefulSessionAffinityPolicy
+   */
+  public function getStatefulSessionAffinity()
+  {
+    return $this->statefulSessionAffinity;
   }
   /**
    * @param string

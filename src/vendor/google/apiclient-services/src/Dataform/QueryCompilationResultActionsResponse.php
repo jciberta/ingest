@@ -20,9 +20,12 @@ namespace Google\Service\Dataform;
 class QueryCompilationResultActionsResponse extends \Google\Collection
 {
   protected $collection_key = 'compilationResultActions';
+  /**
+   * @var CompilationResultAction[]
+   */
+  public $compilationResultActions;
   protected $compilationResultActionsType = CompilationResultAction::class;
   protected $compilationResultActionsDataType = 'array';
-  public $compilationResultActions = [];
   /**
    * @var string
    */

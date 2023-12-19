@@ -32,16 +32,36 @@ class GoogleCloudApigeeV1Deployment extends \Google\Collection
    * @var string
    */
   public $environment;
+  /**
+   * @var GoogleRpcStatus[]
+   */
+  public $errors;
   protected $errorsType = GoogleRpcStatus::class;
   protected $errorsDataType = 'array';
+  /**
+   * @var GoogleCloudApigeeV1InstanceDeploymentStatus[]
+   */
+  public $instances;
   protected $instancesType = GoogleCloudApigeeV1InstanceDeploymentStatus::class;
   protected $instancesDataType = 'array';
+  /**
+   * @var GoogleCloudApigeeV1PodStatus[]
+   */
+  public $pods;
   protected $podsType = GoogleCloudApigeeV1PodStatus::class;
   protected $podsDataType = 'array';
   /**
    * @var string
    */
+  public $proxyDeploymentType;
+  /**
+   * @var string
+   */
   public $revision;
+  /**
+   * @var GoogleCloudApigeeV1DeploymentChangeReportRoutingConflict[]
+   */
+  public $routeConflicts;
   protected $routeConflictsType = GoogleCloudApigeeV1DeploymentChangeReportRoutingConflict::class;
   protected $routeConflictsDataType = 'array';
   /**
@@ -136,6 +156,20 @@ class GoogleCloudApigeeV1Deployment extends \Google\Collection
   public function getPods()
   {
     return $this->pods;
+  }
+  /**
+   * @param string
+   */
+  public function setProxyDeploymentType($proxyDeploymentType)
+  {
+    $this->proxyDeploymentType = $proxyDeploymentType;
+  }
+  /**
+   * @return string
+   */
+  public function getProxyDeploymentType()
+  {
+    return $this->proxyDeploymentType;
   }
   /**
    * @param string

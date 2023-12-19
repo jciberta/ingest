@@ -19,6 +19,20 @@ namespace Google\Service\Spanner;
 
 class ExecuteSqlRequest extends \Google\Model
 {
+  /**
+   * @var bool
+   */
+  public $dataBoostEnabled;
+  /**
+   * @var DirectedReadOptions
+   */
+  public $directedReadOptions;
+  protected $directedReadOptionsType = DirectedReadOptions::class;
+  protected $directedReadOptionsDataType = '';
+  /**
+   * @var Type[]
+   */
+  public $paramTypes;
   protected $paramTypesType = Type::class;
   protected $paramTypesDataType = 'map';
   /**
@@ -33,8 +47,16 @@ class ExecuteSqlRequest extends \Google\Model
    * @var string
    */
   public $queryMode;
+  /**
+   * @var QueryOptions
+   */
+  public $queryOptions;
   protected $queryOptionsType = QueryOptions::class;
   protected $queryOptionsDataType = '';
+  /**
+   * @var RequestOptions
+   */
+  public $requestOptions;
   protected $requestOptionsType = RequestOptions::class;
   protected $requestOptionsDataType = '';
   /**
@@ -49,9 +71,41 @@ class ExecuteSqlRequest extends \Google\Model
    * @var string
    */
   public $sql;
+  /**
+   * @var TransactionSelector
+   */
+  public $transaction;
   protected $transactionType = TransactionSelector::class;
   protected $transactionDataType = '';
 
+  /**
+   * @param bool
+   */
+  public function setDataBoostEnabled($dataBoostEnabled)
+  {
+    $this->dataBoostEnabled = $dataBoostEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getDataBoostEnabled()
+  {
+    return $this->dataBoostEnabled;
+  }
+  /**
+   * @param DirectedReadOptions
+   */
+  public function setDirectedReadOptions(DirectedReadOptions $directedReadOptions)
+  {
+    $this->directedReadOptions = $directedReadOptions;
+  }
+  /**
+   * @return DirectedReadOptions
+   */
+  public function getDirectedReadOptions()
+  {
+    return $this->directedReadOptions;
+  }
   /**
    * @param Type[]
    */

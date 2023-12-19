@@ -20,6 +20,10 @@ namespace Google\Service\CloudRetail;
 class GoogleCloudRetailV2SearchRequest extends \Google\Collection
 {
   protected $collection_key = 'variantRollupKeys';
+  /**
+   * @var GoogleCloudRetailV2SearchRequestBoostSpec
+   */
+  public $boostSpec;
   protected $boostSpecType = GoogleCloudRetailV2SearchRequestBoostSpec::class;
   protected $boostSpecDataType = '';
   /**
@@ -30,8 +34,20 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
    * @var string
    */
   public $canonicalFilter;
+  /**
+   * @var GoogleCloudRetailV2SearchRequestDynamicFacetSpec
+   */
+  public $dynamicFacetSpec;
   protected $dynamicFacetSpecType = GoogleCloudRetailV2SearchRequestDynamicFacetSpec::class;
   protected $dynamicFacetSpecDataType = '';
+  /**
+   * @var string
+   */
+  public $entity;
+  /**
+   * @var GoogleCloudRetailV2SearchRequestFacetSpec[]
+   */
+  public $facetSpecs;
   protected $facetSpecsType = GoogleCloudRetailV2SearchRequestFacetSpec::class;
   protected $facetSpecsDataType = 'array';
   /**
@@ -62,20 +78,36 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
    * @var string
    */
   public $pageToken;
+  /**
+   * @var GoogleCloudRetailV2SearchRequestPersonalizationSpec
+   */
+  public $personalizationSpec;
   protected $personalizationSpecType = GoogleCloudRetailV2SearchRequestPersonalizationSpec::class;
   protected $personalizationSpecDataType = '';
   /**
    * @var string
    */
   public $query;
+  /**
+   * @var GoogleCloudRetailV2SearchRequestQueryExpansionSpec
+   */
+  public $queryExpansionSpec;
   protected $queryExpansionSpecType = GoogleCloudRetailV2SearchRequestQueryExpansionSpec::class;
   protected $queryExpansionSpecDataType = '';
   /**
    * @var string
    */
   public $searchMode;
+  /**
+   * @var GoogleCloudRetailV2SearchRequestSpellCorrectionSpec
+   */
+  public $spellCorrectionSpec;
   protected $spellCorrectionSpecType = GoogleCloudRetailV2SearchRequestSpellCorrectionSpec::class;
   protected $spellCorrectionSpecDataType = '';
+  /**
+   * @var GoogleCloudRetailV2UserInfo
+   */
+  public $userInfo;
   protected $userInfoType = GoogleCloudRetailV2UserInfo::class;
   protected $userInfoDataType = '';
   /**
@@ -142,6 +174,20 @@ class GoogleCloudRetailV2SearchRequest extends \Google\Collection
   public function getDynamicFacetSpec()
   {
     return $this->dynamicFacetSpec;
+  }
+  /**
+   * @param string
+   */
+  public function setEntity($entity)
+  {
+    $this->entity = $entity;
+  }
+  /**
+   * @return string
+   */
+  public function getEntity()
+  {
+    return $this->entity;
   }
   /**
    * @param GoogleCloudRetailV2SearchRequestFacetSpec[]

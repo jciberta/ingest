@@ -21,6 +21,12 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
 {
   protected $collection_key = 'triggerConfigsInternal';
   /**
+   * @var GoogleCloudIntegrationsV1alphaCloudLoggingDetails
+   */
+  public $cloudLoggingDetails;
+  protected $cloudLoggingDetailsType = GoogleCloudIntegrationsV1alphaCloudLoggingDetails::class;
+  protected $cloudLoggingDetailsDataType = '';
+  /**
    * @var string
    */
   public $createTime;
@@ -32,10 +38,22 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
    * @var string
    */
   public $description;
+  /**
+   * @var GoogleCloudIntegrationsV1alphaErrorCatcherConfig[]
+   */
+  public $errorCatcherConfigs;
   protected $errorCatcherConfigsType = GoogleCloudIntegrationsV1alphaErrorCatcherConfig::class;
   protected $errorCatcherConfigsDataType = 'array';
+  /**
+   * @var GoogleCloudIntegrationsV1alphaIntegrationParameter[]
+   */
+  public $integrationParameters;
   protected $integrationParametersType = GoogleCloudIntegrationsV1alphaIntegrationParameter::class;
   protected $integrationParametersDataType = 'array';
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoWorkflowParameters
+   */
+  public $integrationParametersInternal;
   protected $integrationParametersInternalType = EnterpriseCrmFrontendsEventbusProtoWorkflowParameters::class;
   protected $integrationParametersInternalDataType = '';
   /**
@@ -61,6 +79,10 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
   /**
    * @var string
    */
+  public $runAsServiceAccount;
+  /**
+   * @var string
+   */
   public $snapshotNumber;
   /**
    * @var string
@@ -70,14 +92,34 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
    * @var string
    */
   public $status;
+  /**
+   * @var GoogleCloudIntegrationsV1alphaTaskConfig[]
+   */
+  public $taskConfigs;
   protected $taskConfigsType = GoogleCloudIntegrationsV1alphaTaskConfig::class;
   protected $taskConfigsDataType = 'array';
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoTaskConfig[]
+   */
+  public $taskConfigsInternal;
   protected $taskConfigsInternalType = EnterpriseCrmFrontendsEventbusProtoTaskConfig::class;
   protected $taskConfigsInternalDataType = 'array';
+  /**
+   * @var EnterpriseCrmEventbusProtoTeardown
+   */
+  public $teardown;
   protected $teardownType = EnterpriseCrmEventbusProtoTeardown::class;
   protected $teardownDataType = '';
+  /**
+   * @var GoogleCloudIntegrationsV1alphaTriggerConfig[]
+   */
+  public $triggerConfigs;
   protected $triggerConfigsType = GoogleCloudIntegrationsV1alphaTriggerConfig::class;
   protected $triggerConfigsDataType = 'array';
+  /**
+   * @var EnterpriseCrmFrontendsEventbusProtoTriggerConfig[]
+   */
+  public $triggerConfigsInternal;
   protected $triggerConfigsInternalType = EnterpriseCrmFrontendsEventbusProtoTriggerConfig::class;
   protected $triggerConfigsInternalDataType = 'array';
   /**
@@ -89,6 +131,20 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
    */
   public $userLabel;
 
+  /**
+   * @param GoogleCloudIntegrationsV1alphaCloudLoggingDetails
+   */
+  public function setCloudLoggingDetails(GoogleCloudIntegrationsV1alphaCloudLoggingDetails $cloudLoggingDetails)
+  {
+    $this->cloudLoggingDetails = $cloudLoggingDetails;
+  }
+  /**
+   * @return GoogleCloudIntegrationsV1alphaCloudLoggingDetails
+   */
+  public function getCloudLoggingDetails()
+  {
+    return $this->cloudLoggingDetails;
+  }
   /**
    * @param string
    */
@@ -242,6 +298,20 @@ class GoogleCloudIntegrationsV1alphaIntegrationVersion extends \Google\Collectio
   public function getParentTemplateId()
   {
     return $this->parentTemplateId;
+  }
+  /**
+   * @param string
+   */
+  public function setRunAsServiceAccount($runAsServiceAccount)
+  {
+    $this->runAsServiceAccount = $runAsServiceAccount;
+  }
+  /**
+   * @return string
+   */
+  public function getRunAsServiceAccount()
+  {
+    return $this->runAsServiceAccount;
   }
   /**
    * @param string

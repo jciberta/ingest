@@ -20,6 +20,10 @@ namespace Google\Service\CloudNaturalLanguage;
 class Entity extends \Google\Collection
 {
   protected $collection_key = 'mentions';
+  /**
+   * @var EntityMention[]
+   */
+  public $mentions;
   protected $mentionsType = EntityMention::class;
   protected $mentionsDataType = 'array';
   /**
@@ -31,9 +35,9 @@ class Entity extends \Google\Collection
    */
   public $name;
   /**
-   * @var float
+   * @var Sentiment
    */
-  public $salience;
+  public $sentiment;
   protected $sentimentType = Sentiment::class;
   protected $sentimentDataType = '';
   /**
@@ -82,20 +86,6 @@ class Entity extends \Google\Collection
   public function getName()
   {
     return $this->name;
-  }
-  /**
-   * @param float
-   */
-  public function setSalience($salience)
-  {
-    $this->salience = $salience;
-  }
-  /**
-   * @return float
-   */
-  public function getSalience()
-  {
-    return $this->salience;
   }
   /**
    * @param Sentiment

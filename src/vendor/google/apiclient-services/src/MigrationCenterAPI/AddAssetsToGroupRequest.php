@@ -23,9 +23,12 @@ class AddAssetsToGroupRequest extends \Google\Model
    * @var bool
    */
   public $allowExisting;
+  /**
+   * @var AssetList
+   */
+  public $assets;
   protected $assetsType = AssetList::class;
   protected $assetsDataType = '';
-  public $assets;
   /**
    * @var string
    */

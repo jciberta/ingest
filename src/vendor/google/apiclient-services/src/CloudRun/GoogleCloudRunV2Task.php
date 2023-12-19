@@ -28,8 +28,16 @@ class GoogleCloudRunV2Task extends \Google\Collection
    * @var string
    */
   public $completionTime;
+  /**
+   * @var GoogleCloudRunV2Condition[]
+   */
+  public $conditions;
   protected $conditionsType = GoogleCloudRunV2Condition::class;
   protected $conditionsDataType = 'array';
+  /**
+   * @var GoogleCloudRunV2Container[]
+   */
+  public $containers;
   protected $containersType = GoogleCloudRunV2Container::class;
   protected $containersDataType = 'array';
   /**
@@ -76,6 +84,10 @@ class GoogleCloudRunV2Task extends \Google\Collection
    * @var string[]
    */
   public $labels;
+  /**
+   * @var GoogleCloudRunV2TaskAttemptResult
+   */
+  public $lastAttemptResult;
   protected $lastAttemptResultType = GoogleCloudRunV2TaskAttemptResult::class;
   protected $lastAttemptResultDataType = '';
   /**
@@ -103,6 +115,14 @@ class GoogleCloudRunV2Task extends \Google\Collection
    */
   public $retried;
   /**
+   * @var bool
+   */
+  public $satisfiesPzs;
+  /**
+   * @var string
+   */
+  public $scheduledTime;
+  /**
    * @var string
    */
   public $serviceAccount;
@@ -122,8 +142,16 @@ class GoogleCloudRunV2Task extends \Google\Collection
    * @var string
    */
   public $updateTime;
+  /**
+   * @var GoogleCloudRunV2Volume[]
+   */
+  public $volumes;
   protected $volumesType = GoogleCloudRunV2Volume::class;
   protected $volumesDataType = 'array';
+  /**
+   * @var GoogleCloudRunV2VpcAccess
+   */
+  public $vpcAccess;
   protected $vpcAccessType = GoogleCloudRunV2VpcAccess::class;
   protected $vpcAccessDataType = '';
 
@@ -434,6 +462,34 @@ class GoogleCloudRunV2Task extends \Google\Collection
   public function getRetried()
   {
     return $this->retried;
+  }
+  /**
+   * @param bool
+   */
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  /**
+   * @return bool
+   */
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
+  }
+  /**
+   * @param string
+   */
+  public function setScheduledTime($scheduledTime)
+  {
+    $this->scheduledTime = $scheduledTime;
+  }
+  /**
+   * @return string
+   */
+  public function getScheduledTime()
+  {
+    return $this->scheduledTime;
   }
   /**
    * @param string

@@ -37,6 +37,10 @@ class WWWResultInfoSubImageDocInfo extends \Google\Collection
    */
   public $deepCropBytes;
   /**
+   * @var float
+   */
+  public $dimeScore;
+  /**
    * @var string
    */
   public $docid;
@@ -52,6 +56,14 @@ class WWWResultInfoSubImageDocInfo extends \Google\Collection
    * @var float
    */
   public $estRelevance;
+  /**
+   * @var float
+   */
+  public $estSigmaU;
+  /**
+   * @var ImageContentFlowProtoProd
+   */
+  public $flowOutput;
   protected $flowOutputType = ImageContentFlowProtoProd::class;
   protected $flowOutputDataType = '';
   /**
@@ -168,6 +180,20 @@ class WWWResultInfoSubImageDocInfo extends \Google\Collection
     return $this->deepCropBytes;
   }
   /**
+   * @param float
+   */
+  public function setDimeScore($dimeScore)
+  {
+    $this->dimeScore = $dimeScore;
+  }
+  /**
+   * @return float
+   */
+  public function getDimeScore()
+  {
+    return $this->dimeScore;
+  }
+  /**
    * @param string
    */
   public function setDocid($docid)
@@ -222,6 +248,20 @@ class WWWResultInfoSubImageDocInfo extends \Google\Collection
   public function getEstRelevance()
   {
     return $this->estRelevance;
+  }
+  /**
+   * @param float
+   */
+  public function setEstSigmaU($estSigmaU)
+  {
+    $this->estSigmaU = $estSigmaU;
+  }
+  /**
+   * @return float
+   */
+  public function getEstSigmaU()
+  {
+    return $this->estSigmaU;
   }
   /**
    * @param ImageContentFlowProtoProd

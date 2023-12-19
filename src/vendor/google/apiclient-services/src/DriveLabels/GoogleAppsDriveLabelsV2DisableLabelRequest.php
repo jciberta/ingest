@@ -19,9 +19,12 @@ namespace Google\Service\DriveLabels;
 
 class GoogleAppsDriveLabelsV2DisableLabelRequest extends \Google\Model
 {
+  /**
+   * @var GoogleAppsDriveLabelsV2LifecycleDisabledPolicy
+   */
+  public $disabledPolicy;
   protected $disabledPolicyType = GoogleAppsDriveLabelsV2LifecycleDisabledPolicy::class;
   protected $disabledPolicyDataType = '';
-  public $disabledPolicy;
   /**
    * @var string
    */
@@ -34,9 +37,12 @@ class GoogleAppsDriveLabelsV2DisableLabelRequest extends \Google\Model
    * @var bool
    */
   public $useAdminAccess;
+  /**
+   * @var GoogleAppsDriveLabelsV2WriteControl
+   */
+  public $writeControl;
   protected $writeControlType = GoogleAppsDriveLabelsV2WriteControl::class;
   protected $writeControlDataType = '';
-  public $writeControl;
 
   /**
    * @param GoogleAppsDriveLabelsV2LifecycleDisabledPolicy

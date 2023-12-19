@@ -17,32 +17,23 @@
 
 namespace Google\Service\AIPlatformNotebooks\Resource;
 
+use Google\Service\AIPlatformNotebooks\CheckInstanceUpgradabilityResponse;
+use Google\Service\AIPlatformNotebooks\Config;
 use Google\Service\AIPlatformNotebooks\DiagnoseInstanceRequest;
-use Google\Service\AIPlatformNotebooks\GetInstanceHealthResponse;
 use Google\Service\AIPlatformNotebooks\Instance;
-use Google\Service\AIPlatformNotebooks\IsInstanceUpgradeableResponse;
 use Google\Service\AIPlatformNotebooks\ListInstancesResponse;
 use Google\Service\AIPlatformNotebooks\Operation;
 use Google\Service\AIPlatformNotebooks\Policy;
-use Google\Service\AIPlatformNotebooks\RegisterInstanceRequest;
-use Google\Service\AIPlatformNotebooks\ReportInstanceEventRequest;
-use Google\Service\AIPlatformNotebooks\ReportInstanceInfoRequest;
+use Google\Service\AIPlatformNotebooks\ReportInstanceInfoSystemRequest;
 use Google\Service\AIPlatformNotebooks\ResetInstanceRequest;
 use Google\Service\AIPlatformNotebooks\RollbackInstanceRequest;
 use Google\Service\AIPlatformNotebooks\SetIamPolicyRequest;
-use Google\Service\AIPlatformNotebooks\SetInstanceAcceleratorRequest;
-use Google\Service\AIPlatformNotebooks\SetInstanceLabelsRequest;
-use Google\Service\AIPlatformNotebooks\SetInstanceMachineTypeRequest;
 use Google\Service\AIPlatformNotebooks\StartInstanceRequest;
 use Google\Service\AIPlatformNotebooks\StopInstanceRequest;
 use Google\Service\AIPlatformNotebooks\TestIamPermissionsRequest;
 use Google\Service\AIPlatformNotebooks\TestIamPermissionsResponse;
-use Google\Service\AIPlatformNotebooks\UpdateInstanceConfigRequest;
-use Google\Service\AIPlatformNotebooks\UpdateInstanceMetadataItemsRequest;
-use Google\Service\AIPlatformNotebooks\UpdateInstanceMetadataItemsResponse;
-use Google\Service\AIPlatformNotebooks\UpdateShieldedInstanceConfigRequest;
-use Google\Service\AIPlatformNotebooks\UpgradeInstanceInternalRequest;
 use Google\Service\AIPlatformNotebooks\UpgradeInstanceRequest;
+use Google\Service\AIPlatformNotebooks\UpgradeInstanceSystemRequest;
 
 /**
  * The "instances" collection of methods.
@@ -55,6 +46,21 @@ use Google\Service\AIPlatformNotebooks\UpgradeInstanceRequest;
 class ProjectsLocationsInstances extends \Google\Service\Resource
 {
   /**
+   * Checks whether a notebook instance is upgradable.
+   * (instances.checkUpgradability)
+   *
+   * @param string $notebookInstance Required. Format:
+   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
+   * @param array $optParams Optional parameters.
+   * @return CheckInstanceUpgradabilityResponse
+   */
+  public function checkUpgradability($notebookInstance, $optParams = [])
+  {
+    $params = ['notebookInstance' => $notebookInstance];
+    $params = array_merge($params, $optParams);
+    return $this->call('checkUpgradability', [$params], CheckInstanceUpgradabilityResponse::class);
+  }
+  /**
    * Creates a new Instance in a given project and location. (instances.create)
    *
    * @param string $parent Required. Format:
@@ -64,6 +70,7 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    *
    * @opt_param string instanceId Required. User-defined unique ID of this
    * instance.
+   * @opt_param string requestId Optional. Idempotent request UUID.
    * @return Operation
    */
   public function create($parent, Instance $postBody, $optParams = [])
@@ -78,6 +85,8 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * @param string $name Required. Format:
    * `projects/{project_id}/locations/{location}/instances/{instance_id}`
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string requestId Optional. Idempotent request UUID.
    * @return Operation
    */
   public function delete($name, $optParams = [])
@@ -117,6 +126,24 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('get', [$params], Instance::class);
   }
   /**
+   * Gets general backend configurations that might also affect the frontend.
+   * Location is required by CCFE. Although we could bypass it to send location-
+   * less request directly to the backend job, we would need CPE (go/cloud-cpe).
+   * Having the location might also be useful depending on the query.
+   * (instances.getConfig)
+   *
+   * @param string $name Required. Format:
+   * `projects/{project_id}/locations/{location}`
+   * @param array $optParams Optional parameters.
+   * @return Config
+   */
+  public function getConfig($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('getConfig', [$params], Config::class);
+  }
+  /**
    * Gets the access control policy for a resource. Returns an empty policy if the
    * resource exists and does not have a policy set. (instances.getIamPolicy)
    *
@@ -147,37 +174,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('getIamPolicy', [$params], Policy::class);
   }
   /**
-   * Check if a notebook instance is healthy. (instances.getInstanceHealth)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param array $optParams Optional parameters.
-   * @return GetInstanceHealthResponse
-   */
-  public function getInstanceHealth($name, $optParams = [])
-  {
-    $params = ['name' => $name];
-    $params = array_merge($params, $optParams);
-    return $this->call('getInstanceHealth', [$params], GetInstanceHealthResponse::class);
-  }
-  /**
-   * Check if a notebook instance is upgradable. (instances.isUpgradeable)
-   *
-   * @param string $notebookInstance Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param array $optParams Optional parameters.
-   *
-   * @opt_param string type Optional. The optional UpgradeType. Setting this field
-   * will search for additional compute images to upgrade this instance.
-   * @return IsInstanceUpgradeableResponse
-   */
-  public function isUpgradeable($notebookInstance, $optParams = [])
-  {
-    $params = ['notebookInstance' => $notebookInstance];
-    $params = array_merge($params, $optParams);
-    return $this->call('isUpgradeable', [$params], IsInstanceUpgradeableResponse::class);
-  }
-  /**
    * Lists instances in a given project and location.
    * (instances.listProjectsLocationsInstances)
    *
@@ -185,9 +181,12 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * `parent=projects/{project_id}/locations/{location}`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize Maximum return size of the list call.
-   * @opt_param string pageToken A previous returned page token that can be used
-   * to continue listing from the last result.
+   * @opt_param string filter Optional. List filter.
+   * @opt_param string orderBy Optional. Sort results. Supported values are
+   * "name", "name desc" or "" (unsorted).
+   * @opt_param int pageSize Optional. Maximum return size of the list call.
+   * @opt_param string pageToken Optional. A previous returned page token that can
+   * be used to continue listing from the last result.
    * @return ListInstancesResponse
    */
   public function listProjectsLocationsInstances($parent, $optParams = [])
@@ -197,54 +196,40 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('list', [$params], ListInstancesResponse::class);
   }
   /**
-   * Registers an existing legacy notebook instance to the Notebooks API server.
-   * Legacy instances are instances created with the legacy Compute Engine calls.
-   * They are not manageable by the Notebooks API out of the box. This call makes
-   * these instances manageable by the Notebooks API. (instances.register)
+   * UpdateInstance updates an Instance. (instances.patch)
    *
-   * @param string $parent Required. Format:
-   * `parent=projects/{project_id}/locations/{location}`
-   * @param RegisterInstanceRequest $postBody
+   * @param string $name Output only. The name of this notebook instance. Format:
+   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
+   * @param Instance $postBody
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string requestId Optional. Idempotent request UUID.
+   * @opt_param string updateMask Required. Mask used to update an instance
    * @return Operation
    */
-  public function register($parent, RegisterInstanceRequest $postBody, $optParams = [])
+  public function patch($name, Instance $postBody, $optParams = [])
   {
-    $params = ['parent' => $parent, 'postBody' => $postBody];
+    $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
-    return $this->call('register', [$params], Operation::class);
+    return $this->call('patch', [$params], Operation::class);
   }
   /**
    * Allows notebook instances to report their latest instance information to the
    * Notebooks API server. The server will merge the reported information to the
-   * instance metadata store. Do not use this method directly. (instances.report)
+   * instance metadata store. Do not use this method directly.
+   * (instances.reportInfoSystem)
    *
    * @param string $name Required. Format:
    * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param ReportInstanceInfoRequest $postBody
+   * @param ReportInstanceInfoSystemRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    */
-  public function report($name, ReportInstanceInfoRequest $postBody, $optParams = [])
+  public function reportInfoSystem($name, ReportInstanceInfoSystemRequest $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
-    return $this->call('report', [$params], Operation::class);
-  }
-  /**
-   * Reports and processes an instance event. (instances.reportEvent)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param ReportInstanceEventRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function reportEvent($name, ReportInstanceEventRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('reportEvent', [$params], Operation::class);
+    return $this->call('reportInfoSystem', [$params], Operation::class);
   }
   /**
    * Resets a notebook instance. (instances.reset)
@@ -277,22 +262,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('rollback', [$params], Operation::class);
   }
   /**
-   * Updates the guest accelerators of a single Instance.
-   * (instances.setAccelerator)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param SetInstanceAcceleratorRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function setAccelerator($name, SetInstanceAcceleratorRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('setAccelerator', [$params], Operation::class);
-  }
-  /**
    * Sets the access control policy on the specified resource. Replaces any
    * existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`, and
    * `PERMISSION_DENIED` errors. (instances.setIamPolicy)
@@ -310,36 +279,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     $params = ['resource' => $resource, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('setIamPolicy', [$params], Policy::class);
-  }
-  /**
-   * Replaces all the labels of an Instance. (instances.setLabels)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param SetInstanceLabelsRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function setLabels($name, SetInstanceLabelsRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('setLabels', [$params], Operation::class);
-  }
-  /**
-   * Updates the machine type of a single Instance. (instances.setMachineType)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param SetInstanceMachineTypeRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function setMachineType($name, SetInstanceMachineTypeRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('setMachineType', [$params], Operation::class);
   }
   /**
    * Starts a notebook instance. (instances.start)
@@ -394,52 +333,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('testIamPermissions', [$params], TestIamPermissionsResponse::class);
   }
   /**
-   * Update Notebook Instance configurations. (instances.updateConfig)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param UpdateInstanceConfigRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function updateConfig($name, UpdateInstanceConfigRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('updateConfig', [$params], Operation::class);
-  }
-  /**
-   * Add/update metadata items for an instance. (instances.updateMetadataItems)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param UpdateInstanceMetadataItemsRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return UpdateInstanceMetadataItemsResponse
-   */
-  public function updateMetadataItems($name, UpdateInstanceMetadataItemsRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('updateMetadataItems', [$params], UpdateInstanceMetadataItemsResponse::class);
-  }
-  /**
-   * Updates the Shielded instance configuration of a single Instance.
-   * (instances.updateShieldedInstanceConfig)
-   *
-   * @param string $name Required. Format:
-   * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param UpdateShieldedInstanceConfigRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   */
-  public function updateShieldedInstanceConfig($name, UpdateShieldedInstanceConfigRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('updateShieldedInstanceConfig', [$params], Operation::class);
-  }
-  /**
    * Upgrades a notebook instance to the latest version. (instances.upgrade)
    *
    * @param string $name Required. Format:
@@ -455,20 +348,20 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('upgrade', [$params], Operation::class);
   }
   /**
-   * Allows notebook instances to call this endpoint to upgrade themselves. Do not
-   * use this method directly. (instances.upgradeInternal)
+   * Allows notebook instances to upgrade themselves. Do not use this method
+   * directly. (instances.upgradeSystem)
    *
    * @param string $name Required. Format:
    * `projects/{project_id}/locations/{location}/instances/{instance_id}`
-   * @param UpgradeInstanceInternalRequest $postBody
+   * @param UpgradeInstanceSystemRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
    */
-  public function upgradeInternal($name, UpgradeInstanceInternalRequest $postBody, $optParams = [])
+  public function upgradeSystem($name, UpgradeInstanceSystemRequest $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
-    return $this->call('upgradeInternal', [$params], Operation::class);
+    return $this->call('upgradeSystem', [$params], Operation::class);
   }
 }
 

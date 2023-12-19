@@ -19,9 +19,12 @@ namespace Google\Service\DriveLabels;
 
 class GoogleAppsDriveLabelsV2UpdateLabelPermissionRequest extends \Google\Model
 {
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelPermission
+   */
+  public $labelPermission;
   protected $labelPermissionType = GoogleAppsDriveLabelsV2LabelPermission::class;
   protected $labelPermissionDataType = '';
-  public $labelPermission;
   /**
    * @var string
    */

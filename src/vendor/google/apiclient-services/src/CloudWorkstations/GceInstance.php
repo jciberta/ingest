@@ -24,13 +24,20 @@ class GceInstance extends \Google\Collection
    * @var int
    */
   public $bootDiskSizeGb;
+  /**
+   * @var GceConfidentialInstanceConfig
+   */
+  public $confidentialInstanceConfig;
   protected $confidentialInstanceConfigType = GceConfidentialInstanceConfig::class;
   protected $confidentialInstanceConfigDataType = '';
-  public $confidentialInstanceConfig;
   /**
    * @var bool
    */
   public $disablePublicIpAddresses;
+  /**
+   * @var bool
+   */
+  public $enableNestedVirtualization;
   /**
    * @var string
    */
@@ -40,12 +47,23 @@ class GceInstance extends \Google\Collection
    */
   public $poolSize;
   /**
+   * @var int
+   */
+  public $pooledInstances;
+  /**
    * @var string
    */
   public $serviceAccount;
+  /**
+   * @var string[]
+   */
+  public $serviceAccountScopes;
+  /**
+   * @var GceShieldedInstanceConfig
+   */
+  public $shieldedInstanceConfig;
   protected $shieldedInstanceConfigType = GceShieldedInstanceConfig::class;
   protected $shieldedInstanceConfigDataType = '';
-  public $shieldedInstanceConfig;
   /**
    * @var string[]
    */
@@ -94,6 +112,20 @@ class GceInstance extends \Google\Collection
     return $this->disablePublicIpAddresses;
   }
   /**
+   * @param bool
+   */
+  public function setEnableNestedVirtualization($enableNestedVirtualization)
+  {
+    $this->enableNestedVirtualization = $enableNestedVirtualization;
+  }
+  /**
+   * @return bool
+   */
+  public function getEnableNestedVirtualization()
+  {
+    return $this->enableNestedVirtualization;
+  }
+  /**
    * @param string
    */
   public function setMachineType($machineType)
@@ -122,6 +154,20 @@ class GceInstance extends \Google\Collection
     return $this->poolSize;
   }
   /**
+   * @param int
+   */
+  public function setPooledInstances($pooledInstances)
+  {
+    $this->pooledInstances = $pooledInstances;
+  }
+  /**
+   * @return int
+   */
+  public function getPooledInstances()
+  {
+    return $this->pooledInstances;
+  }
+  /**
    * @param string
    */
   public function setServiceAccount($serviceAccount)
@@ -134,6 +180,20 @@ class GceInstance extends \Google\Collection
   public function getServiceAccount()
   {
     return $this->serviceAccount;
+  }
+  /**
+   * @param string[]
+   */
+  public function setServiceAccountScopes($serviceAccountScopes)
+  {
+    $this->serviceAccountScopes = $serviceAccountScopes;
+  }
+  /**
+   * @return string[]
+   */
+  public function getServiceAccountScopes()
+  {
+    return $this->serviceAccountScopes;
   }
   /**
    * @param GceShieldedInstanceConfig

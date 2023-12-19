@@ -43,8 +43,18 @@ class TransferConfig extends \Google\Model
    * @var string
    */
   public $displayName;
+  /**
+   * @var EmailPreferences
+   */
+  public $emailPreferences;
   protected $emailPreferencesType = EmailPreferences::class;
   protected $emailPreferencesDataType = '';
+  /**
+   * @var EncryptionConfiguration
+   */
+  public $encryptionConfiguration;
+  protected $encryptionConfigurationType = EncryptionConfiguration::class;
+  protected $encryptionConfigurationDataType = '';
   /**
    * @var string
    */
@@ -57,6 +67,10 @@ class TransferConfig extends \Google\Model
    * @var string
    */
   public $notificationPubsubTopic;
+  /**
+   * @var UserInfo
+   */
+  public $ownerInfo;
   protected $ownerInfoType = UserInfo::class;
   protected $ownerInfoDataType = '';
   /**
@@ -67,6 +81,10 @@ class TransferConfig extends \Google\Model
    * @var string
    */
   public $schedule;
+  /**
+   * @var ScheduleOptions
+   */
+  public $scheduleOptions;
   protected $scheduleOptionsType = ScheduleOptions::class;
   protected $scheduleOptionsDataType = '';
   /**
@@ -179,6 +197,20 @@ class TransferConfig extends \Google\Model
   public function getEmailPreferences()
   {
     return $this->emailPreferences;
+  }
+  /**
+   * @param EncryptionConfiguration
+   */
+  public function setEncryptionConfiguration(EncryptionConfiguration $encryptionConfiguration)
+  {
+    $this->encryptionConfiguration = $encryptionConfiguration;
+  }
+  /**
+   * @return EncryptionConfiguration
+   */
+  public function getEncryptionConfiguration()
+  {
+    return $this->encryptionConfiguration;
   }
   /**
    * @param string

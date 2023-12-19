@@ -33,8 +33,8 @@ class PartnersPromotions extends \Google\Service\Resource
 {
   /**
    * To find eligible promotions for the current user. The API requires user
-   * authorization via OAuth. The user is inferred from the authenticated OAuth
-   * credential. (promotions.findEligible)
+   * authorization via OAuth. The bare minimum oauth scope `openid` is sufficient,
+   * which will skip the consent screen. (promotions.findEligible)
    *
    * @param string $parent Required. The parent, the partner that can resell.
    * Format: partners/{partner}
@@ -66,8 +66,8 @@ class PartnersPromotions extends \Google\Service\Resource
    * `youtubePayload.partnerEligibilityId` - `youtubePayload.postalCode` - Unless
    * explicitly mentioned above, other features are not supported. Example:
    * `applicableProducts:partners/partner1/products/product1 AND regionCodes:US
-   * AND youtubePayload.postalCode=94043 AND youtubePayload.partnerEligibilityId
-   * =eligibility-id`
+   * AND youtubePayload.postalCode=94043 AND
+   * youtubePayload.partnerEligibilityId=eligibility-id`
    * @opt_param int pageSize Optional. The maximum number of promotions to return.
    * The service may return fewer than this value. If unspecified, at most 50
    * products will be returned. The maximum value is 1000; values above 1000 will

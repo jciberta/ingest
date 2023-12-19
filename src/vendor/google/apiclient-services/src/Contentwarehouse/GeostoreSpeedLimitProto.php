@@ -24,12 +24,32 @@ class GeostoreSpeedLimitProto extends \Google\Collection
    * @var string
    */
   public $category;
+  /**
+   * @var GeostoreRoadConditionalProto[]
+   */
+  public $condition;
   protected $conditionType = GeostoreRoadConditionalProto::class;
   protected $conditionDataType = 'array';
+  /**
+   * @var string
+   */
+  public $sourceType;
+  /**
+   * @var GeostoreSpeedProto
+   */
+  public $speedWithUnit;
   protected $speedWithUnitType = GeostoreSpeedProto::class;
   protected $speedWithUnitDataType = '';
+  /**
+   * @var GeostoreUnlimitedSpeedProto
+   */
+  public $unlimitedSpeed;
   protected $unlimitedSpeedType = GeostoreUnlimitedSpeedProto::class;
   protected $unlimitedSpeedDataType = '';
+  /**
+   * @var GeostoreVariableSpeedProto
+   */
+  public $variableSpeed;
   protected $variableSpeedType = GeostoreVariableSpeedProto::class;
   protected $variableSpeedDataType = '';
 
@@ -60,6 +80,20 @@ class GeostoreSpeedLimitProto extends \Google\Collection
   public function getCondition()
   {
     return $this->condition;
+  }
+  /**
+   * @param string
+   */
+  public function setSourceType($sourceType)
+  {
+    $this->sourceType = $sourceType;
+  }
+  /**
+   * @return string
+   */
+  public function getSourceType()
+  {
+    return $this->sourceType;
   }
   /**
    * @param GeostoreSpeedProto

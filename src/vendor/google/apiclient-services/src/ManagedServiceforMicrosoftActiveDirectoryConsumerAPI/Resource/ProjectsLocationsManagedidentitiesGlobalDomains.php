@@ -18,8 +18,14 @@
 namespace Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\Resource;
 
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\AttachTrustRequest;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\CheckMigrationPermissionRequest;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\CheckMigrationPermissionResponse;
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\DetachTrustRequest;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\DisableMigrationRequest;
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\Domain;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\DomainJoinMachineRequest;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\DomainJoinMachineResponse;
+use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\EnableMigrationRequest;
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\ExtendSchemaRequest;
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\LDAPSSettings;
 use Google\Service\ManagedServiceforMicrosoftActiveDirectoryConsumerAPI\ListDomainsResponse;
@@ -59,6 +65,22 @@ class ProjectsLocationsManagedidentitiesGlobalDomains extends \Google\Service\Re
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('attachTrust', [$params], Operation::class);
+  }
+  /**
+   * CheckMigrationPermission API gets the current state of DomainMigration
+   * (domains.checkMigrationPermission)
+   *
+   * @param string $domain Required. The domain resource name using the form:
+   * `projects/{project_id}/locations/global/domains/{domain_name}`
+   * @param CheckMigrationPermissionRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return CheckMigrationPermissionResponse
+   */
+  public function checkMigrationPermission($domain, CheckMigrationPermissionRequest $postBody, $optParams = [])
+  {
+    $params = ['domain' => $domain, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('checkMigrationPermission', [$params], CheckMigrationPermissionResponse::class);
   }
   /**
    * Creates a Microsoft AD domain. (domains.create)
@@ -112,6 +134,52 @@ class ProjectsLocationsManagedidentitiesGlobalDomains extends \Google\Service\Re
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('detachTrust', [$params], Operation::class);
+  }
+  /**
+   * Disable Domain Migration (domains.disableMigration)
+   *
+   * @param string $domain Required. The domain resource name using the form:
+   * `projects/{project_id}/locations/global/domains/{domain_name}`
+   * @param DisableMigrationRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function disableMigration($domain, DisableMigrationRequest $postBody, $optParams = [])
+  {
+    $params = ['domain' => $domain, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('disableMigration', [$params], Operation::class);
+  }
+  /**
+   * DomainJoinMachine API joins a Compute Engine VM to the domain
+   * (domains.domainJoinMachine)
+   *
+   * @param string $domain Required. The domain resource name using the form:
+   * projects/{project_id}/locations/global/domains/{domain_name}
+   * @param DomainJoinMachineRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return DomainJoinMachineResponse
+   */
+  public function domainJoinMachine($domain, DomainJoinMachineRequest $postBody, $optParams = [])
+  {
+    $params = ['domain' => $domain, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('domainJoinMachine', [$params], DomainJoinMachineResponse::class);
+  }
+  /**
+   * Enable Domain Migration (domains.enableMigration)
+   *
+   * @param string $domain Required. The domain resource name using the form:
+   * `projects/{project_id}/locations/global/domains/{domain_name}`
+   * @param EnableMigrationRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Operation
+   */
+  public function enableMigration($domain, EnableMigrationRequest $postBody, $optParams = [])
+  {
+    $params = ['domain' => $domain, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('enableMigration', [$params], Operation::class);
   }
   /**
    * Extend Schema for Domain (domains.extendSchema)

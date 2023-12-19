@@ -19,9 +19,14 @@ namespace Google\Service\Contactcenterinsights;
 
 class GoogleCloudContactcenterinsightsV1SettingsAnalysisConfig extends \Google\Model
 {
+  /**
+   * @var GoogleCloudContactcenterinsightsV1AnnotatorSelector
+   */
+  public $annotatorSelector;
   protected $annotatorSelectorType = GoogleCloudContactcenterinsightsV1AnnotatorSelector::class;
   protected $annotatorSelectorDataType = '';
   public $runtimeIntegrationAnalysisPercentage;
+  public $uploadConversationAnalysisPercentage;
 
   /**
    * @param GoogleCloudContactcenterinsightsV1AnnotatorSelector
@@ -44,6 +49,14 @@ class GoogleCloudContactcenterinsightsV1SettingsAnalysisConfig extends \Google\M
   public function getRuntimeIntegrationAnalysisPercentage()
   {
     return $this->runtimeIntegrationAnalysisPercentage;
+  }
+  public function setUploadConversationAnalysisPercentage($uploadConversationAnalysisPercentage)
+  {
+    $this->uploadConversationAnalysisPercentage = $uploadConversationAnalysisPercentage;
+  }
+  public function getUploadConversationAnalysisPercentage()
+  {
+    return $this->uploadConversationAnalysisPercentage;
   }
 }
 

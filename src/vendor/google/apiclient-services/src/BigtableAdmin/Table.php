@@ -19,8 +19,22 @@ namespace Google\Service\BigtableAdmin;
 
 class Table extends \Google\Model
 {
+  /**
+   * @var ChangeStreamConfig
+   */
+  public $changeStreamConfig;
+  protected $changeStreamConfigType = ChangeStreamConfig::class;
+  protected $changeStreamConfigDataType = '';
+  /**
+   * @var ClusterState[]
+   */
+  public $clusterStates;
   protected $clusterStatesType = ClusterState::class;
   protected $clusterStatesDataType = 'map';
+  /**
+   * @var ColumnFamily[]
+   */
+  public $columnFamilies;
   protected $columnFamiliesType = ColumnFamily::class;
   protected $columnFamiliesDataType = 'map';
   /**
@@ -35,11 +49,33 @@ class Table extends \Google\Model
    * @var string
    */
   public $name;
+  /**
+   * @var RestoreInfo
+   */
+  public $restoreInfo;
   protected $restoreInfoType = RestoreInfo::class;
   protected $restoreInfoDataType = '';
+  /**
+   * @var TableStats
+   */
+  public $stats;
   protected $statsType = TableStats::class;
   protected $statsDataType = '';
 
+  /**
+   * @param ChangeStreamConfig
+   */
+  public function setChangeStreamConfig(ChangeStreamConfig $changeStreamConfig)
+  {
+    $this->changeStreamConfig = $changeStreamConfig;
+  }
+  /**
+   * @return ChangeStreamConfig
+   */
+  public function getChangeStreamConfig()
+  {
+    return $this->changeStreamConfig;
+  }
   /**
    * @param ClusterState[]
    */

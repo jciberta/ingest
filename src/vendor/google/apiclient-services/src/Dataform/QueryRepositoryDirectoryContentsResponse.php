@@ -20,9 +20,12 @@ namespace Google\Service\Dataform;
 class QueryRepositoryDirectoryContentsResponse extends \Google\Collection
 {
   protected $collection_key = 'directoryEntries';
+  /**
+   * @var DirectoryEntry[]
+   */
+  public $directoryEntries;
   protected $directoryEntriesType = DirectoryEntry::class;
   protected $directoryEntriesDataType = 'array';
-  public $directoryEntries = [];
   /**
    * @var string
    */

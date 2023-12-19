@@ -19,22 +19,32 @@ namespace Google\Service\MigrationCenterAPI;
 
 class GuestConfigDetails extends \Google\Model
 {
+  /**
+   * @var FstabEntryList
+   */
+  public $fstab;
   protected $fstabType = FstabEntryList::class;
   protected $fstabDataType = '';
-  public $fstab;
+  /**
+   * @var HostsEntryList
+   */
+  public $hosts;
   protected $hostsType = HostsEntryList::class;
   protected $hostsDataType = '';
-  public $hosts;
   /**
    * @var string
    */
   public $issue;
+  /**
+   * @var NfsExportList
+   */
+  public $nfsExports;
   protected $nfsExportsType = NfsExportList::class;
   protected $nfsExportsDataType = '';
-  public $nfsExports;
-  protected $selinuxType = Selinux::class;
-  protected $selinuxDataType = '';
-  public $selinux;
+  /**
+   * @var string
+   */
+  public $selinuxMode;
 
   /**
    * @param FstabEntryList
@@ -93,18 +103,18 @@ class GuestConfigDetails extends \Google\Model
     return $this->nfsExports;
   }
   /**
-   * @param Selinux
+   * @param string
    */
-  public function setSelinux(Selinux $selinux)
+  public function setSelinuxMode($selinuxMode)
   {
-    $this->selinux = $selinux;
+    $this->selinuxMode = $selinuxMode;
   }
   /**
-   * @return Selinux
+   * @return string
    */
-  public function getSelinux()
+  public function getSelinuxMode()
   {
-    return $this->selinux;
+    return $this->selinuxMode;
   }
 }
 

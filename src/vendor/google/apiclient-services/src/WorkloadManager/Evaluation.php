@@ -27,6 +27,10 @@ class Evaluation extends \Google\Collection
   /**
    * @var string
    */
+  public $customRulesBucket;
+  /**
+   * @var string
+   */
   public $description;
   /**
    * @var string[]
@@ -36,12 +40,18 @@ class Evaluation extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var ResourceFilter
+   */
+  public $resourceFilter;
   protected $resourceFilterType = ResourceFilter::class;
   protected $resourceFilterDataType = '';
-  public $resourceFilter;
+  /**
+   * @var ResourceStatus
+   */
+  public $resourceStatus;
   protected $resourceStatusType = ResourceStatus::class;
   protected $resourceStatusDataType = '';
-  public $resourceStatus;
   /**
    * @var string[]
    */
@@ -50,6 +60,10 @@ class Evaluation extends \Google\Collection
    * @var string[]
    */
   public $ruleVersions;
+  /**
+   * @var string
+   */
+  public $schedule;
   /**
    * @var string
    */
@@ -68,6 +82,20 @@ class Evaluation extends \Google\Collection
   public function getCreateTime()
   {
     return $this->createTime;
+  }
+  /**
+   * @param string
+   */
+  public function setCustomRulesBucket($customRulesBucket)
+  {
+    $this->customRulesBucket = $customRulesBucket;
+  }
+  /**
+   * @return string
+   */
+  public function getCustomRulesBucket()
+  {
+    return $this->customRulesBucket;
   }
   /**
    * @param string
@@ -166,6 +194,20 @@ class Evaluation extends \Google\Collection
   public function getRuleVersions()
   {
     return $this->ruleVersions;
+  }
+  /**
+   * @param string
+   */
+  public function setSchedule($schedule)
+  {
+    $this->schedule = $schedule;
+  }
+  /**
+   * @return string
+   */
+  public function getSchedule()
+  {
+    return $this->schedule;
   }
   /**
    * @param string

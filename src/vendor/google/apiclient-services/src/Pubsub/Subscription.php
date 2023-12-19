@@ -23,8 +23,22 @@ class Subscription extends \Google\Model
    * @var int
    */
   public $ackDeadlineSeconds;
+  /**
+   * @var BigQueryConfig
+   */
+  public $bigqueryConfig;
   protected $bigqueryConfigType = BigQueryConfig::class;
   protected $bigqueryConfigDataType = '';
+  /**
+   * @var CloudStorageConfig
+   */
+  public $cloudStorageConfig;
+  protected $cloudStorageConfigType = CloudStorageConfig::class;
+  protected $cloudStorageConfigDataType = '';
+  /**
+   * @var DeadLetterPolicy
+   */
+  public $deadLetterPolicy;
   protected $deadLetterPolicyType = DeadLetterPolicy::class;
   protected $deadLetterPolicyDataType = '';
   /**
@@ -39,6 +53,10 @@ class Subscription extends \Google\Model
    * @var bool
    */
   public $enableMessageOrdering;
+  /**
+   * @var ExpirationPolicy
+   */
+  public $expirationPolicy;
   protected $expirationPolicyType = ExpirationPolicy::class;
   protected $expirationPolicyDataType = '';
   /**
@@ -57,12 +75,20 @@ class Subscription extends \Google\Model
    * @var string
    */
   public $name;
+  /**
+   * @var PushConfig
+   */
+  public $pushConfig;
   protected $pushConfigType = PushConfig::class;
   protected $pushConfigDataType = '';
   /**
    * @var bool
    */
   public $retainAckedMessages;
+  /**
+   * @var RetryPolicy
+   */
+  public $retryPolicy;
   protected $retryPolicyType = RetryPolicy::class;
   protected $retryPolicyDataType = '';
   /**
@@ -105,6 +131,20 @@ class Subscription extends \Google\Model
   public function getBigqueryConfig()
   {
     return $this->bigqueryConfig;
+  }
+  /**
+   * @param CloudStorageConfig
+   */
+  public function setCloudStorageConfig(CloudStorageConfig $cloudStorageConfig)
+  {
+    $this->cloudStorageConfig = $cloudStorageConfig;
+  }
+  /**
+   * @return CloudStorageConfig
+   */
+  public function getCloudStorageConfig()
+  {
+    return $this->cloudStorageConfig;
   }
   /**
    * @param DeadLetterPolicy

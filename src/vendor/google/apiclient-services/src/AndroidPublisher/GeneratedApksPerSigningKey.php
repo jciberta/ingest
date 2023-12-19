@@ -24,14 +24,36 @@ class GeneratedApksPerSigningKey extends \Google\Collection
    * @var string
    */
   public $certificateSha256Hash;
+  /**
+   * @var GeneratedAssetPackSlice[]
+   */
+  public $generatedAssetPackSlices;
   protected $generatedAssetPackSlicesType = GeneratedAssetPackSlice::class;
   protected $generatedAssetPackSlicesDataType = 'array';
+  /**
+   * @var GeneratedSplitApk[]
+   */
+  public $generatedSplitApks;
   protected $generatedSplitApksType = GeneratedSplitApk::class;
   protected $generatedSplitApksDataType = 'array';
+  /**
+   * @var GeneratedStandaloneApk[]
+   */
+  public $generatedStandaloneApks;
   protected $generatedStandaloneApksType = GeneratedStandaloneApk::class;
   protected $generatedStandaloneApksDataType = 'array';
+  /**
+   * @var GeneratedUniversalApk
+   */
+  public $generatedUniversalApk;
   protected $generatedUniversalApkType = GeneratedUniversalApk::class;
   protected $generatedUniversalApkDataType = '';
+  /**
+   * @var TargetingInfo
+   */
+  public $targetingInfo;
+  protected $targetingInfoType = TargetingInfo::class;
+  protected $targetingInfoDataType = '';
 
   /**
    * @param string
@@ -102,6 +124,20 @@ class GeneratedApksPerSigningKey extends \Google\Collection
   public function getGeneratedUniversalApk()
   {
     return $this->generatedUniversalApk;
+  }
+  /**
+   * @param TargetingInfo
+   */
+  public function setTargetingInfo(TargetingInfo $targetingInfo)
+  {
+    $this->targetingInfo = $targetingInfo;
+  }
+  /**
+   * @return TargetingInfo
+   */
+  public function getTargetingInfo()
+  {
+    return $this->targetingInfo;
   }
 }
 

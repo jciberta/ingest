@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class Frames extends \Google\Collection
 {
   protected $collection_key = 'framesData';
+  /**
+   * @var AssetFrame[]
+   */
+  public $framesData;
   protected $framesDataType = AssetFrame::class;
   protected $framesDataDataType = 'array';
-  public $framesData = [];
 
   /**
    * @param AssetFrame[]

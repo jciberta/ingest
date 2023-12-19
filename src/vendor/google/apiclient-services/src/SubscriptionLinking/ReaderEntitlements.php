@@ -20,9 +20,12 @@ namespace Google\Service\SubscriptionLinking;
 class ReaderEntitlements extends \Google\Collection
 {
   protected $collection_key = 'entitlements';
+  /**
+   * @var Entitlement[]
+   */
+  public $entitlements;
   protected $entitlementsType = Entitlement::class;
   protected $entitlementsDataType = 'array';
-  public $entitlements = [];
   /**
    * @var string
    */

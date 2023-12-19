@@ -47,8 +47,20 @@ class RestorePlan extends \Google\Model
    * @var string
    */
   public $name;
+  /**
+   * @var RestoreConfig
+   */
+  public $restoreConfig;
   protected $restoreConfigType = RestoreConfig::class;
   protected $restoreConfigDataType = '';
+  /**
+   * @var string
+   */
+  public $state;
+  /**
+   * @var string
+   */
+  public $stateReason;
   /**
    * @var string
    */
@@ -169,6 +181,34 @@ class RestorePlan extends \Google\Model
   public function getRestoreConfig()
   {
     return $this->restoreConfig;
+  }
+  /**
+   * @param string
+   */
+  public function setState($state)
+  {
+    $this->state = $state;
+  }
+  /**
+   * @return string
+   */
+  public function getState()
+  {
+    return $this->state;
+  }
+  /**
+   * @param string
+   */
+  public function setStateReason($stateReason)
+  {
+    $this->stateReason = $stateReason;
+  }
+  /**
+   * @return string
+   */
+  public function getStateReason()
+  {
+    return $this->stateReason;
   }
   /**
    * @param string

@@ -32,6 +32,10 @@ class GoogleCloudRunV2Execution extends \Google\Collection
    * @var string
    */
   public $completionTime;
+  /**
+   * @var GoogleCloudRunV2Condition[]
+   */
+  public $conditions;
   protected $conditionsType = GoogleCloudRunV2Condition::class;
   protected $conditionsDataType = 'array';
   /**
@@ -99,6 +103,10 @@ class GoogleCloudRunV2Execution extends \Google\Collection
    */
   public $runningCount;
   /**
+   * @var bool
+   */
+  public $satisfiesPzs;
+  /**
    * @var string
    */
   public $startTime;
@@ -110,6 +118,10 @@ class GoogleCloudRunV2Execution extends \Google\Collection
    * @var int
    */
   public $taskCount;
+  /**
+   * @var GoogleCloudRunV2TaskTemplate
+   */
+  public $template;
   protected $templateType = GoogleCloudRunV2TaskTemplate::class;
   protected $templateDataType = '';
   /**
@@ -400,6 +412,20 @@ class GoogleCloudRunV2Execution extends \Google\Collection
   public function getRunningCount()
   {
     return $this->runningCount;
+  }
+  /**
+   * @param bool
+   */
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  /**
+   * @return bool
+   */
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
   }
   /**
    * @param string

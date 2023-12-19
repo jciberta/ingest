@@ -43,9 +43,9 @@ class AccountsCustomersCustomerRepricingConfigs extends \Google\Service\Resource
    * business cases. * The new config will not modify exports used with other
    * configs. Changes to the config may be immediate, but may take up to 24 hours.
    * * There is a limit of ten configs for any
-   * RepricingConfig.EntitlementGranularity.entitlement or
+   * RepricingConfig.EntitlementGranularity.entitlement, for any
    * RepricingConfig.effective_invoice_month. * The contained
-   * CustomerRepricingConfig.repricing_config vaule must be different from the
+   * CustomerRepricingConfig.repricing_config value must be different from the
    * value used in the current config for a
    * RepricingConfig.EntitlementGranularity.entitlement. Possible Error Codes: *
    * PERMISSION_DENIED: If the account making the request and the account being
@@ -122,7 +122,7 @@ class AccountsCustomersCustomerRepricingConfigs extends \Google\Service\Resource
    * with the given account. * INTERNAL: Any non-user error related to technical
    * issues in the backend. In this case, contact Cloud Channel support. Return
    * Value: If successful, the CustomerRepricingConfig resources. The data for
-   * each resource is displayed in the ascending order of: * customer ID *
+   * each resource is displayed in the ascending order of: * Customer ID *
    * RepricingConfig.EntitlementGranularity.entitlement *
    * RepricingConfig.effective_invoice_month * CustomerRepricingConfig.update_time
    * If unsuccessful, returns an error.

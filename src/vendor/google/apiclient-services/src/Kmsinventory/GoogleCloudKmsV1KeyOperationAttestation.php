@@ -19,9 +19,12 @@ namespace Google\Service\Kmsinventory;
 
 class GoogleCloudKmsV1KeyOperationAttestation extends \Google\Model
 {
+  /**
+   * @var GoogleCloudKmsV1KeyOperationAttestationCertificateChains
+   */
+  public $certChains;
   protected $certChainsType = GoogleCloudKmsV1KeyOperationAttestationCertificateChains::class;
   protected $certChainsDataType = '';
-  public $certChains;
   /**
    * @var string
    */

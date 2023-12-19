@@ -20,9 +20,12 @@ namespace Google\Service\DriveLabels;
 class GoogleAppsDriveLabelsV2ListLabelLocksResponse extends \Google\Collection
 {
   protected $collection_key = 'labelLocks';
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelLock[]
+   */
+  public $labelLocks;
   protected $labelLocksType = GoogleAppsDriveLabelsV2LabelLock::class;
   protected $labelLocksDataType = 'array';
-  public $labelLocks = [];
   /**
    * @var string
    */

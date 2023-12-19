@@ -20,8 +20,16 @@ namespace Google\Service\Integrations;
 class EnterpriseCrmFrontendsEventbusProtoTriggerConfig extends \Google\Collection
 {
   protected $collection_key = 'startTasks';
+  /**
+   * @var EnterpriseCrmEventbusProtoWorkflowAlertConfig[]
+   */
+  public $alertConfig;
   protected $alertConfigType = EnterpriseCrmEventbusProtoWorkflowAlertConfig::class;
   protected $alertConfigDataType = 'array';
+  /**
+   * @var EnterpriseCrmEventbusProtoCloudSchedulerConfig
+   */
+  public $cloudSchedulerConfig;
   protected $cloudSchedulerConfigType = EnterpriseCrmEventbusProtoCloudSchedulerConfig::class;
   protected $cloudSchedulerConfigDataType = '';
   /**
@@ -35,7 +43,7 @@ class EnterpriseCrmFrontendsEventbusProtoTriggerConfig extends \Google\Collectio
   /**
    * @var string
    */
-  public $errorCatcherConfigId;
+  public $errorCatcherId;
   /**
    * @var string
    */
@@ -48,20 +56,36 @@ class EnterpriseCrmFrontendsEventbusProtoTriggerConfig extends \Google\Collectio
    * @var bool
    */
   public $pauseWorkflowExecutions;
+  /**
+   * @var EnterpriseCrmEventbusProtoCoordinate
+   */
+  public $position;
   protected $positionType = EnterpriseCrmEventbusProtoCoordinate::class;
   protected $positionDataType = '';
   /**
    * @var string[]
    */
   public $properties;
+  /**
+   * @var EnterpriseCrmEventbusProtoNextTask[]
+   */
+  public $startTasks;
   protected $startTasksType = EnterpriseCrmEventbusProtoNextTask::class;
   protected $startTasksDataType = 'array';
+  /**
+   * @var EnterpriseCrmEventbusProtoTriggerCriteria
+   */
+  public $triggerCriteria;
   protected $triggerCriteriaType = EnterpriseCrmEventbusProtoTriggerCriteria::class;
   protected $triggerCriteriaDataType = '';
   /**
    * @var string
    */
   public $triggerId;
+  /**
+   * @var string
+   */
+  public $triggerName;
   /**
    * @var string
    */
@@ -130,16 +154,16 @@ class EnterpriseCrmFrontendsEventbusProtoTriggerConfig extends \Google\Collectio
   /**
    * @param string
    */
-  public function setErrorCatcherConfigId($errorCatcherConfigId)
+  public function setErrorCatcherId($errorCatcherId)
   {
-    $this->errorCatcherConfigId = $errorCatcherConfigId;
+    $this->errorCatcherId = $errorCatcherId;
   }
   /**
    * @return string
    */
-  public function getErrorCatcherConfigId()
+  public function getErrorCatcherId()
   {
-    return $this->errorCatcherConfigId;
+    return $this->errorCatcherId;
   }
   /**
    * @param string
@@ -252,6 +276,20 @@ class EnterpriseCrmFrontendsEventbusProtoTriggerConfig extends \Google\Collectio
   public function getTriggerId()
   {
     return $this->triggerId;
+  }
+  /**
+   * @param string
+   */
+  public function setTriggerName($triggerName)
+  {
+    $this->triggerName = $triggerName;
+  }
+  /**
+   * @return string
+   */
+  public function getTriggerName()
+  {
+    return $this->triggerName;
   }
   /**
    * @param string

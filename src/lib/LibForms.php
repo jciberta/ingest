@@ -1015,6 +1015,11 @@ class FormRecerca extends Form
 		
 		// Filtre de paraules clau
 		if ($this->FiltreText != '') {
+
+			// Neteja del filtre de caràcters estranys
+			$this->FiltreText = Normalitza($this->FiltreText);
+			$this->FiltreText = SuprimeixCaractersNoAlfanumerics($this->FiltreText);
+
 			$obj = new SQL($sRetorn);
 //print_r('CampAlies: ');
 //print_h($obj->CampAlies);

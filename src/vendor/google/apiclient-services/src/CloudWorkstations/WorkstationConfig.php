@@ -19,17 +19,23 @@ namespace Google\Service\CloudWorkstations;
 
 class WorkstationConfig extends \Google\Collection
 {
-  protected $collection_key = 'persistentDirectories';
+  protected $collection_key = 'replicaZones';
   /**
    * @var string[]
    */
   public $annotations;
+  /**
+   * @var Status[]
+   */
+  public $conditions;
   protected $conditionsType = Status::class;
   protected $conditionsDataType = 'array';
-  public $conditions;
+  /**
+   * @var Container
+   */
+  public $container;
   protected $containerType = Container::class;
   protected $containerDataType = '';
-  public $container;
   /**
    * @var string
    */
@@ -46,16 +52,22 @@ class WorkstationConfig extends \Google\Collection
    * @var string
    */
   public $displayName;
+  /**
+   * @var CustomerEncryptionKey
+   */
+  public $encryptionKey;
   protected $encryptionKeyType = CustomerEncryptionKey::class;
   protected $encryptionKeyDataType = '';
-  public $encryptionKey;
   /**
    * @var string
    */
   public $etag;
+  /**
+   * @var Host
+   */
+  public $host;
   protected $hostType = Host::class;
   protected $hostDataType = '';
-  public $host;
   /**
    * @var string
    */
@@ -68,13 +80,26 @@ class WorkstationConfig extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var PersistentDirectory[]
+   */
+  public $persistentDirectories;
   protected $persistentDirectoriesType = PersistentDirectory::class;
   protected $persistentDirectoriesDataType = 'array';
-  public $persistentDirectories;
+  /**
+   * @var ReadinessCheck[]
+   */
+  public $readinessChecks;
+  protected $readinessChecksType = ReadinessCheck::class;
+  protected $readinessChecksDataType = 'array';
   /**
    * @var bool
    */
   public $reconciling;
+  /**
+   * @var string[]
+   */
+  public $replicaZones;
   /**
    * @var string
    */
@@ -285,6 +310,20 @@ class WorkstationConfig extends \Google\Collection
     return $this->persistentDirectories;
   }
   /**
+   * @param ReadinessCheck[]
+   */
+  public function setReadinessChecks($readinessChecks)
+  {
+    $this->readinessChecks = $readinessChecks;
+  }
+  /**
+   * @return ReadinessCheck[]
+   */
+  public function getReadinessChecks()
+  {
+    return $this->readinessChecks;
+  }
+  /**
    * @param bool
    */
   public function setReconciling($reconciling)
@@ -297,6 +336,20 @@ class WorkstationConfig extends \Google\Collection
   public function getReconciling()
   {
     return $this->reconciling;
+  }
+  /**
+   * @param string[]
+   */
+  public function setReplicaZones($replicaZones)
+  {
+    $this->replicaZones = $replicaZones;
+  }
+  /**
+   * @return string[]
+   */
+  public function getReplicaZones()
+  {
+    return $this->replicaZones;
   }
   /**
    * @param string

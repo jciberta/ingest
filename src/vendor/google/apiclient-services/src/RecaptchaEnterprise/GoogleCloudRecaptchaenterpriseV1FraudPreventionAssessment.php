@@ -19,8 +19,22 @@ namespace Google\Service\RecaptchaEnterprise;
 
 class GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessment extends \Google\Model
 {
+  /**
+   * @var GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentBehavioralTrustVerdict
+   */
+  public $behavioralTrustVerdict;
+  protected $behavioralTrustVerdictType = GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentBehavioralTrustVerdict::class;
+  protected $behavioralTrustVerdictDataType = '';
+  /**
+   * @var GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentCardTestingVerdict
+   */
+  public $cardTestingVerdict;
   protected $cardTestingVerdictType = GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentCardTestingVerdict::class;
   protected $cardTestingVerdictDataType = '';
+  /**
+   * @var GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentStolenInstrumentVerdict
+   */
+  public $stolenInstrumentVerdict;
   protected $stolenInstrumentVerdictType = GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentStolenInstrumentVerdict::class;
   protected $stolenInstrumentVerdictDataType = '';
   /**
@@ -28,6 +42,20 @@ class GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessment extends \Google\
    */
   public $transactionRisk;
 
+  /**
+   * @param GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentBehavioralTrustVerdict
+   */
+  public function setBehavioralTrustVerdict(GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentBehavioralTrustVerdict $behavioralTrustVerdict)
+  {
+    $this->behavioralTrustVerdict = $behavioralTrustVerdict;
+  }
+  /**
+   * @return GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentBehavioralTrustVerdict
+   */
+  public function getBehavioralTrustVerdict()
+  {
+    return $this->behavioralTrustVerdict;
+  }
   /**
    * @param GoogleCloudRecaptchaenterpriseV1FraudPreventionAssessmentCardTestingVerdict
    */

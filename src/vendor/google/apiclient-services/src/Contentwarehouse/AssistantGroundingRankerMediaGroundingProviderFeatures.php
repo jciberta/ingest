@@ -20,9 +20,41 @@ namespace Google\Service\Contentwarehouse;
 class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Model
 {
   /**
+   * @var string
+   */
+  public $albumReleaseType;
+  /**
+   * @var string
+   */
+  public $ambiguityClassifier;
+  /**
+   * @var string
+   */
+  public $entityMid;
+  /**
+   * @var bool
+   */
+  public $hasCastVideoDeeplink;
+  /**
+   * @var bool
+   */
+  public $hasTypeSemanticEdge;
+  /**
    * @var bool
    */
   public $isCastVideo;
+  /**
+   * @var bool
+   */
+  public $isExclusiveOriginalProvider;
+  /**
+   * @var bool
+   */
+  public $isMediaSearchQuerySubsetOfEntityNameAndArtist;
+  /**
+   * @var bool
+   */
+  public $isMostRecentSongAlbumAmbiguous;
   /**
    * @var bool
    */
@@ -32,11 +64,103 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
    */
   public $isSeedRadioRequest;
   /**
+   * @var bool
+   */
+  public $isSelfReportedSvodProvider;
+  /**
+   * @var bool
+   */
+  public $isYoutubeMusicSeeking;
+  /**
+   * @var string
+   */
+  public $mediaAccountType;
+  /**
+   * @var string
+   */
+  public $mediaContentType;
+  /**
    * @var float
    */
   public $mscRate;
   public $scubedPSaiMusic;
+  public $scubedPSaiTvm;
+  /**
+   * @var string
+   */
+  public $type;
+  public $youtubeConfidenceScore;
 
+  /**
+   * @param string
+   */
+  public function setAlbumReleaseType($albumReleaseType)
+  {
+    $this->albumReleaseType = $albumReleaseType;
+  }
+  /**
+   * @return string
+   */
+  public function getAlbumReleaseType()
+  {
+    return $this->albumReleaseType;
+  }
+  /**
+   * @param string
+   */
+  public function setAmbiguityClassifier($ambiguityClassifier)
+  {
+    $this->ambiguityClassifier = $ambiguityClassifier;
+  }
+  /**
+   * @return string
+   */
+  public function getAmbiguityClassifier()
+  {
+    return $this->ambiguityClassifier;
+  }
+  /**
+   * @param string
+   */
+  public function setEntityMid($entityMid)
+  {
+    $this->entityMid = $entityMid;
+  }
+  /**
+   * @return string
+   */
+  public function getEntityMid()
+  {
+    return $this->entityMid;
+  }
+  /**
+   * @param bool
+   */
+  public function setHasCastVideoDeeplink($hasCastVideoDeeplink)
+  {
+    $this->hasCastVideoDeeplink = $hasCastVideoDeeplink;
+  }
+  /**
+   * @return bool
+   */
+  public function getHasCastVideoDeeplink()
+  {
+    return $this->hasCastVideoDeeplink;
+  }
+  /**
+   * @param bool
+   */
+  public function setHasTypeSemanticEdge($hasTypeSemanticEdge)
+  {
+    $this->hasTypeSemanticEdge = $hasTypeSemanticEdge;
+  }
+  /**
+   * @return bool
+   */
+  public function getHasTypeSemanticEdge()
+  {
+    return $this->hasTypeSemanticEdge;
+  }
   /**
    * @param bool
    */
@@ -50,6 +174,48 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
   public function getIsCastVideo()
   {
     return $this->isCastVideo;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsExclusiveOriginalProvider($isExclusiveOriginalProvider)
+  {
+    $this->isExclusiveOriginalProvider = $isExclusiveOriginalProvider;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsExclusiveOriginalProvider()
+  {
+    return $this->isExclusiveOriginalProvider;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsMediaSearchQuerySubsetOfEntityNameAndArtist($isMediaSearchQuerySubsetOfEntityNameAndArtist)
+  {
+    $this->isMediaSearchQuerySubsetOfEntityNameAndArtist = $isMediaSearchQuerySubsetOfEntityNameAndArtist;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsMediaSearchQuerySubsetOfEntityNameAndArtist()
+  {
+    return $this->isMediaSearchQuerySubsetOfEntityNameAndArtist;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsMostRecentSongAlbumAmbiguous($isMostRecentSongAlbumAmbiguous)
+  {
+    $this->isMostRecentSongAlbumAmbiguous = $isMostRecentSongAlbumAmbiguous;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsMostRecentSongAlbumAmbiguous()
+  {
+    return $this->isMostRecentSongAlbumAmbiguous;
   }
   /**
    * @param bool
@@ -80,6 +246,62 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
     return $this->isSeedRadioRequest;
   }
   /**
+   * @param bool
+   */
+  public function setIsSelfReportedSvodProvider($isSelfReportedSvodProvider)
+  {
+    $this->isSelfReportedSvodProvider = $isSelfReportedSvodProvider;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsSelfReportedSvodProvider()
+  {
+    return $this->isSelfReportedSvodProvider;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsYoutubeMusicSeeking($isYoutubeMusicSeeking)
+  {
+    $this->isYoutubeMusicSeeking = $isYoutubeMusicSeeking;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsYoutubeMusicSeeking()
+  {
+    return $this->isYoutubeMusicSeeking;
+  }
+  /**
+   * @param string
+   */
+  public function setMediaAccountType($mediaAccountType)
+  {
+    $this->mediaAccountType = $mediaAccountType;
+  }
+  /**
+   * @return string
+   */
+  public function getMediaAccountType()
+  {
+    return $this->mediaAccountType;
+  }
+  /**
+   * @param string
+   */
+  public function setMediaContentType($mediaContentType)
+  {
+    $this->mediaContentType = $mediaContentType;
+  }
+  /**
+   * @return string
+   */
+  public function getMediaContentType()
+  {
+    return $this->mediaContentType;
+  }
+  /**
    * @param float
    */
   public function setMscRate($mscRate)
@@ -100,6 +322,36 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
   public function getScubedPSaiMusic()
   {
     return $this->scubedPSaiMusic;
+  }
+  public function setScubedPSaiTvm($scubedPSaiTvm)
+  {
+    $this->scubedPSaiTvm = $scubedPSaiTvm;
+  }
+  public function getScubedPSaiTvm()
+  {
+    return $this->scubedPSaiTvm;
+  }
+  /**
+   * @param string
+   */
+  public function setType($type)
+  {
+    $this->type = $type;
+  }
+  /**
+   * @return string
+   */
+  public function getType()
+  {
+    return $this->type;
+  }
+  public function setYoutubeConfidenceScore($youtubeConfidenceScore)
+  {
+    $this->youtubeConfidenceScore = $youtubeConfidenceScore;
+  }
+  public function getYoutubeConfidenceScore()
+  {
+    return $this->youtubeConfidenceScore;
   }
 }
 

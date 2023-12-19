@@ -27,6 +27,10 @@ class GoogleCloudChannelV1alpha1RenewalSettings extends \Google\Model
    * @var bool
    */
   public $enableRenewal;
+  /**
+   * @var GoogleCloudChannelV1alpha1Period
+   */
+  public $paymentCycle;
   protected $paymentCycleType = GoogleCloudChannelV1alpha1Period::class;
   protected $paymentCycleDataType = '';
   /**
@@ -41,6 +45,10 @@ class GoogleCloudChannelV1alpha1RenewalSettings extends \Google\Model
    * @var bool
    */
   public $resizeUnitCount;
+  /**
+   * @var string
+   */
+  public $scheduledRenewalOffer;
 
   /**
    * @param bool
@@ -125,6 +133,20 @@ class GoogleCloudChannelV1alpha1RenewalSettings extends \Google\Model
   public function getResizeUnitCount()
   {
     return $this->resizeUnitCount;
+  }
+  /**
+   * @param string
+   */
+  public function setScheduledRenewalOffer($scheduledRenewalOffer)
+  {
+    $this->scheduledRenewalOffer = $scheduledRenewalOffer;
+  }
+  /**
+   * @return string
+   */
+  public function getScheduledRenewalOffer()
+  {
+    return $this->scheduledRenewalOffer;
   }
 }
 

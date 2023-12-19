@@ -40,7 +40,7 @@ class ProjectsLocationsTargets extends \Google\Service\Resource
    *
    * @param string $parent Required. The parent collection in which the `Target`
    * should be created. Format should be
-   * projects/{project_id}/locations/{location_name}.
+   * `projects/{project_id}/locations/{location_name}`.
    * @param Target $postBody
    * @param array $optParams Optional parameters.
    *
@@ -72,11 +72,11 @@ class ProjectsLocationsTargets extends \Google\Service\Resource
    *
    * @param string $name Required. The name of the `Target` to delete. Format
    * should be
-   * projects/{project_id}/locations/{location_name}/targets/{target_name}.
+   * `projects/{project_id}/locations/{location_name}/targets/{target_name}`.
    * @param array $optParams Optional parameters.
    *
    * @opt_param bool allowMissing Optional. If set to true, then deleting an
-   * already deleted or non-existing DeliveryPipeline will succeed.
+   * already deleted or non-existing `Target` will succeed.
    * @opt_param string etag Optional. This checksum is computed by the server
    * based on the value of other fields, and may be sent on update and delete
    * requests to ensure the client has an up-to-date value before proceeding.
@@ -105,7 +105,7 @@ class ProjectsLocationsTargets extends \Google\Service\Resource
    * Gets details of a single Target. (targets.get)
    *
    * @param string $name Required. Name of the `Target`. Format must be
-   * projects/{project_id}/locations/{location_name}/targets/{target_name}.
+   * `projects/{project_id}/locations/{location_name}/targets/{target_name}`.
    * @param array $optParams Optional parameters.
    * @return Target
    */
@@ -150,7 +150,7 @@ class ProjectsLocationsTargets extends \Google\Service\Resource
    * (targets.listProjectsLocationsTargets)
    *
    * @param string $parent Required. The parent, which owns this collection of
-   * targets. Format must be projects/{project_id}/locations/{location_name}.
+   * targets. Format must be `projects/{project_id}/locations/{location_name}`.
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter Optional. Filter targets to be returned. See
@@ -177,7 +177,7 @@ class ProjectsLocationsTargets extends \Google\Service\Resource
    * Updates the parameters of a single Target. (targets.patch)
    *
    * @param string $name Optional. Name of the `Target`. Format is
-   * projects/{project}/locations/{location}/targets/a-z{0,62}.
+   * `projects/{project}/locations/{location}/targets/a-z{0,62}`.
    * @param Target $postBody
    * @param array $optParams Optional parameters.
    *

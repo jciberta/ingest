@@ -19,11 +19,37 @@ namespace Google\Service\CloudFunctions;
 
 class SourceProvenance extends \Google\Model
 {
+  /**
+   * @var string
+   */
+  public $gitUri;
+  /**
+   * @var RepoSource
+   */
+  public $resolvedRepoSource;
   protected $resolvedRepoSourceType = RepoSource::class;
   protected $resolvedRepoSourceDataType = '';
+  /**
+   * @var StorageSource
+   */
+  public $resolvedStorageSource;
   protected $resolvedStorageSourceType = StorageSource::class;
   protected $resolvedStorageSourceDataType = '';
 
+  /**
+   * @param string
+   */
+  public function setGitUri($gitUri)
+  {
+    $this->gitUri = $gitUri;
+  }
+  /**
+   * @return string
+   */
+  public function getGitUri()
+  {
+    return $this->gitUri;
+  }
   /**
    * @param RepoSource
    */

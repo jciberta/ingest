@@ -27,10 +27,13 @@ class ListWorkspacesResponse extends \Google\Collection
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
+  /**
+   * @var Workspace[]
+   */
+  public $workspaces;
   protected $workspacesType = Workspace::class;
   protected $workspacesDataType = 'array';
-  public $workspaces = [];
 
   /**
    * @param string

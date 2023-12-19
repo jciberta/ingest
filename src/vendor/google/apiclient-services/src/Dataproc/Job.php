@@ -32,10 +32,28 @@ class Job extends \Google\Collection
    * @var string
    */
   public $driverOutputResourceUri;
+  /**
+   * @var DriverSchedulingConfig
+   */
+  public $driverSchedulingConfig;
   protected $driverSchedulingConfigType = DriverSchedulingConfig::class;
   protected $driverSchedulingConfigDataType = '';
+  /**
+   * @var FlinkJob
+   */
+  public $flinkJob;
+  protected $flinkJobType = FlinkJob::class;
+  protected $flinkJobDataType = '';
+  /**
+   * @var HadoopJob
+   */
+  public $hadoopJob;
   protected $hadoopJobType = HadoopJob::class;
   protected $hadoopJobDataType = '';
+  /**
+   * @var HiveJob
+   */
+  public $hiveJob;
   protected $hiveJobType = HiveJob::class;
   protected $hiveJobDataType = '';
   /**
@@ -46,30 +64,82 @@ class Job extends \Google\Collection
    * @var string[]
    */
   public $labels;
+  /**
+   * @var PigJob
+   */
+  public $pigJob;
   protected $pigJobType = PigJob::class;
   protected $pigJobDataType = '';
+  /**
+   * @var JobPlacement
+   */
+  public $placement;
   protected $placementType = JobPlacement::class;
   protected $placementDataType = '';
+  /**
+   * @var PrestoJob
+   */
+  public $prestoJob;
   protected $prestoJobType = PrestoJob::class;
   protected $prestoJobDataType = '';
+  /**
+   * @var PySparkJob
+   */
+  public $pysparkJob;
   protected $pysparkJobType = PySparkJob::class;
   protected $pysparkJobDataType = '';
+  /**
+   * @var JobReference
+   */
+  public $reference;
   protected $referenceType = JobReference::class;
   protected $referenceDataType = '';
+  /**
+   * @var JobScheduling
+   */
+  public $scheduling;
   protected $schedulingType = JobScheduling::class;
   protected $schedulingDataType = '';
+  /**
+   * @var SparkJob
+   */
+  public $sparkJob;
   protected $sparkJobType = SparkJob::class;
   protected $sparkJobDataType = '';
+  /**
+   * @var SparkRJob
+   */
+  public $sparkRJob;
   protected $sparkRJobType = SparkRJob::class;
   protected $sparkRJobDataType = '';
+  /**
+   * @var SparkSqlJob
+   */
+  public $sparkSqlJob;
   protected $sparkSqlJobType = SparkSqlJob::class;
   protected $sparkSqlJobDataType = '';
+  /**
+   * @var JobStatus
+   */
+  public $status;
   protected $statusType = JobStatus::class;
   protected $statusDataType = '';
+  /**
+   * @var JobStatus[]
+   */
+  public $statusHistory;
   protected $statusHistoryType = JobStatus::class;
   protected $statusHistoryDataType = 'array';
+  /**
+   * @var TrinoJob
+   */
+  public $trinoJob;
   protected $trinoJobType = TrinoJob::class;
   protected $trinoJobDataType = '';
+  /**
+   * @var YarnApplication[]
+   */
+  public $yarnApplications;
   protected $yarnApplicationsType = YarnApplication::class;
   protected $yarnApplicationsDataType = 'array';
 
@@ -128,6 +198,20 @@ class Job extends \Google\Collection
   public function getDriverSchedulingConfig()
   {
     return $this->driverSchedulingConfig;
+  }
+  /**
+   * @param FlinkJob
+   */
+  public function setFlinkJob(FlinkJob $flinkJob)
+  {
+    $this->flinkJob = $flinkJob;
+  }
+  /**
+   * @return FlinkJob
+   */
+  public function getFlinkJob()
+  {
+    return $this->flinkJob;
   }
   /**
    * @param HadoopJob

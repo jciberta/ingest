@@ -20,8 +20,16 @@ namespace Google\Service\Integrations;
 class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
 {
   protected $collection_key = 'startTasks';
+  /**
+   * @var GoogleCloudIntegrationsV1alphaIntegrationAlertConfig[]
+   */
+  public $alertConfig;
   protected $alertConfigType = GoogleCloudIntegrationsV1alphaIntegrationAlertConfig::class;
   protected $alertConfigDataType = 'array';
+  /**
+   * @var GoogleCloudIntegrationsV1alphaCloudSchedulerConfig
+   */
+  public $cloudSchedulerConfig;
   protected $cloudSchedulerConfigType = GoogleCloudIntegrationsV1alphaCloudSchedulerConfig::class;
   protected $cloudSchedulerConfigDataType = '';
   /**
@@ -31,7 +39,7 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   /**
    * @var string
    */
-  public $errorCatcherConfigId;
+  public $errorCatcherId;
   /**
    * @var string
    */
@@ -41,11 +49,25 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
    */
   public $nextTasksExecutionPolicy;
   /**
+   * @var GoogleCloudIntegrationsV1alphaCoordinate
+   */
+  public $position;
+  protected $positionType = GoogleCloudIntegrationsV1alphaCoordinate::class;
+  protected $positionDataType = '';
+  /**
    * @var string[]
    */
   public $properties;
+  /**
+   * @var GoogleCloudIntegrationsV1alphaNextTask[]
+   */
+  public $startTasks;
   protected $startTasksType = GoogleCloudIntegrationsV1alphaNextTask::class;
   protected $startTasksDataType = 'array';
+  /**
+   * @var string
+   */
+  public $trigger;
   /**
    * @var string
    */
@@ -104,16 +126,16 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   /**
    * @param string
    */
-  public function setErrorCatcherConfigId($errorCatcherConfigId)
+  public function setErrorCatcherId($errorCatcherId)
   {
-    $this->errorCatcherConfigId = $errorCatcherConfigId;
+    $this->errorCatcherId = $errorCatcherId;
   }
   /**
    * @return string
    */
-  public function getErrorCatcherConfigId()
+  public function getErrorCatcherId()
   {
-    return $this->errorCatcherConfigId;
+    return $this->errorCatcherId;
   }
   /**
    * @param string
@@ -144,6 +166,20 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
     return $this->nextTasksExecutionPolicy;
   }
   /**
+   * @param GoogleCloudIntegrationsV1alphaCoordinate
+   */
+  public function setPosition(GoogleCloudIntegrationsV1alphaCoordinate $position)
+  {
+    $this->position = $position;
+  }
+  /**
+   * @return GoogleCloudIntegrationsV1alphaCoordinate
+   */
+  public function getPosition()
+  {
+    return $this->position;
+  }
+  /**
    * @param string[]
    */
   public function setProperties($properties)
@@ -170,6 +206,20 @@ class GoogleCloudIntegrationsV1alphaTriggerConfig extends \Google\Collection
   public function getStartTasks()
   {
     return $this->startTasks;
+  }
+  /**
+   * @param string
+   */
+  public function setTrigger($trigger)
+  {
+    $this->trigger = $trigger;
+  }
+  /**
+   * @return string
+   */
+  public function getTrigger()
+  {
+    return $this->trigger;
   }
   /**
    * @param string

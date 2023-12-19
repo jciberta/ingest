@@ -19,18 +19,30 @@ namespace Google\Service\MigrationCenterAPI;
 
 class PerformanceSample extends \Google\Model
 {
+  /**
+   * @var CpuUsageSample
+   */
+  public $cpu;
   protected $cpuType = CpuUsageSample::class;
   protected $cpuDataType = '';
-  public $cpu;
+  /**
+   * @var DiskUsageSample
+   */
+  public $disk;
   protected $diskType = DiskUsageSample::class;
   protected $diskDataType = '';
-  public $disk;
+  /**
+   * @var MemoryUsageSample
+   */
+  public $memory;
   protected $memoryType = MemoryUsageSample::class;
   protected $memoryDataType = '';
-  public $memory;
+  /**
+   * @var NetworkUsageSample
+   */
+  public $network;
   protected $networkType = NetworkUsageSample::class;
   protected $networkDataType = '';
-  public $network;
   /**
    * @var string
    */

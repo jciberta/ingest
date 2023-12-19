@@ -20,9 +20,12 @@ namespace Google\Service\MigrationCenterAPI;
 class ListImportDataFilesResponse extends \Google\Collection
 {
   protected $collection_key = 'unreachable';
+  /**
+   * @var ImportDataFile[]
+   */
+  public $importDataFiles;
   protected $importDataFilesType = ImportDataFile::class;
   protected $importDataFilesDataType = 'array';
-  public $importDataFiles = [];
   /**
    * @var string
    */
@@ -30,7 +33,7 @@ class ListImportDataFilesResponse extends \Google\Collection
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
 
   /**
    * @param ImportDataFile[]

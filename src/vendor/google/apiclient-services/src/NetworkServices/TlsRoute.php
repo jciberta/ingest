@@ -35,11 +35,19 @@ class TlsRoute extends \Google\Collection
   /**
    * @var string[]
    */
+  public $labels;
+  /**
+   * @var string[]
+   */
   public $meshes;
   /**
    * @var string
    */
   public $name;
+  /**
+   * @var TlsRouteRouteRule[]
+   */
+  public $rules;
   protected $rulesType = TlsRouteRouteRule::class;
   protected $rulesDataType = 'array';
   /**
@@ -92,6 +100,20 @@ class TlsRoute extends \Google\Collection
   public function getGateways()
   {
     return $this->gateways;
+  }
+  /**
+   * @param string[]
+   */
+  public function setLabels($labels)
+  {
+    $this->labels = $labels;
+  }
+  /**
+   * @return string[]
+   */
+  public function getLabels()
+  {
+    return $this->labels;
   }
   /**
    * @param string[]

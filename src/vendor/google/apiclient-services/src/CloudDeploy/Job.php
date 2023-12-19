@@ -19,10 +19,22 @@ namespace Google\Service\CloudDeploy;
 
 class Job extends \Google\Model
 {
+  /**
+   * @var AdvanceChildRolloutJob
+   */
+  public $advanceChildRolloutJob;
   protected $advanceChildRolloutJobType = AdvanceChildRolloutJob::class;
   protected $advanceChildRolloutJobDataType = '';
+  /**
+   * @var CreateChildRolloutJob
+   */
+  public $createChildRolloutJob;
   protected $createChildRolloutJobType = CreateChildRolloutJob::class;
   protected $createChildRolloutJobDataType = '';
+  /**
+   * @var DeployJob
+   */
+  public $deployJob;
   protected $deployJobType = DeployJob::class;
   protected $deployJobDataType = '';
   /**
@@ -34,9 +46,29 @@ class Job extends \Google\Model
    */
   public $jobRun;
   /**
+   * @var PostdeployJob
+   */
+  public $postdeployJob;
+  protected $postdeployJobType = PostdeployJob::class;
+  protected $postdeployJobDataType = '';
+  /**
+   * @var PredeployJob
+   */
+  public $predeployJob;
+  protected $predeployJobType = PredeployJob::class;
+  protected $predeployJobDataType = '';
+  /**
+   * @var string
+   */
+  public $skipMessage;
+  /**
    * @var string
    */
   public $state;
+  /**
+   * @var VerifyJob
+   */
+  public $verifyJob;
   protected $verifyJobType = VerifyJob::class;
   protected $verifyJobDataType = '';
 
@@ -109,6 +141,48 @@ class Job extends \Google\Model
   public function getJobRun()
   {
     return $this->jobRun;
+  }
+  /**
+   * @param PostdeployJob
+   */
+  public function setPostdeployJob(PostdeployJob $postdeployJob)
+  {
+    $this->postdeployJob = $postdeployJob;
+  }
+  /**
+   * @return PostdeployJob
+   */
+  public function getPostdeployJob()
+  {
+    return $this->postdeployJob;
+  }
+  /**
+   * @param PredeployJob
+   */
+  public function setPredeployJob(PredeployJob $predeployJob)
+  {
+    $this->predeployJob = $predeployJob;
+  }
+  /**
+   * @return PredeployJob
+   */
+  public function getPredeployJob()
+  {
+    return $this->predeployJob;
+  }
+  /**
+   * @param string
+   */
+  public function setSkipMessage($skipMessage)
+  {
+    $this->skipMessage = $skipMessage;
+  }
+  /**
+   * @return string
+   */
+  public function getSkipMessage()
+  {
+    return $this->skipMessage;
   }
   /**
    * @param string

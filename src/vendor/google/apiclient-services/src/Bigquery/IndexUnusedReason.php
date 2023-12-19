@@ -19,10 +19,10 @@ namespace Google\Service\Bigquery;
 
 class IndexUnusedReason extends \Google\Model
 {
-  protected $internal_gapi_mappings = [
-        "baseTable" => "base_table",
-        "indexName" => "index_name",
-  ];
+  /**
+   * @var TableReference
+   */
+  public $baseTable;
   protected $baseTableType = TableReference::class;
   protected $baseTableDataType = '';
   /**

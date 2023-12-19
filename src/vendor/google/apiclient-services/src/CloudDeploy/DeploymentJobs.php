@@ -19,8 +19,28 @@ namespace Google\Service\CloudDeploy;
 
 class DeploymentJobs extends \Google\Model
 {
+  /**
+   * @var Job
+   */
+  public $deployJob;
   protected $deployJobType = Job::class;
   protected $deployJobDataType = '';
+  /**
+   * @var Job
+   */
+  public $postdeployJob;
+  protected $postdeployJobType = Job::class;
+  protected $postdeployJobDataType = '';
+  /**
+   * @var Job
+   */
+  public $predeployJob;
+  protected $predeployJobType = Job::class;
+  protected $predeployJobDataType = '';
+  /**
+   * @var Job
+   */
+  public $verifyJob;
   protected $verifyJobType = Job::class;
   protected $verifyJobDataType = '';
 
@@ -37,6 +57,34 @@ class DeploymentJobs extends \Google\Model
   public function getDeployJob()
   {
     return $this->deployJob;
+  }
+  /**
+   * @param Job
+   */
+  public function setPostdeployJob(Job $postdeployJob)
+  {
+    $this->postdeployJob = $postdeployJob;
+  }
+  /**
+   * @return Job
+   */
+  public function getPostdeployJob()
+  {
+    return $this->postdeployJob;
+  }
+  /**
+   * @param Job
+   */
+  public function setPredeployJob(Job $predeployJob)
+  {
+    $this->predeployJob = $predeployJob;
+  }
+  /**
+   * @return Job
+   */
+  public function getPredeployJob()
+  {
+    return $this->predeployJob;
   }
   /**
    * @param Job

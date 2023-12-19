@@ -28,6 +28,12 @@ class GoogleCloudRecaptchaenterpriseV1IOSKeySettings extends \Google\Collection
    * @var string[]
    */
   public $allowedBundleIds;
+  /**
+   * @var GoogleCloudRecaptchaenterpriseV1AppleDeveloperId
+   */
+  public $appleDeveloperId;
+  protected $appleDeveloperIdType = GoogleCloudRecaptchaenterpriseV1AppleDeveloperId::class;
+  protected $appleDeveloperIdDataType = '';
 
   /**
    * @param bool
@@ -56,6 +62,20 @@ class GoogleCloudRecaptchaenterpriseV1IOSKeySettings extends \Google\Collection
   public function getAllowedBundleIds()
   {
     return $this->allowedBundleIds;
+  }
+  /**
+   * @param GoogleCloudRecaptchaenterpriseV1AppleDeveloperId
+   */
+  public function setAppleDeveloperId(GoogleCloudRecaptchaenterpriseV1AppleDeveloperId $appleDeveloperId)
+  {
+    $this->appleDeveloperId = $appleDeveloperId;
+  }
+  /**
+   * @return GoogleCloudRecaptchaenterpriseV1AppleDeveloperId
+   */
+  public function getAppleDeveloperId()
+  {
+    return $this->appleDeveloperId;
   }
 }
 

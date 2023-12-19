@@ -24,6 +24,7 @@ use Google\Service\Cloudchannel\GoogleCloudChannelV1ChangeParametersRequest;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1ChangeRenewalSettingsRequest;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1CreateEntitlementRequest;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1Entitlement;
+use Google\Service\Cloudchannel\GoogleCloudChannelV1ListEntitlementChangesResponse;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1ListEntitlementsResponse;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1Offer;
 use Google\Service\Cloudchannel\GoogleCloudChannelV1StartPaidServiceRequest;
@@ -188,27 +189,28 @@ class AccountsCustomersEntitlements extends \Google\Service\Resource
   }
   /**
    * Creates an entitlement for a customer. Possible error codes: *
-   * PERMISSION_DENIED: The customer doesn't belong to the reseller. *
-   * INVALID_ARGUMENT: * Required request parameters are missing or invalid. *
-   * There is already a customer entitlement for a SKU from the same product
-   * family. * INVALID_VALUE: Make sure the OfferId is valid. If it is, contact
-   * Google Channel support for further troubleshooting. * NOT_FOUND: The customer
-   * or offer resource was not found. * ALREADY_EXISTS: * The SKU was already
-   * purchased for the customer. * The customer's primary email already exists.
-   * Retry after changing the customer's primary contact email. *
-   * CONDITION_NOT_MET or FAILED_PRECONDITION: * The domain required for
-   * purchasing a SKU has not been verified. * A pre-requisite SKU required to
-   * purchase an Add-On SKU is missing. For example, Google Workspace Business
-   * Starter is required to purchase Vault or Drive. * (Developer accounts only)
-   * Reseller and resold domain must meet the following naming requirements: *
-   * Domain names must start with goog-test. * Domain names must include the
-   * reseller domain. * INTERNAL: Any non-user error related to a technical issue
-   * in the backend. Contact Cloud Channel support. * UNKNOWN: Any non-user error
-   * related to a technical issue in the backend. Contact Cloud Channel support.
-   * Return value: The ID of a long-running operation. To get the results of the
-   * operation, call the GetOperation method of CloudChannelOperationsService. The
-   * Operation metadata will contain an instance of OperationMetadata.
-   * (entitlements.create)
+   * PERMISSION_DENIED: * The customer doesn't belong to the reseller. * The
+   * reseller is not authorized to transact on this Product. See
+   * https://support.google.com/channelservices/answer/9759265 * INVALID_ARGUMENT:
+   * * Required request parameters are missing or invalid. * There is already a
+   * customer entitlement for a SKU from the same product family. * INVALID_VALUE:
+   * Make sure the OfferId is valid. If it is, contact Google Channel support for
+   * further troubleshooting. * NOT_FOUND: The customer or offer resource was not
+   * found. * ALREADY_EXISTS: * The SKU was already purchased for the customer. *
+   * The customer's primary email already exists. Retry after changing the
+   * customer's primary contact email. * CONDITION_NOT_MET or FAILED_PRECONDITION:
+   * * The domain required for purchasing a SKU has not been verified. * A pre-
+   * requisite SKU required to purchase an Add-On SKU is missing. For example,
+   * Google Workspace Business Starter is required to purchase Vault or Drive. *
+   * (Developer accounts only) Reseller and resold domain must meet the following
+   * naming requirements: * Domain names must start with goog-test. * Domain names
+   * must include the reseller domain. * INTERNAL: Any non-user error related to a
+   * technical issue in the backend. Contact Cloud Channel support. * UNKNOWN: Any
+   * non-user error related to a technical issue in the backend. Contact Cloud
+   * Channel support. Return value: The ID of a long-running operation. To get the
+   * results of the operation, call the GetOperation method of
+   * CloudChannelOperationsService. The Operation metadata will contain an
+   * instance of OperationMetadata. (entitlements.create)
    *
    * @param string $parent Required. The resource name of the reseller's customer
    * account in which to create the entitlement. Parent uses the format:
@@ -267,6 +269,42 @@ class AccountsCustomersEntitlements extends \Google\Service\Resource
     $params = ['parent' => $parent];
     $params = array_merge($params, $optParams);
     return $this->call('list', [$params], GoogleCloudChannelV1ListEntitlementsResponse::class);
+  }
+  /**
+   * List entitlement history. Possible error codes: * PERMISSION_DENIED: The
+   * reseller account making the request and the provided reseller account are
+   * different. * INVALID_ARGUMENT: Missing or invalid required fields in the
+   * request. * NOT_FOUND: The parent resource doesn't exist. Usually the result
+   * of an invalid name parameter. * INTERNAL: Any non-user error related to a
+   * technical issue in the backend. In this case, contact CloudChannel support. *
+   * UNKNOWN: Any non-user error related to a technical issue in the backend. In
+   * this case, contact Cloud Channel support. Return value: List of
+   * EntitlementChanges. (entitlements.listEntitlementChanges)
+   *
+   * @param string $parent Required. The resource name of the entitlement for
+   * which to list entitlement changes. The `-` wildcard may be used to match
+   * entitlements across a customer. Formats: *
+   * accounts/{account_id}/customers/{customer_id}/entitlements/{entitlement_id} *
+   * accounts/{account_id}/customers/{customer_id}/entitlements/-
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string filter Optional. Filters applied to the list results.
+   * @opt_param int pageSize Optional. The maximum number of entitlement changes
+   * to return. The service may return fewer than this value. If unspecified,
+   * returns at most 10 entitlement changes. The maximum value is 50; the server
+   * will coerce values above 50.
+   * @opt_param string pageToken Optional. A page token, received from a previous
+   * CloudChannelService.ListEntitlementChanges call. Provide this to retrieve the
+   * subsequent page. When paginating, all other parameters provided to
+   * CloudChannelService.ListEntitlementChanges must match the call that provided
+   * the page token.
+   * @return GoogleCloudChannelV1ListEntitlementChangesResponse
+   */
+  public function listEntitlementChanges($parent, $optParams = [])
+  {
+    $params = ['parent' => $parent];
+    $params = array_merge($params, $optParams);
+    return $this->call('listEntitlementChanges', [$params], GoogleCloudChannelV1ListEntitlementChangesResponse::class);
   }
   /**
    * Returns the requested Offer resource. Possible error codes: *

@@ -20,9 +20,12 @@ namespace Google\Service\CloudHealthcare;
 class FhirStoreMetrics extends \Google\Collection
 {
   protected $collection_key = 'metrics';
+  /**
+   * @var FhirStoreMetric[]
+   */
+  public $metrics;
   protected $metricsType = FhirStoreMetric::class;
   protected $metricsDataType = 'array';
-  public $metrics = [];
   /**
    * @var string
    */

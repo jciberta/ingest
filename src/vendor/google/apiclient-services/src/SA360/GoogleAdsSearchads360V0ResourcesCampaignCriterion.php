@@ -20,6 +20,12 @@ namespace Google\Service\SA360;
 class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
 {
   /**
+   * @var GoogleAdsSearchads360V0CommonAgeRangeInfo
+   */
+  public $ageRange;
+  protected $ageRangeType = GoogleAdsSearchads360V0CommonAgeRangeInfo::class;
+  protected $ageRangeDataType = '';
+  /**
    * @var float
    */
   public $bidModifier;
@@ -27,22 +33,50 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
    * @var string
    */
   public $criterionId;
+  /**
+   * @var GoogleAdsSearchads360V0CommonDeviceInfo
+   */
+  public $device;
   protected $deviceType = GoogleAdsSearchads360V0CommonDeviceInfo::class;
   protected $deviceDataType = '';
-  public $device;
   /**
    * @var string
    */
   public $displayName;
+  /**
+   * @var GoogleAdsSearchads360V0CommonGenderInfo
+   */
+  public $gender;
+  protected $genderType = GoogleAdsSearchads360V0CommonGenderInfo::class;
+  protected $genderDataType = '';
+  /**
+   * @var GoogleAdsSearchads360V0CommonKeywordInfo
+   */
+  public $keyword;
+  protected $keywordType = GoogleAdsSearchads360V0CommonKeywordInfo::class;
+  protected $keywordDataType = '';
+  /**
+   * @var GoogleAdsSearchads360V0CommonLanguageInfo
+   */
+  public $language;
   protected $languageType = GoogleAdsSearchads360V0CommonLanguageInfo::class;
   protected $languageDataType = '';
-  public $language;
+  /**
+   * @var string
+   */
+  public $lastModifiedTime;
+  /**
+   * @var GoogleAdsSearchads360V0CommonLocationInfo
+   */
+  public $location;
   protected $locationType = GoogleAdsSearchads360V0CommonLocationInfo::class;
   protected $locationDataType = '';
-  public $location;
+  /**
+   * @var GoogleAdsSearchads360V0CommonLocationGroupInfo
+   */
+  public $locationGroup;
   protected $locationGroupType = GoogleAdsSearchads360V0CommonLocationGroupInfo::class;
   protected $locationGroupDataType = '';
-  public $locationGroup;
   /**
    * @var bool
    */
@@ -54,8 +88,38 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
   /**
    * @var string
    */
+  public $status;
+  /**
+   * @var string
+   */
   public $type;
+  /**
+   * @var GoogleAdsSearchads360V0CommonUserListInfo
+   */
+  public $userList;
+  protected $userListType = GoogleAdsSearchads360V0CommonUserListInfo::class;
+  protected $userListDataType = '';
+  /**
+   * @var GoogleAdsSearchads360V0CommonWebpageInfo
+   */
+  public $webpage;
+  protected $webpageType = GoogleAdsSearchads360V0CommonWebpageInfo::class;
+  protected $webpageDataType = '';
 
+  /**
+   * @param GoogleAdsSearchads360V0CommonAgeRangeInfo
+   */
+  public function setAgeRange(GoogleAdsSearchads360V0CommonAgeRangeInfo $ageRange)
+  {
+    $this->ageRange = $ageRange;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonAgeRangeInfo
+   */
+  public function getAgeRange()
+  {
+    return $this->ageRange;
+  }
   /**
    * @param float
    */
@@ -113,6 +177,34 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
     return $this->displayName;
   }
   /**
+   * @param GoogleAdsSearchads360V0CommonGenderInfo
+   */
+  public function setGender(GoogleAdsSearchads360V0CommonGenderInfo $gender)
+  {
+    $this->gender = $gender;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonGenderInfo
+   */
+  public function getGender()
+  {
+    return $this->gender;
+  }
+  /**
+   * @param GoogleAdsSearchads360V0CommonKeywordInfo
+   */
+  public function setKeyword(GoogleAdsSearchads360V0CommonKeywordInfo $keyword)
+  {
+    $this->keyword = $keyword;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonKeywordInfo
+   */
+  public function getKeyword()
+  {
+    return $this->keyword;
+  }
+  /**
    * @param GoogleAdsSearchads360V0CommonLanguageInfo
    */
   public function setLanguage(GoogleAdsSearchads360V0CommonLanguageInfo $language)
@@ -125,6 +217,20 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
   public function getLanguage()
   {
     return $this->language;
+  }
+  /**
+   * @param string
+   */
+  public function setLastModifiedTime($lastModifiedTime)
+  {
+    $this->lastModifiedTime = $lastModifiedTime;
+  }
+  /**
+   * @return string
+   */
+  public function getLastModifiedTime()
+  {
+    return $this->lastModifiedTime;
   }
   /**
    * @param GoogleAdsSearchads360V0CommonLocationInfo
@@ -185,6 +291,20 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
   /**
    * @param string
    */
+  public function setStatus($status)
+  {
+    $this->status = $status;
+  }
+  /**
+   * @return string
+   */
+  public function getStatus()
+  {
+    return $this->status;
+  }
+  /**
+   * @param string
+   */
   public function setType($type)
   {
     $this->type = $type;
@@ -195,6 +315,34 @@ class GoogleAdsSearchads360V0ResourcesCampaignCriterion extends \Google\Model
   public function getType()
   {
     return $this->type;
+  }
+  /**
+   * @param GoogleAdsSearchads360V0CommonUserListInfo
+   */
+  public function setUserList(GoogleAdsSearchads360V0CommonUserListInfo $userList)
+  {
+    $this->userList = $userList;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonUserListInfo
+   */
+  public function getUserList()
+  {
+    return $this->userList;
+  }
+  /**
+   * @param GoogleAdsSearchads360V0CommonWebpageInfo
+   */
+  public function setWebpage(GoogleAdsSearchads360V0CommonWebpageInfo $webpage)
+  {
+    $this->webpage = $webpage;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonWebpageInfo
+   */
+  public function getWebpage()
+  {
+    return $this->webpage;
   }
 }
 

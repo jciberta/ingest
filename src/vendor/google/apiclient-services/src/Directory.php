@@ -1677,6 +1677,10 @@ class Directory extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'includeIndirectRoleAssignments' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
                 'maxResults' => [
                   'location' => 'query',
                   'type' => 'integer',
@@ -1997,7 +2001,12 @@ class Directory extends \Google\Service
             ],'insert' => [
               'path' => 'admin/directory/v1/users',
               'httpMethod' => 'POST',
-              'parameters' => [],
+              'parameters' => [
+                'resolveConflictAccount' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
+              ],
             ],'list' => [
               'path' => 'admin/directory/v1/users',
               'httpMethod' => 'GET',

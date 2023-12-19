@@ -53,6 +53,16 @@ class Snapshot extends \Google\Collection
    */
   public $downloadBytes;
   /**
+   * @var bool
+   */
+  public $enableConfidentialCompute;
+  /**
+   * @var GuestOsFeature[]
+   */
+  public $guestOsFeatures;
+  protected $guestOsFeaturesType = GuestOsFeature::class;
+  protected $guestOsFeaturesDataType = 'array';
+  /**
    * @var string
    */
   public $id;
@@ -92,6 +102,10 @@ class Snapshot extends \Google\Collection
    * @var string
    */
   public $selfLink;
+  /**
+   * @var CustomerEncryptionKey
+   */
+  public $snapshotEncryptionKey;
   protected $snapshotEncryptionKeyType = CustomerEncryptionKey::class;
   protected $snapshotEncryptionKeyDataType = '';
   /**
@@ -102,8 +116,16 @@ class Snapshot extends \Google\Collection
    * @var string
    */
   public $sourceDisk;
+  /**
+   * @var CustomerEncryptionKey
+   */
+  public $sourceDiskEncryptionKey;
   protected $sourceDiskEncryptionKeyType = CustomerEncryptionKey::class;
   protected $sourceDiskEncryptionKeyDataType = '';
+  /**
+   * @var string
+   */
+  public $sourceDiskForRecoveryCheckpoint;
   /**
    * @var string
    */
@@ -244,6 +266,34 @@ class Snapshot extends \Google\Collection
   public function getDownloadBytes()
   {
     return $this->downloadBytes;
+  }
+  /**
+   * @param bool
+   */
+  public function setEnableConfidentialCompute($enableConfidentialCompute)
+  {
+    $this->enableConfidentialCompute = $enableConfidentialCompute;
+  }
+  /**
+   * @return bool
+   */
+  public function getEnableConfidentialCompute()
+  {
+    return $this->enableConfidentialCompute;
+  }
+  /**
+   * @param GuestOsFeature[]
+   */
+  public function setGuestOsFeatures($guestOsFeatures)
+  {
+    $this->guestOsFeatures = $guestOsFeatures;
+  }
+  /**
+   * @return GuestOsFeature[]
+   */
+  public function getGuestOsFeatures()
+  {
+    return $this->guestOsFeatures;
   }
   /**
    * @param string
@@ -440,6 +490,20 @@ class Snapshot extends \Google\Collection
   public function getSourceDiskEncryptionKey()
   {
     return $this->sourceDiskEncryptionKey;
+  }
+  /**
+   * @param string
+   */
+  public function setSourceDiskForRecoveryCheckpoint($sourceDiskForRecoveryCheckpoint)
+  {
+    $this->sourceDiskForRecoveryCheckpoint = $sourceDiskForRecoveryCheckpoint;
+  }
+  /**
+   * @return string
+   */
+  public function getSourceDiskForRecoveryCheckpoint()
+  {
+    return $this->sourceDiskForRecoveryCheckpoint;
   }
   /**
    * @param string

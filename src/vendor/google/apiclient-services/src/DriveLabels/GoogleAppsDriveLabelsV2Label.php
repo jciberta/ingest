@@ -20,24 +20,52 @@ namespace Google\Service\DriveLabels;
 class GoogleAppsDriveLabelsV2Label extends \Google\Collection
 {
   protected $collection_key = 'fields';
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelAppliedCapabilities
+   */
+  public $appliedCapabilities;
   protected $appliedCapabilitiesType = GoogleAppsDriveLabelsV2LabelAppliedCapabilities::class;
   protected $appliedCapabilitiesDataType = '';
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelAppliedLabelPolicy
+   */
+  public $appliedLabelPolicy;
   protected $appliedLabelPolicyType = GoogleAppsDriveLabelsV2LabelAppliedLabelPolicy::class;
   protected $appliedLabelPolicyDataType = '';
   /**
    * @var string
    */
   public $createTime;
+  /**
+   * @var GoogleAppsDriveLabelsV2UserInfo
+   */
+  public $creator;
   protected $creatorType = GoogleAppsDriveLabelsV2UserInfo::class;
   protected $creatorDataType = '';
   /**
    * @var string
    */
+  public $customer;
+  /**
+   * @var string
+   */
   public $disableTime;
+  /**
+   * @var GoogleAppsDriveLabelsV2UserInfo
+   */
+  public $disabler;
   protected $disablerType = GoogleAppsDriveLabelsV2UserInfo::class;
   protected $disablerDataType = '';
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelDisplayHints
+   */
+  public $displayHints;
   protected $displayHintsType = GoogleAppsDriveLabelsV2LabelDisplayHints::class;
   protected $displayHintsDataType = '';
+  /**
+   * @var GoogleAppsDriveLabelsV2Field[]
+   */
+  public $fields;
   protected $fieldsType = GoogleAppsDriveLabelsV2Field::class;
   protected $fieldsDataType = 'array';
   /**
@@ -52,32 +80,56 @@ class GoogleAppsDriveLabelsV2Label extends \Google\Collection
    * @var string
    */
   public $learnMoreUri;
+  /**
+   * @var GoogleAppsDriveLabelsV2Lifecycle
+   */
+  public $lifecycle;
   protected $lifecycleType = GoogleAppsDriveLabelsV2Lifecycle::class;
   protected $lifecycleDataType = '';
+  /**
+   * @var GoogleAppsDriveLabelsV2LockStatus
+   */
+  public $lockStatus;
   protected $lockStatusType = GoogleAppsDriveLabelsV2LockStatus::class;
   protected $lockStatusDataType = '';
   /**
    * @var string
    */
   public $name;
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelProperties
+   */
+  public $properties;
   protected $propertiesType = GoogleAppsDriveLabelsV2LabelProperties::class;
   protected $propertiesDataType = '';
   /**
    * @var string
    */
   public $publishTime;
+  /**
+   * @var GoogleAppsDriveLabelsV2UserInfo
+   */
+  public $publisher;
   protected $publisherType = GoogleAppsDriveLabelsV2UserInfo::class;
   protected $publisherDataType = '';
   /**
    * @var string
    */
   public $revisionCreateTime;
+  /**
+   * @var GoogleAppsDriveLabelsV2UserInfo
+   */
+  public $revisionCreator;
   protected $revisionCreatorType = GoogleAppsDriveLabelsV2UserInfo::class;
   protected $revisionCreatorDataType = '';
   /**
    * @var string
    */
   public $revisionId;
+  /**
+   * @var GoogleAppsDriveLabelsV2LabelSchemaCapabilities
+   */
+  public $schemaCapabilities;
   protected $schemaCapabilitiesType = GoogleAppsDriveLabelsV2LabelSchemaCapabilities::class;
   protected $schemaCapabilitiesDataType = '';
 
@@ -136,6 +188,20 @@ class GoogleAppsDriveLabelsV2Label extends \Google\Collection
   public function getCreator()
   {
     return $this->creator;
+  }
+  /**
+   * @param string
+   */
+  public function setCustomer($customer)
+  {
+    $this->customer = $customer;
+  }
+  /**
+   * @return string
+   */
+  public function getCustomer()
+  {
+    return $this->customer;
   }
   /**
    * @param string

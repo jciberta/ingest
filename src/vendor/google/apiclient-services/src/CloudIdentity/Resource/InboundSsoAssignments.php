@@ -83,7 +83,7 @@ class InboundSsoAssignments extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter A CEL expression to filter the results. The only
-   * currently-supported filter is filtering by customer. For example:
+   * supported filter is filtering by customer. For example:
    * `customer==customers/C0123abc`. Omitting the filter or specifying a filter of
    * `customer==customers/my_customer` will return the assignments for the
    * customer that the caller (authenticated user) belongs to.
@@ -108,10 +108,11 @@ class InboundSsoAssignments extends \Google\Service\Resource
   /**
    * Updates an InboundSsoAssignment. The body of this request is the
    * `inbound_sso_assignment` field and the `update_mask` is relative to that. For
-   * example: a PATCH to `/v1/inboundSsoAssignments/0abcdefg1234567_mask=rank`
-   * with a body of `{ "rank": 1 }` moves that (presumably group-targeted) SSO
-   * assignment to the highest priority and shifts any other group-targeted
-   * assignments down in priority. (inboundSsoAssignments.patch)
+   * example: a PATCH to
+   * `/v1/inboundSsoAssignments/0abcdefg1234567&update_mask=rank` with a body of
+   * `{ "rank": 1 }` moves that (presumably group-targeted) SSO assignment to the
+   * highest priority and shifts any other group-targeted assignments down in
+   * priority. (inboundSsoAssignments.patch)
    *
    * @param string $name Output only. [Resource
    * name](https://cloud.google.com/apis/design/resource_names) of the Inbound SSO

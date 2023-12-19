@@ -20,24 +20,56 @@ namespace Google\Service\PaymentsResellerSubscription;
 class GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem extends \Google\Collection
 {
   protected $collection_key = 'lineItemPromotionSpecs';
+  /**
+   * @var GoogleCloudPaymentsResellerSubscriptionV1Amount
+   */
+  public $amount;
   protected $amountType = GoogleCloudPaymentsResellerSubscriptionV1Amount::class;
   protected $amountDataType = '';
+  /**
+   * @var SubscriptionLineItemBundleDetails
+   */
+  public $bundleDetails;
+  protected $bundleDetailsType = SubscriptionLineItemBundleDetails::class;
+  protected $bundleDetailsDataType = '';
   /**
    * @var string
    */
   public $description;
   /**
+   * @var GoogleCloudPaymentsResellerSubscriptionV1FiniteBillingCycleDetails
+   */
+  public $finiteBillingCycleDetails;
+  protected $finiteBillingCycleDetailsType = GoogleCloudPaymentsResellerSubscriptionV1FiniteBillingCycleDetails::class;
+  protected $finiteBillingCycleDetailsDataType = '';
+  /**
    * @var string
    */
   public $lineItemFreeTrialEndTime;
+  /**
+   * @var int
+   */
+  public $lineItemIndex;
+  /**
+   * @var GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec[]
+   */
+  public $lineItemPromotionSpecs;
   protected $lineItemPromotionSpecsType = GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec::class;
   protected $lineItemPromotionSpecsDataType = 'array';
+  /**
+   * @var GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItemOneTimeRecurrenceDetails
+   */
+  public $oneTimeRecurrenceDetails;
   protected $oneTimeRecurrenceDetailsType = GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItemOneTimeRecurrenceDetails::class;
   protected $oneTimeRecurrenceDetailsDataType = '';
   /**
    * @var string
    */
   public $product;
+  /**
+   * @var GoogleCloudPaymentsResellerSubscriptionV1ProductPayload
+   */
+  public $productPayload;
   protected $productPayloadType = GoogleCloudPaymentsResellerSubscriptionV1ProductPayload::class;
   protected $productPayloadDataType = '';
   /**
@@ -64,6 +96,20 @@ class GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem extends \Goo
     return $this->amount;
   }
   /**
+   * @param SubscriptionLineItemBundleDetails
+   */
+  public function setBundleDetails(SubscriptionLineItemBundleDetails $bundleDetails)
+  {
+    $this->bundleDetails = $bundleDetails;
+  }
+  /**
+   * @return SubscriptionLineItemBundleDetails
+   */
+  public function getBundleDetails()
+  {
+    return $this->bundleDetails;
+  }
+  /**
    * @param string
    */
   public function setDescription($description)
@@ -78,6 +124,20 @@ class GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem extends \Goo
     return $this->description;
   }
   /**
+   * @param GoogleCloudPaymentsResellerSubscriptionV1FiniteBillingCycleDetails
+   */
+  public function setFiniteBillingCycleDetails(GoogleCloudPaymentsResellerSubscriptionV1FiniteBillingCycleDetails $finiteBillingCycleDetails)
+  {
+    $this->finiteBillingCycleDetails = $finiteBillingCycleDetails;
+  }
+  /**
+   * @return GoogleCloudPaymentsResellerSubscriptionV1FiniteBillingCycleDetails
+   */
+  public function getFiniteBillingCycleDetails()
+  {
+    return $this->finiteBillingCycleDetails;
+  }
+  /**
    * @param string
    */
   public function setLineItemFreeTrialEndTime($lineItemFreeTrialEndTime)
@@ -90,6 +150,20 @@ class GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem extends \Goo
   public function getLineItemFreeTrialEndTime()
   {
     return $this->lineItemFreeTrialEndTime;
+  }
+  /**
+   * @param int
+   */
+  public function setLineItemIndex($lineItemIndex)
+  {
+    $this->lineItemIndex = $lineItemIndex;
+  }
+  /**
+   * @return int
+   */
+  public function getLineItemIndex()
+  {
+    return $this->lineItemIndex;
   }
   /**
    * @param GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec[]

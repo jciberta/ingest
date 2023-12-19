@@ -24,13 +24,16 @@ class ListSourcesResponse extends \Google\Collection
    * @var string
    */
   public $nextPageToken;
+  /**
+   * @var Source[]
+   */
+  public $sources;
   protected $sourcesType = Source::class;
   protected $sourcesDataType = 'array';
-  public $sources = [];
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
 
   /**
    * @param string

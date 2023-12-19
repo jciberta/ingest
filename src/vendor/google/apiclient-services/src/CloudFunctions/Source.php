@@ -19,11 +19,37 @@ namespace Google\Service\CloudFunctions;
 
 class Source extends \Google\Model
 {
+  /**
+   * @var string
+   */
+  public $gitUri;
+  /**
+   * @var RepoSource
+   */
+  public $repoSource;
   protected $repoSourceType = RepoSource::class;
   protected $repoSourceDataType = '';
+  /**
+   * @var StorageSource
+   */
+  public $storageSource;
   protected $storageSourceType = StorageSource::class;
   protected $storageSourceDataType = '';
 
+  /**
+   * @param string
+   */
+  public function setGitUri($gitUri)
+  {
+    $this->gitUri = $gitUri;
+  }
+  /**
+   * @return string
+   */
+  public function getGitUri()
+  {
+    return $this->gitUri;
+  }
   /**
    * @param RepoSource
    */

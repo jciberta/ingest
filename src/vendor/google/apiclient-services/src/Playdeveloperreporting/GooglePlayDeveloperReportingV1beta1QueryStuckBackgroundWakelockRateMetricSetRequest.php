@@ -40,8 +40,16 @@ class GooglePlayDeveloperReportingV1beta1QueryStuckBackgroundWakelockRateMetricS
    * @var string
    */
   public $pageToken;
+  /**
+   * @var GooglePlayDeveloperReportingV1beta1TimelineSpec
+   */
+  public $timelineSpec;
   protected $timelineSpecType = GooglePlayDeveloperReportingV1beta1TimelineSpec::class;
   protected $timelineSpecDataType = '';
+  /**
+   * @var string
+   */
+  public $userCohort;
 
   /**
    * @param string[]
@@ -126,6 +134,20 @@ class GooglePlayDeveloperReportingV1beta1QueryStuckBackgroundWakelockRateMetricS
   public function getTimelineSpec()
   {
     return $this->timelineSpec;
+  }
+  /**
+   * @param string
+   */
+  public function setUserCohort($userCohort)
+  {
+    $this->userCohort = $userCohort;
+  }
+  /**
+   * @return string
+   */
+  public function getUserCohort()
+  {
+    return $this->userCohort;
   }
 }
 

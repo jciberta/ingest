@@ -19,7 +19,7 @@ namespace Google\Service\Contentwarehouse;
 
 class StorageGraphBfgPolicyMetadata extends \Google\Collection
 {
-  protected $collection_key = 'legalRemovalRegions';
+  protected $collection_key = 'policyDataScopeKeys';
   /**
    * @var string
    */
@@ -28,16 +28,42 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
    * @var string
    */
   public $availabilityStartTimestamp;
+  /**
+   * @var KeGovernanceTypedRegions[]
+   */
+  public $legalAllowedRegions;
   protected $legalAllowedRegionsType = KeGovernanceTypedRegions::class;
   protected $legalAllowedRegionsDataType = 'array';
+  /**
+   * @var KeGovernanceTypedRegions[]
+   */
+  public $legalRemovalRegions;
   protected $legalRemovalRegionsType = KeGovernanceTypedRegions::class;
   protected $legalRemovalRegionsDataType = 'array';
+  /**
+   * @var StorageGraphBfgLmsPolicyMetadata
+   */
+  public $lmsPolicyMetadata;
   protected $lmsPolicyMetadataType = StorageGraphBfgLmsPolicyMetadata::class;
   protected $lmsPolicyMetadataDataType = '';
+  /**
+   * @var int[]
+   */
+  public $policyDataScopeKeys;
   /**
    * @var string
    */
   public $policySourceType;
+  /**
+   * @var StorageGraphBfgRwjPolicyMetadata
+   */
+  public $rwjPolicyMetadata;
+  protected $rwjPolicyMetadataType = StorageGraphBfgRwjPolicyMetadata::class;
+  protected $rwjPolicyMetadataDataType = '';
+  /**
+   * @var StorageGraphBfgUmpPolicyMetadata
+   */
+  public $umpPolicyMetadata;
   protected $umpPolicyMetadataType = StorageGraphBfgUmpPolicyMetadata::class;
   protected $umpPolicyMetadataDataType = '';
 
@@ -112,6 +138,20 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
     return $this->lmsPolicyMetadata;
   }
   /**
+   * @param int[]
+   */
+  public function setPolicyDataScopeKeys($policyDataScopeKeys)
+  {
+    $this->policyDataScopeKeys = $policyDataScopeKeys;
+  }
+  /**
+   * @return int[]
+   */
+  public function getPolicyDataScopeKeys()
+  {
+    return $this->policyDataScopeKeys;
+  }
+  /**
    * @param string
    */
   public function setPolicySourceType($policySourceType)
@@ -124,6 +164,20 @@ class StorageGraphBfgPolicyMetadata extends \Google\Collection
   public function getPolicySourceType()
   {
     return $this->policySourceType;
+  }
+  /**
+   * @param StorageGraphBfgRwjPolicyMetadata
+   */
+  public function setRwjPolicyMetadata(StorageGraphBfgRwjPolicyMetadata $rwjPolicyMetadata)
+  {
+    $this->rwjPolicyMetadata = $rwjPolicyMetadata;
+  }
+  /**
+   * @return StorageGraphBfgRwjPolicyMetadata
+   */
+  public function getRwjPolicyMetadata()
+  {
+    return $this->rwjPolicyMetadata;
   }
   /**
    * @param StorageGraphBfgUmpPolicyMetadata

@@ -28,6 +28,12 @@ class TargetArtifact extends \Google\Model
    */
   public $manifestPath;
   /**
+   * @var PhaseArtifact[]
+   */
+  public $phaseArtifacts;
+  protected $phaseArtifactsType = PhaseArtifact::class;
+  protected $phaseArtifactsDataType = 'map';
+  /**
    * @var string
    */
   public $skaffoldConfigPath;
@@ -59,6 +65,20 @@ class TargetArtifact extends \Google\Model
   public function getManifestPath()
   {
     return $this->manifestPath;
+  }
+  /**
+   * @param PhaseArtifact[]
+   */
+  public function setPhaseArtifacts($phaseArtifacts)
+  {
+    $this->phaseArtifacts = $phaseArtifacts;
+  }
+  /**
+   * @return PhaseArtifact[]
+   */
+  public function getPhaseArtifacts()
+  {
+    return $this->phaseArtifacts;
   }
   /**
    * @param string

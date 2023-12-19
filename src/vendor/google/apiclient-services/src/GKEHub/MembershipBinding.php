@@ -28,9 +28,9 @@ class MembershipBinding extends \Google\Model
    */
   public $deleteTime;
   /**
-   * @var bool
+   * @var string[]
    */
-  public $fleet;
+  public $labels;
   /**
    * @var string
    */
@@ -39,6 +39,10 @@ class MembershipBinding extends \Google\Model
    * @var string
    */
   public $scope;
+  /**
+   * @var MembershipBindingLifecycleState
+   */
+  public $state;
   protected $stateType = MembershipBindingLifecycleState::class;
   protected $stateDataType = '';
   /**
@@ -79,18 +83,18 @@ class MembershipBinding extends \Google\Model
     return $this->deleteTime;
   }
   /**
-   * @param bool
+   * @param string[]
    */
-  public function setFleet($fleet)
+  public function setLabels($labels)
   {
-    $this->fleet = $fleet;
+    $this->labels = $labels;
   }
   /**
-   * @return bool
+   * @return string[]
    */
-  public function getFleet()
+  public function getLabels()
   {
-    return $this->fleet;
+    return $this->labels;
   }
   /**
    * @param string

@@ -19,6 +19,8 @@ namespace Google\Service\CloudDeploy\Resource;
 
 use Google\Service\CloudDeploy\JobRun;
 use Google\Service\CloudDeploy\ListJobRunsResponse;
+use Google\Service\CloudDeploy\TerminateJobRunRequest;
+use Google\Service\CloudDeploy\TerminateJobRunResponse;
 
 /**
  * The "jobRuns" collection of methods.
@@ -33,9 +35,9 @@ class ProjectsLocationsDeliveryPipelinesReleasesRolloutsJobRuns extends \Google\
   /**
    * Gets details of a single JobRun. (jobRuns.get)
    *
-   * @param string $name Required. Name of the `JobRun`. Format must be projects/{
-   * project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/relea
-   * ses/{release_name}/rollouts/{rollout_name}/jobRuns/{job_run_name}.
+   * @param string $name Required. Name of the `JobRun`. Format must be `projects/
+   * {project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/rele
+   * ases/{release_name}/rollouts/{rollout_name}/jobRuns/{job_run_name}`.
    * @param array $optParams Optional parameters.
    * @return JobRun
    */
@@ -72,6 +74,22 @@ class ProjectsLocationsDeliveryPipelinesReleasesRolloutsJobRuns extends \Google\
     $params = ['parent' => $parent];
     $params = array_merge($params, $optParams);
     return $this->call('list', [$params], ListJobRunsResponse::class);
+  }
+  /**
+   * Terminates a Job Run in a given project and location. (jobRuns.terminate)
+   *
+   * @param string $name Required. Name of the `JobRun`. Format must be `projects/
+   * {project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/
+   * {release}/rollouts/{rollout}/jobRuns/{jobRun}`.
+   * @param TerminateJobRunRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return TerminateJobRunResponse
+   */
+  public function terminate($name, TerminateJobRunRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('terminate', [$params], TerminateJobRunResponse::class);
   }
 }
 

@@ -36,20 +36,36 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $displayName;
+  /**
+   * @var InstanceMessage[]
+   */
+  public $instanceMessages;
   protected $instanceMessagesType = InstanceMessage::class;
   protected $instanceMessagesDataType = 'array';
   /**
    * @var string[]
    */
   public $labels;
+  /**
+   * @var GoogleCloudMemcacheV1MaintenancePolicy
+   */
+  public $maintenancePolicy;
   protected $maintenancePolicyType = GoogleCloudMemcacheV1MaintenancePolicy::class;
   protected $maintenancePolicyDataType = '';
+  /**
+   * @var MaintenanceSchedule
+   */
+  public $maintenanceSchedule;
   protected $maintenanceScheduleType = MaintenanceSchedule::class;
   protected $maintenanceScheduleDataType = '';
   /**
    * @var string
    */
   public $memcacheFullVersion;
+  /**
+   * @var Node[]
+   */
+  public $memcacheNodes;
   protected $memcacheNodesType = Node::class;
   protected $memcacheNodesDataType = 'array';
   /**
@@ -60,14 +76,26 @@ class Instance extends \Google\Collection
    * @var string
    */
   public $name;
+  /**
+   * @var NodeConfig
+   */
+  public $nodeConfig;
   protected $nodeConfigType = NodeConfig::class;
   protected $nodeConfigDataType = '';
   /**
    * @var int
    */
   public $nodeCount;
+  /**
+   * @var MemcacheParameters
+   */
+  public $parameters;
   protected $parametersType = MemcacheParameters::class;
   protected $parametersDataType = '';
+  /**
+   * @var string[]
+   */
+  public $reservedIpRangeId;
   /**
    * @var string
    */
@@ -290,6 +318,20 @@ class Instance extends \Google\Collection
   public function getParameters()
   {
     return $this->parameters;
+  }
+  /**
+   * @param string[]
+   */
+  public function setReservedIpRangeId($reservedIpRangeId)
+  {
+    $this->reservedIpRangeId = $reservedIpRangeId;
+  }
+  /**
+   * @return string[]
+   */
+  public function getReservedIpRangeId()
+  {
+    return $this->reservedIpRangeId;
   }
   /**
    * @param string

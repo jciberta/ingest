@@ -24,13 +24,16 @@ class ListPreferenceSetsResponse extends \Google\Collection
    * @var string
    */
   public $nextPageToken;
+  /**
+   * @var PreferenceSet[]
+   */
+  public $preferenceSets;
   protected $preferenceSetsType = PreferenceSet::class;
   protected $preferenceSetsDataType = 'array';
-  public $preferenceSets = [];
   /**
    * @var string[]
    */
-  public $unreachable = [];
+  public $unreachable;
 
   /**
    * @param string

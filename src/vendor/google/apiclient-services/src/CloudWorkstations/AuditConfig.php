@@ -20,9 +20,12 @@ namespace Google\Service\CloudWorkstations;
 class AuditConfig extends \Google\Collection
 {
   protected $collection_key = 'auditLogConfigs';
+  /**
+   * @var AuditLogConfig[]
+   */
+  public $auditLogConfigs;
   protected $auditLogConfigsType = AuditLogConfig::class;
   protected $auditLogConfigsDataType = 'array';
-  public $auditLogConfigs;
   /**
    * @var string
    */

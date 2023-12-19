@@ -35,7 +35,7 @@ class ProjectsLocationsConnectors extends \Google\Service\Resource
    * Creates a Serverless VPC Access connector, returns an operation.
    * (connectors.create)
    *
-   * @param string $parent Required. The project and location in which the
+   * @param string $parent Required. The project ID and location in which the
    * configuration should be created, specified in the format
    * `projects/locations`.
    * @param Connector $postBody
@@ -97,6 +97,25 @@ class ProjectsLocationsConnectors extends \Google\Service\Resource
     $params = ['parent' => $parent];
     $params = array_merge($params, $optParams);
     return $this->call('list', [$params], ListConnectorsResponse::class);
+  }
+  /**
+   * Updates a Serverless VPC Access connector, returns an operation.
+   * (connectors.patch)
+   *
+   * @param string $name The resource name in the format
+   * `projects/locations/connectors`.
+   * @param Connector $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string updateMask The fields to update on the entry group. If
+   * absent or empty, all modifiable fields are updated.
+   * @return Operation
+   */
+  public function patch($name, Connector $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('patch', [$params], Operation::class);
   }
 }
 

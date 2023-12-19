@@ -21,6 +21,12 @@ class GoogleAdsSearchads360V0ResourcesAdGroupBidModifier extends \Google\Model
 {
   public $bidModifier;
   /**
+   * @var GoogleAdsSearchads360V0CommonDeviceInfo
+   */
+  public $device;
+  protected $deviceType = GoogleAdsSearchads360V0CommonDeviceInfo::class;
+  protected $deviceDataType = '';
+  /**
    * @var string
    */
   public $resourceName;
@@ -32,6 +38,20 @@ class GoogleAdsSearchads360V0ResourcesAdGroupBidModifier extends \Google\Model
   public function getBidModifier()
   {
     return $this->bidModifier;
+  }
+  /**
+   * @param GoogleAdsSearchads360V0CommonDeviceInfo
+   */
+  public function setDevice(GoogleAdsSearchads360V0CommonDeviceInfo $device)
+  {
+    $this->device = $device;
+  }
+  /**
+   * @return GoogleAdsSearchads360V0CommonDeviceInfo
+   */
+  public function getDevice()
+  {
+    return $this->device;
   }
   /**
    * @param string

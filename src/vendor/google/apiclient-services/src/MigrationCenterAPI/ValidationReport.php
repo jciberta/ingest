@@ -20,12 +20,18 @@ namespace Google\Service\MigrationCenterAPI;
 class ValidationReport extends \Google\Collection
 {
   protected $collection_key = 'jobErrors';
+  /**
+   * @var FileValidationReport[]
+   */
+  public $fileValidations;
   protected $fileValidationsType = FileValidationReport::class;
   protected $fileValidationsDataType = 'array';
-  public $fileValidations = [];
+  /**
+   * @var ImportError[]
+   */
+  public $jobErrors;
   protected $jobErrorsType = ImportError::class;
   protected $jobErrorsDataType = 'array';
-  public $jobErrors = [];
 
   /**
    * @param FileValidationReport[]

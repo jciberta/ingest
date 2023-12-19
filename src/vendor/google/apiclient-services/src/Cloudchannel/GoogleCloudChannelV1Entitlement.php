@@ -20,8 +20,20 @@ namespace Google\Service\Cloudchannel;
 class GoogleCloudChannelV1Entitlement extends \Google\Collection
 {
   protected $collection_key = 'suspensionReasons';
+  /**
+   * @var GoogleCloudChannelV1AssociationInfo
+   */
+  public $associationInfo;
   protected $associationInfoType = GoogleCloudChannelV1AssociationInfo::class;
   protected $associationInfoDataType = '';
+  /**
+   * @var string
+   */
+  public $billingAccount;
+  /**
+   * @var GoogleCloudChannelV1CommitmentSettings
+   */
+  public $commitmentSettings;
   protected $commitmentSettingsType = GoogleCloudChannelV1CommitmentSettings::class;
   protected $commitmentSettingsDataType = '';
   /**
@@ -36,8 +48,16 @@ class GoogleCloudChannelV1Entitlement extends \Google\Collection
    * @var string
    */
   public $offer;
+  /**
+   * @var GoogleCloudChannelV1Parameter[]
+   */
+  public $parameters;
   protected $parametersType = GoogleCloudChannelV1Parameter::class;
   protected $parametersDataType = 'array';
+  /**
+   * @var GoogleCloudChannelV1ProvisionedService
+   */
+  public $provisionedService;
   protected $provisionedServiceType = GoogleCloudChannelV1ProvisionedService::class;
   protected $provisionedServiceDataType = '';
   /**
@@ -52,6 +72,10 @@ class GoogleCloudChannelV1Entitlement extends \Google\Collection
    * @var string[]
    */
   public $suspensionReasons;
+  /**
+   * @var GoogleCloudChannelV1TrialSettings
+   */
+  public $trialSettings;
   protected $trialSettingsType = GoogleCloudChannelV1TrialSettings::class;
   protected $trialSettingsDataType = '';
   /**
@@ -72,6 +96,20 @@ class GoogleCloudChannelV1Entitlement extends \Google\Collection
   public function getAssociationInfo()
   {
     return $this->associationInfo;
+  }
+  /**
+   * @param string
+   */
+  public function setBillingAccount($billingAccount)
+  {
+    $this->billingAccount = $billingAccount;
+  }
+  /**
+   * @return string
+   */
+  public function getBillingAccount()
+  {
+    return $this->billingAccount;
   }
   /**
    * @param GoogleCloudChannelV1CommitmentSettings

@@ -28,12 +28,18 @@ class RotateChallengesRequest extends \Google\Collection
    * @var bool
    */
   public $keepExpiredRecords;
+  /**
+   * @var AcmeTxtRecord[]
+   */
+  public $recordsToAdd;
   protected $recordsToAddType = AcmeTxtRecord::class;
   protected $recordsToAddDataType = 'array';
-  public $recordsToAdd = [];
+  /**
+   * @var AcmeTxtRecord[]
+   */
+  public $recordsToRemove;
   protected $recordsToRemoveType = AcmeTxtRecord::class;
   protected $recordsToRemoveDataType = 'array';
-  public $recordsToRemove = [];
 
   /**
    * @param string
