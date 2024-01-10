@@ -628,7 +628,7 @@ class Notes extends Form
 		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-		echo "<TABLE id='TaulaNotes' class='taula-notes'>";
+		echo "<TABLE id='TaulaNotes' class='taula-notes table-hover'>";
 
 		// Capçalera de la taula
 		$aModuls = [];
