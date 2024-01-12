@@ -68,6 +68,32 @@ class Document extends Objecte
 		'CF' => "Coordinador FP",
 		'CD' => "Coordinador Dual"
 	);
+	/**
+	 * Retorna el document amb el codi que li passem per paràmetre, el document ha de tenir
+	 * visibilitat pública.
+	 * @param String $CodiDocument.
+	 */
+	public function RetornaDocument($codiDocument){
+		$enllac=null;
+		$query = "SELECT enllac FROM DOCUMENT_VERSIO dv
+		JOIN DOCUMENT d ON dv.document_id = d.document_id
+		WHERE codi = ? AND visibilitat= 'B' AND estat = 'A' order by versio desc limit 1";		
+
+		$stmt = $this->Connexio->prepare($query);
+		$stmt->bind_param('s', $codiDocument);
+		$stmt->execute();
+		$stmt->bind_result($enllac);
+		$stmt->fetch();
+
+		if ($enllac !== null) {
+			header("Location: " . $enllac);
+			exit; 
+		} else {    
+			echo "El document no s'ha trobat";
+		}
+		$stmt->close();
+
+	}
 
 	/**
 	 * Genera el formulari de la recerca.
