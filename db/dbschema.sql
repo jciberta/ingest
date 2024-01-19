@@ -315,10 +315,9 @@ CREATE TABLE EQUIP
     /* EQP */
     equip_id INT NOT NULL AUTO_INCREMENT,
 	any_academic_id INT NOT NULL,
-    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, EX: Equip documentació, CO: Comissió, CQ: Comissió Qualitat, CM: Comissió Mobilitat */
+    tipus CHAR(2), /* DP: Departament, EQ: Equip docent, CO: Comissió, CQ: Comissió Qualitat, CM: Comissió Mobilitat */
     nom VARCHAR(50) NOT NULL,
     cap INT NULL,
-	es_permanent BIT NOT NULL DEFAULT 0,
 
     CONSTRAINT EquipPK PRIMARY KEY (equip_id),
     CONSTRAINT EQP_AnyAcademicFK FOREIGN KEY (any_academic_id) REFERENCES ANY_ACADEMIC(any_academic_id),

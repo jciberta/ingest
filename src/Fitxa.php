@@ -156,7 +156,6 @@ switch ($accio) {
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 		$frm->AfegeixLookUp('familia_fp_id', 'Família', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
-		$frm->AfegeixCheckBox('es_permanent', 'Permanent');
 	
 		$frm->EscriuHTML();
         break;
