@@ -21,7 +21,7 @@ class Config {
 	const Demo           = False;
 	const Manteniment    = False;
 	const Secret         = '736563726574'; // Clau per a les funcions d'encriptació (hexadecimal).
-	const EncriptaURL    = True; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
+	const EncriptaURL    = False; // Si està actiu només passarà un paràmetre anomenat clau (que contindrà els paràmetres originals encriptats).
 	const Correu         = 'no.contesteu@inspalamos.cat';
 	const PasswordCorreu = Config::Password;
 	const AutenticacioGoogle = True;

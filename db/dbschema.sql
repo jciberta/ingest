@@ -221,6 +221,7 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     nota_inferior_5 CHAR(1) NOT NULL DEFAULT 'T', /* Trunca, Arrodoneix */
     nota_superior_5 CHAR(1) NOT NULL DEFAULT 'A', /* Trunca, Arrodoneix */
     categoria_moodle_importacio_notes VARCHAR(50),
+    es_uf_addicional BIT(1) DEFAULT 0,
 
     CONSTRAINT UnitatPlaEstudiPK PRIMARY KEY (unitat_pla_estudi_id),
     CONSTRAINT UPE_UnitatFormativaFK FOREIGN KEY (unitat_formativa_id) REFERENCES UNITAT_FORMATIVA(unitat_formativa_id),
