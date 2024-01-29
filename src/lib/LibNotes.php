@@ -2425,6 +2425,10 @@ class NotesModul extends Notes
 		if ($row["FCTMP"] == 1)
 			$ClassInput .= ' fct';
 		
+		// Si estem en administració avançada podem tocar totes les notes, incloses les de convocatòries anteriors i mitges.
+		if ($this->Administracio)
+			$Deshabilitat = '';
+		
 		// <INPUT>
 		// name: conté identificadors de la nota, matrícula i mòdul.
 		// id: conté les coordenades x, y. Inici a (0, 0).

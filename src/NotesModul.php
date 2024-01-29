@@ -39,6 +39,8 @@ $CicleId = $Curs->ObteCicleFormatiuId();
 $Nivell = $Curs->ObteNivell();
 //print '<br>CursId: '.$CursId.', CicleId: '.$CicleId.', Nivell: '.$Nivell.'<br>';
 
+$ActivaAdministracio = (isset($_GET) && array_key_exists('ActivaAdministracio', $_GET)) ? $_GET['ActivaAdministracio'] : '';
+
 // Comprovem que l'usuari té accés a aquesta pàgina per al paràmetres GET donats
 // Si intenta manipular els paràmetres des de la URL -> al carrer!
 $Professor = new Professor($conn, $Usuari, $Sistema);
@@ -102,6 +104,19 @@ echo $NotesModul->CreaAjuda('Càlcul de les qualificacions finals del mòdul',
 	'No obstant, la qualificació final es pot introduir també a mà.'
 	);
 echo $NotesModul->CreaBotoJS('btn', 'Esborra qualificacions finals del mòdul', 'EsborraQualificacionsFinalsModul();', $Deshabilitat);
+if ($Usuari->es_admin) {
+	// Administració avançada
+	echo '&nbsp';
+	if ($ActivaAdministracio==1) {
+		$URL = GeneraURL("NotesModul.php?CursId=$CursId&ModulId=$ModulId");
+		echo $NotesModul->CreaBoto('btnActivaAdministracio', 'Desactiva administració avançada', $URL);
+		$NotesModul->Administracio = true;
+	}
+	else {
+		$URL = GeneraURL("NotesModul.php?ActivaAdministracio=1&CursId=$CursId&ModulId=$ModulId");
+		echo $NotesModul->CreaBoto('btnActivaAdministracio', 'Activa administració avançada', $URL);
+	}
+}
 echo '</span>';
 
 echo "<P>";
