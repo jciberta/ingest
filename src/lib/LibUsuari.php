@@ -1548,7 +1548,6 @@ class ProfessorsEquip extends Objecte
 	const TIPUS_EQUIP = array(
 		'DP' => 'Departament', 
 		'ED' => 'Equip docent',
-		'EX' => 'Equip de documentació',
 		'CO' => 'Comissió',
 		'CQ' => 'Comissió de qualitat',
 		'CM' => 'Comissió de mobilitat'

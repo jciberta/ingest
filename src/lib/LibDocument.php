@@ -27,7 +27,9 @@ class Document extends Objecte
 	// Categoria
 	const CATEGORIA = array(
 		'D' => 'Document de centre',
-		'I' => 'Imprès de funcionament'
+		'I' => 'Imprès de funcionament',
+		'N' => 'Document intern',
+		'Q' => 'Document de qualitat'
 	);
 
 	// Estudis
@@ -299,8 +301,8 @@ class Document extends Objecte
 			versio:Versió:int:60:r,
 			descripcio_modificacio:Modificació:text:400:r, 
 			estat:Estat:llista[["E";"R";"V";"A"]|["Elaboració";"Realitzat";"Revisió";"Aprovat"]]:150:r,
-			data_creacio:Creació:date:0:r,
-			data_modificacio:Creació:date:0:r,
+			data_creacio:Creat:date:0:r,
+			data_modificacio:Modificat:date:0:r,
 			data_realitzat:Realitzat:date:0:r,
 			data_revisat:Revisat:date:0:r,
 			data_aprovat:Aprovat:date:0:r
@@ -424,12 +426,16 @@ class DocumentVersio extends Objecte
 		
 		$frm->AfegeixData('data_creacio', 'Data creació', [FormFitxa::offNOMES_LECTURA]);
 		$frm->AfegeixData('data_modificacio', 'Data modificació', [FormFitxa::offNOMES_LECTURA]);
+
+		$aDocumentadors = ObteCodiValorDesDeSQL($this->Connexio, $this->CreaSQLDocumentadorsQualitat(), "usuari_id", "nom");
+		array_unshift($aDocumentadors[0] , '');
+		array_unshift($aDocumentadors[1] , '');
 	
-		$aProfessors = ObteCodiValorDesDeSQL($this->Connexio, $this->CreaSQLProfessorsDocumentacio(), "usuari_id", "nom");
+		$aProfessors = ObteCodiValorDesDeSQL($this->Connexio, $this->CreaSQLProfessorsQualitat(), "usuari_id", "nom");
 		array_unshift($aProfessors[0] , '');
 		array_unshift($aProfessors[1] , '');
 
-		$frm->AfegeixLlista('usuari_realitzat', 'Usuari realitzat', 75, $aProfessors[0], $aProfessors[1]);
+		$frm->AfegeixLlista('usuari_realitzat', 'Usuari realitzat', 75, $aDocumentadors[0], $aDocumentadors[1]);
 		$frm->AfegeixData('data_realitzat', 'Data realitzat');
 		$frm->AfegeixLlista('usuari_revisat', 'Usuari revisat', 75, $aProfessors[0], $aProfessors[1]);
 		$frm->AfegeixData('data_revisat', 'Data revisat');
@@ -440,7 +446,7 @@ class DocumentVersio extends Objecte
 	}
 	
 	/**
-	 * Crea la SQL peper obtenir els professors de qualitat.
+	 * Crea la SQL per obtenir els professors de qualitat.
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLProfessorsQualitat() {
@@ -454,16 +460,16 @@ class DocumentVersio extends Objecte
 	}	
 
 	/**
-	 * Crea la SQL peper obtenir els professors de documentació.
+	 * Crea la SQL per obtenir els professors de qualitat.
      * @return string Sentència SQL.
 	 */
-	private function CreaSQLProfessorsDocumentacio() {
+	private function CreaSQLDocumentadorsQualitat() {
 		$SQL = "
 			SELECT usuari_id, FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS nom
-			FROM PROFESSOR_EQUIP PE
-			LEFT JOIN EQUIP E ON (E.equip_id=PE.equip_id)
-			LEFT JOIN USUARI U ON (U.usuari_id=PE.professor_id)
-			WHERE E.tipus='EX' AND E.any_academic_id=".$this->Sistema->any_academic_id;		
+			FROM USUARI U
+			WHERE U.es_professor=1
+			ORDER BY U.cognom1, U.cognom2, U.nom
+		";
 		return $SQL;
 	}	
 }

@@ -1946,6 +1946,7 @@ class Acta extends Form
 		if (array_key_exists($CodiMP, $ra->Moduls))
 			if (array_key_exists($CodiUF, $ra->Moduls[$CodiMP]->Unitats))
 				$Retorn = $ra->Moduls[$CodiMP]->Unitats[$CodiUF]->Nota;
+		$Retorn = ($Retorn == 100) ? 'A' : $Retorn;
 		return $Retorn;
 	}
 
@@ -1953,6 +1954,7 @@ class Acta extends Form
 		$Retorn = '';
 		if (array_key_exists($CodiMP, $ra->Moduls))
 				$Retorn = $ra->Moduls[$CodiMP]->Nota;
+		$Retorn = ($Retorn == 100) ? 'A' : $Retorn;
 		return $Retorn;
 	}
 

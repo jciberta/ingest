@@ -11,6 +11,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibUsuari.php');
@@ -21,8 +22,8 @@ if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-	header("Location: Surt.php");
+
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
@@ -45,8 +46,7 @@ $Accio = (isset($_GET) && array_key_exists('accio', $_GET)) ? $_GET['accio'] : '
 
 switch ($Accio) {
     case "Professors":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
@@ -71,8 +71,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Tutors":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Tutors";
@@ -99,8 +98,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Alumnes":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
@@ -126,8 +124,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Matricules":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Forms.js?v1.2');
 		$frm->AfegeixJavaScript('Matricula.js?v1.6');
@@ -169,10 +166,11 @@ switch ($Accio) {
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Expedient', 'MatriculaAlumne.php?accio=MostraExpedient&MatriculaId=', 'matricula_id');
 		$frm->AfegeixOpcio('Butlletí PDF', 'ExpedientPDF.php?MatriculaId=', 'matricula_id', 'pdf.png');
-		$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
-		if ($Usuari->es_admin)
+		if ($Usuari->es_admin) {
+			$frm->AfegeixOpcioAJAX('Bloquejat', 'BloquejaUsuari', 'usuari_id', [FormRecerca::ofrCHECK], 'usuari_bloquejat');
 			$frm->AfegeixOpcioAJAX('[Elimina]', 'EliminaMatriculaAlumne', 'matricula_id');
-
+		}
+		
 		// Filtre
 		if ($CursId < 0) {
 			$aAnys = ObteCodiValorDesDeSQL($conn, 'SELECT any_academic_id, CONCAT(any_inici,"-",any_final) AS Any FROM ANY_ACADEMIC ORDER BY Any DESC', "any_academic_id", "Any");
@@ -196,8 +194,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "AlumnesPares":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Alumnes";
@@ -219,8 +216,7 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "Pares":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = "Pares";
@@ -240,8 +236,7 @@ switch ($Accio) {
         break;
     case "":
 		// Tots
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE']);
 		$frm = new FormRecerca($conn, $Usuari, $Sistema);
 		$frm->AfegeixJavaScript('Matricula.js?v1.4');
 		$frm->AfegeixJavaScript('CanviPassword.js?v1.0');
@@ -335,20 +330,17 @@ switch ($Accio) {
 		$frm->EscriuHTML();
         break;
     case "AlumnesPromocio1r":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$frm = new AlumnesPromocio1r($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
     case "AlumnesGraduacio2n":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$frm = new AlumnesGraduacio2n($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
 	case "Orla":
-		if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
-			header("Location: Surt.php");
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR']);
 		$frm = new Orla($conn, $Usuari, $Sistema);
 		$frm->EscriuHTML();
         break;
