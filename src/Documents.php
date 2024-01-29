@@ -7,7 +7,7 @@
  * Es permet l'accés a aquesta pàgina sense estar identificat.
  *
  * Paràmetres URL:
- *	- CodiDoc: identificador del document. Es visualitza/descarrega la darrera versió acceptada.
+ *	- CodiDocument: identificador del document. Es visualitza/descarrega la darrera versió acceptada.
  *	- Filtre (S|N): indica si surt la barra de filtre.
  *	- Estudi, Nivell, Categoria: només surten els documents especificats pel filtre. 
  *
