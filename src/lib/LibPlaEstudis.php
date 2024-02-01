@@ -770,6 +770,7 @@ class PlaEstudisUnitatFitxa extends FormFitxa
 		$this->AfegeixData('data_inici', 'Data inici');
 		$this->AfegeixData('data_final', 'Data final');
 		$this->AfegeixCheckBox('es_fct', 'És FCT?', $Opcions);
+		$this->AfegeixCheckBox('es_uf_addicional', 'És UF addicional?', $Opcions);
 		if (!$this->EsLOGSE())
 			$this->AfegeixCheckBox('orientativa', 'És orientativa?');
 

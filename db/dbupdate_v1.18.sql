@@ -4,6 +4,5 @@
 
 ALTER TABLE MODUL_PLA_ESTUDI ADD seguiment TEXT;
 
-
 /* Aplicar a producció */
 UPDATE SISTEMA SET versio_db='1.19';
