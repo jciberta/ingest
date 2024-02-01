@@ -9,7 +9,7 @@ CREATE TABLE DOCUMENT (
     document_id INT NOT NULL AUTO_INCREMENT,
 	codi VARCHAR(100) NOT NULL,
     nom VARCHAR(255) NOT NULL,
-    estudi CHAR(3) NOT NULL DEFAULT 'GEN' CHECK (estudi IN ('GEN', 'ESO', 'BAT', 'CF0,', 'CFB', 'CFM', 'CFS')),
+    estudi CHAR(3) NOT NULL DEFAULT 'GEN' CHECK (estudi IN ('GEN', 'ESO', 'BAT', 'CF0', 'CFB', 'CFM', 'CFS')),
     subestudi CHAR(3), /* FPB, APD, CAI, DAM, FIP, HBD, SMX, ... */
     categoria CHAR(1), /* Document de centre, Imprès de funcionament */
     visibilitat CHAR(1) NOT NULL DEFAULT 'V', /* priVat, púBlic */
