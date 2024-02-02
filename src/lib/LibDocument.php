@@ -274,16 +274,16 @@ class Document extends Objecte
 		$frm->FinalitzaColumnes();
 
 		$frm->IniciaColumnes();
-		$aClaus = array_keys(self::SOLICITANT); //array_unshift($aClaus, '');
-		$aValors = array_values(self::SOLICITANT); //array_unshift($aValors, 'Tots');
+		$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
+		$aValors = array_values(self::SOLICITANT); array_unshift($aValors, '');
 		$frm->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
 		$frm->SaltaColumna();
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); //array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); //array_unshift($aValors, 'Tots');
+		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, '');
 		$frm->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
 		$frm->SaltaColumna();
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); //array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); //array_unshift($aValors, 'Tots');
+		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, '');
 		$frm->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
 		$frm->FinalitzaColumnes();
 

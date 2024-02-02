@@ -684,9 +684,9 @@ CREATE TABLE DOCUMENT (
     subestudi CHAR(3), /* FPB, APD, CAI, DAM, FIP, HBD, SMX, ... */
     categoria CHAR(1), /* Document de centre, Imprès de funcionament */
     visibilitat CHAR(1) NOT NULL DEFAULT 'V', /* priVat, púBlic */
-    solicitant CHAR(1) NOT NULL, /* Tutor, Alumne */
-    lliurament CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
-    custodia CHAR(2) NOT NULL, /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
+    solicitant CHAR(1), /* Tutor, Alumne */
+    lliurament CHAR(2), /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
+    custodia CHAR(2), /* TUtor, Tutor Fct, Tutor Dual, SEcretaria, Cap Estudis, Coordinador Fp, Coordinador Dual */
     observacions TEXT,
     data_creacio DATETIME DEFAULT CURRENT_TIMESTAMP,
     data_modificacio DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1327,7 +1327,7 @@ DELIMITER //
 CREATE FUNCTION FormataCognom1Cognom2Nom(Nom VARCHAR(100), Cognom1 VARCHAR(100), Cognom2 VARCHAR(100))
 RETURNS VARCHAR(255)
 BEGIN 
-    RETURN CONCAT(TRIM(CONCAT(cognom1, ' ', IFNULL(cognom2, ''))), ', ', nom);
+    RETURN CONCAT(TRIM(CONCAT(IFNULL(cognom1, ''), ' ', IFNULL(cognom2, ''))), ', ', nom);
 END //
 DELIMITER ;
 
