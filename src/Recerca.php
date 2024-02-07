@@ -17,6 +17,7 @@ require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibDB.php');
+require_once(ROOT.'/lib/LibRegistre.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
@@ -129,6 +130,9 @@ switch ($accio) {
 		$frm->MaximRegistres = 20;
 		$frm->AfegeixOpcioAJAX('Mostra dades IP', 'MostraDadesIP', 'ip', [], '', 'help.svg');
 		$frm->Filtre->AfegeixLookup('usuari_id', 'Usuari', 100, 'UsuariRecerca.php', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [], '', '*');
+		$SeccioClau = Registre::SECCIO; array_unshift($SeccioClau , '');
+		$SeccioValor = Registre::SECCIO; array_unshift($SeccioValor , 'Tots');
+		$frm->Filtre->AfegeixLlista('seccio', 'Secció', 30, $SeccioClau, $SeccioValor);
 		$frm->EscriuHTML();
         break;		
     case "Festiu":

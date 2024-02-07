@@ -23,6 +23,13 @@ class Registre extends Objecte
 	const AVAL = 'Avaluació';
 	const MATR = 'Matrículació';
 
+	// Secció
+	const SECCIO = array(
+		self::AUTH,
+		self::AVAL,
+		self::MATR
+	);
+
 	/**
 	 * Registra a la taula de log un missatge.
 	 * @param string $Seccio Secció del missatge.
