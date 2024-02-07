@@ -842,6 +842,39 @@ BEGIN
 END //
 DELIMITER ;
 
+/*
+ * ObteNotaConvocatoriaI0
+ *
+ * Retorna la nota corresponent a la convocatòria actual, i també si està aprovada (convocatòria=0).
+ *
+ * Ús:
+ *   SELECT notes_id, ObteNotaConvocatoriaI0(nota1, nota2, nota3, nota4, nota5, convocatoria) FROM NOTES;
+ *
+ * @param integer nota1 Nota de la 1a convocatòria.
+ * @param integer nota2 Nota de la 2a convocatòria.
+ * @param integer nota3 Nota de la 3a convocatòria.
+ * @param integer nota4 Nota de la 4a convocatòria.
+ * @param integer nota5 Nota de la 5a convocatòria.
+ * @param integer convocatoria Convocatòria actual.
+ * @return integer Nota corresponent a la convocatòria actual.
+ */
+DELIMITER //
+CREATE FUNCTION ObteNotaConvocatoriaI0(nota1 INT, nota2 INT, nota3 INT, nota4 INT, nota5 INT, convocatoria INT)
+RETURNS INT
+BEGIN 
+    DECLARE Nota INT;
+    IF convocatoria = 5 THEN SET Nota = nota5;
+    ELSEIF convocatoria = 4 THEN SET Nota = nota4;
+    ELSEIF convocatoria = 3 THEN SET Nota = nota3;
+    ELSEIF convocatoria = 2 THEN SET Nota = nota2;
+    ELSEIF convocatoria = 1 THEN SET Nota = nota1;
+    ELSEIF convocatoria = 0 THEN SET Nota = IFNULL(nota5, IFNULL(nota4, IFNULL(nota3, IFNULL(nota2, IFNULL(nota1, NULL)))));
+    ELSE SET Nota = NULL;
+    END IF;
+    RETURN Nota;
+END //
+DELIMITER ;
+
 
 /*
  * CreaPlaEstudisModul
