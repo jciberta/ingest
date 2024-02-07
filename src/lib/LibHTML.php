@@ -659,6 +659,7 @@ class MenuInGest extends Menu
 		else if ($Usuari->es_administratiu) {
 			// Menú Secretaria
 			$Retorn .= Menu::Obre('Secretaria');
+			$Retorn .= Menu::Opcio('Matrícules', 'UsuariRecerca.php?accio=Matricules');
 			$Retorn .= Menu::Opcio('Propostes matrícula', 'Recerca.php?accio=PropostaMatricula');
 //			$Retorn .= Menu::Opcio('Preus matrícula', 'FPRecerca.php?accio=PreuMatricula');
 //			$Retorn .= Menu::Opcio('Bonificacions matrícula', 'FPRecerca.php?accio=BonificacioMatricula');

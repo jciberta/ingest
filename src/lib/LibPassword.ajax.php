@@ -24,7 +24,8 @@ if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
-	if ($_REQUEST['accio'] == 'RecuperaPasswordProgenitor') {
+//	if ($_REQUEST['accio'] == 'RecuperaPasswordProgenitor') {
+	if ($_REQUEST['accio'] == 'RecuperaPasswordTutor') { // Falta canviar-ho a més llocs!
 		$dni = $_REQUEST['dni'];
 		$dni_tutor = $_REQUEST['dni_tutor'];
 		$data_naixement = $_REQUEST['data_naixement'];

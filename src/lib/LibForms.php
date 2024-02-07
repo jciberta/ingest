@@ -2682,6 +2682,7 @@ class FormFitxa extends Form
 
 		if ($this->Id > 0)
 			$this->CarregaDades();
+		echo $this->GeneraSubTitol();
 		echo $this->GeneraFitxa();
 		echo $this->GeneraDesa();
 		echo $this->GeneraMissatges();

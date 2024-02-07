@@ -7,11 +7,11 @@
  * Es permet l'accés a aquesta pàgina sense estar identificat.
  *
  * Paràmetres URL:
- *	- CodiDoc: identificador del document. Es visualitza/descarrega la darrera versió acceptada.
+ *	- CodiDocument: identificador del document. Es visualitza/descarrega la darrera versió acceptada.
  *	- Filtre (S|N): indica si surt la barra de filtre.
  *	- Estudi, Nivell, Categoria: només surten els documents especificats pel filtre. 
  *
- * @author: Josep Ciberta
+ * @author: Josep Ciberta, JM Vegas
  * @license: https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
@@ -37,7 +37,12 @@ if ($conn->connect_error)
 if ($Usuari === null) {
     // Usuari no identificat
 	$doc = new Document($conn, $Usuari, $Sistema);
-	$doc->EscriuFormulariRecerca();
+	
+    if (isset($_GET['CodiDocument'])) {
+        $codiDocument = $_GET['CodiDocument']; 
+        $doc->RetornaDocument($codiDocument);        
+    } else { 
+        echo "CodiDocument no proporcionat.";
+    }
 }
-
 ?>

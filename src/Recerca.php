@@ -20,6 +20,7 @@ require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibRegistre.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibCurs.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibAvaluacio.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibMaterial.php');
@@ -75,13 +76,7 @@ switch ($accio) {
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Equips';
 		$SQL = ' SELECT EQ.equip_id, AA.any_academic_id AS any_academic_id, AA.nom AS AnyAcademic, '.
-			' CASE EQ.tipus '.
-			'     WHEN "DP" THEN "Departament" '.
-			'     WHEN "ED" THEN "Equip docent" '.
-			'     WHEN "CO" THEN "Comissió" '.
-			'     WHEN "CQ" THEN "Comissió de qualitat" '.
-			'     WHEN "CM" THEN "Comissió de mobilitat" '.
-			' END AS Tipus, '.
+			SQL::CreaCase('EQ.tipus', ProfessorsEquip::TIPUS_EQUIP).' AS Tipus, '.
 			' EQ.nom AS NomEquip, '.
 			' U.usuari_id, U.nom AS NomProfessor, U.cognom1 AS Cognom1Professor, U.cognom2 AS Cognom2Professor, U.username, U.email_ins '.
 			' FROM EQUIP EQ '.

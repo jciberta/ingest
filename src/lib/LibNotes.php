@@ -628,7 +628,7 @@ class Notes extends Form
 		echo '<input type=hidden id=Formulari value=Notes>';
 		echo '<input type=hidden id=CicleId value='.$CicleId.'>';
 		echo '<input type=hidden id=Nivell value='.$Nivell.'>';
-		echo "<TABLE id='TaulaNotes' class='taula-notes'>";
+		echo "<TABLE id='TaulaNotes' class='taula-notes table-hover'>";
 
 		// Capçalera de la taula
 		$aModuls = [];
@@ -904,6 +904,9 @@ class Notes extends Form
 		else
 			// Baixa UF. Sense nota
 			$BackgroundColor = 'background-color:grey;';
+
+//print_h($row);
+
 		if ($Nota >= 5)
 			$Hores += $row["Hores"];
 		else if ($Nota!='' && $Nota>=0 && $Nota<5 && $row["Convocatoria"]!=5)
@@ -1244,7 +1247,7 @@ class Notes extends Form
 		$iSegonCurs = $this->ObteSegonCurs($CursId);
 		$sRetorn = ' SELECT M.alumne_id AS AlumneId, '.
 			' U.document, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, '.
-			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, '.
+			' UPE.unitat_pla_estudi_id, UPE.unitat_formativa_id AS unitat_formativa_id, UPE.codi AS CodiUF, UPE.nom AS NomUF, UPE.hores AS Hores, UPE.orientativa AS Orientativa, UPE.nivell AS NivellUF, UPE.es_fct AS FCT, UPE.es_uf_addicional, '.
 			' MPE.modul_pla_estudi_id AS IdMP, MPE.codi AS CodiMP, MPE.nom AS NomMP, '.
 			' CF.llei, '.
 			' N.notes_id AS NotaId, N.baixa AS BaixaUF, N.convocatoria AS Convocatoria, N.convalidat AS Convalidat, '.
@@ -1415,7 +1418,8 @@ class Notes extends Form
 
 					if ($Avaluacio == 'Ordinària') {
 						$ea->UFTotals++;
-						$ea->HoresTotals += $row['Hores'];
+						if (!$row['es_uf_addicional'])
+							$ea->HoresTotals += $row['Hores'];
 						$UltimaNota = UltimaNota($row);
 						if ($UltimaNota != '') {
 							$ea->UFFetes++;
@@ -1423,13 +1427,13 @@ class Notes extends Form
 								$ea->HoresFetes += $row['Hores'];
 								$TotalNota += $UltimaNota*$row['Hores'];
 							}
-							if ($UltimaNota >= 5)
+							if (($UltimaNota >= 5) && (!$row['es_uf_addicional']))
 								$ea->HoresAprovades += $row['Hores'];
 						}
 						if ($row['Convocatoria'] > 0) {
 							$Nota = $row['nota'.$row['Convocatoria']];
 	//						if ($Nota > 0 && $Nota < 5)
-							if ($Nota < 5 && $Nota != '')
+							if ($Nota < 5 && $Nota != '' && !$row['es_uf_addicional'])
 								$ea->UFSuspeses++;
 							else if ($Nota >= 5)
 								$ea->UFAprovades++;
@@ -1495,8 +1499,8 @@ class Notes extends Form
 			for($j = 0; $j < count($RegistreAlumne->UF); $j++) {
 				$row = $RegistreAlumne->UF[$j];
 				$UltimaNota = UltimaNota($row);
-				if ($UltimaNota > 0) {
-					if (!$row['FCT']) {
+				if (!$row["baixa"] && $UltimaNota > 0) {
+					if (!$row['FCT'] && !$row["es_uf_addicional"]) {
 						$HoresMitjana += $row['Hores'];
 						$Mitjana += $UltimaNota*$row['Hores'];
 					}
@@ -2424,6 +2428,10 @@ class NotesModul extends Notes
 		$ClassInput = 'nota';
 		if ($row["FCTMP"] == 1)
 			$ClassInput .= ' fct';
+		
+		// Si estem en administració avançada podem tocar totes les notes, incloses les de convocatòries anteriors i mitges.
+		if ($this->Administracio)
+			$Deshabilitat = '';
 		
 		// <INPUT>
 		// name: conté identificadors de la nota, matrícula i mòdul.

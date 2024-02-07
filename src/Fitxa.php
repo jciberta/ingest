@@ -19,6 +19,7 @@ require_once(ROOT.'/lib/LibURL.php');
 require_once(ROOT.'/lib/LibDB.php');
 require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
+require_once(ROOT.'/lib/LibUsuari.php');
 require_once(ROOT.'/lib/LibMatricula.php');
 require_once(ROOT.'/lib/LibExpedient.php');
 require_once(ROOT.'/lib/LibCurs.php');
@@ -149,7 +150,9 @@ switch ($accio) {
 		$SQL = "SELECT AA.any_academic_id, AA.nom FROM ANY_ACADEMIC AA ORDER BY AA.nom DESC;";
 		$aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "any_academic_id", "nom");
 		$frm->AfegeixLlista('any_academic_id', 'Any', 200, $aCurs[0], $aCurs[1]);
-		$frm->AfegeixLlista('tipus', 'Tipus', 50, array("DP", "ED", "CO", "CQ", "CM"), array("Departament", "Equip docent", "Comissió", "Comissió de qualitat", "Comissió de mobilitat"));
+		$aClaus = array_keys(ProfessorsEquip::TIPUS_EQUIP); 
+		$aValors = array_values(ProfessorsEquip::TIPUS_EQUIP);
+		$frm->AfegeixLlista('tipus', 'Tipus', 50, $aClaus, $aValors);
 		$frm->AfegeixText('nom', 'Nom', 200, [FormFitxa::offREQUERIT]);
 		$frm->AfegeixLookUp('cap', 'Professor', 100, 'UsuariRecerca.php?accio=Professors', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 		$frm->AfegeixLookUp('familia_fp_id', 'Família', 100, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
