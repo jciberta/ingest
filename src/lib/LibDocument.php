@@ -70,6 +70,13 @@ class Document extends Objecte
 		'CF' => "Coordinador FP",
 		'CD' => "Coordinador Dual"
 	);
+
+	//Propietats per guardar els filtres passats per URL
+	public $Filtre= '';
+	public $Estudi= '';
+	public $Nivell= '';
+	public $Categoria= '';
+
 	/**
 	 * Retorna el document amb el codi que li passem per paràmetre, el document ha de tenir
 	 * visibilitat pública.
@@ -105,6 +112,11 @@ class Document extends Objecte
 		$Professor = new Professor($this->Connexio, $this->Usuari, $this->Sistema);
 
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
+		
+		if ($this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
+		$frm->PermetCercar=false;
+		}
+		
 		$frm->Modalitat = $Modalitat;
 		$frm->Titol = 'Impresos de funcionament';
 		$frm->SQL = $this->CreaSQL();
@@ -129,7 +141,7 @@ class Document extends Objecte
 			$aValors = array_values(self::VISIBILITAT); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('visibilitat', 'Visibilitat', 20, $aClaus, $aValors);
 		}
-
+		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
 		$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
 		$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
@@ -138,22 +150,29 @@ class Document extends Objecte
 		$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
 
+		
 		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
 		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+		}
 
+		if ($this->Usuari !== null) {
 		$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
 		$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
+		}
 
+		if ($this->Usuari !== null) {
 		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
 		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
+		}
 
+		if ($this->Usuari !== null) {
 		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
 		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
 		$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
-		
+		}
 		$frm->EscriuHTML();
 	}
 	
@@ -199,6 +218,26 @@ class Document extends Objecte
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLUsuariNoAutenticat() {
+
+		$FiltreEstudi='';
+		$FiltreCategoria='';
+		$FiltreNivell='';
+
+		if ($this->Estudi!='' && in_array($this->Estudi, self::ESTUDI)){
+			$FiltreEstudi= "AND estudi="."'".$this->Estudi."'"."";
+		}
+		
+
+		if ($this->Nivell!='' && in_array($this->Nivell, self::SUBESTUDI)){
+			$FiltreNivell= "AND subestudi="."'".$this->Nivell."'"."";
+		}
+	
+		
+		if ($this->Categoria!='' && in_array($this->Categoria, self::CATEGORIA)){
+			$FiltreCategoria= "AND Categoria="."'".$this->Categoria."'"."";
+		}
+
+		
 		$SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
@@ -214,7 +253,7 @@ class Document extends Objecte
 			FROM DOCUMENT_VERSIO DV
 			LEFT JOIN DOCUMENT D ON (D.document_id=DV.document_id)
 			WHERE versio=(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV2 WHERE DV.document_id=DV2.document_id AND estat='A')
-			AND visibilitat='B'
+			AND visibilitat='B'".$FiltreEstudi."".$FiltreNivell."".$FiltreCategoria."
 		";
 		$SQL .= " GROUP BY DV.document_id ";
 //echo "<hr>$SQL<hr>";
