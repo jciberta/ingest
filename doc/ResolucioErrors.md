@@ -28,3 +28,10 @@ mysql ...
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 ```
 
+## error collation utf8mb4_0900_ai_ci
+
+cal fer replace de:
+    utf8mb4_0900_ai_ci
+
+per:
+    utf8mb4_general_ci

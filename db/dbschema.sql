@@ -1553,3 +1553,15 @@ CREATE TRIGGER `AU_ActualitzaHoresMPE` AFTER UPDATE ON `UNITAT_PLA_ESTUDI` FOR E
     END IF;
 END //
 DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER AU_CalculaNotaMitjanaCurs AFTER UPDATE ON CURS FOR EACH ROW
+BEGIN
+    IF OLD.estat = 'A' AND NEW.estat = 'J' THEN
+        /* Quan es passi d’actiu a junta, aquelles mitjanes de mòdul no calculades es faran de forma automàtica. */
+        CALL CalculaNotaMitjanaCurs(OLD.curs_id);
+        INSERT INTO REGISTRE (usuari_id, nom_usuari, data, ip, seccio, missatge)
+            VALUES (1, 'Taula CURS', now(), '127.0.0.1', 'Trigger', CONCAT('Càlcul mitjanes de mòdul. curs_id=', OLD.curs_id));
+    END IF;
+END //
+DELIMITER ;
