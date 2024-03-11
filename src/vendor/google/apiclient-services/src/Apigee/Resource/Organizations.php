@@ -23,6 +23,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1ListOrganizationsResponse;
 use Google\Service\Apigee\GoogleCloudApigeeV1Organization;
 use Google\Service\Apigee\GoogleCloudApigeeV1OrganizationProjectMapping;
 use Google\Service\Apigee\GoogleCloudApigeeV1RuntimeConfig;
+use Google\Service\Apigee\GoogleCloudApigeeV1SecuritySettings;
 use Google\Service\Apigee\GoogleCloudApigeeV1SetAddonsRequest;
 use Google\Service\Apigee\GoogleCloudApigeeV1SyncAuthorization;
 use Google\Service\Apigee\GoogleLongrunningOperation;
@@ -49,6 +50,7 @@ class Organizations extends \Google\Service\Resource
    * to associate the Apigee organization. Pass the information as a query
    * parameter using the following structure in your request: `projects/`
    * @return GoogleLongrunningOperation
+   * @throws \Google\Service\Exception
    */
   public function create(GoogleCloudApigeeV1Organization $postBody, $optParams = [])
   {
@@ -58,10 +60,15 @@ class Organizations extends \Google\Service\Resource
   }
   /**
    * Delete an Apigee organization. For organizations with BillingType EVALUATION,
-   * an immediate deletion is performed. For paid organizations, a soft-deletion
-   * is performed. The organization can be restored within the soft-deletion
-   * period which can be controlled using the retention field in the request.
-   * (organizations.delete)
+   * an immediate deletion is performed. For paid organizations (Subscription or
+   * Pay-as-you-go), a soft-deletion is performed. The organization can be
+   * restored within the soft-deletion period, which is specified using the
+   * `retention` field in the request or by filing a support ticket with Apigee.
+   * During the data retention period specified in the request, the Apigee
+   * organization cannot be recreated in the same Google Cloud project.
+   * **IMPORTANT: The default data retention setting for this operation is 7 days.
+   * To permanently delete the organization in 24 hours, set the retention
+   * parameter to `MINIMUM`.** (organizations.delete)
    *
    * @param string $name Required. Name of the organization. Use the following
    * structure in your request: `organizations/{org}`
@@ -72,8 +79,11 @@ class Organizations extends \Google\Service\Resource
    * controls how long Organization data will be retained after the initial delete
    * operation completes. During this period, the Organization may be restored to
    * its last known state. After this period, the Organization will no longer be
-   * able to be restored.
+   * able to be restored. **Note: During the data retention period specified using
+   * this field, the Apigee organization cannot be recreated in the same GCP
+   * project.**
    * @return GoogleLongrunningOperation
+   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -90,6 +100,7 @@ class Organizations extends \Google\Service\Resource
    * format: `organizations/{org}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Organization
+   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -110,6 +121,7 @@ class Organizations extends \Google\Service\Resource
    * specific deployments receiving traffic will be included in the IngressConfig
    * response's RoutingRules.
    * @return GoogleCloudApigeeV1IngressConfig
+   * @throws \Google\Service\Exception
    */
   public function getDeployedIngressConfig($name, $optParams = [])
   {
@@ -125,6 +137,7 @@ class Organizations extends \Google\Service\Resource
    * format: `organizations/{org}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1OrganizationProjectMapping
+   * @throws \Google\Service\Exception
    */
   public function getProjectMapping($name, $optParams = [])
   {
@@ -139,12 +152,29 @@ class Organizations extends \Google\Service\Resource
    * in the following format: 'organizations/{org}/runtimeConfig'.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1RuntimeConfig
+   * @throws \Google\Service\Exception
    */
   public function getRuntimeConfig($name, $optParams = [])
   {
     $params = ['name' => $name];
     $params = array_merge($params, $optParams);
     return $this->call('getRuntimeConfig', [$params], GoogleCloudApigeeV1RuntimeConfig::class);
+  }
+  /**
+   * GetSecuritySettings gets the security settings for API Security.
+   * (organizations.getSecuritySettings)
+   *
+   * @param string $name Required. The name of the SecuritySettings to retrieve.
+   * This will always be: 'organizations/{org}/securitySettings'.
+   * @param array $optParams Optional parameters.
+   * @return GoogleCloudApigeeV1SecuritySettings
+   * @throws \Google\Service\Exception
+   */
+  public function getSecuritySettings($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('getSecuritySettings', [$params], GoogleCloudApigeeV1SecuritySettings::class);
   }
   /**
    * Lists the service accounts with the permissions required to allow the
@@ -163,6 +193,7 @@ class Organizations extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1GetSyncAuthorizationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1SyncAuthorization
+   * @throws \Google\Service\Exception
    */
   public function getSyncAuthorization($name, GoogleCloudApigeeV1GetSyncAuthorizationRequest $postBody, $optParams = [])
   {
@@ -181,6 +212,7 @@ class Organizations extends \Google\Service\Resource
    * `organizations`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1ListOrganizationsResponse
+   * @throws \Google\Service\Exception
    */
   public function listOrganizations($parent, $optParams = [])
   {
@@ -197,6 +229,7 @@ class Organizations extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1SetAddonsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
+   * @throws \Google\Service\Exception
    */
   public function setAddons($org, GoogleCloudApigeeV1SetAddonsRequest $postBody, $optParams = [])
   {
@@ -221,6 +254,7 @@ class Organizations extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1SyncAuthorization $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1SyncAuthorization
+   * @throws \Google\Service\Exception
    */
   public function setSyncAuthorization($name, GoogleCloudApigeeV1SyncAuthorization $postBody, $optParams = [])
   {
@@ -237,12 +271,33 @@ class Organizations extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1Organization $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Organization
+   * @throws \Google\Service\Exception
    */
   public function update($name, GoogleCloudApigeeV1Organization $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('update', [$params], GoogleCloudApigeeV1Organization::class);
+  }
+  /**
+   * UpdateSecuritySettings updates the current security settings for API
+   * Security. (organizations.updateSecuritySettings)
+   *
+   * @param string $name Identifier. Full resource name is always
+   * `organizations/{org}/securitySettings`.
+   * @param GoogleCloudApigeeV1SecuritySettings $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string updateMask Optional. The list of fields to update. Allowed
+   * fields are: - ml_retraining_feedback_enabled
+   * @return GoogleCloudApigeeV1SecuritySettings
+   * @throws \Google\Service\Exception
+   */
+  public function updateSecuritySettings($name, GoogleCloudApigeeV1SecuritySettings $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('updateSecuritySettings', [$params], GoogleCloudApigeeV1SecuritySettings::class);
   }
 }
 

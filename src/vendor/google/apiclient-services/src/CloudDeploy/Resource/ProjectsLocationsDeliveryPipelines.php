@@ -50,9 +50,9 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @opt_param string deliveryPipelineId Required. ID of the `DeliveryPipeline`.
    * @opt_param string requestId Optional. A request ID to identify requests.
    * Specify a unique request ID so that if you must retry your request, the
-   * server will know to ignore the request if it has already been completed. The
-   * server will guarantee that for at least 60 minutes since the first request.
-   * For example, consider a situation where you make an initial request and the
+   * server knows to ignore the request if it has already been completed. The
+   * server guarantees that for at least 60 minutes after the first request. For
+   * example, consider a situation where you make an initial request and the
    * request times out. If you make the request again with the same request ID,
    * the server can check if original operation with the same request ID was
    * received, and if so, will ignore the second request. This prevents clients
@@ -63,6 +63,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * validated and the user is provided with an expected result, but no actual
    * change is made.
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function create($parent, DeliveryPipeline $postBody, $optParams = [])
   {
@@ -88,9 +89,9 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * the pipeline has no child resources.
    * @opt_param string requestId Optional. A request ID to identify requests.
    * Specify a unique request ID so that if you must retry your request, the
-   * server will know to ignore the request if it has already been completed. The
-   * server will guarantee that for at least 60 minutes after the first request.
-   * For example, consider a situation where you make an initial request and the
+   * server knows to ignore the request if it has already been completed. The
+   * server guarantees that for at least 60 minutes after the first request. For
+   * example, consider a situation where you make an initial request and the
    * request times out. If you make the request again with the same request ID,
    * the server can check if original operation with the same request ID was
    * received, and if so, will ignore the second request. This prevents clients
@@ -100,6 +101,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @opt_param bool validateOnly Optional. If set, validate the request and
    * preview the review, but do not actually post it.
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -115,6 +117,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * name}`.
    * @param array $optParams Optional parameters.
    * @return DeliveryPipeline
+   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -146,6 +149,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * documentation](https://cloud.google.com/iam/help/conditions/resource-
    * policies).
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($resource, $optParams = [])
   {
@@ -174,6 +178,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * When paginating, all other provided parameters match the call that provided
    * the page token.
    * @return ListDeliveryPipelinesResponse
+   * @throws \Google\Service\Exception
    */
   public function listProjectsLocationsDeliveryPipelines($parent, $optParams = [])
   {
@@ -195,9 +200,9 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * `DeliveryPipeline`.
    * @opt_param string requestId Optional. A request ID to identify requests.
    * Specify a unique request ID so that if you must retry your request, the
-   * server will know to ignore the request if it has already been completed. The
-   * server will guarantee that for at least 60 minutes since the first request.
-   * For example, consider a situation where you make an initial request and the
+   * server knows to ignore the request if it has already been completed. The
+   * server guarantees that for at least 60 minutes after the first request. For
+   * example, consider a situation where you make an initial request and the
    * request times out. If you make the request again with the same request ID,
    * the server can check if original operation with the same request ID was
    * received, and if so, will ignore the second request. This prevents clients
@@ -207,12 +212,13 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @opt_param string updateMask Required. Field mask is used to specify the
    * fields to be overwritten in the `DeliveryPipeline` resource by the update.
    * The fields specified in the update_mask are relative to the resource, not the
-   * full request. A field will be overwritten if it is in the mask. If the user
-   * does not provide a mask then all fields will be overwritten.
+   * full request. A field will be overwritten if it's in the mask. If the user
+   * doesn't provide a mask then all fields are overwritten.
    * @opt_param bool validateOnly Optional. If set to true, the request is
    * validated and the user is provided with an expected result, but no actual
    * change is made.
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function patch($name, DeliveryPipeline $postBody, $optParams = [])
   {
@@ -230,6 +236,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @param RollbackTargetRequest $postBody
    * @param array $optParams Optional parameters.
    * @return RollbackTargetResponse
+   * @throws \Google\Service\Exception
    */
   public function rollbackTarget($name, RollbackTargetRequest $postBody, $optParams = [])
   {
@@ -249,6 +256,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -271,6 +279,7 @@ class ProjectsLocationsDeliveryPipelines extends \Google\Service\Resource
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
+   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
   {

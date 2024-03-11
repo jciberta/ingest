@@ -19,24 +19,16 @@ namespace Google\Service\WorkloadManager;
 
 class SapDiscovery extends \Google\Model
 {
-  /**
-   * @var SapDiscoveryComponent
-   */
-  public $applicationLayer;
   protected $applicationLayerType = SapDiscoveryComponent::class;
   protected $applicationLayerDataType = '';
-  /**
-   * @var SapDiscoveryComponent
-   */
-  public $databaseLayer;
   protected $databaseLayerType = SapDiscoveryComponent::class;
   protected $databaseLayerDataType = '';
-  /**
-   * @var SapDiscoveryMetadata
-   */
-  public $metadata;
   protected $metadataType = SapDiscoveryMetadata::class;
   protected $metadataDataType = '';
+  /**
+   * @var string
+   */
+  public $projectNumber;
   /**
    * @var string
    */
@@ -45,6 +37,8 @@ class SapDiscovery extends \Google\Model
    * @var string
    */
   public $updateTime;
+  protected $workloadPropertiesType = SapDiscoveryWorkloadProperties::class;
+  protected $workloadPropertiesDataType = '';
 
   /**
    * @param SapDiscoveryComponent
@@ -91,6 +85,20 @@ class SapDiscovery extends \Google\Model
   /**
    * @param string
    */
+  public function setProjectNumber($projectNumber)
+  {
+    $this->projectNumber = $projectNumber;
+  }
+  /**
+   * @return string
+   */
+  public function getProjectNumber()
+  {
+    return $this->projectNumber;
+  }
+  /**
+   * @param string
+   */
   public function setSystemId($systemId)
   {
     $this->systemId = $systemId;
@@ -115,6 +123,20 @@ class SapDiscovery extends \Google\Model
   public function getUpdateTime()
   {
     return $this->updateTime;
+  }
+  /**
+   * @param SapDiscoveryWorkloadProperties
+   */
+  public function setWorkloadProperties(SapDiscoveryWorkloadProperties $workloadProperties)
+  {
+    $this->workloadProperties = $workloadProperties;
+  }
+  /**
+   * @return SapDiscoveryWorkloadProperties
+   */
+  public function getWorkloadProperties()
+  {
+    return $this->workloadProperties;
   }
 }
 

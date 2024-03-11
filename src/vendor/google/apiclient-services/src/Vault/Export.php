@@ -19,20 +19,12 @@ namespace Google\Service\Vault;
 
 class Export extends \Google\Model
 {
-  /**
-   * @var CloudStorageSink
-   */
-  public $cloudStorageSink;
   protected $cloudStorageSinkType = CloudStorageSink::class;
   protected $cloudStorageSinkDataType = '';
   /**
    * @var string
    */
   public $createTime;
-  /**
-   * @var ExportOptions
-   */
-  public $exportOptions;
   protected $exportOptionsType = ExportOptions::class;
   protected $exportOptionsDataType = '';
   /**
@@ -48,21 +40,13 @@ class Export extends \Google\Model
    */
   public $name;
   /**
-   * @var Query
+   * @var string
    */
-  public $query;
+  public $parentExportId;
   protected $queryType = Query::class;
   protected $queryDataType = '';
-  /**
-   * @var UserInfo
-   */
-  public $requester;
   protected $requesterType = UserInfo::class;
   protected $requesterDataType = '';
-  /**
-   * @var ExportStats
-   */
-  public $stats;
   protected $statsType = ExportStats::class;
   protected $statsDataType = '';
   /**
@@ -153,6 +137,20 @@ class Export extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param string
+   */
+  public function setParentExportId($parentExportId)
+  {
+    $this->parentExportId = $parentExportId;
+  }
+  /**
+   * @return string
+   */
+  public function getParentExportId()
+  {
+    return $this->parentExportId;
   }
   /**
    * @param Query

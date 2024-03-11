@@ -18,6 +18,8 @@
 namespace Google\Service\HangoutsChat\Resource;
 
 use Google\Service\HangoutsChat\ChatEmpty;
+use Google\Service\HangoutsChat\CompleteImportSpaceRequest;
+use Google\Service\HangoutsChat\CompleteImportSpaceResponse;
 use Google\Service\HangoutsChat\ListSpacesResponse;
 use Google\Service\HangoutsChat\SetUpSpaceRequest;
 use Google\Service\HangoutsChat\Space;
@@ -32,6 +34,27 @@ use Google\Service\HangoutsChat\Space;
  */
 class Spaces extends \Google\Service\Resource
 {
+  /**
+   * Completes the [import
+   * process](https://developers.google.com/chat/api/guides/import-data) for the
+   * specified space and makes it visible to users. Requires app authentication
+   * and domain-wide delegation. For more information, see [Authorize Google Chat
+   * apps to import data](https://developers.google.com/chat/api/guides/authorize-
+   * import). (spaces.completeImport)
+   *
+   * @param string $name Required. Resource name of the import mode space. Format:
+   * `spaces/{space}`
+   * @param CompleteImportSpaceRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return CompleteImportSpaceResponse
+   * @throws \Google\Service\Exception
+   */
+  public function completeImport($name, CompleteImportSpaceRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('completeImport', [$params], CompleteImportSpaceResponse::class);
+  }
   /**
    * Creates a named space. Spaces grouped by topics aren't supported. For an
    * example, see [Create a
@@ -51,6 +74,7 @@ class Spaces extends \Google\Service\Resource
    * existing request ID from the same Chat app with a different authenticated
    * user returns an error.
    * @return Space
+   * @throws \Google\Service\Exception
    */
   public function create(Space $postBody, $optParams = [])
   {
@@ -71,6 +95,7 @@ class Spaces extends \Google\Service\Resource
    * `spaces/{space}`
    * @param array $optParams Optional parameters.
    * @return ChatEmpty
+   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -109,6 +134,7 @@ class Spaces extends \Google\Service\Resource
    * `users/example@gmail.com` where `example@gmail.com` is the email of the
    * Google Chat user.
    * @return Space
+   * @throws \Google\Service\Exception
    */
   public function findDirectMessage($optParams = [])
   {
@@ -130,6 +156,7 @@ class Spaces extends \Google\Service\Resource
    * "spaces". Format: `spaces/{space}`
    * @param array $optParams Optional parameters.
    * @return Space
+   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -152,30 +179,25 @@ class Spaces extends \Google\Service\Resource
    *
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string filter Optional. A query filter. Requires [user
-   * authentication](https://developers.google.com/chat/api/guides/auth/users).
-   * You can filter spaces by the space type ([`space_type`](https://developers.go
-   * ogle.com/chat/api/reference/rest/v1/spaces#spacetype)). To filter by space
-   * type, you must specify valid enum value, such as `SPACE` or `GROUP_CHAT` (the
-   * `space_type` can't be `SPACE_TYPE_UNSPECIFIED`). To query for multiple space
-   * types, use the `OR` operator. For example, the following queries are valid:
-   * ``` space_type = "SPACE" spaceType = "GROUP_CHAT" OR spaceType =
-   * "DIRECT_MESSAGE" ``` Invalid queries are rejected by the server with an
-   * `INVALID_ARGUMENT` error. With [app
-   * authentication](https://developers.google.com/chat/api/guides/auth/service-
-   * accounts), this field is ignored and the query always returns all spaces. But
-   * the Chat API still validates the query syntax, so invalid queries are still
-   * rejected.
+   * @opt_param string filter Optional. A query filter. You can filter spaces by
+   * the space type ([`space_type`](https://developers.google.com/chat/api/referen
+   * ce/rest/v1/spaces#spacetype)). To filter by space type, you must specify
+   * valid enum value, such as `SPACE` or `GROUP_CHAT` (the `space_type` can't be
+   * `SPACE_TYPE_UNSPECIFIED`). To query for multiple space types, use the `OR`
+   * operator. For example, the following queries are valid: ``` space_type =
+   * "SPACE" spaceType = "GROUP_CHAT" OR spaceType = "DIRECT_MESSAGE" ``` Invalid
+   * queries are rejected by the server with an `INVALID_ARGUMENT` error.
    * @opt_param int pageSize Optional. The maximum number of spaces to return. The
    * service might return fewer than this value. If unspecified, at most 100
-   * spaces are returned. The maximum value is 1,000. If you use a value more than
-   * 1,000, it's automatically changed to 1,000. Negative values return an
+   * spaces are returned. The maximum value is 1000. If you use a value more than
+   * 1000, it's automatically changed to 1000. Negative values return an
    * `INVALID_ARGUMENT` error.
    * @opt_param string pageToken Optional. A page token, received from a previous
    * list spaces call. Provide this parameter to retrieve the subsequent page.
    * When paginating, the filter value should match the call that provided the
    * page token. Passing a different value may lead to unexpected results.
    * @return ListSpacesResponse
+   * @throws \Google\Service\Exception
    */
   public function listSpaces($optParams = [])
   {
@@ -217,8 +239,14 @@ class Spaces extends \Google\Service\Resource
    * space](https://support.google.com/chat/answer/7664687) if [the organization
    * allows users to change their history
    * setting](https://support.google.com/a/answer/7664184). Warning: mutually
-   * exclusive with all other field paths.)
+   * exclusive with all other field paths.) - Developer Preview:
+   * `access_settings.audience` (Supports changing the [access
+   * setting](https://support.google.com/chat/answer/11971020) of a space. If no
+   * audience is specified in the access setting, the space's access setting is
+   * updated to restricted. Warning: mutually exclusive with all other field
+   * paths.)
    * @return Space
+   * @throws \Google\Service\Exception
    */
   public function patch($name, Space $postBody, $optParams = [])
   {
@@ -261,6 +289,7 @@ class Spaces extends \Google\Service\Resource
    * @param SetUpSpaceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Space
+   * @throws \Google\Service\Exception
    */
   public function setup(SetUpSpaceRequest $postBody, $optParams = [])
   {

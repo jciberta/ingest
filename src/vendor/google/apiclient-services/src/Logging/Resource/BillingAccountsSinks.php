@@ -61,6 +61,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * by the sinks with the same parent. For more information, see writer_identity
    * in LogSink.
    * @return LogSink
+   * @throws \Google\Service\Exception
    */
   public function create($parent, LogSink $postBody, $optParams = [])
   {
@@ -81,6 +82,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * project/sinks/my-sink"
    * @param array $optParams Optional parameters.
    * @return LoggingEmpty
+   * @throws \Google\Service\Exception
    */
   public function delete($sinkName, $optParams = [])
   {
@@ -99,6 +101,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * project/sinks/my-sink"
    * @param array $optParams Optional parameters.
    * @return LogSink
+   * @throws \Google\Service\Exception
    */
   public function get($sinkName, $optParams = [])
   {
@@ -122,6 +125,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * the value of nextPageToken from the previous response. The values of other
    * method parameters should be identical to those in the previous call.
    * @return ListSinksResponse
+   * @throws \Google\Service\Exception
    */
   public function listBillingAccountsSinks($parent, $optParams = [])
   {
@@ -130,10 +134,10 @@ class BillingAccountsSinks extends \Google\Service\Resource
     return $this->call('list', [$params], ListSinksResponse::class);
   }
   /**
-   * Updates a sink. This method replaces the following fields in the existing
-   * sink with values from the new sink: destination, and filter.The updated sink
-   * might also have a new writer_identity; see the unique_writer_identity field.
-   * (sinks.patch)
+   * Updates a sink. This method replaces the values of the destination and filter
+   * fields of the existing sink with the corresponding values from the new
+   * sink.The updated sink might also have a new writer_identity; see the
+   * unique_writer_identity field. (sinks.patch)
    *
    * @param string $sinkName Required. The full resource name of the sink to
    * update, including the parent resource and the sink identifier:
@@ -171,6 +175,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * buffers/docs/reference/google.protobuf#google.protobuf.FieldMaskFor example:
    * updateMask=filter
    * @return LogSink
+   * @throws \Google\Service\Exception
    */
   public function patch($sinkName, LogSink $postBody, $optParams = [])
   {
@@ -179,10 +184,10 @@ class BillingAccountsSinks extends \Google\Service\Resource
     return $this->call('patch', [$params], LogSink::class);
   }
   /**
-   * Updates a sink. This method replaces the following fields in the existing
-   * sink with values from the new sink: destination, and filter.The updated sink
-   * might also have a new writer_identity; see the unique_writer_identity field.
-   * (sinks.update)
+   * Updates a sink. This method replaces the values of the destination and filter
+   * fields of the existing sink with the corresponding values from the new
+   * sink.The updated sink might also have a new writer_identity; see the
+   * unique_writer_identity field. (sinks.update)
    *
    * @param string $sinkName Required. The full resource name of the sink to
    * update, including the parent resource and the sink identifier:
@@ -220,6 +225,7 @@ class BillingAccountsSinks extends \Google\Service\Resource
    * buffers/docs/reference/google.protobuf#google.protobuf.FieldMaskFor example:
    * updateMask=filter
    * @return LogSink
+   * @throws \Google\Service\Exception
    */
   public function update($sinkName, LogSink $postBody, $optParams = [])
   {

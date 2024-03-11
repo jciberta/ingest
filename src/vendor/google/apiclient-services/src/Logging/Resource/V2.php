@@ -49,6 +49,7 @@ class V2 extends \Google\Service\Resource
    * folders in the Google Cloud organization.
    * @param array $optParams Optional parameters.
    * @return CmekSettings
+   * @throws \Google\Service\Exception
    */
   public function getCmekSettings($name, $optParams = [])
   {
@@ -71,6 +72,7 @@ class V2 extends \Google\Service\Resource
    * Google Cloud projects, folders, organizations, and billing accounts.
    * @param array $optParams Optional parameters.
    * @return Settings
+   * @throws \Google\Service\Exception
    */
   public function getSettings($name, $optParams = [])
   {
@@ -82,12 +84,12 @@ class V2 extends \Google\Service\Resource
    * Updates the Log Router CMEK settings for the given resource.Note: CMEK for
    * the Log Router can currently only be configured for Google Cloud
    * organizations. Once configured, it applies to all projects and folders in the
-   * Google Cloud organization.UpdateCmekSettings will fail if 1) kms_key_name is
-   * invalid, or 2) the associated service account does not have the required
-   * roles/cloudkms.cryptoKeyEncrypterDecrypter role assigned for the key, or 3)
-   * access to the key is disabled.See Enabling CMEK for Log Router
-   * (https://cloud.google.com/logging/docs/routing/managed-encryption) for more
-   * information. (v2.updateCmekSettings)
+   * Google Cloud organization.UpdateCmekSettings fails when any of the following
+   * are true: The value of kms_key_name is invalid. The associated service
+   * account doesn't have the required roles/cloudkms.cryptoKeyEncrypterDecrypter
+   * role assigned for the key. Access to the key is disabled.See Enabling CMEK
+   * for Log Router (https://cloud.google.com/logging/docs/routing/managed-
+   * encryption) for more information. (v2.updateCmekSettings)
    *
    * @param string $name Required. The resource name for the CMEK settings to
    * update. "projects/[PROJECT_ID]/cmekSettings"
@@ -105,6 +107,7 @@ class V2 extends \Google\Service\Resource
    * if it is in the update mask. Output only fields cannot be updated.See
    * FieldMask for more information.For example: "updateMask=kmsKeyName"
    * @return CmekSettings
+   * @throws \Google\Service\Exception
    */
   public function updateCmekSettings($name, CmekSettings $postBody, $optParams = [])
   {
@@ -114,13 +117,14 @@ class V2 extends \Google\Service\Resource
   }
   /**
    * Updates the settings for the given resource. This method applies to all
-   * feature configurations for organization and folders.UpdateSettings will fail
-   * if 1) kms_key_name is invalid, 2) the associated service account does not
-   * have the required roles/cloudkms.cryptoKeyEncrypterDecrypter role assigned
-   * for the key, 3) access to the key is disabled, 4) storage_location is not
-   * supported by Logging, 5) storage_location violates the location OrgPolicy, or
-   * 6) default_sink_config is set but has an unspecified filter write mode.See
-   * Configure default settings for organizations and folders
+   * feature configurations for organization and folders.UpdateSettings fails when
+   * any of the following are true: The value of storage_location either isn't
+   * supported by Logging or violates the location OrgPolicy. The
+   * default_sink_config field is set, but it has an unspecified filter write
+   * mode. The value of kms_key_name is invalid. The associated service account
+   * doesn't have the required roles/cloudkms.cryptoKeyEncrypterDecrypter role
+   * assigned for the key. Access to the key is disabled.See Configure default
+   * settings for organizations and folders
    * (https://cloud.google.com/logging/docs/default-settings) for more
    * information. (v2.updateSettings)
    *
@@ -135,6 +139,7 @@ class V2 extends \Google\Service\Resource
    * it is in the update mask. Output only fields cannot be updated.See FieldMask
    * for more information.For example: "updateMask=kmsKeyName"
    * @return Settings
+   * @throws \Google\Service\Exception
    */
   public function updateSettings($name, Settings $postBody, $optParams = [])
   {

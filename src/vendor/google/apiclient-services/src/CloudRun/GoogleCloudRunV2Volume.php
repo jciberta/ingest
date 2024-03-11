@@ -19,26 +19,18 @@ namespace Google\Service\CloudRun;
 
 class GoogleCloudRunV2Volume extends \Google\Model
 {
-  /**
-   * @var GoogleCloudRunV2CloudSqlInstance
-   */
-  public $cloudSqlInstance;
   protected $cloudSqlInstanceType = GoogleCloudRunV2CloudSqlInstance::class;
   protected $cloudSqlInstanceDataType = '';
-  /**
-   * @var GoogleCloudRunV2EmptyDirVolumeSource
-   */
-  public $emptyDir;
   protected $emptyDirType = GoogleCloudRunV2EmptyDirVolumeSource::class;
   protected $emptyDirDataType = '';
+  protected $gcsType = GoogleCloudRunV2GCSVolumeSource::class;
+  protected $gcsDataType = '';
   /**
    * @var string
    */
   public $name;
-  /**
-   * @var GoogleCloudRunV2SecretVolumeSource
-   */
-  public $secret;
+  protected $nfsType = GoogleCloudRunV2NFSVolumeSource::class;
+  protected $nfsDataType = '';
   protected $secretType = GoogleCloudRunV2SecretVolumeSource::class;
   protected $secretDataType = '';
 
@@ -71,6 +63,20 @@ class GoogleCloudRunV2Volume extends \Google\Model
     return $this->emptyDir;
   }
   /**
+   * @param GoogleCloudRunV2GCSVolumeSource
+   */
+  public function setGcs(GoogleCloudRunV2GCSVolumeSource $gcs)
+  {
+    $this->gcs = $gcs;
+  }
+  /**
+   * @return GoogleCloudRunV2GCSVolumeSource
+   */
+  public function getGcs()
+  {
+    return $this->gcs;
+  }
+  /**
    * @param string
    */
   public function setName($name)
@@ -83,6 +89,20 @@ class GoogleCloudRunV2Volume extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param GoogleCloudRunV2NFSVolumeSource
+   */
+  public function setNfs(GoogleCloudRunV2NFSVolumeSource $nfs)
+  {
+    $this->nfs = $nfs;
+  }
+  /**
+   * @return GoogleCloudRunV2NFSVolumeSource
+   */
+  public function getNfs()
+  {
+    return $this->nfs;
   }
   /**
    * @param GoogleCloudRunV2SecretVolumeSource

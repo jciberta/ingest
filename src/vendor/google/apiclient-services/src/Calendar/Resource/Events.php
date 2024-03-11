@@ -47,6 +47,7 @@ class Events extends \Google\Service\Resource
    * false.
    * @opt_param string sendUpdates Guests who should receive notifications about
    * the deletion of the event.
+   * @throws \Google\Service\Exception
    */
   public function delete($calendarId, $eventId, $optParams = [])
   {
@@ -75,6 +76,7 @@ class Events extends \Google\Service\Resource
    * @opt_param string timeZone Time zone used in the response. Optional. The
    * default is the time zone of the calendar.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function get($calendarId, $eventId, $optParams = [])
   {
@@ -100,6 +102,7 @@ class Events extends \Google\Service\Resource
    * @opt_param bool supportsAttachments Whether API client performing operation
    * supports event attachments. Optional. The default is False.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function import($calendarId, Event $postBody, $optParams = [])
   {
@@ -135,6 +138,7 @@ class Events extends \Google\Service\Resource
    * @opt_param bool supportsAttachments Whether API client performing operation
    * supports event attachments. Optional. The default is False.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function insert($calendarId, Event $postBody, $optParams = [])
   {
@@ -178,6 +182,7 @@ class Events extends \Google\Service\Resource
    * @opt_param string timeZone Time zone used in the response. Optional. The
    * default is the time zone of the calendar.
    * @return EventsModel
+   * @throws \Google\Service\Exception
    */
   public function instances($calendarId, $eventId, $optParams = [])
   {
@@ -193,14 +198,10 @@ class Events extends \Google\Service\Resource
    * the currently logged in user, use the "primary" keyword.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool alwaysIncludeEmail Deprecated and ignored. A value will
-   * always be returned in the email field for the organizer, creator and
-   * attendees, even if no real email address is available (i.e. a generated, non-
-   * working value will be provided).
-   * @opt_param string eventTypes Event types to return. Optional. Possible values
-   * are: - "default"  - "focusTime"  - "outOfOffice"  - "workingLocation"This
-   * parameter can be repeated multiple times to return events of different types.
-   * The default is ["default", "focusTime", "outOfOffice"].
+   * @opt_param bool alwaysIncludeEmail Deprecated and ignored.
+   * @opt_param string eventTypes Event types to return. Optional. This parameter
+   * can be repeated multiple times to return events of different types. The
+   * default is ["default", "focusTime", "outOfOffice"].
    * @opt_param string iCalUID Specifies an event ID in the iCalendar format to be
    * provided in the response. Optional. Use this if you want to search for an
    * event by its iCalendar ID.
@@ -225,7 +226,8 @@ class Events extends \Google\Service\Resource
    * terms in the following fields:
    *
    * - summary  - description  - location  - attendee's displayName  - attendee's
-   * email  - workingLocationProperties.officeLocation.buildingId  -
+   * email  - organizer's displayName  - organizer's email  -
+   * workingLocationProperties.officeLocation.buildingId  -
    * workingLocationProperties.officeLocation.deskId  -
    * workingLocationProperties.officeLocation.label  -
    * workingLocationProperties.customLocation.label  These search terms also match
@@ -282,6 +284,7 @@ class Events extends \Google\Service\Resource
    * since this time will always be included regardless of showDeleted. Optional.
    * The default is not to filter by last modification time.
    * @return EventsModel
+   * @throws \Google\Service\Exception
    */
   public function listEvents($calendarId, $optParams = [])
   {
@@ -309,6 +312,7 @@ class Events extends \Google\Service\Resource
    * @opt_param string sendUpdates Guests who should receive notifications about
    * the change of the event's organizer.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function move($calendarId, $eventId, $destination, $optParams = [])
   {
@@ -348,6 +352,7 @@ class Events extends \Google\Service\Resource
    * @opt_param bool supportsAttachments Whether API client performing operation
    * supports event attachments. Optional. The default is False.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function patch($calendarId, $eventId, Event $postBody, $optParams = [])
   {
@@ -372,6 +377,7 @@ class Events extends \Google\Service\Resource
    * @opt_param string sendUpdates Guests who should receive notifications about
    * the creation of the new event.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function quickAdd($calendarId, $text, $optParams = [])
   {
@@ -411,6 +417,7 @@ class Events extends \Google\Service\Resource
    * @opt_param bool supportsAttachments Whether API client performing operation
    * supports event attachments. Optional. The default is False.
    * @return Event
+   * @throws \Google\Service\Exception
    */
   public function update($calendarId, $eventId, Event $postBody, $optParams = [])
   {
@@ -427,14 +434,10 @@ class Events extends \Google\Service\Resource
    * @param Channel $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool alwaysIncludeEmail Deprecated and ignored. A value will
-   * always be returned in the email field for the organizer, creator and
-   * attendees, even if no real email address is available (i.e. a generated, non-
-   * working value will be provided).
-   * @opt_param string eventTypes Event types to return. Optional. Possible values
-   * are: - "default"  - "focusTime"  - "outOfOffice"  - "workingLocation"This
-   * parameter can be repeated multiple times to return events of different types.
-   * The default is ["default", "focusTime", "outOfOffice"].
+   * @opt_param bool alwaysIncludeEmail Deprecated and ignored.
+   * @opt_param string eventTypes Event types to return. Optional. This parameter
+   * can be repeated multiple times to return events of different types. The
+   * default is ["default", "focusTime", "outOfOffice"].
    * @opt_param string iCalUID Specifies an event ID in the iCalendar format to be
    * provided in the response. Optional. Use this if you want to search for an
    * event by its iCalendar ID.
@@ -459,7 +462,8 @@ class Events extends \Google\Service\Resource
    * terms in the following fields:
    *
    * - summary  - description  - location  - attendee's displayName  - attendee's
-   * email  - workingLocationProperties.officeLocation.buildingId  -
+   * email  - organizer's displayName  - organizer's email  -
+   * workingLocationProperties.officeLocation.buildingId  -
    * workingLocationProperties.officeLocation.deskId  -
    * workingLocationProperties.officeLocation.label  -
    * workingLocationProperties.customLocation.label  These search terms also match
@@ -516,6 +520,7 @@ class Events extends \Google\Service\Resource
    * since this time will always be included regardless of showDeleted. Optional.
    * The default is not to filter by last modification time.
    * @return Channel
+   * @throws \Google\Service\Exception
    */
   public function watch($calendarId, Channel $postBody, $optParams = [])
   {

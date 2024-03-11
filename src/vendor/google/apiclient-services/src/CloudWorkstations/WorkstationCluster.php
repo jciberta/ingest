@@ -24,10 +24,6 @@ class WorkstationCluster extends \Google\Collection
    * @var string[]
    */
   public $annotations;
-  /**
-   * @var Status[]
-   */
-  public $conditions;
   protected $conditionsType = Status::class;
   protected $conditionsDataType = 'array';
   /**
@@ -50,6 +46,8 @@ class WorkstationCluster extends \Google\Collection
    * @var string
    */
   public $displayName;
+  protected $domainConfigType = DomainConfig::class;
+  protected $domainConfigDataType = '';
   /**
    * @var string
    */
@@ -66,10 +64,6 @@ class WorkstationCluster extends \Google\Collection
    * @var string
    */
   public $network;
-  /**
-   * @var PrivateClusterConfig
-   */
-  public $privateClusterConfig;
   protected $privateClusterConfigType = PrivateClusterConfig::class;
   protected $privateClusterConfigDataType = '';
   /**
@@ -186,6 +180,20 @@ class WorkstationCluster extends \Google\Collection
   public function getDisplayName()
   {
     return $this->displayName;
+  }
+  /**
+   * @param DomainConfig
+   */
+  public function setDomainConfig(DomainConfig $domainConfig)
+  {
+    $this->domainConfig = $domainConfig;
+  }
+  /**
+   * @return DomainConfig
+   */
+  public function getDomainConfig()
+  {
+    return $this->domainConfig;
   }
   /**
    * @param string

@@ -36,7 +36,8 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * option if successful. Requests to this endpoint cannot be made concurrently
    * with the following requests updating the same line item: *
    * lineItems.bulkEditAssignedTargetingOptions * lineItems.bulkUpdate *
-   * lineItems.patch * DeleteLineItemAssignedTargetingOption
+   * lineItems.patch * DeleteLineItemAssignedTargetingOption YouTube & Partners
+   * line items cannot be created or updated using the API.
    * (assignedTargetingOptions.create)
    *
    * @param string $advertiserId Required. The ID of the advertiser the line item
@@ -74,6 +75,7 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * @param AssignedTargetingOption $postBody
    * @param array $optParams Optional parameters.
    * @return AssignedTargetingOption
+   * @throws \Google\Service\Exception
    */
   public function create($advertiserId, $lineItemId, $targetingType, AssignedTargetingOption $postBody, $optParams = [])
   {
@@ -86,7 +88,8 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * endpoint cannot be made concurrently with the following requests updating the
    * same line item: * lineItems.bulkEditAssignedTargetingOptions *
    * lineItems.bulkUpdate * lineItems.patch *
-   * CreateLineItemAssignedTargetingOption (assignedTargetingOptions.delete)
+   * CreateLineItemAssignedTargetingOption YouTube & Partners line items cannot be
+   * created or updated using the API. (assignedTargetingOptions.delete)
    *
    * @param string $advertiserId Required. The ID of the advertiser the line item
    * belongs to.
@@ -124,6 +127,7 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * targeting option to delete.
    * @param array $optParams Optional parameters.
    * @return DisplayvideoEmpty
+   * @throws \Google\Service\Exception
    */
   public function delete($advertiserId, $lineItemId, $targetingType, $assignedTargetingOptionId, $optParams = [])
   {
@@ -175,6 +179,7 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * option being requested.
    * @param array $optParams Optional parameters.
    * @return AssignedTargetingOption
+   * @throws \Google\Service\Exception
    */
   public function get($advertiserId, $lineItemId, $targetingType, $assignedTargetingOptionId, $optParams = [])
   {
@@ -248,6 +253,7 @@ class AdvertisersLineItemsTargetingTypesAssignedTargetingOptions extends \Google
    * the previous call to `ListLineItemAssignedTargetingOptions` method. If not
    * specified, the first page of results will be returned.
    * @return ListLineItemAssignedTargetingOptionsResponse
+   * @throws \Google\Service\Exception
    */
   public function listAdvertisersLineItemsTargetingTypesAssignedTargetingOptions($advertiserId, $lineItemId, $targetingType, $optParams = [])
   {

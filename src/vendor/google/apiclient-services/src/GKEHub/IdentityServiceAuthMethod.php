@@ -19,32 +19,22 @@ namespace Google\Service\GKEHub;
 
 class IdentityServiceAuthMethod extends \Google\Model
 {
-  /**
-   * @var IdentityServiceAzureADConfig
-   */
-  public $azureadConfig;
   protected $azureadConfigType = IdentityServiceAzureADConfig::class;
   protected $azureadConfigDataType = '';
-  /**
-   * @var IdentityServiceGoogleConfig
-   */
-  public $googleConfig;
   protected $googleConfigType = IdentityServiceGoogleConfig::class;
   protected $googleConfigDataType = '';
   /**
    * @var string
    */
   public $name;
-  /**
-   * @var IdentityServiceOidcConfig
-   */
-  public $oidcConfig;
   protected $oidcConfigType = IdentityServiceOidcConfig::class;
   protected $oidcConfigDataType = '';
   /**
    * @var string
    */
   public $proxy;
+  protected $samlConfigType = IdentityServiceSamlConfig::class;
+  protected $samlConfigDataType = '';
 
   /**
    * @param IdentityServiceAzureADConfig
@@ -115,6 +105,20 @@ class IdentityServiceAuthMethod extends \Google\Model
   public function getProxy()
   {
     return $this->proxy;
+  }
+  /**
+   * @param IdentityServiceSamlConfig
+   */
+  public function setSamlConfig(IdentityServiceSamlConfig $samlConfig)
+  {
+    $this->samlConfig = $samlConfig;
+  }
+  /**
+   * @return IdentityServiceSamlConfig
+   */
+  public function getSamlConfig()
+  {
+    return $this->samlConfig;
   }
 }
 

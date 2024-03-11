@@ -23,8 +23,8 @@ use Google\Client;
  * Service definition for HangoutsChat (v1).
  *
  * <p>
- * Enables apps to fetch information and perform actions in Google Chat.
- * Authentication is a prerequisite for using the Google Chat REST API.</p>
+ * The Google Chat API lets you build Chat apps to integrate your services with
+ * Google Chat and manage Chat resources such as spaces, members, and messages.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -71,7 +71,7 @@ class HangoutsChat extends \Google\Service
   /** View messages and reactions in Google Chat. */
   const CHAT_MESSAGES_READONLY =
       "https://www.googleapis.com/auth/chat.messages.readonly";
-  /** Create conversations and spaces and view or update metadata (including history settings) in Google Chat. */
+  /** Create conversations and spaces and see or edit metadata (including history settings and access settings) in Google Chat. */
   const CHAT_SPACES =
       "https://www.googleapis.com/auth/chat.spaces";
   /** Create new conversations in Google Chat. */
@@ -140,7 +140,17 @@ class HangoutsChat extends \Google\Service
         'spaces',
         [
           'methods' => [
-            'create' => [
+            'completeImport' => [
+              'path' => 'v1/{+name}:completeImport',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'create' => [
               'path' => 'v1/spaces',
               'httpMethod' => 'POST',
               'parameters' => [

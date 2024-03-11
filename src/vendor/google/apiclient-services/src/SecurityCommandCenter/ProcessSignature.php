@@ -19,16 +19,12 @@ namespace Google\Service\SecurityCommandCenter;
 
 class ProcessSignature extends \Google\Model
 {
-  /**
-   * @var MemoryHashSignature
-   */
-  public $memoryHashSignature;
   protected $memoryHashSignatureType = MemoryHashSignature::class;
   protected $memoryHashSignatureDataType = '';
   /**
-   * @var YaraRuleSignature
+   * @var string
    */
-  public $yaraRuleSignature;
+  public $signatureType;
   protected $yaraRuleSignatureType = YaraRuleSignature::class;
   protected $yaraRuleSignatureDataType = '';
 
@@ -45,6 +41,20 @@ class ProcessSignature extends \Google\Model
   public function getMemoryHashSignature()
   {
     return $this->memoryHashSignature;
+  }
+  /**
+   * @param string
+   */
+  public function setSignatureType($signatureType)
+  {
+    $this->signatureType = $signatureType;
+  }
+  /**
+   * @return string
+   */
+  public function getSignatureType()
+  {
+    return $this->signatureType;
   }
   /**
    * @param YaraRuleSignature

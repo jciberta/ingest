@@ -40,16 +40,8 @@ class Publishing extends \Google\Collection
    * @var string
    */
   public $githubLabel;
-  /**
-   * @var ClientLibrarySettings[]
-   */
-  public $librarySettings;
   protected $librarySettingsType = ClientLibrarySettings::class;
   protected $librarySettingsDataType = 'array';
-  /**
-   * @var MethodSettings[]
-   */
-  public $methodSettings;
   protected $methodSettingsType = MethodSettings::class;
   protected $methodSettingsDataType = 'array';
   /**
@@ -64,6 +56,10 @@ class Publishing extends \Google\Collection
    * @var string
    */
   public $protoReferenceDocumentationUri;
+  /**
+   * @var string
+   */
+  public $restReferenceDocumentationUri;
 
   /**
    * @param string
@@ -204,6 +200,20 @@ class Publishing extends \Google\Collection
   public function getProtoReferenceDocumentationUri()
   {
     return $this->protoReferenceDocumentationUri;
+  }
+  /**
+   * @param string
+   */
+  public function setRestReferenceDocumentationUri($restReferenceDocumentationUri)
+  {
+    $this->restReferenceDocumentationUri = $restReferenceDocumentationUri;
+  }
+  /**
+   * @return string
+   */
+  public function getRestReferenceDocumentationUri()
+  {
+    return $this->restReferenceDocumentationUri;
   }
 }
 
