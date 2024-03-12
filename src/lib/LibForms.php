@@ -3179,10 +3179,17 @@ class FormFitxaDetall extends FormFitxa
 						
 						$Llistes = $this->ObteLlistes($aTipusCamps[$i]);
 						$Retorn .= $this->CreaLlista($Camp, '', $aLongitudCamps[$i], $Llistes[0], $Llistes[1], $off, $Valor);
-						
-	//public function CreaLlista(string $Nom, string $Titol, int $Longitud, array $Codi, array $Valor, $CodiSeleccionat = NULL, $onChange = ''): string {
-						
 						break;						
+					case 'formula':
+//echo "<hr>";				
+//print_h($aCamps);
+						$Camp = $aCamps[$i];
+//echo trim($Camp);				
+						//$Valor = $this->CalculaFormula($Camp, $aCamps);
+						$Valor = 'value="'.$this->CalculaFormula($Camp, $row).'"';
+						$off = [self::offNO_TITOL, self::offNOMES_LECTURA];
+						$Retorn .= $this->CreaText('', '', $aLongitudCamps[$i], $off, $Valor);
+						break;
 					default:
 						break;
 				}				
@@ -3255,6 +3262,30 @@ class FormFitxaDetall extends FormFitxa
 		array_push($Retorn, $aCodis);
 		array_push($Retorn, $aValors);
 //print_h($Retorn);
+		return $Retorn;
+	}
+
+	function CalculaFormula(string $Camp, array $Registre): string {
+		$Retorn = '';
+//echo "<hr>";				
+//print_h($Registre);
+//echo trim($Camp);	
+		$aFormula = explode('(', $Camp);
+		switch ($aFormula[0]) {
+			case 'percent':
+				// Calcula el % d'un valor respecte a l'altre
+				$Parametres = substr($aFormula[1], 0, -1);
+				$aParametres = explode(';', $Parametres);
+//echo $Parametres;				
+				$Camp1 = $aParametres[0];
+				$Camp2 = $aParametres[1];
+				$Valor1 = $Registre[$Camp1];
+				$Valor2 = $Registre[$Camp2];
+//echo $Valor1.','.$Valor2;				
+				if ($Valor1 != NULL && $Valor2 != NULL)
+					$Retorn = number_format($Valor1/$Valor2*100, 1).' %';
+				break;
+		}
 		return $Retorn;
 	}
 

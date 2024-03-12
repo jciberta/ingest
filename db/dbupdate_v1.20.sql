@@ -2,6 +2,8 @@
  * Actualització de la DB a partir de la versió 1.20
  */
 
+ALTER TABLE UNITAT_PLA_ESTUDI ADD hores_fetes INT;
+
 DELIMITER //
 CREATE TRIGGER AU_CalculaNotaMitjanaCurs AFTER UPDATE ON CURS FOR EACH ROW
 BEGIN

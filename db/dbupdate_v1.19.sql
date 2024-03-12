@@ -152,11 +152,11 @@ BEGIN
 
     BEGIN
         DECLARE cur CURSOR FOR
-		    SELECT DISTINCT(MPE.modul_pla_estudi_id)
-		    FROM NOTES N
-		    LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
-		    LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
-		    WHERE N.matricula_id=IdMatricula;        
+            SELECT DISTINCT(MPE.modul_pla_estudi_id)
+            FROM NOTES N
+            LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
+            LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id)
+            WHERE N.matricula_id=IdMatricula;        
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
         OPEN cur;
         read_loop: LOOP
@@ -164,7 +164,7 @@ BEGIN
             IF done THEN
                 LEAVE read_loop;
             END IF;
-		CALL CalculaNotaMitjanaModul(IdMatricula, _ModulId);
+        CALL CalculaNotaMitjanaModul(IdMatricula, _ModulId);
         END LOOP;
         CLOSE cur;
     END;
@@ -184,8 +184,8 @@ BEGIN
 
     BEGIN
         DECLARE cur CURSOR FOR
-			SELECT M.matricula_id FROM MATRICULA M
-			WHERE curs_id = CursId;
+            SELECT M.matricula_id FROM MATRICULA M
+            WHERE curs_id = CursId;
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
         OPEN cur;
         read_loop: LOOP

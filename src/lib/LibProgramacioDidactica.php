@@ -827,13 +827,28 @@ class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
 		$frm->AfegeixAmagat('data_inici', MySQLAData($this->AnyAcademic->data_inici));
 		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
 		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
-		$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', "
-			nom:Nom:text:400:r, 
-			hores:Hores:int:60:$Permis,
-			nivell:Nivell:int:60:r,
-			data_inici:Data inici:date:0:$Permis,
-			data_final:Data final:date:0:$Permis
-		");
+
+		if ($this->Seguiment) {
+			$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', "
+				nom:Nom:text:400:r, 
+				hores:Hores:int:60:$Permis,
+				hores_fetes:Hores fetes:int:80:w,
+				percent(hores_fetes;hores):Percentatge:formula:90:r,
+				nivell:Nivell:int:60:r,
+				data_inici:Data inici:date:0:$Permis,
+				data_final:Data final:date:0:$Permis
+			");
+		}
+		else {
+			$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', "
+				nom:Nom:text:400:r, 
+				hores:Hores:int:60:w,
+				nivell:Nivell:int:60:r,
+				data_inici:Data inici:date:0:w,
+				data_final:Data final:date:0:w
+			");
+		}
+
 		$Ajuda = "
 			La proposta de dates es fa de manera <b>seqüencial</b> al llarg del curs, 
 			de forma <b>proporcional</b> al número d'hores, 

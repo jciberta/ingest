@@ -210,6 +210,7 @@ CREATE TABLE UNITAT_PLA_ESTUDI
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
+    hores_fetes INT,
     nivell INT CHECK (nivell IN (1, 2)),
     data_inici DATE,
     data_final DATE,
