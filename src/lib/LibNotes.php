@@ -1341,8 +1341,8 @@ class Notes extends Form
 //print('<hr>');
 //print_h($this->Registre2);
 //exit;
-			$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio);
-			$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio);
+			$this->CalculaEstadistiquesAlumne($this->Registre1, $Avaluacio, $this->Registre);
+			$this->CalculaEstadistiquesAlumne($this->Registre2, $Avaluacio, $this->Registre);
 
 			// Actualitzem la nota mitjana a les estadístiques 
 			// (es fa a part ja que Registre1 i Registre2 no contenen totes les notes, només les del nivell)
@@ -1369,8 +1369,9 @@ class Notes extends Form
 	 * 	- UF suspeses
 	 * @param object $Notes Graella de notes.
 	 * @param string $Avaluacio Avaluacio ordinària o extraordinària.
+	 * @param object $Registre Registre de notes de tots els nivells.
 	 */
-	private function CalculaEstadistiquesAlumne(&$Notes, $Avaluacio) {
+	private function CalculaEstadistiquesAlumne(&$Notes, $Avaluacio, $Registre) {
 //print_r($Notes);			
 //exit;
 		foreach ($Notes->Alumne as $i => &$NotesAlumne) {
@@ -1380,6 +1381,7 @@ class Notes extends Form
 			$NotesAlumne['Estadistiques'] = $ea;
 			$TotalNota = 0;
 			$HoresTotals = 0;
+			$RegistreAlumne = $Registre[$NotesAlumne['AlumneId']];
 
 //print_r($i);			
 //print('<HR>');	
@@ -1393,8 +1395,8 @@ class Notes extends Form
 				$Mitjana = 0;
 				$HoresMitjana = 0;
 				$HoresFCT = 0;
-				for($j = 0; $j < count($Notes->UF[$i]); $j++) {
-					$row = $Notes->UF[$i][$j];
+				for($j = 0; $j < count($RegistreAlumne->UF); $j++) {
+					$row = $RegistreAlumne->UF[$j];
 //echo $row['CodiMP']." ".$row['NomMP']."<br>";
 //if ($row['AlumneId']==1022)	{
 //print_r($row);			
