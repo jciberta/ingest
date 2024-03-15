@@ -532,7 +532,180 @@ class Expedient extends Form
 		// Clean any content of the output buffer
 		ob_end_clean();
 		$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
+		
 	}
+
+	/**
+	 * Genera l'expedient en PDF per a un alumne.
+	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
+	 */
+	public function GeneraPDFArxiu($MatriculaId) {
+		$this->Id = $MatriculaId;
+		$this->Carrega();
+		$this->CalculaEstadistiques();
+
+		// create new PDF document
+		$pdf = new QualificacionsPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+		// set document information
+		$pdf->SetTitle('Expedient');
+		$pdf->SetSubject('Expedient');
+
+		$SQL = self::SQL($MatriculaId);
+//print_r($SQL);
+
+		$ResultSet = $this->Connexio->query($SQL);
+
+		// Carreguem les notes dels MP
+		$this->CarregaNotesMP($MatriculaId);
+
+		// Carreguem les notes de les UF
+		// Posem les dades del ResultSet en una estructura de dades pròpia
+		$Qualificacions = [];
+		$i = -1;
+		$j = -1;
+		if ($ResultSet->num_rows > 0) {
+			$row = $ResultSet->fetch_assoc();
+			$NomAlumne = $row["NomAlumne"];
+			$Cognom1Alumne = $row["Cognom1Alumne"];
+			$Cognom2Alumne = $row["Cognom2Alumne"];
+			$Llei = $row["llei"];
+			$pdf->AnyAcademic = $row["AnyAcademic"];
+			$pdf->NomComplet = utf8_encodeX(trim($Cognom1Alumne . ' ' . $Cognom2Alumne) . ', ' . $NomAlumne);
+			$pdf->DNI = $row["DNI"];
+			$pdf->CicleFormatiu = $row["NomCF"];
+			$pdf->Grup = $row["Grup"];
+			$pdf->Avaluacio = $this->TextAvaluacio($row["avaluacio"], $row["trimestre"]);
+			$pdf->Llei = $Llei;
+			$pdf->AddPage(); // Crida al mètode Header
+			$ModulAnterior = '';
+			while($row) {
+				if ($row["CodiMP"] != $ModulAnterior) {
+					$i++;
+					$Qualificacions[$i] = new stdClass();
+					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
+					$Qualificacions[$i]->Hores = $row["HoresMP"];
+					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
+						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_pla_estudi_id"]]);
+					else
+						$Qualificacions[$i]->Qualf = '';
+					$Qualificacions[$i]->Conv = 'Ord.';
+					$Qualificacions[$i]->UF = [];
+					$j = -1;
+				}
+				$ModulAnterior = $row["CodiMP"];
+				$j++;
+				$Qualificacions[$i]->UF[$j] = new stdClass();
+				$Qualificacions[$i]->UF[$j]->Nom = utf8_encodeX($row["NomUF"]);
+				$Qualificacions[$i]->UF[$j]->Hores = utf8_encodeX($row["HoresUF"]);
+				if ($row["Convocatoria"] == 0)
+					$Nota = 'A) '.NumeroANotaText(UltimaNota($row));
+				else {
+					$Nota = NumeroANotaText($row["nota".$row["Convocatoria"]]);
+					if ($row["orientativa"])
+						$Nota .= ' *';
+				}
+				$Qualificacions[$i]->UF[$j]->Qualf = $Nota;
+				$Qualificacions[$i]->UF[$j]->Conv = Notes::UltimaConvocatoria($row);
+				$row = $ResultSet->fetch_assoc();
+			}
+		}
+		$ResultSet->close();
+
+		// Realitzem el layout
+		if ($Llei == 'LO') {
+			// LOE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:50%">';
+
+				// Mòdul professional
+				$HTML .= "<TABLE>";
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->Nom."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Hores."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Qualf."</TD>";
+				$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->Conv."</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= '<TD style="width:50%">';
+
+				// Unitats formatives
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);
+			}
+		} else {
+			// LOGSE
+			for($i = 0; $i < count($Qualificacions); $i++) {
+				$HTML = '<TABLE>';
+				$HTML .= "<TR>";
+				$HTML .= '<TD style="width:100%">';
+
+				// Crèdits
+				$HTML .= "<TABLE>";
+				for($j = 0; $j < count($Qualificacions[$i]->UF); $j++) {
+					$HTML .= "<TR>";
+					$HTML .= '<TD style="width:55%">'.$Qualificacions[$i]->UF[$j]->Nom."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Hores."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Qualf."</TD>";
+					$HTML .= '<TD style="width:15%;text-align:center">'.$Qualificacions[$i]->UF[$j]->Conv."</TD>";
+					$HTML .= "</TR>";
+				}
+				$HTML .= "</TABLE>";
+
+				$HTML .= "</TD>";
+				$HTML .= "</TR>";
+				$HTML .= "</TABLE>";
+				$HTML .= "<HR>";
+				$pdf->writeHTML($HTML, True);		
+			}
+		}
+
+		if ($this->NumeroUFAprovades == $this->NumeroUFCicle) {
+			$pdf->Titol2("Promoció");
+			$pdf->EscriuLinia("La nota mitjana del cicle és: ".number_format($this->Mitjana, 2));
+		}
+
+		$pdf->Titol2("Comentaris de l'avaluació");
+		$pdf->EscriuLinia("Sense comentaris");
+
+		$pdf->Titol2("Llegenda");
+		$pdf->EscriuLinia("L'anotació A) identifica les qualificacions corresponents a avaluacions anteriors");
+		if ($Llei == 'LO')
+			$pdf->EscriuLinia("L'anotació * identifica les qualificacions orientatives");
+
+		// Close and output PDF document
+		$Nom = Normalitza(trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne));
+		// Clean any content of the output buffer
+		//ob_end_clean();
+		//$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
+		$pdfPath = 'C:\xampp\htdocs\ingest\ingest\src\expedients\\'.$Nom.'.pdf'; // Ruta donde se guardará el archivo PDF
+
+		// Guardar el PDF en el sistema de archivos
+		$pdf->Output($pdfPath, 'F');
+	
+		return $pdfPath; // Devolver la ruta del archivo guardado
+		
+	}
+
+	
 
 	/**
 	 * Retorna l'ordre per executar el PHP des de la línia d'ordres depenent del sistema operatiu.
