@@ -41,6 +41,10 @@ class Commitment extends \Google\Collection
    */
   public $endTimestamp;
   /**
+   * @var string[]
+   */
+  public $existingReservations;
+  /**
    * @var string
    */
   public $id;
@@ -48,10 +52,6 @@ class Commitment extends \Google\Collection
    * @var string
    */
   public $kind;
-  /**
-   * @var LicenseResourceCommitment
-   */
-  public $licenseResource;
   protected $licenseResourceType = LicenseResourceCommitment::class;
   protected $licenseResourceDataType = '';
   /**
@@ -70,16 +70,8 @@ class Commitment extends \Google\Collection
    * @var string
    */
   public $region;
-  /**
-   * @var Reservation[]
-   */
-  public $reservations;
   protected $reservationsType = Reservation::class;
   protected $reservationsDataType = 'array';
-  /**
-   * @var ResourceCommitment[]
-   */
-  public $resources;
   protected $resourcesType = ResourceCommitment::class;
   protected $resourcesDataType = 'array';
   /**
@@ -176,6 +168,20 @@ class Commitment extends \Google\Collection
   public function getEndTimestamp()
   {
     return $this->endTimestamp;
+  }
+  /**
+   * @param string[]
+   */
+  public function setExistingReservations($existingReservations)
+  {
+    $this->existingReservations = $existingReservations;
+  }
+  /**
+   * @return string[]
+   */
+  public function getExistingReservations()
+  {
+    return $this->existingReservations;
   }
   /**
    * @param string

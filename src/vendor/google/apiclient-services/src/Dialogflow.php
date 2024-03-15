@@ -346,6 +346,16 @@ class Dialogflow extends \Google\Service
                   'type' => 'boolean',
                 ],
               ],
+            ],'export' => [
+              'path' => 'v3/{+parent}/entityTypes:export',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'get' => [
               'path' => 'v3/{+name}',
               'httpMethod' => 'GET',
@@ -358,6 +368,16 @@ class Dialogflow extends \Google\Service
                 'languageCode' => [
                   'location' => 'query',
                   'type' => 'string',
+                ],
+              ],
+            ],'import' => [
+              'path' => 'v3/{+parent}/entityTypes:import',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
                 ],
               ],
             ],'list' => [
@@ -700,6 +720,16 @@ class Dialogflow extends \Google\Service
               ],
             ],'matchIntent' => [
               'path' => 'v3/{+session}:matchIntent',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'session' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'serverStreamingDetectIntent' => [
+              'path' => 'v3/{+session}:serverStreamingDetectIntent',
               'httpMethod' => 'POST',
               'parameters' => [
                 'session' => [
@@ -1438,6 +1468,16 @@ class Dialogflow extends \Google\Service
               ],
             ],'matchIntent' => [
               'path' => 'v3/{+session}:matchIntent',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'session' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'serverStreamingDetectIntent' => [
+              'path' => 'v3/{+session}:serverStreamingDetectIntent',
               'httpMethod' => 'POST',
               'parameters' => [
                 'session' => [

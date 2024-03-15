@@ -20,26 +20,18 @@ namespace Google\Service\Integrations;
 class EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntry extends \Google\Collection
 {
   protected $collection_key = 'children';
-  /**
-   * @var EnterpriseCrmEventbusProtoAttributes
-   */
-  public $attributes;
   protected $attributesType = EnterpriseCrmEventbusProtoAttributes::class;
   protected $attributesDataType = '';
-  /**
-   * @var EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntry[]
-   */
-  public $children;
   protected $childrenType = EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntry::class;
   protected $childrenDataType = 'array';
+  /**
+   * @var bool
+   */
+  public $containsLargeData;
   /**
    * @var string
    */
   public $dataType;
-  /**
-   * @var EnterpriseCrmFrontendsEventbusProtoParameterValueType
-   */
-  public $defaultValue;
   protected $defaultValueType = EnterpriseCrmFrontendsEventbusProtoParameterValueType::class;
   protected $defaultValueDataType = '';
   /**
@@ -66,10 +58,6 @@ class EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntry extends \Google\
    * @var string
    */
   public $name;
-  /**
-   * @var EnterpriseCrmEventbusProtoNodeIdentifier
-   */
-  public $producedBy;
   protected $producedByType = EnterpriseCrmEventbusProtoNodeIdentifier::class;
   protected $producedByDataType = '';
   /**
@@ -112,6 +100,20 @@ class EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntry extends \Google\
   public function getChildren()
   {
     return $this->children;
+  }
+  /**
+   * @param bool
+   */
+  public function setContainsLargeData($containsLargeData)
+  {
+    $this->containsLargeData = $containsLargeData;
+  }
+  /**
+   * @return bool
+   */
+  public function getContainsLargeData()
+  {
+    return $this->containsLargeData;
   }
   /**
    * @param string

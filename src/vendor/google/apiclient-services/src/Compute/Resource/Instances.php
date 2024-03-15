@@ -85,6 +85,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function addAccessConfig($project, $zone, $instance, $networkInterface, AccessConfig $postBody, $optParams = [])
   {
@@ -114,6 +115,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function addResourcePolicies($project, $zone, $instance, InstancesAddResourcePoliciesRequest $postBody, $optParams = [])
   {
@@ -124,8 +126,9 @@ class Instances extends \Google\Service\Resource
   /**
    * Retrieves an aggregated list of all of the instances in your project across
    * all regions and zones. The performance of this method degrades when a filter
-   * is specified on a project that has a very large number of instances.
-   * (instances.aggregatedList)
+   * is specified on a project that has a very large number of instances. To
+   * prevent failure, Google recommends that you set the `returnPartialSuccess`
+   * parameter to `true`. (instances.aggregatedList)
    *
    * @param string $project Project ID for this request.
    * @param array $optParams Optional parameters.
@@ -187,9 +190,14 @@ class Instances extends \Google\Service\Resource
    * of results.
    * @opt_param bool returnPartialSuccess Opt-in for partial success behavior
    * which provides partial results in case of failure. The default value is
-   * false.
-   * @opt_param string serviceProjectNumber
+   * false. For example, when partial success behavior is enabled, aggregatedList
+   * for a single zone scope either returns all resources in the zone or no
+   * resources, with an error code.
+   * @opt_param string serviceProjectNumber The Shared VPC service project id or
+   * service project number for which aggregated list request is invoked for
+   * subnetworks list-usable api.
    * @return InstanceAggregatedList
+   * @throws \Google\Service\Exception
    */
   public function aggregatedList($project, $optParams = [])
   {
@@ -223,6 +231,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function attachDisk($project, $zone, $instance, AttachedDisk $postBody, $optParams = [])
   {
@@ -251,6 +260,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function bulkInsert($project, $zone, BulkInsertInstanceResource $postBody, $optParams = [])
   {
@@ -278,6 +288,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function delete($project, $zone, $instance, $optParams = [])
   {
@@ -307,6 +318,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function deleteAccessConfig($project, $zone, $instance, $accessConfig, $networkInterface, $optParams = [])
   {
@@ -335,6 +347,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function detachDisk($project, $zone, $instance, $deviceName, $optParams = [])
   {
@@ -350,6 +363,7 @@ class Instances extends \Google\Service\Resource
    * @param string $instance Name of the instance resource to return.
    * @param array $optParams Optional parameters.
    * @return Instance
+   * @throws \Google\Service\Exception
    */
   public function get($project, $zone, $instance, $optParams = [])
   {
@@ -368,6 +382,7 @@ class Instances extends \Google\Service\Resource
    * effective firewalls.
    * @param array $optParams Optional parameters.
    * @return InstancesGetEffectiveFirewallsResponse
+   * @throws \Google\Service\Exception
    */
   public function getEffectiveFirewalls($project, $zone, $instance, $networkInterface, $optParams = [])
   {
@@ -388,6 +403,7 @@ class Instances extends \Google\Service\Resource
    * @opt_param string variableKey Specifies the key for the guest attributes
    * entry.
    * @return GuestAttributes
+   * @throws \Google\Service\Exception
    */
   public function getGuestAttributes($project, $zone, $instance, $optParams = [])
   {
@@ -406,6 +422,7 @@ class Instances extends \Google\Service\Resource
    *
    * @opt_param int optionsRequestedPolicyVersion Requested IAM Policy version.
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($project, $zone, $resource, $optParams = [])
   {
@@ -421,6 +438,7 @@ class Instances extends \Google\Service\Resource
    * @param string $instance Name of the instance scoping this request.
    * @param array $optParams Optional parameters.
    * @return Screenshot
+   * @throws \Google\Service\Exception
    */
   public function getScreenshot($project, $zone, $instance, $optParams = [])
   {
@@ -451,6 +469,7 @@ class Instances extends \Google\Service\Resource
    * serial port. For example, -3 is interpreted as the most recent 3 bytes
    * written to the serial console.
    * @return SerialPortOutput
+   * @throws \Google\Service\Exception
    */
   public function getSerialPortOutput($project, $zone, $instance, $optParams = [])
   {
@@ -467,6 +486,7 @@ class Instances extends \Google\Service\Resource
    * @param string $instance Name or id of the instance scoping this request.
    * @param array $optParams Optional parameters.
    * @return ShieldedInstanceIdentity
+   * @throws \Google\Service\Exception
    */
   public function getShieldedInstanceIdentity($project, $zone, $instance, $optParams = [])
   {
@@ -508,6 +528,7 @@ class Instances extends \Google\Service\Resource
    * projects/project/global/global/machineImages/machineImage -
    * global/machineImages/machineImage
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function insert($project, $zone, Instance $postBody, $optParams = [])
   {
@@ -573,8 +594,11 @@ class Instances extends \Google\Service\Resource
    * of results.
    * @opt_param bool returnPartialSuccess Opt-in for partial success behavior
    * which provides partial results in case of failure. The default value is
-   * false.
+   * false. For example, when partial success behavior is enabled, aggregatedList
+   * for a single zone scope either returns all resources in the zone or no
+   * resources, with an error code.
    * @return InstanceList
+   * @throws \Google\Service\Exception
    */
   public function listInstances($project, $zone, $optParams = [])
   {
@@ -645,14 +669,44 @@ class Instances extends \Google\Service\Resource
    * of results.
    * @opt_param bool returnPartialSuccess Opt-in for partial success behavior
    * which provides partial results in case of failure. The default value is
-   * false.
+   * false. For example, when partial success behavior is enabled, aggregatedList
+   * for a single zone scope either returns all resources in the zone or no
+   * resources, with an error code.
    * @return InstanceListReferrers
+   * @throws \Google\Service\Exception
    */
   public function listReferrers($project, $zone, $instance, $optParams = [])
   {
     $params = ['project' => $project, 'zone' => $zone, 'instance' => $instance];
     $params = array_merge($params, $optParams);
     return $this->call('listReferrers', [$params], InstanceListReferrers::class);
+  }
+  /**
+   * Perform a manual maintenance on the instance. (instances.performMaintenance)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $instance Name of the instance scoping this request.
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string requestId An optional request ID to identify requests.
+   * Specify a unique request ID so that if you must retry your request, the
+   * server will know to ignore the request if it has already been completed. For
+   * example, consider a situation where you make an initial request and the
+   * request times out. If you make the request again with the same request ID,
+   * the server can check if original operation with the same request ID was
+   * received, and if so, will ignore the second request. This prevents clients
+   * from accidentally creating duplicate commitments. The request ID must be a
+   * valid UUID with the exception that zero UUID is not supported (
+   * 00000000-0000-0000-0000-000000000000).
+   * @return Operation
+   * @throws \Google\Service\Exception
+   */
+  public function performMaintenance($project, $zone, $instance, $optParams = [])
+  {
+    $params = ['project' => $project, 'zone' => $zone, 'instance' => $instance];
+    $params = array_merge($params, $optParams);
+    return $this->call('performMaintenance', [$params], Operation::class);
   }
   /**
    * Removes resource policies from an instance.
@@ -675,6 +729,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function removeResourcePolicies($project, $zone, $instance, InstancesRemoveResourcePoliciesRequest $postBody, $optParams = [])
   {
@@ -703,6 +758,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function reset($project, $zone, $instance, $optParams = [])
   {
@@ -730,6 +786,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function resume($project, $zone, $instance, $optParams = [])
   {
@@ -745,6 +802,7 @@ class Instances extends \Google\Service\Resource
    * @param string $zone The name of the zone for this request.
    * @param string $instance Name of the instance scoping this request.
    * @param array $optParams Optional parameters.
+   * @throws \Google\Service\Exception
    */
   public function sendDiagnosticInterrupt($project, $zone, $instance, $optParams = [])
   {
@@ -773,6 +831,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setDeletionProtection($project, $zone, $resource, $optParams = [])
   {
@@ -804,6 +863,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setDiskAutoDelete($project, $zone, $instance, $autoDelete, $deviceName, $optParams = [])
   {
@@ -821,6 +881,7 @@ class Instances extends \Google\Service\Resource
    * @param ZoneSetPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($project, $zone, $resource, ZoneSetPolicyRequest $postBody, $optParams = [])
   {
@@ -849,6 +910,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setLabels($project, $zone, $instance, InstancesSetLabelsRequest $postBody, $optParams = [])
   {
@@ -877,6 +939,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setMachineResources($project, $zone, $instance, InstancesSetMachineResourcesRequest $postBody, $optParams = [])
   {
@@ -905,6 +968,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setMachineType($project, $zone, $instance, InstancesSetMachineTypeRequest $postBody, $optParams = [])
   {
@@ -933,6 +997,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setMetadata($project, $zone, $instance, Metadata $postBody, $optParams = [])
   {
@@ -962,6 +1027,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setMinCpuPlatform($project, $zone, $instance, InstancesSetMinCpuPlatformRequest $postBody, $optParams = [])
   {
@@ -989,6 +1055,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setName($project, $zone, $instance, InstancesSetNameRequest $postBody, $optParams = [])
   {
@@ -1020,6 +1087,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setScheduling($project, $zone, $instance, Scheduling $postBody, $optParams = [])
   {
@@ -1050,6 +1118,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setSecurityPolicy($project, $zone, $instance, InstancesSetSecurityPolicyRequest $postBody, $optParams = [])
   {
@@ -1079,6 +1148,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setServiceAccount($project, $zone, $instance, InstancesSetServiceAccountRequest $postBody, $optParams = [])
   {
@@ -1109,6 +1179,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setShieldedInstanceIntegrityPolicy($project, $zone, $instance, ShieldedInstanceIntegrityPolicy $postBody, $optParams = [])
   {
@@ -1137,6 +1208,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function setTags($project, $zone, $instance, Tags $postBody, $optParams = [])
   {
@@ -1163,7 +1235,10 @@ class Instances extends \Google\Service\Resource
    * from accidentally creating duplicate commitments. The request ID must be a
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
+   * @opt_param bool withExtendedNotifications Determines whether the customers
+   * receive notifications before migration. Only applicable to SF vms.
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function simulateMaintenanceEvent($project, $zone, $instance, $optParams = [])
   {
@@ -1191,6 +1266,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function start($project, $zone, $instance, $optParams = [])
   {
@@ -1219,6 +1295,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function startWithEncryptionKey($project, $zone, $instance, InstancesStartWithEncryptionKeyRequest $postBody, $optParams = [])
   {
@@ -1254,6 +1331,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function stop($project, $zone, $instance, $optParams = [])
   {
@@ -1290,6 +1368,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function suspend($project, $zone, $instance, $optParams = [])
   {
@@ -1307,6 +1386,7 @@ class Instances extends \Google\Service\Resource
    * @param TestPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestPermissionsResponse
+   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($project, $zone, $resource, TestPermissionsRequest $postBody, $optParams = [])
   {
@@ -1346,6 +1426,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function update($project, $zone, $instance, Instance $postBody, $optParams = [])
   {
@@ -1378,6 +1459,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function updateAccessConfig($project, $zone, $instance, $networkInterface, AccessConfig $postBody, $optParams = [])
   {
@@ -1407,6 +1489,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function updateDisplayDevice($project, $zone, $instance, DisplayDevice $postBody, $optParams = [])
   {
@@ -1440,6 +1523,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function updateNetworkInterface($project, $zone, $instance, $networkInterface, NetworkInterface $postBody, $optParams = [])
   {
@@ -1470,6 +1554,7 @@ class Instances extends \Google\Service\Resource
    * valid UUID with the exception that zero UUID is not supported (
    * 00000000-0000-0000-0000-000000000000).
    * @return Operation
+   * @throws \Google\Service\Exception
    */
   public function updateShieldedInstanceConfig($project, $zone, $instance, ShieldedInstanceConfig $postBody, $optParams = [])
   {

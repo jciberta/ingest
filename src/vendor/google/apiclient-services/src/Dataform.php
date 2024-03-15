@@ -399,6 +399,10 @@ class Dataform extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'filter' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
                 'pageSize' => [
                   'location' => 'query',
                   'type' => 'integer',
@@ -900,6 +904,10 @@ class Dataform extends \Google\Service
                   'required' => true,
                 ],
                 'path' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'revision' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

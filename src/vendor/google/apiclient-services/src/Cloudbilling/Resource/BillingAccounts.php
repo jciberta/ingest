@@ -53,10 +53,10 @@ class BillingAccounts extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string parent Optional. The parent to create a billing account
-   * from. Format: - organizations/{organization_id} eg organizations/12345678 -
-   * billingAccounts/{billing_account_id} eg
+   * from. Format: - `billingAccounts/{billing_account_id}`, for example,
    * `billingAccounts/012345-567890-ABCDEF`
    * @return BillingAccount
+   * @throws \Google\Service\Exception
    */
   public function create(BillingAccount $postBody, $optParams = [])
   {
@@ -74,6 +74,7 @@ class BillingAccounts extends \Google\Service\Resource
    * retrieve. For example, `billingAccounts/012345-567890-ABCDEF`.
    * @param array $optParams Optional parameters.
    * @return BillingAccount
+   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -106,6 +107,7 @@ class BillingAccounts extends \Google\Service\Resource
    * documentation](https://cloud.google.com/iam/help/conditions/resource-
    * policies).
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($resource, $optParams = [])
   {
@@ -123,8 +125,8 @@ class BillingAccounts extends \Google\Service\Resource
    * @opt_param string filter Options for how to filter the returned billing
    * accounts. This only supports filtering for
    * [subaccounts](https://cloud.google.com/billing/docs/concepts) under a single
-   * provided parent billing account. (e.g.
-   * "master_billing_account=billingAccounts/012345-678901-ABCDEF"). Boolean
+   * provided parent billing account. (for example,
+   * `master_billing_account=billingAccounts/012345-678901-ABCDEF`). Boolean
    * algebra and other fields are not currently supported.
    * @opt_param int pageSize Requested page size. The maximum page size is 100;
    * this is also the default.
@@ -133,10 +135,11 @@ class BillingAccounts extends \Google\Service\Resource
    * `ListBillingAccounts` call. If unspecified, the first page of results is
    * returned.
    * @opt_param string parent Optional. The parent resource to list billing
-   * accounts from. Format: - organizations/{organization_id} eg
-   * organizations/12345678 - billingAccounts/{billing_account_id} eg
-   * `billingAccounts/012345-567890-ABCDEF`
+   * accounts from. Format: - `organizations/{organization_id}`, for example,
+   * `organizations/12345678` - `billingAccounts/{billing_account_id}`, for
+   * example, `billingAccounts/012345-567890-ABCDEF`
    * @return ListBillingAccountsResponse
+   * @throws \Google\Service\Exception
    */
   public function listBillingAccounts($optParams = [])
   {
@@ -155,6 +158,7 @@ class BillingAccounts extends \Google\Service\Resource
    * @param MoveBillingAccountRequest $postBody
    * @param array $optParams Optional parameters.
    * @return BillingAccount
+   * @throws \Google\Service\Exception
    */
   public function move($name, MoveBillingAccountRequest $postBody, $optParams = [])
   {
@@ -177,6 +181,7 @@ class BillingAccounts extends \Google\Service\Resource
    * @opt_param string updateMask The update mask applied to the resource. Only
    * "display_name" is currently supported.
    * @return BillingAccount
+   * @throws \Google\Service\Exception
    */
   public function patch($name, BillingAccount $postBody, $optParams = [])
   {
@@ -198,6 +203,7 @@ class BillingAccounts extends \Google\Service\Resource
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
+   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -218,6 +224,7 @@ class BillingAccounts extends \Google\Service\Resource
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
+   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
   {

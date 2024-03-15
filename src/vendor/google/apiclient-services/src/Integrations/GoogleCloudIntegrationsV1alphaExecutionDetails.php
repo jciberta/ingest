@@ -20,16 +20,12 @@ namespace Google\Service\Integrations;
 class GoogleCloudIntegrationsV1alphaExecutionDetails extends \Google\Collection
 {
   protected $collection_key = 'executionSnapshots';
-  /**
-   * @var GoogleCloudIntegrationsV1alphaAttemptStats[]
-   */
-  public $attemptStats;
   protected $attemptStatsType = GoogleCloudIntegrationsV1alphaAttemptStats::class;
   protected $attemptStatsDataType = 'array';
   /**
-   * @var GoogleCloudIntegrationsV1alphaExecutionSnapshot[]
+   * @var string
    */
-  public $executionSnapshots;
+  public $eventExecutionSnapshotsSize;
   protected $executionSnapshotsType = GoogleCloudIntegrationsV1alphaExecutionSnapshot::class;
   protected $executionSnapshotsDataType = 'array';
   /**
@@ -50,6 +46,20 @@ class GoogleCloudIntegrationsV1alphaExecutionDetails extends \Google\Collection
   public function getAttemptStats()
   {
     return $this->attemptStats;
+  }
+  /**
+   * @param string
+   */
+  public function setEventExecutionSnapshotsSize($eventExecutionSnapshotsSize)
+  {
+    $this->eventExecutionSnapshotsSize = $eventExecutionSnapshotsSize;
+  }
+  /**
+   * @return string
+   */
+  public function getEventExecutionSnapshotsSize()
+  {
+    return $this->eventExecutionSnapshotsSize;
   }
   /**
    * @param GoogleCloudIntegrationsV1alphaExecutionSnapshot[]

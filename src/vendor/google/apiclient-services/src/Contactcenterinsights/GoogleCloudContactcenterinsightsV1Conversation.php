@@ -24,26 +24,14 @@ class GoogleCloudContactcenterinsightsV1Conversation extends \Google\Collection
    * @var string
    */
   public $agentId;
-  /**
-   * @var GoogleCloudContactcenterinsightsV1ConversationCallMetadata
-   */
-  public $callMetadata;
   protected $callMetadataType = GoogleCloudContactcenterinsightsV1ConversationCallMetadata::class;
   protected $callMetadataDataType = '';
   /**
    * @var string
    */
   public $createTime;
-  /**
-   * @var GoogleCloudContactcenterinsightsV1ConversationDataSource
-   */
-  public $dataSource;
   protected $dataSourceType = GoogleCloudContactcenterinsightsV1ConversationDataSource::class;
   protected $dataSourceDataType = '';
-  /**
-   * @var GoogleCloudContactcenterinsightsV1DialogflowIntent[]
-   */
-  public $dialogflowIntents;
   protected $dialogflowIntentsType = GoogleCloudContactcenterinsightsV1DialogflowIntent::class;
   protected $dialogflowIntentsDataType = 'map';
   /**
@@ -62,16 +50,8 @@ class GoogleCloudContactcenterinsightsV1Conversation extends \Google\Collection
    * @var string
    */
   public $languageCode;
-  /**
-   * @var GoogleCloudContactcenterinsightsV1Analysis
-   */
-  public $latestAnalysis;
   protected $latestAnalysisType = GoogleCloudContactcenterinsightsV1Analysis::class;
   protected $latestAnalysisDataType = '';
-  /**
-   * @var GoogleCloudContactcenterinsightsV1ConversationSummarizationSuggestionData
-   */
-  public $latestSummary;
   protected $latestSummaryType = GoogleCloudContactcenterinsightsV1ConversationSummarizationSuggestionData::class;
   protected $latestSummaryDataType = '';
   /**
@@ -86,20 +66,14 @@ class GoogleCloudContactcenterinsightsV1Conversation extends \Google\Collection
    * @var string
    */
   public $obfuscatedUserId;
-  /**
-   * @var GoogleCloudContactcenterinsightsV1RuntimeAnnotation[]
-   */
-  public $runtimeAnnotations;
+  protected $qualityMetadataType = GoogleCloudContactcenterinsightsV1ConversationQualityMetadata::class;
+  protected $qualityMetadataDataType = '';
   protected $runtimeAnnotationsType = GoogleCloudContactcenterinsightsV1RuntimeAnnotation::class;
   protected $runtimeAnnotationsDataType = 'array';
   /**
    * @var string
    */
   public $startTime;
-  /**
-   * @var GoogleCloudContactcenterinsightsV1ConversationTranscript
-   */
-  public $transcript;
   protected $transcriptType = GoogleCloudContactcenterinsightsV1ConversationTranscript::class;
   protected $transcriptDataType = '';
   /**
@@ -310,6 +284,20 @@ class GoogleCloudContactcenterinsightsV1Conversation extends \Google\Collection
   public function getObfuscatedUserId()
   {
     return $this->obfuscatedUserId;
+  }
+  /**
+   * @param GoogleCloudContactcenterinsightsV1ConversationQualityMetadata
+   */
+  public function setQualityMetadata(GoogleCloudContactcenterinsightsV1ConversationQualityMetadata $qualityMetadata)
+  {
+    $this->qualityMetadata = $qualityMetadata;
+  }
+  /**
+   * @return GoogleCloudContactcenterinsightsV1ConversationQualityMetadata
+   */
+  public function getQualityMetadata()
+  {
+    return $this->qualityMetadata;
   }
   /**
    * @param GoogleCloudContactcenterinsightsV1RuntimeAnnotation[]

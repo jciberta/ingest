@@ -21,18 +21,82 @@ class MigrateBasePlanPricesRequest extends \Google\Collection
 {
   protected $collection_key = 'regionalPriceMigrations';
   /**
-   * @var RegionalPriceMigrationConfig[]
+   * @var string
    */
-  public $regionalPriceMigrations;
+  public $basePlanId;
+  /**
+   * @var string
+   */
+  public $latencyTolerance;
+  /**
+   * @var string
+   */
+  public $packageName;
+  /**
+   * @var string
+   */
+  public $productId;
   protected $regionalPriceMigrationsType = RegionalPriceMigrationConfig::class;
   protected $regionalPriceMigrationsDataType = 'array';
-  /**
-   * @var RegionsVersion
-   */
-  public $regionsVersion;
   protected $regionsVersionType = RegionsVersion::class;
   protected $regionsVersionDataType = '';
 
+  /**
+   * @param string
+   */
+  public function setBasePlanId($basePlanId)
+  {
+    $this->basePlanId = $basePlanId;
+  }
+  /**
+   * @return string
+   */
+  public function getBasePlanId()
+  {
+    return $this->basePlanId;
+  }
+  /**
+   * @param string
+   */
+  public function setLatencyTolerance($latencyTolerance)
+  {
+    $this->latencyTolerance = $latencyTolerance;
+  }
+  /**
+   * @return string
+   */
+  public function getLatencyTolerance()
+  {
+    return $this->latencyTolerance;
+  }
+  /**
+   * @param string
+   */
+  public function setPackageName($packageName)
+  {
+    $this->packageName = $packageName;
+  }
+  /**
+   * @return string
+   */
+  public function getPackageName()
+  {
+    return $this->packageName;
+  }
+  /**
+   * @param string
+   */
+  public function setProductId($productId)
+  {
+    $this->productId = $productId;
+  }
+  /**
+   * @return string
+   */
+  public function getProductId()
+  {
+    return $this->productId;
+  }
   /**
    * @param RegionalPriceMigrationConfig[]
    */

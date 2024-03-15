@@ -19,12 +19,10 @@ namespace Google\Service\ChromePolicy;
 
 class GoogleChromePolicyVersionsV1FieldConstraints extends \Google\Model
 {
-  /**
-   * @var GoogleChromePolicyVersionsV1NumericRangeConstraint
-   */
-  public $numericRangeConstraint;
   protected $numericRangeConstraintType = GoogleChromePolicyVersionsV1NumericRangeConstraint::class;
   protected $numericRangeConstraintDataType = '';
+  protected $uploadedFileConstraintsType = GoogleChromePolicyVersionsV1UploadedFileConstraints::class;
+  protected $uploadedFileConstraintsDataType = '';
 
   /**
    * @param GoogleChromePolicyVersionsV1NumericRangeConstraint
@@ -39,6 +37,20 @@ class GoogleChromePolicyVersionsV1FieldConstraints extends \Google\Model
   public function getNumericRangeConstraint()
   {
     return $this->numericRangeConstraint;
+  }
+  /**
+   * @param GoogleChromePolicyVersionsV1UploadedFileConstraints
+   */
+  public function setUploadedFileConstraints(GoogleChromePolicyVersionsV1UploadedFileConstraints $uploadedFileConstraints)
+  {
+    $this->uploadedFileConstraints = $uploadedFileConstraints;
+  }
+  /**
+   * @return GoogleChromePolicyVersionsV1UploadedFileConstraints
+   */
+  public function getUploadedFileConstraints()
+  {
+    return $this->uploadedFileConstraints;
   }
 }
 

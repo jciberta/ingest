@@ -55,6 +55,7 @@ class SpacesMembers extends \Google\Service\Resource
    * @param Membership $postBody
    * @param array $optParams Optional parameters.
    * @return Membership
+   * @throws \Google\Service\Exception
    */
   public function create($parent, Membership $postBody, $optParams = [])
   {
@@ -80,6 +81,7 @@ class SpacesMembers extends \Google\Service\Resource
    * `spaces/{space}/members/{member}` or `spaces/{space}/members/app`.
    * @param array $optParams Optional parameters.
    * @return Membership
+   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -108,6 +110,7 @@ class SpacesMembers extends \Google\Service\Resource
    * email of the Google Chat user.
    * @param array $optParams Optional parameters.
    * @return Membership
+   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -151,8 +154,8 @@ class SpacesMembers extends \Google\Service\Resource
    * rejected by the server with an `INVALID_ARGUMENT` error.
    * @opt_param int pageSize Optional. The maximum number of memberships to
    * return. The service might return fewer than this value. If unspecified, at
-   * most 100 memberships are returned. The maximum value is 1,000. If you use a
-   * value more than 1,000, it's automatically changed to 1,000. Negative values
+   * most 100 memberships are returned. The maximum value is 1000. If you use a
+   * value more than 1000, it's automatically changed to 1000. Negative values
    * return an `INVALID_ARGUMENT` error.
    * @opt_param string pageToken Optional. A page token, received from a previous
    * call to list memberships. Provide this parameter to retrieve the subsequent
@@ -169,6 +172,7 @@ class SpacesMembers extends \Google\Service\Resource
    * aren't returned. Currently requires [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users).
    * @return ListMembershipsResponse
+   * @throws \Google\Service\Exception
    */
   public function listSpacesMembers($parent, $optParams = [])
   {
