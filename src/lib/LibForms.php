@@ -1069,11 +1069,11 @@ class FormRecerca extends Form
 			}
 			$sRetorn .= ' ORDER BY '.$this->EliminaTipusPredefinit($this->Ordre);
 		}
-//print "<hr>SQL<br>$sRetorn<hr>";	
 
 		if ($this->MaximRegistres != -1)
 			$sRetorn .= ' LIMIT '.$this->MaximRegistres;
 		
+//print "<hr>SQL<br>$sRetorn<hr>";	
 		return $sRetorn;
 	}
 
@@ -1393,7 +1393,7 @@ class FormRecerca extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		// Inicialització de l'ajuda
