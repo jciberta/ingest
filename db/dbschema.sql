@@ -1512,7 +1512,7 @@ BEGIN
     INTO Percentatge
     FROM NOTES N
     LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
-    WHERE N.matricula_id=MatriculaId;
+    WHERE N.matricula_id=MatriculaId AND UPE.es_uf_addicional = 0;
     
     RETURN Percentatge;  	
 	
