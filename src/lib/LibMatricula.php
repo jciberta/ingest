@@ -282,6 +282,26 @@ class Matricula extends Expedient
 		$ResultSet->close();
 	}
 
+	public function EscriuFormulariFitxa() 
+	{
+		Seguretat::ComprovaAccessUsuari($this->Usuari, ['SU', 'DI', 'CE', 'AD']);
+
+		$frm = new FormFitxa($this->Connexio, $this->Usuari, $this->Sistema);
+		$frm->Titol = 'Matrícula';
+		$frm->Taula = 'MATRICULA';
+		$frm->ClauPrimaria = 'matricula_id';
+		$frm->AutoIncrement = True;
+		$frm->Id = $this->Id;
+		
+		$frm->AfegeixEnter('matricula_id', 'Id', 10, [FormFitxa::offNOMES_LECTURA]);
+		$frm->AfegeixLookUp('curs_id', 'Curs', 100, '', 'CURS', 'curs_id', 'nom', [Form::offNOMES_LECTURA]);
+		$frm->AfegeixLookUp('alumne_id', 'Alumne', 100, '', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [Form::offNOMES_LECTURA]);
+		//$frm->AfegeixLookUp('alumne_id', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2', [Form::offNOMES_LECTURA]);
+		$frm->AfegeixCheckBox('beca', 'Beca');
+	
+		$frm->EscriuHTML();
+	}
+
 	/**
 	 * Crea l'inici de la pàgina HTML.
 	 */

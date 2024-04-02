@@ -135,7 +135,8 @@ switch ($Accio) {
 			' U.usuari_id, U.nom AS NomAlumne, U.cognom1 AS Cognom1Alumne, U.cognom2 AS Cognom2Alumne, U.username, '.
 			' FormataCognom1Cognom2Nom(U.nom, U.cognom1, U.cognom2) AS Alumne, '.
 			' U.data_naixement, Edat(U.data_naixement) AS edat, U.telefon, U.municipi, U.usuari_bloquejat, '.
-			' M.matricula_id, M.grup, '.
+			' M.matricula_id, M.grup, M.beca,'.
+			' PercentatgeAprovat(M.matricula_id) AS PercentatgeAprovat, '.
 			' C.curs_id AS CursId, C.nom AS NomCurs, C.codi AS CodiCurs, C.nivell, M.baixa, '.
 			' CF.cicle_formatiu_id AS CicleFormatiuId, '.
 			' AA.any_academic_id AS AnyAcademicId '.
@@ -153,14 +154,14 @@ switch ($Accio) {
 //		$frm->ClauPrimaria = 'usuari_id';
 		$frm->Taula = 'MATRICULA';
 		$frm->ClauPrimaria = 'matricula_id';
-		$frm->Camps = 'Alumne, username, data_naixement, edat, telefon, municipi, CodiCurs, grup';
-		$frm->Descripcions = 'Nom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup';
+		$frm->Camps = 'Alumne, username, data_naixement, edat, telefon, municipi, CodiCurs, grup, %2:PercentatgeAprovat, bool:beca';
+		$frm->Descripcions = 'Nom, Usuari, Data naixement, Edat, Telèfon, Municipi, Curs, Grup, Percentatge aprovat, Beca';
 //		if ($Usuari->es_admin) {
 //			$frm->Camps = 'matricula_id, '.$frm->Camps;
 //			$frm->Descripcions = 'Id, '.$frm->Descripcions;
 //		}
-		//$frm->PermetEditar = True;
-		//$frm->URLEdicio = 'UsuariFitxa.php';
+		$frm->PermetEditar = True;
+		$frm->URLEdicio = 'Fitxa.php?accio=Matricula';
 		//$frm->PermetSuprimir = True;
 		$frm->AfegeixOpcioAJAX('Baixa', 'BaixaMatricula', 'matricula_id', [FormRecerca::ofrNOMES_CHECK], 'baixa');
 		$frm->AfegeixOpcio('Matrícula', 'MatriculaAlumne.php?MatriculaId=', 'matricula_id');

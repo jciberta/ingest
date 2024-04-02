@@ -261,6 +261,7 @@ CREATE TABLE MATRICULA
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
     baixa BIT,
+    beca BIT DEFAULT 0,
     comentari_trimestre1 VARCHAR(100),
     comentari_trimestre2 VARCHAR(100),
     comentari_trimestre3 VARCHAR(100),
