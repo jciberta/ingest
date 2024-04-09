@@ -536,10 +536,10 @@ class Expedient extends Form
 	}
 
 	/**
-	 * Genera l'expedient en PDF per a un alumne.
+	 * Genera l'expedient en PDF per a un alumne i el guarda en un arxiu.
 	 * @param integer $MatriculaId Id de la matrícula de l'alumne.
 	 */
-	public function GeneraPDFArxiu($MatriculaId) {
+	public function GeneraPDFArxiu($MatriculaId, $NomPdf) {
 		$this->Id = $MatriculaId;
 		$this->Carrega();
 		$this->CalculaEstadistiques();
@@ -696,7 +696,10 @@ class Expedient extends Form
 		// Clean any content of the output buffer
 		//ob_end_clean();
 		//$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
-		$pdfPath = 'C:\xampp\htdocs\ingest\ingest\src\expedients\\'.$Nom.'.pdf'; // Ruta donde se guardará el archivo PDF
+
+		// Directori temporal per emmagatzemar els expedients en PDF
+		$tempDir = sys_get_temp_dir();
+		$pdfPath =$tempDir.$NomPdf.'.pdf'; // Ruta donde se guardará el archivo PDF
 
 		// Guardar el PDF en el sistema de archivos
 		$pdf->Output($pdfPath, 'F');
@@ -725,9 +728,9 @@ class Expedient extends Form
 	 * @param integer $Curs Identificador del curs.
 	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
 	 */
-	public function GeneraScript($Curs, $Sufix): string {
+	public function GeneraScript($Curs, $Sufix): array {
 		$Comanda = $this->ComandaPHP();
-		$Retorn = '';
+		$Retorn = array("","","");
 		$SQL = ' SELECT M.matricula_id AS MatriculaId, U.nom AS NomAlumne, U.*, C.* '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
@@ -743,7 +746,9 @@ class Expedient extends Form
 				utf8_encodeX($row["NomAlumne"]);
 				$Nom = Normalitza($Nom);
 				$Nom = str_replace(" ", "_", $Nom);
-				$Retorn .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
+				$Retorn[0] .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
+				$Retorn[1]=	$row["MatriculaId"];
+				$Retorn[2]= $Nom.".pdf";				
 			}
 		}
 		$ResultSet->close();

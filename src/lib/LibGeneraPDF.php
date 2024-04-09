@@ -136,13 +136,26 @@ class GeneraPDFExpedient extends GeneraPDF
         echo "Ok.<BR>";
 
         echo "Executant l'script per als documents...";
-        $aText = explode("\r\n",$Text);
+        $aText = explode("\r\n",$Text[0]);
+        $aMatricula= explode("\r\n",$Text[1]);
+        $aArxiu= explode("\r\n",$Text[2]);
+
+
         if (Config::Debug)
             echo "<PRE>";
         for ($i=0; $i<count($aText)-1; $i++) {
             if (Config::Debug)
                 echo "  Executant $aText[$i]<BR>";
-            $Result = shell_exec($aText[$i]);
+             // Directori temporal per emmagatzemar els expedients en PDF
+                 $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR.'expedients' . uniqid();
+
+echo "  Matricula $aMatricula[$i]<BR>";
+echo "  Nom $aArxiu[$i]<BR>";
+
+                $pdfPath = $Expedient->GeneraPDFArxiu($aMatricula[$i],$aArxiu[$i]);
+echo "  path: $pdfPath<BR>";               
+                copy($pdfPath, $tempDir . DIRECTORY_SEPARATOR . basename($pdfPath));
+           // $Result = shell_exec($aText[$i]);
         }
         if (Config::Debug)
             echo "</PRE>";
@@ -191,7 +204,7 @@ class GeneraPDFProgramacio extends GeneraPDF
         echo "Ok.<BR>";
 
         echo "Executant l'script per als documents...";
-        $aText = explode("\r\n",$Text);
+        $aText = explode("\r\n",$Text[0]);
         if (Config::Debug)
             echo "<PRE>";
         for ($i=0; $i<count($aText)-1; $i++) {
