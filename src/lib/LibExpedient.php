@@ -698,8 +698,8 @@ class Expedient extends Form
 		//$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
 
 		// Directori temporal per emmagatzemar els expedients en PDF
-		$tempDir = sys_get_temp_dir();
-		$pdfPath =$tempDir.$NomPdf.'.pdf'; // Ruta donde se guardará el archivo PDF
+		$tempDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'expedients';
+		$pdfPath =$tempDir.$NomPdf; // Ruta donde se guardará el archivo PDF
 
 		// Guardar el PDF en el sistema de archivos
 		$pdf->Output($pdfPath, 'F');
@@ -746,9 +746,9 @@ class Expedient extends Form
 				utf8_encodeX($row["NomAlumne"]);
 				$Nom = Normalitza($Nom);
 				$Nom = str_replace(" ", "_", $Nom);
-				$Retorn[0] .= "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
-				$Retorn[1]=	$row["MatriculaId"];
-				$Retorn[2]= $Nom.".pdf";				
+				$Retorn['script'][] = "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
+				$Retorn['matricula'][] = $row["MatriculaId"];
+				$Retorn['arxiu'][] = $Nom.".pdf";         			
 			}
 		}
 		$ResultSet->close();

@@ -83,7 +83,7 @@ abstract class GeneraPDF extends Objecte
 	 */
     protected function CreaFitxerComprimit(string $Nom) {
         // https://stackoverflow.com/questions/17708562/zip-all-files-in-directory-and-download-generated-zip
-        $zipname = ROOT."/scripts/".$Nom.".zip";
+        $zipname = ROOT.DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR.$Nom.".zip";
         echo "Comprimint els documents... ";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
@@ -136,27 +136,20 @@ class GeneraPDFExpedient extends GeneraPDF
         echo "Ok.<BR>";
 
         echo "Executant l'script per als documents...";
-        $aText = explode("\r\n",$Text[0]);
-        $aMatricula= explode("\r\n",$Text[1]);
-        $aArxiu= explode("\r\n",$Text[2]);
-
-
+        
         if (Config::Debug)
             echo "<PRE>";
-        for ($i=0; $i<count($aText)-1; $i++) {
-            if (Config::Debug)
-                echo "  Executant $aText[$i]<BR>";
+        for ($i=0; $i<count($Text['script'])-1; $i++) {
+            if (Config::Debug){
+                echo "  Executant ".$Text['script'][$i]."<BR>";
              // Directori temporal per emmagatzemar els expedients en PDF
-                 $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR.'expedients' . uniqid();
-
-echo "  Matricula $aMatricula[$i]<BR>";
-echo "  Nom $aArxiu[$i]<BR>";
-
-                $pdfPath = $Expedient->GeneraPDFArxiu($aMatricula[$i],$aArxiu[$i]);
-echo "  path: $pdfPath<BR>";               
-                copy($pdfPath, $tempDir . DIRECTORY_SEPARATOR . basename($pdfPath));
+               // $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR.'expedients';
+                $pdfPath = $Expedient->GeneraPDFArxiu($Text['matricula'][$i],$Text['arxiu'][$i]);
+               echo "  path: $pdfPath<BR>";               
+               copy($pdfPath, basename($pdfPath));
            // $Result = shell_exec($aText[$i]);
         }
+    }
         if (Config::Debug)
             echo "</PRE>";
         echo " Ok.<BR>";
