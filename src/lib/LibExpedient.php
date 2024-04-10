@@ -6,6 +6,7 @@
  * Llibreria d'utilitats per a l'expedient.
  *
  * @author Josep Ciberta
+ * @author Josep Maria Vegas
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
@@ -693,18 +694,20 @@ class Expedient extends Form
 
 		// Close and output PDF document
 		$Nom = Normalitza(trim($Cognom1Alumne . ' ' . $Cognom2Alumne . ', ' . $NomAlumne));
-		// Clean any content of the output buffer
-		//ob_end_clean();
-		//$pdf->Output('Expedient '.$Nom.'.pdf', 'I');
-
+		
 		// Directori temporal per emmagatzemar els expedients en PDF
-		$tempDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'expedients';
-		$pdfPath =$tempDir.$NomPdf; // Ruta donde se guardará el archivo PDF
-
-		// Guardar el PDF en el sistema de archivos
+		$tempDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'expedients'.DIRECTORY_SEPARATOR;
+		
+		// Crear directori temporal si no existeix
+		if (!file_exists($tempDir)) {
+			mkdir($tempDir, 0777, true);
+		}
+		// Ruta on es guardaran els arxius
+		$pdfPath =$tempDir.$NomPdf; 
+		// Guardem el PDF a la ruta
 		$pdf->Output($pdfPath, 'F');
-	
-		return $pdfPath; // Devolver la ruta del archivo guardado
+		// Retornem la ruta
+		return $pdfPath; 
 		
 	}
 
@@ -729,8 +732,8 @@ class Expedient extends Form
 	 * @param integer $Sufix Per posar l'estat de l'avaluació (1r trimestre, etc.).
 	 */
 	public function GeneraScript($Curs, $Sufix): array {
-		$Comanda = $this->ComandaPHP();
-		$Retorn = array("","","");
+		//$Comanda = $this->ComandaPHP();
+		$Retorn = array();
 		$SQL = ' SELECT M.matricula_id AS MatriculaId, U.nom AS NomAlumne, U.*, C.* '.
 			' FROM USUARI U '.
 			' LEFT JOIN MATRICULA M ON (M.alumne_id=U.usuari_id) '.
@@ -746,7 +749,7 @@ class Expedient extends Form
 				utf8_encodeX($row["NomAlumne"]);
 				$Nom = Normalitza($Nom);
 				$Nom = str_replace(" ", "_", $Nom);
-				$Retorn['script'][] = "$Comanda ".ROOT."/ExpedientPDF.php ".$row["MatriculaId"]." >".INGEST_DATA."/pdf/Expedient_".$Nom.".pdf\r\n";
+
 				$Retorn['matricula'][] = $row["MatriculaId"];
 				$Retorn['arxiu'][] = $Nom.".pdf";         			
 			}

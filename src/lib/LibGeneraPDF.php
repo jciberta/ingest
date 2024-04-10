@@ -6,6 +6,7 @@
  * Llibreria d'utilitats per a la generació de PDF (massius).
  *
  * @author Josep Ciberta
+ * @author Josep Maria Vegas
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
@@ -82,29 +83,33 @@ abstract class GeneraPDF extends Objecte
 	 * @param string $Nom Nom del fitxer ZIP.
 	 */
     protected function CreaFitxerComprimit(string $Nom) {
-        // https://stackoverflow.com/questions/17708562/zip-all-files-in-directory-and-download-generated-zip
-        $zipname = ROOT.DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR.$Nom.".zip";
-        echo "Comprimint els documents... ";
-        $zip = new ZipArchive;
-        $zip->open($zipname, ZipArchive::CREATE);
-        if ($handle = opendir(INGEST_DATA."/pdf")) {
-            if (Config::Debug)
-                echo "<PRE>";
-            while (false !== ($entry = readdir($handle))) {
-                $ext = pathinfo($entry, PATHINFO_EXTENSION);
-                if (strtoupper($ext) == "PDF") {
-                    if (Config::Debug)
-                        echo "  Comprimint $entry<br>";
-                    $zip->addFile(INGEST_DATA."/pdf/".$entry, $entry);
-                }
-            }
-            if (Config::Debug)
-                echo "</PRE>";
-            closedir($handle);
+ 
+    //Netejem el directori
+    array_map('unlink', glob("scripts/*"));
+
+    // Comprimeix expedients en un arxiu ZIP
+    echo "Comprimint els documents... ";
+    $tempDir = sys_get_temp_dir() . '/expedients' . DIRECTORY_SEPARATOR;
+    $zipFile ="scripts/".$Nom.".zip";
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        $files = glob($tempDir . '/*');
+        foreach ($files as $file) {
+            $zip->addFile($file, basename($file));
         }
         $zip->close();
+    } else {
+        die('Error en crear l\'arxiu ZIP');
+    }
+   
+        //Eliminar directori temporal
+        array_map('unlink', glob("$tempDir/*"));
+        rmdir($tempDir);
+    
         echo " Ok.<BR>";
-        echo "Podeu descarregar els documents comprimits <a href='scripts/$Nom.zip'>aquí</a>. Mida: ".FormataBytes(filesize($zipname));
+        echo "Podeu descarregar els documents comprimits <a href='scripts/$Nom.zip'>aquí</a>. Mida: "
+        .FormataBytes(filesize($zipFile));       
     }
 }
 
@@ -116,6 +121,7 @@ class GeneraPDFExpedient extends GeneraPDF
     /**
 	 * Genera el contingut HTML i el presenta a la sortida.
 	 */
+
 	public function EscriuHTML() {
         if ($this->Id == -1)
             header("Location: Surt.php");
@@ -139,15 +145,12 @@ class GeneraPDFExpedient extends GeneraPDF
         
         if (Config::Debug)
             echo "<PRE>";
-        for ($i=0; $i<count($Text['script'])-1; $i++) {
+        for ($i=0; $i<count($Text['matricula'])-1; $i++) {
             if (Config::Debug){
-                echo "  Executant ".$Text['script'][$i]."<BR>";
-             // Directori temporal per emmagatzemar els expedients en PDF
-               // $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR.'expedients';
+                echo "  Matricula:  ".$Text['matricula'][$i]." ";
+                // Directori temporal per emmagatzemar els expedients en PDF
                 $pdfPath = $Expedient->GeneraPDFArxiu($Text['matricula'][$i],$Text['arxiu'][$i]);
-               echo "  path: $pdfPath<BR>";               
-               copy($pdfPath, basename($pdfPath));
-           // $Result = shell_exec($aText[$i]);
+                echo "  Ubicació: $pdfPath<BR>";
         }
     }
         if (Config::Debug)
