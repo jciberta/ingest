@@ -194,6 +194,7 @@ class Usuari extends Objecte
 			//$frm->SaltaColumna();
 			$frm->AfegeixCheckBox('es_alumne', "És alumne?");
 			$frm->AfegeixCheckBox('es_pare', "És pare?", [FormFitxa::offAL_COSTAT]);
+			$frm->AfegeixCheckBox('es_auditor', "És auditor?", [FormFitxa::offAL_COSTAT]);
 			//$frm->FinalitzaColumnes();
 
 		}
@@ -2022,6 +2023,22 @@ class Progenitor extends Usuari
 		echo '</div>';
 		$ResultSet->close();
 	}
+}
+
+/**
+ * Classe que encapsula les utilitats per al maneig dels auditor.
+ */
+class Auditor extends Objecte
+{
+	/**
+	 * Genera i escriu l'escriptori.
+	 */
+	public function Escriptori() {
+		CreaIniciHTML($this->Usuari, '');
+		echo '<div class="row">';
+		echo CreaTargeta('Mòduls professionals', 'Programacions', GeneraURL('FPRecerca.php?accio=ProgramacionsDidactiques'));
+		echo '</div>';
+	}	
 }
 
 /**

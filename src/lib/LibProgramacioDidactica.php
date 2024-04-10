@@ -672,7 +672,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 		$frm->ClauPrimaria = 'modul_pla_estudi_id';
 		$frm->Camps = 'CodiCF, CodiMP, NomMP, hores';
 		$frm->Descripcions = 'Cicle, Codi, Mòdul professional, Hores';
-		$frm->PermetEditar = True;
+		$frm->PermetEditar = (!$Usuari->es_auditor);
 		$frm->URLEdicio = 'FPFitxa.php?accio=ProgramacioDidactica';
 		$frm->AfegeixOpcio('Programació didàctica', 'FPFitxa.php?accio=ProgramacioDidacticaLectura&Id=', '', 'report.svg');
 		$frm->AfegeixOpcio('Programació didàctica', 'Descarrega.php?Accio=ExportaProgramacioDidacticaPDF&ModulId=', '', 'pdf.png');
@@ -689,7 +689,7 @@ class ProgramacioDidacticaRecerca extends FormRecerca
 //			$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'D']);
 		}
 		
-		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis) {
+		if ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || $Usuari->es_auditor) {
 			//$frm->AfegeixOpcioAJAX('Accepta', 'EnviaAcceptada', '', [], '', '', ['estat' => 'T']);
 			//$frm->AfegeixOpcioAJAX('Torna a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'T']);
 			
