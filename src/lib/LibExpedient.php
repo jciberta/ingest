@@ -814,17 +814,21 @@ class Expedient extends Form
 
 		foreach($this->Registre as $row) {
 			$NumeroUFTotals++;
-			$HoresTotals += $row['HoresUF'];
 			$UltimaNota = UltimaNota($row);
 
+			if(!$row['es_uf_addicional'])
+				$HoresTotals += $row['HoresUF'];
+
 			if ($UltimaNota > 0) {
-				if ($UltimaNota>=5) {
+				if ($UltimaNota>=5 && !$row['es_uf_addicional']) {
 					$NumeroUFAprovades++;
 					$HoresAprovades += $row['HoresUF'];
 				}
 				if (!$row['es_fct']) {
-					$HoresMitjana += $row['HoresUF'];
-					$Mitjana += $UltimaNota*$row['HoresUF'];
+					if(!$row['es_uf_addicional']) {
+						$HoresMitjana += $row['HoresUF'];
+						$Mitjana += $UltimaNota*$row['HoresUF'];
+					}
 				}
 				else 
 					$HoresFCT += $row['HoresUF'];

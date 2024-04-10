@@ -323,6 +323,7 @@ class PropostaMatricula extends Objecte
 		";
 		if ($MatriculaId != -1)
 			$SQL .= " WHERE M.matricula_id=$MatriculaId ";
+		//$SQL .= " ORDER BY U.cognom1, U.cognom2, U.nom";
 		return $SQL;
 	}
 

@@ -25,6 +25,7 @@ class Seguretat
 	  *   - AL: alumne
 	  *   - PM: pare o mare
 	  *   - AD: administratiu
+	  *   - AU: auditor
 	  * @param bool $Condicio Condició extra que farà un OR amb els usuaris. És a dir, es permetrà l'accés als usuaris o si es compleix la condició.
 	  */
 	public static function ComprovaAccessUsuari($Usuari, $Array, bool $Condicio = false) {
@@ -45,6 +46,8 @@ class Seguretat
 			if (in_array('PM', $Array) && $Usuari->es_pare)
 				$Access = true;
 			if (in_array('AD', $Array) && $Usuari->es_administratiu)
+				$Access = true;
+			if (in_array('AU', $Array) && $Usuari->es_auditor)
 				$Access = true;
 		}
 		if ($Condicio)
