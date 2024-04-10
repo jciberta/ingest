@@ -3,6 +3,7 @@
  */
 
 ALTER TABLE UNITAT_PLA_ESTUDI ADD hores_fetes INT;
+ALTER TABLE USUARI ADD es_auditor BIT NOT NULL DEFAULT 0;
 
 DELIMITER //
 CREATE TRIGGER AU_CalculaNotaMitjanaCurs AFTER UPDATE ON CURS FOR EACH ROW
@@ -45,6 +46,7 @@ BEGIN
 	
 END //
 DELIMITER ;
+
 
 /* Aplicar a producció */
 UPDATE SISTEMA SET versio_db='1.21';
