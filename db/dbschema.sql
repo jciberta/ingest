@@ -98,6 +98,7 @@ CREATE TABLE USUARI
     es_professor       BIT NOT NULL DEFAULT 0,
     es_alumne          BIT NOT NULL DEFAULT 0,
     es_pare            BIT NOT NULL DEFAULT 0,
+    es_auditor         BIT NOT NULL DEFAULT 0,
     permet_tutor       BIT NOT NULL DEFAULT 0,
 	inscripcio_borsa_treball BIT NOT NULL DEFAULT 1,
     titol_angles       VARCHAR(5),

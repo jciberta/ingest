@@ -62,6 +62,10 @@ if ($Usuari->aplicacio == 'InGest') {
 		$curs = new Curs($conn, $Usuari, $Sistema, $Sistema);
 		$curs->EscriuFormulariRecerca();
 	}
+	else if ($Usuari->es_auditor) {
+		$Auditor = new Auditor($conn, $Usuari, $Sistema, $Sistema);
+		$Auditor->Escriptori();
+	}
 }
 else if ($Usuari->aplicacio == 'CapGest') {
 	if (($Usuari->es_admin)) {

@@ -15,6 +15,7 @@
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibPlaEstudis.php');
 require_once(ROOT.'/lib/LibProgramacioDidactica.php');
@@ -36,7 +37,7 @@ $accio = (array_key_exists('accio', $_GET)) ? $_GET['accio'] : '';
 
 // Comprovem que el professor coincideix amb l'usuari de la sessió
 $ProfId = (array_key_exists('ProfId', $_GET)) ? $_GET['ProfId'] : '-1'; 
-if ($ProfId != $Usuari->usuari_id && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor)
+if ($ProfId != $Usuari->usuari_id && !$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_auditor)
 	header("Location: Surt.php");
 
 // Obtenció de la modalitat del formulari
@@ -149,6 +150,7 @@ switch ($accio) {
 		$frm->EscriuHTML();
         break;
     case "ProgramacionsDidactiques":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD', 'AU']);
 		$frm = new ProgramacioDidacticaRecerca($conn, $Usuari, $Sistema);
 		$frm->Modalitat = $Modalitat;
 		$frm->EscriuHTML();
