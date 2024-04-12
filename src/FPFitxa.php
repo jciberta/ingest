@@ -198,7 +198,7 @@ switch ($accio) {
 		// Obtenció de l'identificador, sinó registre nou.
 		$Id = empty($_GET) ? -1 : $_GET['Id'];
 
-		$PermisLectura = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || $Usuari->es_professor);
+		$PermisLectura = ($Usuari->es_admin || $Usuari->es_direccio || $Usuari->es_cap_estudis || $Usuari->es_professor || $Usuari->es_auditor);
 		if (!$PermisLectura)
 			header("Location: Surt.php");
 

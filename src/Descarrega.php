@@ -17,6 +17,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 require_once('Config.php');
 require_once(ROOT.'/lib/LibURL.php');
+require_once(ROOT.'/lib/LibSeguretat.php');
 require_once(ROOT.'/lib/LibForms.php');
 require_once(ROOT.'/lib/LibNotes.php');
 require_once(ROOT.'/lib/LibProgramacioDidactica.php');
@@ -28,8 +29,9 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
-if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_administratiu)
-	header("Location: Surt.php");
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD', 'AU']);
+//if (!$Usuari->es_admin && !$Usuari->es_direccio && !$Usuari->es_cap_estudis && !$Usuari->es_professor && !$Usuari->es_administratiu && !$Usuari->es_auditor)
+//	header("Location: Surt.php");
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
