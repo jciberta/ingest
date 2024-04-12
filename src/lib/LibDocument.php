@@ -118,7 +118,7 @@ class Document extends Objecte
 		}
 		
 		$frm->Modalitat = $Modalitat;
-		$frm->Titol = 'Impresos de funcionament';
+		$frm->Titol = 'Documents';
 		$frm->SQL = $this->CreaSQL();
 		$frm->Taula = 'DOCUMENT';
 		$frm->ClauPrimaria = 'document_id';
@@ -134,7 +134,7 @@ class Document extends Objecte
 			}
 		}
 		$frm->AfegeixSuggeriment('observacions');
-		$frm->AfegeixEnllacImatge('enllac', FormRecerca::tiPDF);
+		$frm->AfegeixEnllacImatge('enllac', FormRecerca::tiPDF, [FormRecerca::ofrNOVA_PAGINA]);
 
 		if ($this->Usuari !== null) {
 			$aClaus = array_keys(self::VISIBILITAT); array_unshift($aClaus, '');

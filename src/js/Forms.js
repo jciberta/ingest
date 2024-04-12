@@ -177,8 +177,8 @@ function CreaFiltreJSON(filtre) {
 			// Usat en el lookup
 //console.log('obj.name: '+obj.name);
 //console.dir(obj);	
-			for (i=0; i<obj.childNodes.length; i++) {
-				var subobj = obj.childNodes[i];
+			for (j=0; j<obj.childNodes.length; j++) {
+				var subobj = obj.childNodes[j];
 //console.log('subobj.tagName: '+subobj.tagName);	
 //console.dir(subobj);	
 				if (subobj.tagName == 'INPUT') {

@@ -877,6 +877,7 @@ class FormRecerca extends Form
 	const ofrCHECK = 1; 		// Indica si l'opció és booleana i es farà amb un checkbox.
 	const ofrNOMES_CHECK = 2; 	// Indica que només es podrà seleccionar el checkbox (i no desseleccionar). 
 	const ofrNOMES_LECTURA = 3; // Indica que l'opció és de només lectura.
+	const ofrNOVA_PAGINA = 4;   // Indica que es vols en una nova pàgina (enllaç).
 
 	/**
 	 * Modalitat del formulari.
@@ -1069,11 +1070,11 @@ class FormRecerca extends Form
 			}
 			$sRetorn .= ' ORDER BY '.$this->EliminaTipusPredefinit($this->Ordre);
 		}
-//print "<hr>SQL<br>$sRetorn<hr>";	
 
 		if ($this->MaximRegistres != -1)
 			$sRetorn .= ' LIMIT '.$this->MaximRegistres;
 		
+//print "<hr>SQL<br>$sRetorn<hr>";	
 		return $sRetorn;
 	}
 
@@ -1393,7 +1394,7 @@ class FormRecerca extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.1" type="text/javascript"></script>';
+		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
 			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
 		// Inicialització de l'ajuda
@@ -1498,8 +1499,9 @@ class FormRecerca extends Form
 	 * Afegeix un enllaç (emmagatzemat en un registre) en forma d'imatge.
 	 * @param string $Camp Camp del registre que conté l'enllaç.
 	 * @param string $Imatge Imatge que contindrà l'enllaç.
+	 * @param array $ofr Opcions. 
 	 */
-	public function AfegeixEnllacImatge(string $Camp, int $Imatge) {
+	public function AfegeixEnllacImatge(string $Camp, int $Imatge, array $ofr = []) {
 		$i = count($this->Opcions);
 		$i++;
 		$this->Opcions[$i] = new stdClass();
@@ -1507,7 +1509,7 @@ class FormRecerca extends Form
 		$this->Opcions[$i]->Titol = '';
 		$this->Opcions[$i]->Camp = $Camp;
 		$this->Opcions[$i]->Imatge = $Imatge;
-		$this->Opcions[$i]->Opcions = [];
+		$this->Opcions[$i]->Opcions = $ofr;
 	}
 
 	/**
@@ -1604,7 +1606,8 @@ class FormRecerca extends Form
 					break;
 				case self::toLinkImatge:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
-					$Retorn .= '<A HREF="'.$row[$obj->Camp].'">';
+					$Target = (in_array(self::ofrNOVA_PAGINA, $obj->Opcions)) ? ' target="_blank" ' : '';
+					$Retorn .= '<A '.$Target.' HREF="'.$row[$obj->Camp].'">';
 					switch ($obj->Imatge) {
 						case self::tiPDF:
 							$Retorn .= '<IMG SRC="img/pdf.png">';

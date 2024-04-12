@@ -2037,6 +2037,7 @@ class Auditor extends Objecte
 		CreaIniciHTML($this->Usuari, '');
 		echo '<div class="row">';
 		echo CreaTargeta('Mòduls professionals', 'Programacions', GeneraURL('FPRecerca.php?accio=ProgramacionsDidactiques'));
+		echo CreaTargeta('Qualitat', 'Documents', GeneraURL('Recerca.php?accio=Document'));
 		echo '</div>';
 	}	
 }
