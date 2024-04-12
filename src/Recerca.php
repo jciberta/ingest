@@ -32,7 +32,7 @@ if (!isset($_SESSION['usuari_id']))
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
 
-Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD']);
+Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'PR', 'AD', 'AU']);
 
 $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error) 
@@ -193,7 +193,7 @@ switch ($accio) {
 		break;
 	case "Document":
 		$Professor = new Professor($conn, $Usuari, $Sistema);
-		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE'], $Professor->EstaAQualitat());
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AU'], $Professor->EstaAQualitat());
 		$doc = new Document($conn, $Usuari, $Sistema);
 		$doc->EscriuFormulariRecerca();
 		break;
