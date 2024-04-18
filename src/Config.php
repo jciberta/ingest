@@ -12,7 +12,7 @@
 define('PHP_VERSION_MIN', 80100); // Versió mínima PHP 8.1.0
 
 class Config {
-	const Versio         = '1.21';
+	const Versio         = '1.22';
 	const Host           = 'localhost';
 	const BaseDades      = 'InGest';
 	const Usuari         = 'root';
@@ -60,9 +60,9 @@ $CFG->PasswordCorreu = Config::PasswordCorreu;
 if (defined('STDIN')) {
 	// Execució de PHP via CLI.
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-		define('ROOT', 'D:\CASA\Xiber\ingest\src');
-		define('INGEST_DATA', 'D:\CASA\Xiber\ingest-data');
-		define('UNITAT_XAMPP', 'F');
+		define('ROOT', 'C:\xampp\htdocs\ingest\ingest');
+		define('INGEST_DATA', 'C:\xampp\htdocs\ingest');
+		define('UNITAT_XAMPP', 'C');
 		//define('ROOT', 'D:/jciberta/ingest/src');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 	}
@@ -76,8 +76,8 @@ else {
 	define('ROOT', __DIR__);
 	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
 		// Windows
-		define('INGEST_DATA', 'D:/CASA/Xiber/ingest-data');
-		define('UNITAT_XAMPP', 'F');
+		define('INGEST_DATA', 'C:\xampp\htdocs\ingest\ingest');
+		define('UNITAT_XAMPP', 'C');
 		//define('INGEST_DATA', 'D:/jciberta/ingest-data');
 		define('FONT_FILENAME_ARIAL', 'C:\Windows\Fonts\arial.ttf');
 	}

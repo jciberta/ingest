@@ -7,6 +7,7 @@
  * Es pot cridar des de la línia de comandes o des de la web.
  *
  * @author Josep Ciberta
+ * @author Josep Maria Vegas
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
