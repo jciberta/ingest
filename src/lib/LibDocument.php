@@ -220,24 +220,24 @@ class Document extends Objecte
 	private function CreaSQLUsuariNoAutenticat() {
 
 		$FiltreEstudi='';
-		$FiltreCategoria='';
+		$FiltreCategoria= '';
 		$FiltreNivell='';
 
-		if ($this->Estudi!='' && in_array($this->Estudi, self::ESTUDI)){
+		if ($this->Estudi!='' && in_array($this->Estudi, array_keys(self::ESTUDI))){
 			$FiltreEstudi= "AND estudi="."'".$this->Estudi."'"."";
 		}
 		
 
-		if ($this->Nivell!='' && in_array($this->Nivell, self::SUBESTUDI)){
+		if ($this->Nivell!='' && in_array($this->Nivell, array_keys(self::SUBESTUDI))){
 			$FiltreNivell= "AND subestudi="."'".$this->Nivell."'"."";
 		}
 	
 		
-		if ($this->Categoria!='' && in_array($this->Categoria, self::CATEGORIA)){
+		if ($this->Categoria!='' && in_array($this->Categoria, array_keys(self::CATEGORIA))){
+			
 			$FiltreCategoria= "AND Categoria="."'".$this->Categoria."'"."";
 		}
-
-		
+				
 		$SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
@@ -255,6 +255,7 @@ class Document extends Objecte
 			WHERE versio=(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV2 WHERE DV.document_id=DV2.document_id AND estat='A')
 			AND visibilitat='B'".$FiltreEstudi."".$FiltreNivell."".$FiltreCategoria."
 		";
+		
 		$SQL .= " GROUP BY DV.document_id ";
 //echo "<hr>$SQL<hr>";
 		return $SQL;
