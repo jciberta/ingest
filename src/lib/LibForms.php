@@ -1607,14 +1607,15 @@ class FormRecerca extends Form
 				case self::toLinkImatge:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
 					$Target = (in_array(self::ofrNOVA_PAGINA, $obj->Opcions)) ? ' target="_blank" ' : '';
-					$Retorn .= '<A '.$Target.' HREF="'.$row[$obj->Camp].'">';
+					$URL = '<A '.$Target.' HREF="'.$row[$obj->Camp].'">';
 					switch ($obj->Imatge) {
 						case self::tiPDF:
-							$Retorn .= '<IMG SRC="img/pdf.png">';
+							$URL .= '<IMG SRC="img/pdf.png">';
 							break;
 					}
-					//$Retorn .= 'HOLA';
-					$Retorn .= '</A>';
+					$URL .= '</A>';
+					if ($row[$obj->Camp] !== null)
+						$Retorn .= $URL;
 					break;
 				case self::toHint:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
@@ -1736,10 +1737,12 @@ class FormRecerca extends Form
  	 * @param string $a Array de condicions.
 	 */
 	 public function PermetEditarCondicional($a) {
+//print_h($a);		 
 		 $this->PermetEditarCondicional = $a;
 	 }
 	 
 	 private function PermetEditarRegistre($row): bool {
+//print_h($this->PermetEditarCondicional);		 
 		$Retorn = false;
 		if ($this->PermetEditarCondicional == [])
 			 $Retorn = $this->PermetEditar;
