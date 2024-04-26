@@ -2722,7 +2722,7 @@ class FormFitxa extends Form
 		$Retorn = '';
 
 		// Convertim els ENTERs del camp TextArea en <br> (per recuperar-los després)
-		$jsonForm = nl2br($jsonForm, false);
+		//$jsonForm = nl2br($jsonForm, false);
 //print('$jsonForm:');
 //print_r($jsonForm);
 //exit;
@@ -2803,7 +2803,7 @@ class FormFitxa extends Form
 						$sCamps .= substr($Valor->name, 4).", ";
 						$Valor->value = strip_tags($Valor->value, '<p><br>');
 						// Recuperem els ENTERs del camp TextArea que eren <br>
-						$Valor->value = br2nl($Valor->value);
+						//$Valor->value = br2nl($Valor->value);
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //print_r($Valor);
 //exit;
