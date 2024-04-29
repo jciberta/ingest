@@ -1734,7 +1734,7 @@ class FormRecerca extends Form
 	 
 	/**
 	 * Permet editar els registres si es compleix les condicions de l'array.
- 	 * @param string $a Array de condicions.
+ 	 * @param string $a Array de associatiu de condicions. Exemple: ['estat' => array('E', 'A'), 'genere' => 'M']
 	 */
 	 public function PermetEditarCondicional($a) {
 //print_h($a);		 
@@ -1748,7 +1748,12 @@ class FormRecerca extends Form
 			 $Retorn = $this->PermetEditar;
 		else {
 			foreach ($this->PermetEditarCondicional as $key => $value) {
-				if ($row[$key] == $value)
+				if (is_array($value)) {
+					foreach ($value as $item)
+						if ($row[$key] == $item)
+							$Retorn = true;
+				}
+				else if ($row[$key] == $value)
 					$Retorn = true;
 			}
 		}

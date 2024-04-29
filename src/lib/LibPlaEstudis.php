@@ -623,7 +623,7 @@ class PlaEstudisModulRecerca extends FormRecerca
 //		if ($this->FamiliaFPId == -1) {
 		if ($this->FamiliaFPId == -1 && !$this->MostraTot) {
 			// És professor: Elaboració per fer la programació, Acceptat per fer el seguiment
-			$frm->PermetEditarCondicional(['estat' => 'E', 'estat' => 'A']);
+			$frm->PermetEditarCondicional(['estat' => array('E', 'A')]);
 			$frm->AfegeixOpcioAJAX('Envia a departament', 'EnviaDepartament', '', [], '', '', ['estat' => 'E']);
 		}
 		else {
