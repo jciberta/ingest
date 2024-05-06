@@ -2147,6 +2147,7 @@ class Acta extends Form
 	 * Indica si l'alumne finalitza el cicle, és a dir, si té totes les UF superades.
 	 * @param object $a Alumne.
      * @return bool Cert si l'alumne finalitza el cicle.
+	 * @deprecated
 	 */
 	private function FinalitzaCicle($a): bool {
 		$Retorn = True;
@@ -2157,6 +2158,39 @@ class Acta extends Form
 					$Retorn = False;
 			}
 		}
+		return $Retorn;
+	}
+
+	/**
+	 * Indica si l'alumne finalitza el cicle, és a dir, si té totes les UF superades.
+	 * @param object $a Alumne.
+     * @return float Mitjana en cas que l'alumne finalitzi el cicle, sinó -1.
+	 */
+	private function FinalitzaCicleNota($a): float {
+		$Retorn = 0.0;
+		$HoresTotal = 0;
+		$NotaAcumulada = 0;
+		foreach ($this->RegistrePlaEstudis as $CodiMP => $Modul) {
+			foreach ($Modul->Unitats as $CodiUF => $Unitat) {
+//print_h($Unitat);				
+				$Nota = $this->ObteNotaAlumne($a, $CodiMP, $CodiUF);
+//echo "<hr>".$Nota;
+				if ($Nota == 'A')
+					$Nota = 100;
+				else {
+					$Hores = $Unitat->Hores;
+					$HoresTotal += $Hores;
+					$NotaAcumulada += $Nota*$Hores;
+				}
+				if ($Nota < 5 || $Nota == '') 
+					$Retorn = -1.0;
+			}
+		}
+		if ($Retorn === 0.0) {
+			$Retorn = $NotaAcumulada/$HoresTotal;
+		}
+//echo "<hr>".$HoresTotal;
+//echo "<hr>".$Retorn;
 		return $Retorn;
 	}
 
@@ -2234,8 +2268,9 @@ class Acta extends Form
 			}
 			
 			// TODO: Finalitza el cicle
-			$FinalitzaCicle = ($this->FinalitzaCicle($a)) ? 'Sí' : '';
-			$HTML .= '<TD rowspan="4" width="'.($Amplada[19]).'">'.$FinalitzaCicle.'</TD>';
+			$FinalitzaCicleNota = $this->FinalitzaCicleNota($a);
+			$FinalitzaCicleNotaText = ($FinalitzaCicleNota !== -1.0) ? 'Sí<br><br>Nota<br>'.number_format($FinalitzaCicleNota, 2) : '';
+			$HTML .= '<TD rowspan="4" align="center" width="'.($Amplada[19]).'">'.$FinalitzaCicleNotaText.'</TD>';
 			$HTML .= '</TR>';
 
 			// Fem els 8 primers mòduls/UF
