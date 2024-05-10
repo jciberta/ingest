@@ -34,6 +34,9 @@ $conn = new mysqli($CFG->Host, $CFG->Usuari, $CFG->Password, $CFG->BaseDades);
 if ($conn->connect_error)
 	die("ERROR: No ha estat possible connectar amb la base de dades: " . $conn->connect_error);
 
+// Per poder fer GROUP BY amb columnes no agregades 
+$conn->query('SET sql_mode=(SELECT REPLACE(@@sql_mode,"ONLY_FULL_GROUP_BY",""));');
+
 if ($Usuari === null) {
     // Usuari no identificat
 	$doc = new Document($conn, $Usuari, $Sistema);

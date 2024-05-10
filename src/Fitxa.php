@@ -356,6 +356,16 @@ switch ($accio) {
 		$doc->ClauForanaValor = $ClauForanaValor;
 		$doc->EscriuFormulariFitxa();
 		break;
+	case "Matricula":
+		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD']);
+		// Obtenció de l'identificador, sinó fora.
+		$Id = (array_key_exists('Id', $_GET)) ? $_GET['Id'] : -1; 
+		if ($Id == -1)
+			header("Location: Surt.php");
+		$frm = new Matricula($conn, $Usuari, $Sistema);
+		$frm->Id = $Id;
+		$frm->EscriuFormulariFitxa();
+		break;
 	case "PropostaMatricula":
 		Seguretat::ComprovaAccessUsuari($Usuari, ['SU', 'DI', 'CE', 'AD', 'PR']);
 		// Obtenció de l'identificador, sinó fora.

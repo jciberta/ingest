@@ -196,7 +196,7 @@ class Document extends Objecte
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions, 
 				(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV WHERE DV.document_id=D.document_id AND estat='A') AS versio,
-				(SELECT MAX(enllac) FROM DOCUMENT_VERSIO DV WHERE DV.document_id=D.document_id AND estat='A') AS enllac,
+			    (SELECT enllac FROM DOCUMENT_VERSIO DV2 WHERE DV2.document_id = D.document_id AND DV2.versio = (SELECT MAX(versio) FROM DOCUMENT_VERSIO DV WHERE DV.document_id = D.document_id AND estat = 'A') LIMIT 1) AS enllac,
 				".
 				SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
 				SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".

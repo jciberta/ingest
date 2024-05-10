@@ -1607,14 +1607,15 @@ class FormRecerca extends Form
 				case self::toLinkImatge:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
 					$Target = (in_array(self::ofrNOVA_PAGINA, $obj->Opcions)) ? ' target="_blank" ' : '';
-					$Retorn .= '<A '.$Target.' HREF="'.$row[$obj->Camp].'">';
+					$URL = '<A '.$Target.' HREF="'.$row[$obj->Camp].'">';
 					switch ($obj->Imatge) {
 						case self::tiPDF:
-							$Retorn .= '<IMG SRC="img/pdf.png">';
+							$URL .= '<IMG SRC="img/pdf.png">';
 							break;
 					}
-					//$Retorn .= 'HOLA';
-					$Retorn .= '</A>';
+					$URL .= '</A>';
+					if ($row[$obj->Camp] !== null)
+						$Retorn .= $URL;
 					break;
 				case self::toHint:
 					$Retorn .= '<TD ALIGN=center VALIGN=bottom>';
@@ -1733,19 +1734,26 @@ class FormRecerca extends Form
 	 
 	/**
 	 * Permet editar els registres si es compleix les condicions de l'array.
- 	 * @param string $a Array de condicions.
+ 	 * @param string $a Array de associatiu de condicions. Exemple: ['estat' => array('E', 'A'), 'genere' => 'M']
 	 */
 	 public function PermetEditarCondicional($a) {
+//print_h($a);		 
 		 $this->PermetEditarCondicional = $a;
 	 }
 	 
 	 private function PermetEditarRegistre($row): bool {
+//print_h($this->PermetEditarCondicional);		 
 		$Retorn = false;
 		if ($this->PermetEditarCondicional == [])
 			 $Retorn = $this->PermetEditar;
 		else {
 			foreach ($this->PermetEditarCondicional as $key => $value) {
-				if ($row[$key] == $value)
+				if (is_array($value)) {
+					foreach ($value as $item)
+						if ($row[$key] == $item)
+							$Retorn = true;
+				}
+				else if ($row[$key] == $value)
 					$Retorn = true;
 			}
 		}
@@ -2719,7 +2727,7 @@ class FormFitxa extends Form
 		$Retorn = '';
 
 		// Convertim els ENTERs del camp TextArea en <br> (per recuperar-los després)
-		$jsonForm = nl2br($jsonForm, false);
+		//$jsonForm = nl2br($jsonForm, false);
 //print('$jsonForm:');
 //print_r($jsonForm);
 //exit;
@@ -2800,7 +2808,7 @@ class FormFitxa extends Form
 						$sCamps .= substr($Valor->name, 4).", ";
 						$Valor->value = strip_tags($Valor->value, '<p><br>');
 						// Recuperem els ENTERs del camp TextArea que eren <br>
-						$Valor->value = br2nl($Valor->value);
+						//$Valor->value = br2nl($Valor->value);
 //print '<BR>Camp: '.$Valor->name . ' <BR> Value: '.$Valor->value . '<BR>';
 //print_r($Valor);
 //exit;

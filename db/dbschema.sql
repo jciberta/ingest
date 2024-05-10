@@ -21,7 +21,7 @@ CREATE TABLE CICLE_FORMATIU
     codi CHAR(3) NOT NULL,
     codi_xtec CHAR(4) NOT NULL,
     actiu BIT NOT NULL DEFAULT 1,
-    llei CHAR(2) NOT NULL DEFAULT 'LO', /* LoGse, LOe */
+    llei CHAR(2) NOT NULL DEFAULT 'LO', /* LoGse, LOe, LomLoe */
 
     CONSTRAINT CicleFormatiuPK PRIMARY KEY (cicle_formatiu_id),
     CONSTRAINT CF_FamiliaFPFK FOREIGN KEY (familia_fp_id) REFERENCES FAMILIA_FP(familia_fp_id) 
@@ -35,6 +35,7 @@ CREATE TABLE MODUL_PROFESSIONAL
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
+    hores_fct INT,
     hores_setmana INT,
     especialitat VARCHAR(20),
     cos CHAR(1),
@@ -185,6 +186,7 @@ CREATE TABLE MODUL_PLA_ESTUDI
     nom VARCHAR(200) NOT NULL,
     codi VARCHAR(5) NOT NULL,
     hores INT NOT NULL,
+    hores_fct INT,
     hores_setmana INT,
     especialitat VARCHAR(20),
     cos CHAR(1),
@@ -262,6 +264,7 @@ CREATE TABLE MATRICULA
     grup CHAR(1) CHECK (grup IN ('A', 'B', 'C')),
     grup_tutoria VARCHAR(2),
     baixa BIT,
+    beca BIT DEFAULT 0,
     comentari_trimestre1 VARCHAR(100),
     comentari_trimestre2 VARCHAR(100),
     comentari_trimestre3 VARCHAR(100),
@@ -1468,7 +1471,7 @@ DELIMITER ;
  */
 DELIMITER //
 CREATE FUNCTION FormataNomCognom1Cognom2(Nom VARCHAR(100), Cognom1 VARCHAR(100), Cognom2 VARCHAR(100))
-RETURNS VARCHAR(255)
+RETURNS VARCHAR(255) CHARSET utf8mb4 COLLATE utf8mb4_general_ci
 BEGIN 
     RETURN TRIM(CONCAT(nom, ' ', IFNULL(cognom1, ''), ' ', IFNULL(cognom2, '')));
 END //
@@ -1486,7 +1489,7 @@ DELIMITER ;
  */
 DELIMITER //
 CREATE FUNCTION FormataCognom1Cognom2Nom(Nom VARCHAR(100), Cognom1 VARCHAR(100), Cognom2 VARCHAR(100))
-RETURNS VARCHAR(255)
+RETURNS VARCHAR(255) CHARSET utf8mb4 COLLATE utf8mb4_general_ci
 BEGIN 
     RETURN CONCAT(TRIM(CONCAT(IFNULL(cognom1, ''), ' ', IFNULL(cognom2, ''))), ', ', nom);
 END //
@@ -1513,7 +1516,7 @@ BEGIN
     INTO Percentatge
     FROM NOTES N
     LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (UPE.unitat_pla_estudi_id=N.uf_id)
-    WHERE N.matricula_id=MatriculaId;
+    WHERE N.matricula_id=MatriculaId AND UPE.es_uf_addicional = 0;
     
     RETURN Percentatge;  	
 	
