@@ -23,6 +23,8 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
    * @var string
    */
   public $appEngineIntegrationMode;
+  protected $cmekConfigType = GoogleFirestoreAdminV1CmekConfig::class;
+  protected $cmekConfigDataType = '';
   /**
    * @var string
    */
@@ -35,6 +37,10 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
    * @var string
    */
   public $deleteProtectionState;
+  /**
+   * @var string
+   */
+  public $deleteTime;
   /**
    * @var string
    */
@@ -91,6 +97,20 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
     return $this->appEngineIntegrationMode;
   }
   /**
+   * @param GoogleFirestoreAdminV1CmekConfig
+   */
+  public function setCmekConfig(GoogleFirestoreAdminV1CmekConfig $cmekConfig)
+  {
+    $this->cmekConfig = $cmekConfig;
+  }
+  /**
+   * @return GoogleFirestoreAdminV1CmekConfig
+   */
+  public function getCmekConfig()
+  {
+    return $this->cmekConfig;
+  }
+  /**
    * @param string
    */
   public function setConcurrencyMode($concurrencyMode)
@@ -131,6 +151,20 @@ class GoogleFirestoreAdminV1Database extends \Google\Model
   public function getDeleteProtectionState()
   {
     return $this->deleteProtectionState;
+  }
+  /**
+   * @param string
+   */
+  public function setDeleteTime($deleteTime)
+  {
+    $this->deleteTime = $deleteTime;
+  }
+  /**
+   * @return string
+   */
+  public function getDeleteTime()
+  {
+    return $this->deleteTime;
   }
   /**
    * @param string

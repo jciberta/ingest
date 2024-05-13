@@ -38,7 +38,7 @@ class WorkspaceEvents extends \Google\Service
   /** Private Service: https://www.googleapis.com/auth/chat.bot. */
   const CHAT_BOT =
       "https://www.googleapis.com/auth/chat.bot";
-  /** View, add, and remove members from conversations in Google Chat. */
+  /** View, add, update, and remove members from conversations in Google Chat. */
   const CHAT_MEMBERSHIPS =
       "https://www.googleapis.com/auth/chat.memberships";
   /** View members in Google Chat conversations.. */
@@ -71,6 +71,7 @@ class WorkspaceEvents extends \Google\Service
 
   public $operations;
   public $subscriptions;
+  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the WorkspaceEvents service.
@@ -83,6 +84,7 @@ class WorkspaceEvents extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://workspaceevents.googleapis.com/';
+    $this->rootUrlTemplate = $rootUrl ?: 'https://workspaceevents.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';

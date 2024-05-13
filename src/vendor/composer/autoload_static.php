@@ -153,6 +153,13 @@ class ComposerStaticInitfcfdc4d8167676b9daac559be721d39a
     );
 
     public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'PHPSQLParser\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/greenlion/php-sql-parser/src',
+            ),
+        ),
         'H' => 
         array (
             'HTMLPurifier' => 
