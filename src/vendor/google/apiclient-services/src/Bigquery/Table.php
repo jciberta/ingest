@@ -52,6 +52,8 @@ class Table extends \Google\Collection
    * @var string
    */
   public $expirationTime;
+  protected $externalCatalogTableOptionsType = ExternalCatalogTableOptions::class;
+  protected $externalCatalogTableOptionsDataType = '';
   protected $externalDataConfigurationType = ExternalDataConfiguration::class;
   protected $externalDataConfigurationDataType = '';
   /**
@@ -150,6 +152,8 @@ class Table extends \Google\Collection
    * @var string[]
    */
   public $resourceTags;
+  protected $restrictionsType = RestrictionConfig::class;
+  protected $restrictionsDataType = '';
   protected $schemaType = TableSchema::class;
   protected $schemaDataType = '';
   /**
@@ -314,6 +318,20 @@ class Table extends \Google\Collection
   public function getExpirationTime()
   {
     return $this->expirationTime;
+  }
+  /**
+   * @param ExternalCatalogTableOptions
+   */
+  public function setExternalCatalogTableOptions(ExternalCatalogTableOptions $externalCatalogTableOptions)
+  {
+    $this->externalCatalogTableOptions = $externalCatalogTableOptions;
+  }
+  /**
+   * @return ExternalCatalogTableOptions
+   */
+  public function getExternalCatalogTableOptions()
+  {
+    return $this->externalCatalogTableOptions;
   }
   /**
    * @param ExternalDataConfiguration
@@ -706,6 +724,20 @@ class Table extends \Google\Collection
   public function getResourceTags()
   {
     return $this->resourceTags;
+  }
+  /**
+   * @param RestrictionConfig
+   */
+  public function setRestrictions(RestrictionConfig $restrictions)
+  {
+    $this->restrictions = $restrictions;
+  }
+  /**
+   * @return RestrictionConfig
+   */
+  public function getRestrictions()
+  {
+    return $this->restrictions;
   }
   /**
    * @param TableSchema
