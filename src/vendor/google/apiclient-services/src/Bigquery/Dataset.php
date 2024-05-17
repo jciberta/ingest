@@ -54,6 +54,8 @@ class Dataset extends \Google\Collection
    * @var string
    */
   public $etag;
+  protected $externalCatalogDatasetOptionsType = ExternalCatalogDatasetOptions::class;
+  protected $externalCatalogDatasetOptionsDataType = '';
   protected $externalDatasetReferenceType = ExternalDatasetReference::class;
   protected $externalDatasetReferenceDataType = '';
   /**
@@ -92,6 +94,8 @@ class Dataset extends \Google\Collection
    * @var string
    */
   public $maxTimeTravelHours;
+  protected $restrictionsType = RestrictionConfig::class;
+  protected $restrictionsDataType = '';
   /**
    * @var bool
    */
@@ -256,6 +260,20 @@ class Dataset extends \Google\Collection
     return $this->etag;
   }
   /**
+   * @param ExternalCatalogDatasetOptions
+   */
+  public function setExternalCatalogDatasetOptions(ExternalCatalogDatasetOptions $externalCatalogDatasetOptions)
+  {
+    $this->externalCatalogDatasetOptions = $externalCatalogDatasetOptions;
+  }
+  /**
+   * @return ExternalCatalogDatasetOptions
+   */
+  public function getExternalCatalogDatasetOptions()
+  {
+    return $this->externalCatalogDatasetOptions;
+  }
+  /**
    * @param ExternalDatasetReference
    */
   public function setExternalDatasetReference(ExternalDatasetReference $externalDatasetReference)
@@ -408,6 +426,20 @@ class Dataset extends \Google\Collection
   public function getMaxTimeTravelHours()
   {
     return $this->maxTimeTravelHours;
+  }
+  /**
+   * @param RestrictionConfig
+   */
+  public function setRestrictions(RestrictionConfig $restrictions)
+  {
+    $this->restrictions = $restrictions;
+  }
+  /**
+   * @return RestrictionConfig
+   */
+  public function getRestrictions()
+  {
+    return $this->restrictions;
   }
   /**
    * @param bool
