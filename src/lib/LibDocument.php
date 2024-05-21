@@ -113,8 +113,8 @@ class Document extends Objecte
 
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		
-		if ($this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
-		$frm->PermetCercar=false;
+		if ($this->Filtre =='N' || $this->Estudi !='' || $this->Categoria !='' || $this->Nivell !='') {
+			$frm->PermetCercar=false;
 		}
 		
 		$frm->Modalitat = $Modalitat;
@@ -141,37 +141,40 @@ class Document extends Objecte
 			$aValors = array_values(self::VISIBILITAT); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('visibilitat', 'Visibilitat', 20, $aClaus, $aValors);
 		}
-		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
-		$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
-		$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
-
-		$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
-		$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
-
 		
-		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+print_h($this->Categoria);		
+		
+		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
+			$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
+			$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
+
+			$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
+			$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
+
+			
+			$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
-		$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
+			$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
+			$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
+			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
+			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
 		}
 		$frm->EscriuHTML();
 	}
@@ -218,25 +221,23 @@ class Document extends Objecte
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLUsuariNoAutenticat() {
-
 		$FiltreEstudi='';
 		$FiltreCategoria='';
 		$FiltreNivell='';
 
-		if ($this->Estudi!='' && in_array($this->Estudi, self::ESTUDI)){
+		if ($this->Estudi!='' && in_array($this->Estudi, array_keys(self::ESTUDI))){
 			$FiltreEstudi= "AND estudi="."'".$this->Estudi."'"."";
 		}
 		
 
-		if ($this->Nivell!='' && in_array($this->Nivell, self::SUBESTUDI)){
+		if ($this->Nivell!='' && in_array($this->Nivell, array_keys(self::SUBESTUDI))){
 			$FiltreNivell= "AND subestudi="."'".$this->Nivell."'"."";
 		}
 	
 		
-		if ($this->Categoria!='' && in_array($this->Categoria, self::CATEGORIA)){
+		if ($this->Categoria!='' && in_array($this->Categoria, array_keys(self::CATEGORIA))){
 			$FiltreCategoria= "AND Categoria="."'".$this->Categoria."'"."";
 		}
-
 		
 		$SQL = "
 			SELECT 
