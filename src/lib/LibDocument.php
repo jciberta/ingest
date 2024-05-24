@@ -113,7 +113,7 @@ class Document extends Objecte
 
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		
-		if ($this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
+		if ($this->Usuari === null||$this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
 		$frm->PermetCercar=false;
 		}
 		
@@ -241,7 +241,7 @@ class Document extends Objecte
 		$SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
-				DV.document_versio_id, DV.versio, DV.enllac, ".
+				MAX(DV.document_versio_id) AS document_versio_id, DV.versio, DV.enllac, ".
 				SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
 				SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".
 				SQL::CreaCase('categoria', self::CATEGORIA)." AS categoria, ".
@@ -256,7 +256,7 @@ class Document extends Objecte
 			AND visibilitat='B'".$FiltreEstudi."".$FiltreNivell."".$FiltreCategoria."
 		";
 		
-		$SQL .= " GROUP BY DV.document_id ";
+		$SQL .= " GROUP BY document_versio_id ";
 //echo "<hr>$SQL<hr>";
 		return $SQL;
 	}

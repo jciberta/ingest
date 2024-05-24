@@ -1758,7 +1758,7 @@ class AlumnesPromocio1r extends Alumne
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE es_alumne=1 AND M.matricula_id IS NOT NULL AND (M.baixa=0 or M.baixa is NULL) '.
 			' AND C.nivell=1 '.
-			' AND PercentatgeAprovat(M.matricula_id)>=60 '.
+			' GROUP BY U.usuari_id, PercentatgeAprovat, M.matricula_id HAVING PercentatgeAprovat >= 60'.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
 			
 //print '<BR><BR><BR>'.$SQL;
@@ -1806,7 +1806,7 @@ class AlumnesGraduacio2n extends Usuari
 			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
 			' WHERE es_alumne=1 AND M.matricula_id IS NOT NULL AND (M.baixa=0 or M.baixa is NULL) '.
 			' AND C.nivell=2 '.
-			' AND PercentatgeAprovat(M.matricula_id)>=100 '.
+			' GROUP BY U.usuari_id, PercentatgeAprovat, M.matricula_id HAVING PercentatgeAprovat >= 100'.
 			' ORDER BY C.nom, C.nivell, U.cognom1, U.cognom2, U.nom ';
 			
 //print '<BR><BR><BR>'.$SQL;
