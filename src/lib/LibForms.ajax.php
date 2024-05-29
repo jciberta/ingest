@@ -48,7 +48,8 @@ if ($conn->connect_error) {
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && (isset($_REQUEST['accio']))) {
 	if ($_REQUEST['accio'] == 'ActualitzaTaula') {
-		$cerca = $_REQUEST['cerca'];
+//		$cerca = $_REQUEST['cerca'];
+		$cerca = isset($_REQUEST['cerca']) ? $_REQUEST['cerca'] : '';
 //print 'Cerca [AJAX]: '.$cerca;
 		$filtre = $_REQUEST['filtre'];
 //print 'Filtre [AJAX]: '.$filtre;

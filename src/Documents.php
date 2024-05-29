@@ -45,7 +45,6 @@ if ($Usuari === null) {
         $codiDocument = $_GET['CodiDocument']; 
         $doc->RetornaDocument($codiDocument);        
     } else  { 
-       //echo "CodiDocument no proporcionat.";
        $doc->Filtre = isset($_GET['Filtre']) ? $_GET['Filtre'] : "";
        $doc->Estudi =  isset($_GET['Estudi']) ? $_GET['Estudi'] : "";
        $doc->Nivell = isset($_GET['Nivell']) ? $_GET['Nivell'] : "";

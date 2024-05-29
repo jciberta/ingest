@@ -114,7 +114,7 @@ class Document extends Objecte
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		
 		if ($this->Usuari === null||$this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
-		$frm->PermetCercar=false;
+			$frm->PermetCercar=false;
 		}
 		
 		$frm->Modalitat = $Modalitat;
@@ -141,37 +141,40 @@ class Document extends Objecte
 			$aValors = array_values(self::VISIBILITAT); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('visibilitat', 'Visibilitat', 20, $aClaus, $aValors);
 		}
-		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
-		$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
-		$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
-
-		$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
-		$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
-
 		
-		$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+print_h($this->Categoria);		
+		
+		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
+			$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
+			$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
+
+			$aClaus = array_keys(self::SUBESTUDI); array_unshift($aClaus, '');
+			$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
+
+			
+			$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
-		$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
+			$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
+			$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
+			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
 		}
 
 		if ($this->Usuari !== null) {
-		$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
-		$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
-		$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
+			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
+			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
+			$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);
 		}
 		$frm->EscriuHTML();
 	}
@@ -218,7 +221,6 @@ class Document extends Objecte
      * @return string Sentència SQL.
 	 */
 	private function CreaSQLUsuariNoAutenticat() {
-
 		$FiltreEstudi='';
 		$FiltreCategoria= '';
 		$FiltreNivell='';
@@ -234,11 +236,10 @@ class Document extends Objecte
 	
 		
 		if ($this->Categoria!='' && in_array($this->Categoria, array_keys(self::CATEGORIA))){
-			
 			$FiltreCategoria= "AND Categoria="."'".$this->Categoria."'"."";
 		}
-				
-		$SQL = "
+
+    $SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
 				MAX(DV.document_versio_id) AS document_versio_id, DV.versio, DV.enllac, ".
