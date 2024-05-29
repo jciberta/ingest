@@ -175,13 +175,13 @@ switch ($accio) {
 		$frm->SQL = "
 			SELECT 
 				PM.*,
-				CF.nom AS NomCF
+				CF.nom AS NomCF, PM.nom AS NomPM
 			FROM PREU_MATRICULA PM
 			LEFT JOIN CICLE_FORMATIU CF ON (CF.cicle_formatiu_id=PM.cicle_formatiu_id)
 		";
 		$frm->Taula = 'PREU_MATRICULA';
 		$frm->ClauPrimaria = 'preu_matricula_id';
-		$frm->Camps = 'NomCF, nivell, nom, preu, numero_uf';
+		$frm->Camps = 'NomCF, nivell, NomPM, preu, numero_uf';
 		$frm->Descripcions = 'Cicle, Nivell, Nom, Preu, Número UF';
 		$frm->URLEdicio = 'FPFitxa.php?accio=PreuMatricula';
 		$frm->PermetEditar = ($Usuari->es_admin);
@@ -206,13 +206,13 @@ switch ($accio) {
 		$frm->SQL = "
 			SELECT 
 				BM.*,
-				UF.nom AS NomUF
+				UF.nom AS NomUF, BM.nom AS NomBM
 			FROM BONIFICACIO_MATRICULA BM
 			LEFT JOIN UNITAT_FORMATIVA UF ON (UF.unitat_formativa_id=BM.unitat_formativa_id)
 		";
 		$frm->Taula = 'BONIFICACIO_MATRICULA';
 		$frm->ClauPrimaria = 'bonificacio_matricula_id';
-		$frm->Camps = 'nom, valor, tipus, NomUF';
+		$frm->Camps = 'NomBM, valor, tipus, NomUF';
 		$frm->Descripcions = 'Nom, Valor, Tipus, Unitat formativa';
 		$frm->URLEdicio = 'FPFitxa.php?accio=BonificacioMatricula';
 		$frm->PermetEditar = ($Usuari->es_admin);

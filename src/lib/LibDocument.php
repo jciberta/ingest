@@ -113,7 +113,7 @@ class Document extends Objecte
 
 		$frm = new FormRecerca($this->Connexio, $this->Usuari, $this->Sistema);
 		
-		if ($this->Filtre =='N' || $this->Estudi !='' || $this->Categoria !='' || $this->Nivell !='') {
+		if ($this->Usuari === null||$this->Filtre =='N'|| $this->Estudi !=''|| $this->Categoria !=''|| $this->Nivell !=''){
 			$frm->PermetCercar=false;
 		}
 		
@@ -222,7 +222,7 @@ print_h($this->Categoria);
 	 */
 	private function CreaSQLUsuariNoAutenticat() {
 		$FiltreEstudi='';
-		$FiltreCategoria='';
+		$FiltreCategoria= '';
 		$FiltreNivell='';
 
 		if ($this->Estudi!='' && in_array($this->Estudi, array_keys(self::ESTUDI))){
@@ -238,11 +238,11 @@ print_h($this->Categoria);
 		if ($this->Categoria!='' && in_array($this->Categoria, array_keys(self::CATEGORIA))){
 			$FiltreCategoria= "AND Categoria="."'".$this->Categoria."'"."";
 		}
-		
-		$SQL = "
+
+    $SQL = "
 			SELECT 
 				D.document_id, D.codi, D.nom, D.visibilitat, D.observacions,
-				DV.document_versio_id, DV.versio, DV.enllac, ".
+				MAX(DV.document_versio_id) AS document_versio_id, DV.versio, DV.enllac, ".
 				SQL::CreaCase('estudi', self::ESTUDI)." AS estudi, ".
 				SQL::CreaCase('subestudi', self::SUBESTUDI)." AS subestudi, ".
 				SQL::CreaCase('categoria', self::CATEGORIA)." AS categoria, ".
@@ -256,7 +256,8 @@ print_h($this->Categoria);
 			WHERE versio=(SELECT MAX(versio) FROM DOCUMENT_VERSIO DV2 WHERE DV.document_id=DV2.document_id AND estat='A')
 			AND visibilitat='B'".$FiltreEstudi."".$FiltreNivell."".$FiltreCategoria."
 		";
-		$SQL .= " GROUP BY DV.document_id ";
+		
+		$SQL .= " GROUP BY document_versio_id ";
 //echo "<hr>$SQL<hr>";
 		return $SQL;
 	}

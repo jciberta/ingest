@@ -85,12 +85,20 @@ abstract class GeneraPDF extends Objecte
     protected function CreaFitxerComprimit(string $Nom) {
  
     //Netejem el directori
+<<<<<<< HEAD
+    array_map('unlink', glob("downloads/*"));
+=======
     array_map('unlink', glob("scripts/*"));
+>>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
 
     // Comprimeix expedients en un arxiu ZIP
     echo "Comprimint els documents... ";
     $tempDir = sys_get_temp_dir() . '/expedients' . DIRECTORY_SEPARATOR;
+<<<<<<< HEAD
+    $zipFile ="downloads/".$Nom.".zip";
+=======
     $zipFile ="scripts/".$Nom.".zip";
+>>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
 
     $zip = new ZipArchive();
     if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
@@ -108,7 +116,11 @@ abstract class GeneraPDF extends Objecte
         rmdir($tempDir);
     
         echo " Ok.<BR>";
+<<<<<<< HEAD
+        echo "Podeu descarregar els documents comprimits <a href='downloads/$Nom.zip'>aquí</a>. Mida: "
+=======
         echo "Podeu descarregar els documents comprimits <a href='scripts/$Nom.zip'>aquí</a>. Mida: "
+>>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
         .FormataBytes(filesize($zipFile));       
     }
 }
@@ -199,14 +211,23 @@ class GeneraPDFProgramacio extends GeneraPDF
         $Text = $this->GeneraScript();
         echo "Ok.<BR>";
 
+<<<<<<< HEAD
+        echo "Executant l'script per als documents...<br>";
+        //$aText =$Text["modul_pla_estudi_id"];// explode("\r\n",$Text[0]);
+        //echo $aText;
+=======
         echo "Executant l'script per als documents...";
         $aText = explode("\r\n",$Text[0]);
+>>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
         if (Config::Debug)
             echo "<PRE>";
-        for ($i=0; $i<count($aText)-1; $i++) {
+        for ($i=0; $i<count($Text["modul_pla_estudi_id"])-1; $i++) {
             if (Config::Debug)
-                echo "  Executant $aText[$i]<BR>";
-                $Result = shell_exec($aText[$i]);
+                echo "  Executant ".$Text["modul_pla_estudi_id"][$i]."<BR>";
+                $PD = ProgramacioDidacticaPDFFactory::Crea($this->Connexio, $this->Usuari, $this->Sistema, $Text["modul_pla_estudi_id"][$i]);
+                $PD->EscriuPDFArxiu($Text["modul_pla_estudi_id"][$i]);
+            
+              //  $Result = shell_exec($aText[$i]);
         }
         if (Config::Debug)
             echo "</PRE>";
@@ -218,9 +239,9 @@ class GeneraPDFProgramacio extends GeneraPDF
 	/**
 	 * Genera l'script per a poder generar tots els expedients en PDF d'un curs.
 	 */
-	public function GeneraScript(): string {
+	public function GeneraScript(): array {
 		$Comanda = $this->ComandaPHP();
-		$Retorn = '';
+		$Retorn = array();
 		$SQL = '
             SELECT AA.any_inici, AA.any_final, CPE.codi AS CodiCF, MPE.modul_pla_estudi_id, MPE.codi AS CodiMP
             FROM MODUL_PLA_ESTUDI MPE
@@ -236,7 +257,9 @@ class GeneraPDFProgramacio extends GeneraPDF
 			while ($row = $ResultSet->fetch_object()) {
                 $this->NomZIP = 'Programacio_didactica_'.substr($row->any_inici, -2).''.substr($row->any_final, -2).'_'.$row->CodiCF;
                 $Nom = $this->NomZIP.'_'.$row->CodiMP;
-				$Retorn .= "$Comanda ".ROOT."/ProgramacioDidacticaPDF.php ".$row->modul_pla_estudi_id." >".INGEST_DATA."/pdf/".$Nom.".pdf\r\n";
+				//$Retorn .= "$Comanda ".ROOT."/ProgramacioDidacticaPDF.php ".$row->modul_pla_estudi_id." >".INGEST_DATA."/pdf/".$Nom.".pdf\r\n";
+                $Retorn['modul_pla_estudi_id'][] = $row->modul_pla_estudi_id;
+				$Retorn['arxiu'][] = $Nom.".pdf";         		
 			}
 		}
 		$ResultSet->close();

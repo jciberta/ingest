@@ -1162,6 +1162,7 @@ class FormRecerca extends Form
 		
 		$sRetorn = '<DIV id=taula>';
 		$SQL = $this->CreaSQL();
+//echo 'SQL GeneraTaula:<br>';
 //print $SQL;
 		$ResultSet = $this->Connexio->query($SQL);
 		if ($ResultSet->num_rows > 0) {

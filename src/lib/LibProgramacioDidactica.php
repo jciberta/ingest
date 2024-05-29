@@ -5,7 +5,7 @@
  *
  * Llibreria d'utilitats per a la programació didàctica.
  *
- * @author Josep Ciberta, Jordi Planelles
+ * @author Josep Ciberta, Jordi Planelles, Josep Maria Vegas
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
@@ -237,6 +237,8 @@ abstract class ProgramacioDidactica extends Form
 			WHERE MPE.modul_pla_estudi_id=$ModulPlaEstudiId	
 			ORDER BY U.cognom1, U.cognom2, U.nom
 		";
+//print_h($this->Connexio);
+//exit;
 		$ResultSet = $this->Connexio->query($SQL);
 		while($row = $ResultSet->fetch_object()) {
 			$sRetorn .= $row->Nom.', ';
@@ -1520,6 +1522,58 @@ abstract class ProgramacioDidacticaPDF extends ProgramacioDidactica
 		// Clean any content of the output buffer
 		ob_end_clean();
 		$pdf->Output($this->GeneraNomFitxer().'.pdf', 'I');
+	}
+	//Funció que genera un pdf d'una programació didàctica i retorna la ruta de l'arxiu
+
+	public function EscriuPDFArxiu(int $ModulId) {
+		$this->Id = $ModulId;
+		$this->Carrega();
+
+		$pdf = new DocumentPDFProgramacioDidactica('P', 'mm', 'A4', true, 'UTF-8', false);
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Institut de Palamós');
+		$pdf->SetKeywords('INS Palamós, Palamós');
+		$pdf->SetTitle('ProgramacioDidacticaPDF');
+		$pdf->SetSubject('ProgramacioDidacticaPDF');
+
+		// Portada
+		$pdf->AddPage(); 
+		$this->GeneraPortada($pdf);
+
+		$pdf->AddPage(); 
+		$this->PDF = $pdf;
+		$this->GeneraSeccions();
+
+		// Taula de continguts (índex)
+		// https://tcpdf.org/examples/example_045/
+		$pdf->addTOCPage();
+		// write the TOC title
+		$pdf->SetFont('helvetica', 'B');
+		$pdf->MultiCell(0, 0, 'Índex', 0, 'L', 0, 1, '', '', true, 0);
+		$pdf->Ln();
+		$pdf->SetFont('helvetica', '');
+		// add a simple Table Of Content at first page
+		$pdf->addTOC(2, 'helvetica', '.', 'Índex', '');
+		// end of TOC page
+		$pdf->endTOCPage();
+
+		// Close and output PDF document
+		// Clean any content of the output buffer
+		//ob_end_clean();
+		$NomPdf = $this->GeneraNomFitxer().'.pdf';
+		// Directori temporal per emmagatzemar els expedients en PDF
+		$tempDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'expedients'.DIRECTORY_SEPARATOR;
+		
+		// Crear directori temporal si no existeix
+		if (!file_exists($tempDir)) {
+			mkdir($tempDir, 0777, true);
+		}
+		// Ruta on es guardaran els arxius
+		$pdfPath =$tempDir.$NomPdf; 
+		// Guardem el PDF a la ruta
+		$pdf->Output($pdfPath, 'F');
+		// Retornem la ruta
+		return $pdfPath; 
 	}
 
 	private function GeneraPortada($pdf) {
