@@ -38,7 +38,7 @@ function utf8_decodeX($Text) {
 if (!defined('STDIN')) {
 	// Autenticació Google
 	$Protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
-	define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/ingest/AutenticacioOath2Google.php');
+	define('GOOGLE_REDIRECT_URI', $Protocol.'://'.$_SERVER['HTTP_HOST'].'/AutenticacioOath2Google.php');
 }
 
 unset($CFG);
