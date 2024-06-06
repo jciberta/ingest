@@ -422,7 +422,7 @@ class Expedient extends Form
 					$Qualificacions[$i] = new stdClass();
 					$Qualificacions[$i]->Nom = utf8_encodeX($row["CodiMP"].'. '.$row["NomMP"]);
 					$Qualificacions[$i]->Hores = $row["HoresMP"];
-					if (array_key_exists($row["modul_professional_id"], $this->NotesMP))
+					if (array_key_exists($row["modul_pla_estudi_id"], $this->NotesMP))
 						$Qualificacions[$i]->Qualf = NumeroANotaText($this->NotesMP[$row["modul_pla_estudi_id"]]);
 					else
 						$Qualificacions[$i]->Qualf = '';
