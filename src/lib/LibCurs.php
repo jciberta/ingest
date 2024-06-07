@@ -9,10 +9,10 @@
  * @license https://opensource.org/licenses/GPL-3.0 GNU General Public License version 3
  */
 
-require_once(ROOT.'/lib/LibURL.php');
-require_once(ROOT.'/lib/LibDB.php');
-require_once(ROOT.'/lib/LibForms.php');
-require_once(ROOT.'/lib/LibHTML.php');
+require_once(ROOT . '/lib/LibURL.php');
+require_once(ROOT . '/lib/LibDB.php');
+require_once(ROOT . '/lib/LibForms.php');
+require_once(ROOT . '/lib/LibHTML.php');
 
 /**
  * Classe que encapsula les utilitats per al maneig del curs.
@@ -32,18 +32,18 @@ class Curs extends Objecte
 	//  - Obertura: es mostren els butlletins.
 	//  - ...
 	//  - Tancat: es tanca el curs.
-	
+
 	// Colors dels estats del curs
 	const COLOR_ACTIU = '#00FF00';
 	const COLOR_JUNTA = '#CC00CC';
 	const COLOR_INACTIU = '#CCCCCC';
 	const COLOR_OBERTURA = '#FF9900';
 	const COLOR_TANCAT = '#FF0000';
-	
+
 	/**
-	* Indica que només és professor i no admin, ni cap d'estudis...
-	* @var boolean
-	*/    
+	 * Indica que només és professor i no admin, ni cap d'estudis...
+	 * @var boolean
+	 */
 	private $NomesProfessor = True;
 
 	/**
@@ -52,16 +52,18 @@ class Curs extends Objecte
 	 * @param object $user Usuari.
 	 * @param object $system Sistema.
 	 */
-	function __construct($con, $user, $system = null) {
+	function __construct($con, $user, $system = null)
+	{
 		parent::__construct($con, $user, $system);
-		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);			
-	}	
+		$this->NomesProfessor = ($this->Usuari->es_professor && !$this->Usuari->es_admin && !$this->Usuari->es_direccio && !$this->Usuari->es_cap_estudis);
+	}
 
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
-	 */				
-	public function CarregaRegistre($Id) {
+	 */
+	public function CarregaRegistre($Id)
+	{
 		$SQL = "SELECT C.*, CF.cicle_formatiu_id AS CicleFormatiuId 
 			FROM CURS C 
 			LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id)
@@ -75,36 +77,39 @@ class Curs extends Objecte
 			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
+
 	/**
 	 * Retorna l'estat del curs.
-     * @return string estat del curs.
+	 * @return string estat del curs.
 	 */
-	public function Estat(): string {
+	public function Estat(): string
+	{
 		$sRetorn = '';
 		if ($this->Registre != NULL)
 			$sRetorn = $this->Registre->estat;
 		return $sRetorn;
 	}
-	
+
 	/**
 	 * Obté el codi del cicle formatiu del curs.
 	 * @returns integer Identificador del cicle formatiu, sinó -1.
 	 */
-	function ObteCicleFormatiuId() {
-		if ($this->Registre === NULL) 
+	function ObteCicleFormatiuId()
+	{
+		if ($this->Registre === NULL)
 			return -1;
 		else
 			return $this->Registre->CicleFormatiuId;
-//			return $this->Registre->cicle_formatiu_id;
+		//			return $this->Registre->cicle_formatiu_id;
 	}
 
 	/**
 	 * Obté el nivell del curs.
 	 * @returns integer Nivell del curs, sinó -1.
 	 */
-	function ObteNivell() {
-		if ($this->Registre === NULL) 
+	function ObteNivell()
+	{
+		if ($this->Registre === NULL)
 			return -1;
 		else
 			return $this->Registre->nivell;
@@ -113,66 +118,68 @@ class Curs extends Objecte
 	/**
 	 * Crea la SQL pel llistat de cursos.
 	 * @param integer $CursId Identificador del curs (opcional).
-     * @return string Sentència SQL.
+	 * @return string Sentència SQL.
 	 */
-	private function CreaSQL(int $CursId = -1) {
-		$SQL = ' SELECT '.
-			'	C.cicle_formatiu_id, C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.estat, C.nivell, '.
-			'	C.data_inici AS DataInici, C.data_final AS DataFinal, '.
-			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
-			' CASE '.
-			'     WHEN C.estat = "T" THEN "Tancada" '.
-			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
-			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" '.
-			' END AS avaluacio, '.
-			' CASE '.
-			'     WHEN C.avaluacio = "ORD" THEN C.trimestre '.
-			'     WHEN C.avaluacio = "EXT" THEN NULL '.
-			' END AS trimestre, '.
+	private function CreaSQL(int $CursId = -1)
+	{
+		$SQL = ' SELECT ' .
+			'	C.cicle_formatiu_id, C.curs_id, C.codi AS CodiCurs, C.nom AS NomCurs, C.estat, C.nivell, ' .
+			'	C.data_inici AS DataInici, C.data_final AS DataFinal, ' .
+			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, ' .
+			' CASE ' .
+			'     WHEN C.estat = "T" THEN "Tancada" ' .
+			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" ' .
+			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" ' .
+			' END AS avaluacio, ' .
+			' CASE ' .
+			'     WHEN C.avaluacio = "ORD" THEN C.trimestre ' .
+			'     WHEN C.avaluacio = "EXT" THEN NULL ' .
+			' END AS trimestre, ' .
 			' CASE
 				  WHEN CPE.grau = "GB" THEN 1
 				  WHEN CPE.grau = "GM" THEN 2
 				  WHEN CPE.grau = "GS" THEN 3
 				  WHEN CPE.grau = "CE" THEN 4
 			  END AS Ordre
-			'.
-			' FROM CURS C '.
-			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+			' .
+			' FROM CURS C ' .
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) ' .
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) ' .
 			' WHERE (0=0) ';
-		if ($this->NomesProfessor)			
-			$SQL .= ' AND CPE.cicle_formatiu_id IN ( '.
-				' SELECT DISTINCT CPE.cicle_formatiu_id FROM PROFESSOR_UF PUF '.
-				' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) '.
-				' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) '.
-				' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) '.
-				' WHERE professor_id='.$this->Usuari->usuari_id.		
+		if ($this->NomesProfessor)
+			$SQL .= ' AND CPE.cicle_formatiu_id IN ( ' .
+				' SELECT DISTINCT CPE.cicle_formatiu_id FROM PROFESSOR_UF PUF ' .
+				' LEFT JOIN UNITAT_PLA_ESTUDI UPE ON (PUF.uf_id=UPE.unitat_pla_estudi_id) ' .
+				' LEFT JOIN MODUL_PLA_ESTUDI MPE ON (MPE.modul_pla_estudi_id=UPE.modul_pla_estudi_id) ' .
+				' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=MPE.cicle_pla_estudi_id) ' .
+				' WHERE professor_id=' . $this->Usuari->usuari_id .
 				' ) ';
 		if ($CursId != -1)
-			$SQL .= ' AND C.curs_id='.$CursId;
+			$SQL .= ' AND C.curs_id=' . $CursId;
 		$SQL .= ' ORDER BY Ordre, C.codi ';
 		return $SQL;
 	}
 
 	/**
 	 * Crea la SQL pel llistat de cursos actuals.
-     * @return string Sentència SQL.
+	 * @return string Sentència SQL.
 	 */
-	private function CreaSQLCursosActuals() {
-		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, '.
-			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, '.
-			' CASE '.
-			'     WHEN C.estat = "T" THEN "Tancada" '.
-			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" '.
-			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" '.
-			' END AS avaluacio, '.
-			' CASE '.
-			'     WHEN C.avaluacio = "ORD" THEN C.trimestre '.
-			'     WHEN C.avaluacio = "EXT" THEN NULL '.
-			' END AS trimestre '.
-			' FROM CURS C '.
-			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) '.
-			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) '.
+	private function CreaSQLCursosActuals()
+	{
+		$SQL = ' SELECT C.curs_id, C.codi, C.nom AS NomCurs, C.nivell, C.estat, ' .
+			' CONCAT(AA.any_inici,"-",AA.any_final) AS Any, ' .
+			' CASE ' .
+			'     WHEN C.estat = "T" THEN "Tancada" ' .
+			'     WHEN C.avaluacio = "ORD" THEN "Ordinària" ' .
+			'     WHEN C.avaluacio = "EXT" THEN "Extraordinària" ' .
+			' END AS avaluacio, ' .
+			' CASE ' .
+			'     WHEN C.avaluacio = "ORD" THEN C.trimestre ' .
+			'     WHEN C.avaluacio = "EXT" THEN NULL ' .
+			' END AS trimestre ' .
+			' FROM CURS C ' .
+			' LEFT JOIN CICLE_PLA_ESTUDI CPE ON (CPE.cicle_pla_estudi_id=C.cicle_formatiu_id) ' .
+			' LEFT JOIN ANY_ACADEMIC AA ON (AA.any_academic_id=CPE.any_academic_id) ' .
 			' WHERE AA.actual=1 ';
 		return $SQL;
 	}
@@ -180,9 +187,10 @@ class Curs extends Objecte
 	/**
 	 * Retorna el text de l'estat.
 	 * @param string $sEstat Codi de l'estat.
-     * @return string Text de l'estat.
+	 * @return string Text de l'estat.
 	 */
-	static public function TextEstat(string $sEstat): string {
+	static public function TextEstat(string $sEstat): string
+	{
 		switch ($sEstat) {
 			case "A":
 				return 'Actiu';
@@ -207,9 +215,10 @@ class Curs extends Objecte
 	/**
 	 * Retorna el text de l'estat (inclosa la imatge).
 	 * @param string $sEstat Codi de l'estat.
-     * @return string Text de l'estat en format HTML.
+	 * @return string Text de l'estat en format HTML.
 	 */
-	static public function TextEstatColor(string $sEstat): string {
+	static public function TextEstatColor(string $sEstat): string
+	{
 		switch ($sEstat) {
 			case "A":
 				return '<img src=img/curs/colorA.png> Actiu. Entrada de notes.';
@@ -233,24 +242,26 @@ class Curs extends Objecte
 
 	/**
 	 * Retorna la llegenda dels estats del curs.
-     * @return string Llegenda en format HTML.
+	 * @return string Llegenda en format HTML.
 	 */
-	static public function LlegendaEstat(): string {
-		$Retorn = 'Els diferents estats en que pot estar un curs són els següents:<br>'.
-			Self::TextEstatColor('A').'<br>'.
-			Self::TextEstatColor('J').'<br>'.
-			Self::TextEstatColor('I').'<br>'.
-			Self::TextEstatColor('O').'<br>'.
-			Self::TextEstatColor('T').'<br>';
+	static public function LlegendaEstat(): string
+	{
+		$Retorn = 'Els diferents estats en que pot estar un curs són els següents:<br>' .
+			Self::TextEstatColor('A') . '<br>' .
+			Self::TextEstatColor('J') . '<br>' .
+			Self::TextEstatColor('I') . '<br>' .
+			Self::TextEstatColor('O') . '<br>' .
+			Self::TextEstatColor('T') . '<br>';
 		return $Retorn;
 	}
-	
+
 	/**
 	 * Genera el llistat de cursos.
 	 */
-	public function EscriuFormulariRecerca() {
+	public function EscriuFormulariRecerca()
+	{
 		$SQL = $this->CreaSQL();
-//print '<br><br><br>'.$SQL;
+		//print '<br><br><br>'.$SQL;
 		$frm = new FormRecerca($this->Connexio, $this->Usuari);
 		$frm->AfegeixJavaScript('Matricula.js?v1.2');
 		$frm->Titol = 'Cursos';
@@ -260,13 +271,12 @@ class Curs extends Objecte
 		$frm->Camps = 'CodiCurs, NomCurs, nivell, Any, avaluacio, trimestre';
 		$frm->Descripcions = 'Codi, Nom, Nivell, Any, Avaluació, Trimestre';
 		$frm->AfegeixOpcioColor('Estat', 'estat', 'curs/color', 'png', Curs::LlegendaEstat());
-		
+
 		// Opcions
 		if ($this->Usuari->es_administratiu) {
 			// Usuari administratiu
 			$frm->AfegeixOpcio('Notes', 'Notes.php?CursId=');
-		}
-		else {
+		} else {
 			// Resta d'usuaris
 			if (!$this->NomesProfessor) {
 				$frm->AfegeixOpcio('Alumnes', 'UsuariRecerca.php?accio=Matricules&CursId=');
@@ -299,11 +309,12 @@ class Curs extends Objecte
 	 * Genera una pàgina amb les estadístiques d'un o més cursos indicats per una SQL.
 	 * @param string $SQL Sentència SQL amb els cursos.
 	 * @return string Codi HTML de la pàgina.
-	 */				
-	private function GeneraEstadistiques(string $SQL): string {
+	 */
+	private function GeneraEstadistiques(string $SQL): string
+	{
 		$Retorn = GeneraIniciHTML($this->Usuari, 'Estadístiques cursos');
 		$Retorn .= '<script language="javascript" src="vendor/Chart.min.js" type="text/javascript"></script>';
-		
+
 		//$bColumna1 = true;
 		$Retorn .= '<TABLE>';
 		$Retorn .= '<TR>';
@@ -312,8 +323,8 @@ class Curs extends Objecte
 		while ($objCurs = $ResultSet->fetch_object()) {
 			$Nivell = $objCurs->nivell;
 			$Notes = new Notes($this->Connexio, $this->Usuari);
-//print_r($objCurs);			
-//exit;
+			//print_r($objCurs);			
+			//exit;
 			$Notes->CarregaRegistre($objCurs->curs_id, $Nivell, $objCurs->avaluacio);
 			$Retorn .= $Notes->GeneraEstadistiquesCurs($objCurs, $Nivell);
 			$Retorn .= '<BR>';
@@ -322,34 +333,36 @@ class Curs extends Objecte
 			$Retorn .= $Notes->GeneraPastisEstadistiquesCurs($objCurs, $Nivell);
 			$Retorn .= '</TD>';
 			//if (!$bColumna1)
-				$Retorn .= '</TR><TR>';
+			$Retorn .= '</TR><TR>';
 			$Retorn .= '<TD width=600px>';
 			//$bColumna1 = !$bColumna1;
 		}
-		$ResultSet->close();		
+		$ResultSet->close();
 		$Retorn .= '</TD>';
 		$Retorn .= '</TR>';
 		$Retorn .= '<TABLE>';
-		
+
 		$Retorn .= '';
 		return $Retorn;
 	}
-	
+
 	/**
 	 * Genera una pàgina amb les estadístiques de les notes dels cursos actuals.
 	 * @return string Codi HTML de la pàgina.
-	 */				
-	public function Estadistiques() {
+	 */
+	public function Estadistiques()
+	{
 		$SQL = $this->CreaSQLCursosActuals();
 		return $this->GeneraEstadistiques($SQL);
 	}
-	
+
 	/**
 	 * Genera una pàgina amb les estadístiques de les notes d'un curs.
 	 * @param integer $CursId Identificador del curs.
 	 * @return string Codi HTML de la pàgina.
-	 */				
-	public function EstadistiquesCurs(int $CursId) {
+	 */
+	public function EstadistiquesCurs(int $CursId)
+	{
 		$SQL = $this->CreaSQL($CursId);
 		return $this->GeneraEstadistiques($SQL);
 	}
@@ -363,33 +376,36 @@ class GrupClasse extends Objecte
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
-	 */				
-	public function Carrega(int $CursId) {
+	 */
+	public function Carrega(int $CursId)
+	{
 		$SQL = "SELECT * FROM CURS WHERE curs_id=?;";
 		$stmt = $this->Connexio->prepare($SQL);
 		$stmt->bind_param("i", $CursId);
 		$stmt->execute();
 		$ResultSet = $stmt->get_result();
-		if ($ResultSet->num_rows > 0) {		
+		if ($ResultSet->num_rows > 0) {
 			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
-	
+
 	/**
 	 * Genera un array amb els grups d'un curs.
-     * @param int $CursId Identificador del curs.
+	 * @param int $CursId Identificador del curs.
 	 * @return array Grups dels curs.
 	 */
-	public function ObteGrups(int $CursId): array {
+	public function ObteGrups(int $CursId): array
+	{
 		$this->Carrega($CursId);
 		return explode(',', $this->Registre->grups_classe ?? '');
 	}
-	
+
 	/**
 	 * Genera un array amb els grups de l'any actual.
 	 * @return array Grups de l'any actual.
 	 */
-	public function ObteGrupsAnyActual(): array {
+	public function ObteGrupsAnyActual(): array
+	{
 		$SQL = " 
 			SELECT DISTINCT(grups_classe)
 			FROM CURS C
@@ -400,8 +416,8 @@ class GrupClasse extends Objecte
 		$Grups = '';
 		$ResultSet = $this->Connexio->query($SQL);
 		while ($obj = $ResultSet->fetch_object()) {
-			$Grups .= $obj->grups_classe.',';
-		}			
+			$Grups .= $obj->grups_classe . ',';
+		}
 		$ResultSet->close();
 		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
 		$aGrups = explode(',', $Grups);
@@ -409,19 +425,23 @@ class GrupClasse extends Objecte
 		$aGrups = array_unique($aGrups, SORT_STRING); // Removes duplicate values from an array (https://www.php.net/array_unique)
 		return $aGrups;
 	}
-	
+
 	/**
 	 * Genera els checkboxs per filtrar per grup.
-     * @param int $CursId Identificador del curs.
+	 * @param int $CursId Identificador del curs.
 	 * @return string Codi HTML del filtre.
 	 */
-	public function GeneraMostraGrup(int $CursId): string {
+	public function GeneraMostraGrup(int $CursId): string
+	{
 		$Retorn = '';
 		$aGrups = $this->ObteGrups($CursId);
-		foreach ($aGrups as $Grup) {
-			$Valor = '"'.$Grup.'"';	
-			$Retorn .= "<input type='checkbox' name='chbGrup$Grup' checked onclick='MostraGrup(this, $Valor);'>Grup $Grup &nbsp";
+		if ($aGrups[0] != null) {
+			foreach ($aGrups as $Grup) {
+				$Valor = '"' . $Grup . '"';
+				$Retorn .= "<input type='checkbox' name='chbGrup$Grup' checked onclick='MostraGrup(this, $Valor);'>Grup $Grup &nbsp";
+			}
 		}
+
 		return $Retorn;
 	}
 }
@@ -434,21 +454,23 @@ class GrupTutoria extends Objecte
 	/**
 	 * Carrega el registre especificat de la taula CURS.
 	 * @param integer $Id Identificador del registre.
-	 */				
-	public function Carrega(int $CursId) {
+	 */
+	public function Carrega(int $CursId)
+	{
 		$SQL = " SELECT * FROM CURS WHERE curs_id=$CursId ";
 		$ResultSet = $this->Connexio->query($SQL);
-		if ($ResultSet->num_rows > 0) {		
+		if ($ResultSet->num_rows > 0) {
 			$this->Registre = $ResultSet->fetch_object();
 		}
 	}
 
 	/**
 	 * Genera un array amb els grups d'un curs.
-     * @param int $CursId Identificador del curs.
+	 * @param int $CursId Identificador del curs.
 	 * @return array Grups dels curs.
 	 */
-	public function ObteGrups(int $CursId): array {
+	public function ObteGrups(int $CursId): array
+	{
 		$this->Carrega($CursId);
 		return explode(',', $this->Registre->grups_tutoria ?? '');
 	}
@@ -457,7 +479,8 @@ class GrupTutoria extends Objecte
 	 * Genera un array amb els grups de l'any actual.
 	 * @return array Grups de l'any actual.
 	 */
-	public function ObteGrupsAnyActual(): array {
+	public function ObteGrupsAnyActual(): array
+	{
 		$AnyAcademicId = $this->Sistema->any_academic_id;
 		$SQL = " 
 			SELECT DISTINCT(grups_tutoria)
@@ -469,8 +492,8 @@ class GrupTutoria extends Objecte
 		$Grups = '';
 		$ResultSet = $this->Connexio->query($SQL);
 		while ($obj = $ResultSet->fetch_object()) {
-			$Grups .= $obj->grups_tutoria.',';
-		}			
+			$Grups .= $obj->grups_tutoria . ',';
+		}
 		$ResultSet->close();
 		$Grups = substr($Grups, 0, -1); // Treiem la darrera coma
 		$aGrups = explode(',', $Grups);
@@ -481,18 +504,19 @@ class GrupTutoria extends Objecte
 
 	/**
 	 * Genera els checkboxs per filtrar per grup.
-     * @param int $CursId Identificador del curs.
+	 * @param int $CursId Identificador del curs.
 	 * @return string Codi HTML del filtre.
 	 */
-	public function GeneraMostraGrup(int $CursId): string {
+	public function GeneraMostraGrup(int $CursId): string
+	{
 		$Retorn = '';
 		$aGrups = $this->ObteGrups($CursId);
-		foreach ($aGrups as $GrupTutoria) {
-			$Valor = '"'.$GrupTutoria.'"';	
-			$Retorn .= "<input type='checkbox' name='chbGrup$GrupTutoria' checked onclick='MostraTutoria(this, $Valor);'>Tutoria $GrupTutoria &nbsp";
-		}
+		if ($aGrups[0] != null) {
+			foreach ($aGrups as $GrupTutoria) {
+				$Valor = '"' . $GrupTutoria . '"';
+				$Retorn .= "<input type='checkbox' name='chbGrup$GrupTutoria' checked onclick='MostraTutoria(this, $Valor);'>Tutoria $GrupTutoria &nbsp";
+			}
+		} 
 		return $Retorn;
 	}
 }
-
-?>
