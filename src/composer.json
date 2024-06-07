@@ -1,7 +1,7 @@
 {
     "require": {
         "phpoffice/phpword": "^0.18.2",
-        "google/apiclient": "2.12.1",
+        "google/apiclient": "^2.12.1",
         "phpoffice/phpspreadsheet": "1.29",
         "ezyang/htmlpurifier": "^4.14",
         "greenlion/php-sql-parser": "^4.6"
