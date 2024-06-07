@@ -752,3 +752,142 @@ call CopiaProgramacions(5, 6);
 -- CopiaEquips 
 INSERT INTO EQUIP (any_academic_id, tipus, nom, cap, familia_fp_id)
 SELECT 6, tipus, nom, cap, familia_fp_id FROM EQUIP WHERE any_academic_id=5;
+
+
+/*
+ * Curs 2024-2025
+ */
+INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2024, 2025, 'Curs 2024-2025');
+UPDATE ANY_ACADEMIC SET actual=0;
+UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=7;
+
+-- Títols LOMLOE (https://xtec.gencat.cat/ca/curriculum/professionals/fp/titolsloe/infcomunicacions/)
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 11, 'Sistemes microinformàtics i xarxes (LOMLOE)', 'GM', 'SMX', 'IC10', 17);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 13, 'Desenvolupament d''aplicacions multiplataforma (LOMLOE)', 'GS', 'DAM', 'ICB0', 17);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 14, 'Desenvolupament d''aplicacions web (LOMLOE)', 'GS', 'DAW', 'ICC0', 17);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 15, 'Farmàcia i parafarmàcia (LOMLOE)', 'GM', 'FIP', 'SA20', 21);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 16, 'Atenció a persones en situació de dependència (LOMLOE)', 'GM', 'APD', 'SC10', 23);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 18, 'Informàtica d''oficina (LOMLOE)', 'GB', 'FPB', 'IC10', 17);
+INSERT INTO CICLE_FORMATIU (llei, cicle_formatiu_id, nom, grau, codi, codi_xtec, familia_fp_id) VALUES ('LL', 19, 'Higiene bucodental (LOMLOE)', 'GS', 'HBU', 'SAH0 ', 21);
+
+/* Mòduls professionals SMX */
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1001, 'Muntatge i Manteniment d’Equips', '0221', 132, 99, 4, '627', 'B' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1002, 'Sistemes operatius monolloc', '0222', 99, 33, 3, '627', 'B' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1003, 'Aplicacions ofimàtiques', '0223', 99, 99, 3, '627', 'B' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1004, 'Sistemes operatius en xarxa', '0224', 132, 66, 4, '627', 'B' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1005, 'Xarxes locals', '0225', 132, 66, 4, '507', 'A' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1006, 'Seguretat informàtica', '0226', 99, 33, 3, '507', 'A' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1007, 'Serveis de xarxa', '0227', 132, 66, 4, '507', 'A' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1008, 'Aplicacions web', '0228', 66, 53, 2, '507', 'A' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1009, 'Anglès Professional', '0156', 66, NULL, 2, 'AN', 'A' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1010, 'Digitalització Aplicada als Sectors Productius', '1664', 33, NULL, 1, '', '' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1011, 'Sostenibilitat Aplicada al Sistema Productiu', '1708', 33, NULL, 1, '', '' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1012, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, NULL, 3, '505, 507, 627', '' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1013, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, NULL, 2, '', '' ,11);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1014, 'Projecte Intermodular', '1713', 198, NULL, 6, '', '' ,11);
+/* Mòduls professionals DAM */
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1021, 'Llenguatges de marques i sistemes de gestió d´informació', '0373', 66, 33, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1022, 'Sistemes informàtics', '0483', 99, 66, 3, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1023, 'Bases de dades', '0484', 132, 66, 4, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1024, 'Programació', '0485', 198, 66, 6, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1025, 'Accés a dades', '0486', 66, 66, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1026, 'Entorns de desenvolupament', '0487', 66, 33, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1027, 'Desenvolupament d´interfícies', '0488', 66, 53, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1028, 'Programació multimèdia i dispositius mòbils', '0489', 66, 66, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1029, 'Programació de serveis i processos', '0490', 66, 33, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1030, 'Sistemes de gestió empresarial', '0491', 66, 33, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1031, 'Anglès professional', '0179', 66, NULL, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1032, 'Digitalització aplicada als sectors productius', '1665', 33, NULL, 1, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1033, 'Sostenibilitat aplicada al sistema productiu', '1708', 33, NULL, 1, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1034, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, NULL, 3, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1035, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, NULL, 2, '', '' ,13);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1036, 'Projecte intermodular de desenvolupament d´aplicacions multiplataforma', '0492', 198, NULL, 6, '', '' ,13);
+/* Mòduls professionals DAW */
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1041, 'Llenguatges de marques i sistemes de gestió d´informació', '0373', 66, 33, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1042, 'Sistemes informàtics', '0483', 99, 66, 3, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1043, 'Bases de dades', '0484', 132, 66, 4, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1044, 'Programació', '0485', 198, 66, 6, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1045, 'Entorns de desenvolupament', '0487', 66, 33, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1046, 'Desenvolupament web en entorn client', '0612', 99, 66, 3, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1047, 'Desenvolupament web en entorn servidor', '0613', 99, 66, 3, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1048, 'Desplegament d´aplicacions web', '0614', 66, 53, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1049, 'Disseny d´interfícies web', '0615', 66, 66, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1050, 'Anglès professional', '0179', 66, NULL, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1051, 'Digitalització aplicada als sectors productius', '1665', 33, NULL, 1, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1052, 'Sostenibilitat aplicada al sistema productiu', '1708', 33, NULL, 1, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1053, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, NULL, 3, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1054, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, NULL, 2, '', '' ,14);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_fct, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (1055, 'Projecte intermodular de desenvolupament d´aplicacions web', '0616', 198, NULL, 6, '', '' ,14);
+
+/* Unitats formatives SMX (fake) */
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1001, 'Muntatge i Manteniment d’Equips', '0221', 132, 1, 1001);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1002, 'Sistemes operatius monolloc', '0222', 99, 1, 1002);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1003, 'Aplicacions ofimàtiques', '0223', 99, 1, 1003);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1004, 'Sistemes operatius en xarxa', '0224', 132, 2, 1004);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1005, 'Xarxes locals', '0225', 132, 1, 1005);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1006, 'Seguretat informàtica', '0226', 99, 2, 1006);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1007, 'Serveis de xarxa', '0227', 132, 2, 1007);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1008, 'Aplicacions web', '0228', 66, 1, 1008);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1009, 'Anglès Professional', '0156', 66, 1, 1009);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1010, 'Digitalització Aplicada als Sectors Productius', '1664', 33, 1, 1010);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1011, 'Sostenibilitat Aplicada al Sistema Productiu', '1708', 33, 1, 1011);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1012, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, 1, 1012);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1013, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, 1, 1013);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1014, 'Projecte Intermodular', '1713', 198, 2, 1014);
+/* Unitats formatives DAM (fake) */
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1021, 'Llenguatges de marques i sistemes de gestió d´informació', '0373', 66, NULL, 1021);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1022, 'Sistemes informàtics', '0483', 99, NULL, 1022);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1023, 'Bases de dades', '0484', 132, NULL, 1023);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1024, 'Programació', '0485', 198, NULL, 1024);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1025, 'Accés a dades', '0486', 66, NULL, 1025);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1026, 'Entorns de desenvolupament', '0487', 66, NULL, 1026);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1027, 'Desenvolupament d´interfícies', '0488', 66, NULL, 1027);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1028, 'Programació multimèdia i dispositius mòbils', '0489', 66, NULL, 1028);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1029, 'Programació de serveis i processos', '0490', 66, NULL, 1029);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1030, 'Sistemes de gestió empresarial', '0491', 66, NULL, 1030);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1031, 'Anglès professional', '0179', 66, NULL, 1031);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1032, 'Digitalització aplicada als sectors productius', '1665', 33, NULL, 1032);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1033, 'Sostenibilitat aplicada al sistema productiu', '1708', 33, NULL, 1033);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1034, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, NULL, 1034);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1035, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, NULL, 1035);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1036, 'Projecte intermodular de desenvolupament d´aplicacions multiplataforma', '0492', 198, NULL, 1036);
+/* Unitats formatives DAW (fake) */
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1041, 'Llenguatges de marques i sistemes de gestió d´informació', '0373', 66, NULL, 1041);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1042, 'Sistemes informàtics', '0483', 99, NULL, 1042);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1043, 'Bases de dades', '0484', 132, NULL, 1043);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1044, 'Programació', '0485', 198, NULL, 1044);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1045, 'Entorns de desenvolupament', '0487', 66, NULL, 1045);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1046, 'Desenvolupament web en entorn client', '0612', 99, NULL, 1046);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1047, 'Desenvolupament web en entorn servidor', '0613', 99, NULL, 1047);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1048, 'Desplegament d´aplicacions web', '0614', 66, NULL, 1048);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1049, 'Disseny d´interfícies web', '0615', 66, NULL, 1049);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1050, 'Anglès professional', '0179', 66, NULL, 1050);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1051, 'Digitalització aplicada als sectors productius', '1665', 33, NULL, 1051);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1052, 'Sostenibilitat aplicada al sistema productiu', '1708', 33, NULL, 1052);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1053, 'Itinerari Personal per a l´Ocupabilitat I', '1709', 99, NULL, 1053);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1054, 'Itinerari Personal per a l´Ocupabilitat II', '1710', 66, NULL, 1054);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (1055, 'Projecte intermodular de desenvolupament d´aplicacions web', '0616', 198, NULL, 1055);
+
+
+-- Desmarca MP, UF no actius
+call CreaPlaEstudis(7);
+
+-- Posar data inici i data final
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOMLOE) 2024-2025 1r', 'SMX1', 43, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2024-2025 2n', 'SMX2', 36, 2);
+...
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2024-2025 1r', 'DAM1', 30, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2024-2025 2n', 'DAM2', 30, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2024-2025 1r', 'FIP1', 31, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2024-2025 2n', 'FIP2', 31, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2024-2025 1r', 'APD1', 32, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2024-2025 2n', 'APD2', 32, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 1r', 'CAI1', 33, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 2n', 'CAI2', 33, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2024-2025 1r', 'FPB1', 34, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2024-2025 2n', 'FPB2', 34, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2024-2025 1r', 'HBD1', 35, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2024-2025 2n', 'HBD2', 35, 2);
+
+
+

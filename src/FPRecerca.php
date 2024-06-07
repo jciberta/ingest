@@ -72,6 +72,7 @@ switch ($accio) {
 			'   CASE CF.llei '.
 			'     WHEN "LO" THEN "LOE" '.
 			'     WHEN "LG" THEN "LOGSE" '.
+			'     WHEN "LL" THEN "LOMLOE" '.
 			'   END AS Llei, '.
 			' 	FFP.nom AS NomFFP '.
 			' FROM CICLE_FORMATIU CF '.

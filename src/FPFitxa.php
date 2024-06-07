@@ -82,7 +82,7 @@ switch ($accio) {
 		$frm->AfegeixText('grau', 'Grau', 20);
 		$frm->AfegeixText('codi_xtec', 'Codi XTEC', 20);
 		$frm->AfegeixLookup('familia_fp_id', 'Família', 200, 'FPRecerca.php?accio=Families', 'FAMILIA_FP', 'familia_fp_id', 'nom');
-		$frm->AfegeixLlista('llei', 'Llei', 30, array('LO', 'LG'), array('LOE', 'LOGSE'), [FormFitxa::offREQUERIT]);
+		$frm->AfegeixLlista('llei', 'Llei', 30, array('LO', 'LG', 'LL'), array('LOE', 'LOGSE', 'LOMLOE'), [FormFitxa::offREQUERIT]);
 		$frm->AfegeixCheckBox('actiu', 'Actiu');
 		$frm->EscriuHTML();	
         break;

@@ -38,11 +38,15 @@ echo '<TR>';
 //echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'NomAlumne, Cognom1Alumne, Cognom2Alumne');
 echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
 echo '</TR><TR>';
-//$SQL = 'SELECT C.curs_id, C.nom '.
-//	' FROM CURS C'.
-//	' LEFT JOIN ANY_ACADEMIC AA ON (C.any_academic_id=AA.any_academic_id) '.
-//	' WHERE actual=1';
-$SQL = "SELECT * FROM CURS_ACTUAL;";
+
+$SQL = '
+	SELECT C.curs_id, C.nom 
+	FROM CURS C
+	LEFT JOIN CICLE_PLA_ESTUDI CPE ON (C.cicle_formatiu_id=CPE.cicle_pla_estudi_id) 
+	WHERE CPE.any_academic_id>='.$Sistema->any_academic_id;
+//$SQL = "SELECT * FROM CURS_ACTUAL;";
+
+
 $aCurs = ObteCodiValorDesDeSQL($conn, $SQL, "curs_id", "nom");
 echo $frmMatricula->CreaLlista('curs', 'Curs', 1000, $aCurs[0], $aCurs[1]);
 echo '</TR><TR>';
