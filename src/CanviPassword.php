@@ -90,9 +90,9 @@ if (!empty($_POST))
 							$errors = [];
 							if (ComprovaFortalesaPassword($_POST['contrasenya1'], $errors)) {
 								// Compte! Un email diferent per a cada usuari
-								$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE email = ?;";
+								$SQL = "UPDATE USUARI SET password = ?, imposa_canvi_password = 0 WHERE email = ? OR email_ins = ?;";
 								$stmt = $conn->prepare($SQL);
-								$stmt->bind_param("ss", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $email);
+								$stmt->bind_param("ss", password_hash($_POST['contrasenya1'], PASSWORD_DEFAULT), $email, $email);
 								$stmt->execute();
 								
 								$SQL = "DELETE FROM PASSWORD_RESET_TEMP WHERE email = ?;";
