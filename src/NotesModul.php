@@ -79,7 +79,7 @@ if ($Avaluacio->Estat() != Avaluacio::Tancada)
 $NotesModul = new NotesModul($conn, $Usuari, $Sistema);
 $NotesModul->CarregaRegistre($CursId, $ModulId);
 $NotesModul->CarregaRegistreMitjanes($CursId, $ModulId);
-
+echo "<div>";
 $Grup = new GrupClasse($conn, $Usuari, $Sistema);
 echo $Grup->GeneraMostraGrup($CursId);
 $Tutoria = new GrupTutoria($conn, $Usuari, $Sistema);
@@ -118,13 +118,17 @@ if ($Usuari->es_admin) {
 	}
 }
 echo '</span>';
+echo "</div>";
 
 echo "<P>";
 
+echo "<br>";
 $NotesModul->EscriuFormulari($CicleId, 2, null, 2, $Professor, $Avaluacio);
+
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
+
 
 $conn->close(); 
  
