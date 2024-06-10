@@ -2250,7 +2250,7 @@ class FormFitxa extends Form
 	}
 
 	/**
-	 * Afegeix un enllaç a una altra pàgina.
+	 * Afegeix un enllaç a una altra pàgina. La URL es forma amb el camp Link + el valor de Camp. Camp pot ser nul.
 	 * @param string $Camp Camp de la taula.
 	 * @param string $Titol Títol del control.
 	 * @param string $Link Enllaç.
@@ -2547,8 +2547,10 @@ class FormFitxa extends Form
 					$sRetorn .= (!$bAlCostat) ? '</TR>'.PHP_EOL .'<TR>' : '';
 //print "Valor->Camp: ".$Valor->Camp.'<br>';					
 //print "this->Registre[Valor->Camp]: ".$this->Registre[$Valor->Camp].'<br>';					
-					if ($this->Registre[$Valor->Camp] != '')
+					if ($Valor->Camp != '' && $this->Registre[$Valor->Camp] != '')
 						$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, $this->Registre[$Valor->Camp], $Valor->Opcions);
+					else 
+						$sRetorn .= $this->CreaEnllac($Valor->Camp, $Valor->Titol, $Valor->Link, '', $Valor->Opcions);
 					break;
 				case self::tcPESTANYA:
 					$Nom = $Valor->Nom;
