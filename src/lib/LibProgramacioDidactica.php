@@ -119,6 +119,9 @@ class ProgramacioDidacticaPDFFactory extends ProgramacioDidacticaFactory
 			case "LG":
 				$obj = new ProgramacioDidacticaPDFLOGSE($conn, $user, $system);
 				break;
+			case "LL":
+				$obj = new ProgramacioDidacticaPDFLOMLOE($conn, $user, $system);
+				break;
 			default:
 				throw new Exception("ProgramacioDidacticaPDFFactory: Llei no implementada");
 				break;
@@ -681,7 +684,7 @@ class ProgramacioDidacticaLOMLOE extends ProgramacioDidactica
 		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
 		if ($this->Registre->es_fct)
 			echo $this->GeneraSeccio(self::pdPLANIFICACIO_FCT, $Comptador);
-		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOMLOE, $Comptador);
+		//echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOMLOE, $Comptador);
 		echo $this->GeneraSeccio(self::pdOBJECTIUS_CONTINGUTS, $Comptador);
 		echo $this->GeneraSeccio(self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE, $Comptador);
 	}
@@ -1816,6 +1819,66 @@ class ProgramacioDidacticaPDFLOGSE extends ProgramacioDidacticaPDF
 		$pd = new ProgramacioDidacticaLOGSE($this->Connexio, $this->Usuari, $this->Sistema);
 		$pd->Registre = $this->Registre;
 		return $pd->GeneraSeccioSequenciacio($section);
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOMLOE en PDF.
+ */
+class ProgramacioDidacticaPDFLOMLOE extends ProgramacioDidacticaPDF
+{
+	protected function GeneraSeccions() {
+		$pdf = $this->PDF;
+		$Comptador = 1;
+		$SeccioId = 1;
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdESTRATEGIES];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioEstrategies($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdCRITERIS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioCriteris($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdRECURSOS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioRecursos($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		if ($this->Registre->es_fct) {
+			$Apartat = $Comptador++.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT];
+			$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+			$pdf->Titol2($Apartat);
+			$HTML = $this->GeneraSeccioPlanificacioFCT($SeccioId);
+			$pdf->writeHTML($HTML, True);
+		}
+
+/*		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOGSE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioSequenciacio($SeccioId);
+		$pdf->writeHTML($HTML, True);*/
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdOBJECTIUS_CONTINGUTS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioObjectiusContinguts($SeccioId);
+		$pdf->writeHTML($HTML, True);
+		
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioAEA($SeccioId);
+		$pdf->writeHTML($HTML, True);
+	}
+
+	public function GeneraSeccioSequenciacio(&$section = null): string {
+		return null;
 	}
 }
 
