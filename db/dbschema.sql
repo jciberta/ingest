@@ -171,6 +171,7 @@ CREATE TABLE CICLE_PLA_ESTUDI
     grau CHAR(2) NOT NULL,
     codi CHAR(3) NOT NULL,
     codi_xtec CHAR(4) NOT NULL,
+    url_aea_seguiment VARCHAR(255),
 
     CONSTRAINT CiclePlaEstudiPK PRIMARY KEY (cicle_pla_estudi_id),
     CONSTRAINT CPE_CicleFormatiuFK FOREIGN KEY (cicle_formatiu_id) REFERENCES CICLE_FORMATIU(cicle_formatiu_id),

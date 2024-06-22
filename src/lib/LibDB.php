@@ -134,27 +134,8 @@ class DB
 	 */
 	public static function CarregaRegistre($Connexio, $Taula, $Camp, $Valor, $Tipus = 1)
 	{
-//		$Retorn = NULL;
 		$SQL = "SELECT * FROM $Taula WHERE $Camp='$Valor'";
 		return Self::CarregaRegistreSQL($Connexio, $SQL, $Tipus);
-/*		try {
-			$ResultSet = $Connexio->query($SQL);
-			if (!$ResultSet)
-				throw new Exception('<p>'.$Connexio->error.'.</p><p>SQL: '.$SQL.'</p>');
-		} catch (Exception $e) {
-			die("<p><b>ERROR CarregaRegistre</b>. Causa:</p>".$e->getMessage());
-		}	
-		if ($ResultSet->num_rows > 0) {
-			switch ($Tipus) {
-				case 1:
-					$Retorn = $ResultSet->fetch_object();
-					break;
-				case 2:
-					$Retorn = $ResultSet->fetch_assoc();
-					break;
-			}
-		}	
-		return $Retorn;*/
 	}
 	
 	/**

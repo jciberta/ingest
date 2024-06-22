@@ -477,6 +477,7 @@ class PlaEstudisCicleFitxa extends FormFitxa
 		$this->AfegeixText('nom', 'Nom', 150,[FormFitxa::offREQUERIT]);
 		$this->AfegeixText('codi_xtec', 'Codi XTEC', 20,[FormFitxa::offREQUERIT]);
 		$this->AfegeixLlista('grau', 'Grau', 50, array('GB', 'GM', 'GS', 'CE'), array('Grau bàsic', 'Grau mig', 'Grau superior', "Curs d'especialització"), [FormFitxa::offREQUERIT]);
+		$this->AfegeixText('url_aea_seguiment', 'URL AEA', 250);
 
 		parent::EscriuHTML();		
 	}

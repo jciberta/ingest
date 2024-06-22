@@ -32,6 +32,9 @@ class ProgramacioDidacticaFactory
 			case "LG":
 				$obj = new ProgramacioDidacticaLOGSE($conn, $user, $system);
 				break;
+			case "LL":
+				$obj = new ProgramacioDidacticaLOMLOE($conn, $user, $system);
+				break;
 			default:
 				throw new Exception("ProgramacioDidacticaFactory: Llei no implementada");
 				break;
@@ -66,6 +69,9 @@ class ProgramacioDidacticaFitxaFactory extends ProgramacioDidacticaFactory
 				break;
 			case "LG":
 				$obj = new ProgramacioDidacticaFitxaLOGSE($conn, $user, $system);
+				break;
+			case "LL":
+				$obj = new ProgramacioDidacticaFitxaLOMLOE($conn, $user, $system);
 				break;
 			default:
 				throw new Exception("ProgramacioDidacticaFitxaFactory: Llei no implementada");
@@ -113,6 +119,9 @@ class ProgramacioDidacticaPDFFactory extends ProgramacioDidacticaFactory
 			case "LG":
 				$obj = new ProgramacioDidacticaPDFLOGSE($conn, $user, $system);
 				break;
+			case "LL":
+				$obj = new ProgramacioDidacticaPDFLOMLOE($conn, $user, $system);
+				break;
 			default:
 				throw new Exception("ProgramacioDidacticaPDFFactory: Llei no implementada");
 				break;
@@ -140,8 +149,10 @@ abstract class ProgramacioDidactica extends Form
 	const pdPLANIFICACIO_FCT = 4;
 	const pdSEQUENCIACIO_LOE = 5;
 	const pdSEQUENCIACIO_LOGSE = 6;
-	const pdUNITATS = 7;
-	const pdOBJECTIUS_CONTINGUTS = 8;
+	const pdSEQUENCIACIO_LOMLOE = 7;
+	const pdUNITATS = 10;
+	const pdOBJECTIUS_CONTINGUTS = 11;
+	const pdACTIVITATS_ENSENYAMENT_APRENENTATGE = 12;
 
 	// Títol de les seccions de la programació didàctica.
 	const SECCIO = array(
@@ -151,7 +162,9 @@ abstract class ProgramacioDidactica extends Form
 		self::pdPLANIFICACIO_FCT => 'Planificació de la FCT',
 		self::pdSEQUENCIACIO_LOE => 'Seqüenciació i temporització de les unitats formatives',
 		self::pdSEQUENCIACIO_LOGSE => 'Seqüenciació i temporització de les unitats didàctiques',
+		self::pdSEQUENCIACIO_LOMLOE => "Seqüenciació i temporització dels resultats d'aprenentatge",
 		self::pdUNITATS => 'Unitats formatives',
+		self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE => "Activitats d'ensenyament aprenentatge",
 		self::pdOBJECTIUS_CONTINGUTS => 'Objectius i continguts'
 	);
 
@@ -303,6 +316,7 @@ abstract class ProgramacioDidactica extends Form
 				break;
 			case self::pdSEQUENCIACIO_LOE:
 			case self::pdSEQUENCIACIO_LOGSE:
+			case self::pdSEQUENCIACIO_LOMLOE:
 				$sRetorn .= $this->GeneraSeccioSequenciacio();
 				break;
 			case self::pdUNITATS:
@@ -310,6 +324,9 @@ abstract class ProgramacioDidactica extends Form
 				break;
 			case self::pdOBJECTIUS_CONTINGUTS:
 				$sRetorn .= $this->GeneraSeccioObjectiusContinguts();
+				break;
+			case self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE:
+				$sRetorn .= $this->GeneraSeccioAEA();
 				break;
 		}
 		$sRetorn .= "</DIV>";
@@ -479,6 +496,17 @@ abstract class ProgramacioDidactica extends Form
 	}
 	
 	/**
+	 * Genera la secció d'activitats d'ensenyament aprenentatge de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	protected function GeneraSeccioAEA(&$section = null) {
+		$ModulId = $this->Registre->modul_professional_id;
+		$sRetorn = "<a target=_blank href='".$this->Registre->url_aea_seguiment."'>".$this->Registre->url_aea_seguiment."</a>";
+		return $sRetorn;		
+	}
+	
+	/**
 	 * Crea el botó per a la edició.
 	 * @param string $ModulId Identificador del mòdul del cicle formatiu.
 	 * @return string Codi HTML del botó.
@@ -630,6 +658,35 @@ class ProgramacioDidacticaLOGSE extends ProgramacioDidactica
 			echo $this->GeneraSeccio(self::pdPLANIFICACIO_FCT, $Comptador);
 		echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOGSE, $Comptador);
 		echo $this->GeneraSeccio(self::pdOBJECTIUS_CONTINGUTS, $Comptador);
+	}
+
+	/**
+	 * Genera la secció de la sequenciació i temporització de la programació didàctica.
+	 * @param integer $SeccioId Identificador de la secció.
+	 * @return string Codi HTML amb la secció.
+	 */
+	public function GeneraSeccioSequenciacio(&$section = null): string {
+		$sRetorn = $this->Registre->unitats_didactiques;
+		$sRetorn = $this->TractaTaules($sRetorn);
+		return $sRetorn;		
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de la programació didàctica LOMLOE.
+ */
+class ProgramacioDidacticaLOMLOE extends ProgramacioDidactica
+{
+	protected function GeneraSeccions() {
+		$Comptador = 1;
+		echo $this->GeneraSeccio(self::pdESTRATEGIES, $Comptador);
+		echo $this->GeneraSeccio(self::pdCRITERIS, $Comptador);
+		echo $this->GeneraSeccio(self::pdRECURSOS, $Comptador);
+		if ($this->Registre->es_fct)
+			echo $this->GeneraSeccio(self::pdPLANIFICACIO_FCT, $Comptador);
+		//echo $this->GeneraSeccio(self::pdSEQUENCIACIO_LOMLOE, $Comptador);
+		echo $this->GeneraSeccio(self::pdOBJECTIUS_CONTINGUTS, $Comptador);
+		echo $this->GeneraSeccio(self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE, $Comptador);
 	}
 
 	/**
@@ -898,6 +955,48 @@ class ProgramacioDidacticaFitxaLOGSE extends ProgramacioDidacticaFitxa
 		$frm->Pestanya("Unitats didàctiques");
 		$frm->AfegeixTextRic('unitats_didactiques', '', 500, 300, $off);
 
+		if ($Registre->es_fct) {
+			$frm->Pestanya("Planificació");
+			$frm->AfegeixTextRic('planificacio', '', 500, 300, $off);
+		}
+	}
+}
+
+/**
+ * Classe que encapsula el formulari de fitxa de les programacions didàctiques LOMLOE.
+ */
+class ProgramacioDidacticaFitxaLOMLOE extends ProgramacioDidacticaFitxa
+{
+	/**
+	 * Genera les pestanyes de la programació didàctica.
+	 * @param object $frm Formulari fitxa.
+	 * @param object $Registre Registre amb les dades del mòdul.
+	 */
+	protected function GeneraPestanyes(object $frm, object $Registre) {
+		$off = ($this->Seguiment) ? [FormFitxa::offNOMES_LECTURA] : [];
+		if ($this->Usuari->es_admin) 
+			$off = [];
+
+//		if ($this->Seguiment) {
+//			$frm->Pestanya("Seguiment");
+//			$frm->AfegeixTextRic('seguiment', '', 500, 300);
+//		}
+		
+		$frm->Pestanya('Metodologia');
+		$frm->AfegeixTextRic('metodologia', '', 500, 300, $off);
+
+		$frm->Pestanya("Criteris d'avaluació");
+		$frm->AfegeixTextRic('criteris_avaluacio', '', 500, 300, $off);
+
+		$frm->Pestanya("Recursos");
+		$frm->AfegeixTextRic('recursos', '', 500, 300, $off);
+
+		// Activitats d'ensenyament aprenentatge i seguiment
+		$RegistreCiclePlaEstudi = DB::CarregaRegistre($this->Connexio, 'CICLE_PLA_ESTUDI', 'cicle_pla_estudi_id', $Registre->cicle_pla_estudi_id);
+		$frm->Pestanya("Activitats d'ensenyament aprenentatge");
+		if ($RegistreCiclePlaEstudi->url_aea_seguiment !== null)
+			$frm->AfegeixEnllac('', $RegistreCiclePlaEstudi->url_aea_seguiment, $RegistreCiclePlaEstudi->url_aea_seguiment);
+		
 		if ($Registre->es_fct) {
 			$frm->Pestanya("Planificació");
 			$frm->AfegeixTextRic('planificacio', '', 500, 300, $off);
@@ -1720,6 +1819,66 @@ class ProgramacioDidacticaPDFLOGSE extends ProgramacioDidacticaPDF
 		$pd = new ProgramacioDidacticaLOGSE($this->Connexio, $this->Usuari, $this->Sistema);
 		$pd->Registre = $this->Registre;
 		return $pd->GeneraSeccioSequenciacio($section);
+	}
+}
+
+/**
+ * Classe que encapsula l'exportació de la programació didàctica LOMLOE en PDF.
+ */
+class ProgramacioDidacticaPDFLOMLOE extends ProgramacioDidacticaPDF
+{
+	protected function GeneraSeccions() {
+		$pdf = $this->PDF;
+		$Comptador = 1;
+		$SeccioId = 1;
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdESTRATEGIES];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioEstrategies($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdCRITERIS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioCriteris($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdRECURSOS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioRecursos($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		if ($this->Registre->es_fct) {
+			$Apartat = $Comptador++.'. '.self::SECCIO[self::pdPLANIFICACIO_FCT];
+			$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+			$pdf->Titol2($Apartat);
+			$HTML = $this->GeneraSeccioPlanificacioFCT($SeccioId);
+			$pdf->writeHTML($HTML, True);
+		}
+
+/*		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdSEQUENCIACIO_LOGSE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioSequenciacio($SeccioId);
+		$pdf->writeHTML($HTML, True);*/
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdOBJECTIUS_CONTINGUTS];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioObjectiusContinguts($SeccioId);
+		$pdf->writeHTML($HTML, True);
+		
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioAEA($SeccioId);
+		$pdf->writeHTML($HTML, True);
+	}
+
+	public function GeneraSeccioSequenciacio(&$section = null): string {
+		return null;
 	}
 }
 

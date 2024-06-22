@@ -10,17 +10,17 @@
  */
 
 require_once('Config.php');
-require_once(ROOT.'/lib/LibURL.php');
-require_once(ROOT.'/lib/LibStr.php');
-require_once(ROOT.'/lib/LibHTML.php');
-require_once(ROOT.'/lib/LibNotes.php');
-require_once(ROOT.'/lib/LibAvaluacio.php');
-require_once(ROOT.'/lib/LibFP.php');
-require_once(ROOT.'/lib/LibCurs.php');
-require_once(ROOT.'/lib/LibUsuari.php');
+require_once(ROOT . '/lib/LibURL.php');
+require_once(ROOT . '/lib/LibStr.php');
+require_once(ROOT . '/lib/LibHTML.php');
+require_once(ROOT . '/lib/LibNotes.php');
+require_once(ROOT . '/lib/LibAvaluacio.php');
+require_once(ROOT . '/lib/LibFP.php');
+require_once(ROOT . '/lib/LibCurs.php');
+require_once(ROOT . '/lib/LibUsuari.php');
 
 session_start();
-if (!isset($_SESSION['usuari_id'])) 
+if (!isset($_SESSION['usuari_id']))
 	header("Location: Surt.php");
 $Usuari = unserialize($_SESSION['USUARI']);
 $Sistema = unserialize($_SESSION['SISTEMA']);
@@ -49,7 +49,7 @@ if (!$Professor->TeUFEnCicle($CicleId) && !$Usuari->es_admin && !$Usuari->es_dir
 $Professor->CarregaTutor($CursId);
 
 $cf = new CicleFormatiu($conn, $Usuari, $Sistema);
-CreaIniciHTML_Notes($Usuari, 'Notes '.$cf->ObteCodi($CicleId).' '.$Nivell);
+CreaIniciHTML_Notes($Usuari, 'Notes ' . $cf->ObteCodi($CicleId) . ' ' . $Nivell);
 
 echo '<script language="javascript" src="vendor/keycode.min.js" type="text/javascript"></script>';
 // Pedaç per forçar el navegador a regarregar el JavaScript i no usar la caché.
@@ -82,14 +82,14 @@ echo $Avaluacio->CreaDescripcio($CursId);
 
 if ($Avaluacio->Estat() == Avaluacio::ExtraOrdinaria && $Curs->Estat() == Curs::Actiu) {
 	// Missatge recordatori a l'avaluació extraordinària
-	echo '<script>$(document).ready(function(){$("#RecordatoriAvExt").modal("show");});</script>';	
+	echo '<script>$(document).ready(function(){$("#RecordatoriAvExt").modal("show");});</script>';
 	Notes::CreaMissatgeInici();
 }
 
 //if ($Avaluacio->Estat() != Avaluacio::Tancada)
 if ($Curs->Estat() == Curs::Actiu)
-	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. ".
-		"Utilitza les fletxes per moure't lliurement per la graella. ".
+	echo "<P><font color=blue>S'ha de sortir de la cel·la per que la nota quedi desada. " .
+		"Utilitza les fletxes per moure't lliurement per la graella. " .
 		"Ctrl+rodeta_ratolí per fer zoom.</font></P>";
 
 $Grup = new GrupClasse($conn, $Usuari, $Sistema);
@@ -97,43 +97,26 @@ $Tutoria = new GrupTutoria($conn, $Usuari, $Sistema);
 
 // Filtres
 $TextAjuda = 'Mostra els alumnes que tenen UF pendents';
-echo '<div>';
 echo '<input type="checkbox" name="chbBaixes" onclick="MostraBaixes(this);">Mostra baixes &nbsp';
 echo '<input type="checkbox" name="chbAlumnesUFPendents" onclick="MostraAlumnesUFPendents(this);">Alumnes UF Pendents &nbsp';
 echo $Notes->CreaAjuda('Alumnes UF Pendents', $TextAjuda);
-if ($Avaluacio->Estat() != Avaluacio::Tancada) {
-	//echo "<input type='checkbox' name='chbConvocatoriesAnteriors' onclick='MostraConvocatoriesAnteriors(this);'>Convocatòries anteriors";
-	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
-}
-if ($Nivell == 2) {
-	//echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
-	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
-}
-else {
-	//echo '<input type="checkbox" name="chbConvocatoriesAnteriors" onclick="MostraConvocatoriesAnteriors(this);">Convocatòries anteriors';
-	//echo $Notes->CreaAjuda('Convocatòries anteriors', $TextAjuda);
-	//echo '<input type="checkbox" name="chbAprovats" onclick="MostraTotAprovat(this);">Tot aprovat &nbsp';
-	echo $Grup->GeneraMostraGrup($CursId);
-	echo $Tutoria->GeneraMostraGrup($CursId);
-}
+echo $Grup->GeneraMostraGrup($CursId);
+echo $Tutoria->GeneraMostraGrup($CursId);
 echo '<span style="float:right;">';
 echo $Notes->CreaBotoDescarrega($CursId);
 if ($Usuari->es_admin) {
 	// Administració avançada
 	echo '&nbsp';
-	if ($ActivaAdministracio==1) {
+	if ($ActivaAdministracio == 1) {
 		$URL = GeneraURL("Notes.php?CursId=$CursId");
 		echo $Notes->CreaBoto('btnActivaAdministracio', 'Desactiva administració avançada', $URL);
 		$Notes->Administracio = true;
-	}
-	else {
+	} else {
 		$URL = GeneraURL("Notes.php?ActivaAdministracio=1&CursId=$CursId");
 		echo $Notes->CreaBoto('btnActivaAdministracio', 'Activa administració avançada', $URL);
 	}
 }
 echo '</span>';
-echo '</div>';
-
 echo '<br/>';
 
 // Graelles de notes
@@ -154,8 +137,7 @@ if ($Nivell == 2) {
 	$Notes->EscriuFormulari($CicleId, 2, $Notes->Registre1, 1, $Professor, $Avaluacio);
 	echo '  </div>';
 	echo '</div>';
-}
-else {
+} else {
 	echo '<nav>';
 	echo '  <div class="nav nav-tabs" id="nav-tab" role="tablist">';
 	echo '    <a class="nav-item nav-link active" id="nav1-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Alumnes de 1r</a>';
@@ -174,12 +156,10 @@ else {
 	echo '</div>';
 }
 
-if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria)
+if ($Avaluacio->Avaluacio == Avaluacio::Ordinaria && $Curs->Estat() == Curs::Actiu)
 	Notes::CreaMenuContextual($Usuari);
 
 echo "<DIV id=debug></DIV>";
 echo "<DIV id=debug2></DIV>";
 
-$conn->close(); 
- 
-?>
+$conn->close();
