@@ -13,7 +13,7 @@
 function ValidaFormSortidaMaterial() { 
 console.log('-> ValidaFormSortidaMaterial');
 
-    var UsuariId = document.forms["FormSortidaMaterial"]["lkh_usuari"].value;
+    var UsuariId = document.forms["FormSortidaMaterial"]["cmb_usuari_id"].value;
     if (UsuariId == '') { 
         bootbox.alert('Cal seleccionar un usuari.');
         return false;
