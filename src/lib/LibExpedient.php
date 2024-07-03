@@ -2175,15 +2175,15 @@ class Acta extends Form
 //print_h($Unitat);				
 				$Nota = $this->ObteNotaAlumne($a, $CodiMP, $CodiUF);
 //echo "<hr>".$Nota;
-				if ($Nota == 'A')
+				if ($Nota < 5 || $Nota == '') 
+					$Retorn = -1.0;
+				else if ($Nota == 'A')
 					$Nota = 100;
 				else {
 					$Hores = $Unitat->Hores;
 					$HoresTotal += $Hores;
 					$NotaAcumulada += $Nota*$Hores;
 				}
-				if ($Nota < 5 || $Nota == '') 
-					$Retorn = -1.0;
 			}
 		}
 		if ($Retorn === 0.0) {
