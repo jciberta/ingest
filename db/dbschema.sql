@@ -1390,12 +1390,12 @@ DELIMITER //
 CREATE PROCEDURE CopiaProgramacions(IN AnyAcademicIdOrigen INT, IN AnyAcademicIdDesti INT)
 BEGIN
     DECLARE _modul_pla_estudi_id, _modul_pla_estudi_id_desti INT;
-    DECLARE _metodologia, _criteris_avaluacio, _recursos TEXT;
+    DECLARE _metodologia, _criteris_avaluacio, _recursos, _unitats_didactiques TEXT;
     DECLARE done INT DEFAULT FALSE;
 
     BEGIN
         DECLARE cur CURSOR FOR
-        SELECT MPE.modul_pla_estudi_id, MPE.metodologia, MPE.criteris_avaluacio, MPE.recursos,
+        SELECT MPE.modul_pla_estudi_id, MPE.metodologia, MPE.criteris_avaluacio, MPE.recursos, MPE.unitats_didactiques,
             (   SELECT modul_pla_estudi_id 
                 FROM MODUL_PLA_ESTUDI MPE2
                 LEFT JOIN CICLE_PLA_ESTUDI CPE2 ON (CPE2.cicle_pla_estudi_id=MPE2.cicle_pla_estudi_id)
@@ -1408,11 +1408,11 @@ BEGIN
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
         OPEN cur;
         read_loop: LOOP
-            FETCH cur INTO _modul_pla_estudi_id, _metodologia, _criteris_avaluacio, _recursos, _modul_pla_estudi_id_desti;
+            FETCH cur INTO _modul_pla_estudi_id, _metodologia, _criteris_avaluacio, _recursos, _unitats_didactiques, _modul_pla_estudi_id_desti;
             IF done THEN
                 LEAVE read_loop;
             END IF;
-            UPDATE MODUL_PLA_ESTUDI SET metodologia=_metodologia, criteris_avaluacio=_criteris_avaluacio, recursos=_recursos WHERE modul_pla_estudi_id=_modul_pla_estudi_id_desti;
+            UPDATE MODUL_PLA_ESTUDI SET metodologia=_metodologia, criteris_avaluacio=_criteris_avaluacio, recursos=_recursos, unitats_didactiques=_unitats_didactiques WHERE modul_pla_estudi_id=_modul_pla_estudi_id_desti;
         END LOOP;
         CLOSE cur;
     END;

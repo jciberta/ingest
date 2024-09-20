@@ -758,31 +758,35 @@ SELECT 6, tipus, nom, cap, familia_fp_id FROM EQUIP WHERE any_academic_id=5;
  * Curs 2024-2025
  */
 INSERT INTO ANY_ACADEMIC (any_inici, any_final, nom) VALUES (2024, 2025, 'Curs 2024-2025');
-UPDATE ANY_ACADEMIC SET actual=0;
+UPDATE ANY_ACADEMIC SET actual=0 WHERE any_academic_id>0;
 UPDATE ANY_ACADEMIC SET actual=1 WHERE any_academic_id=7;
+UPDATE SISTEMA SET any_academic_id=7 WHERE sistema_id=1;
 
-INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (308, 'Anàlisi i disseny d´aplicacions i programació competitiva (web)', 'MP16', 66, 2, '507', 'A' ,3);
-INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (308, 'UF1. Anàlisi i disseny d´aplicacions i programació competitiva (web)', 'UF1', 66, 2, 303);
+INSERT INTO MODUL_PROFESSIONAL (modul_professional_id, nom, codi, hores, hores_setmana, especialitat, cos, cicle_formatiu_id) VALUES (310, 'Anàlisi i disseny d´aplicacions i programació competitiva (web)', 'MP16', 66, 2, '507', 'A' ,3);
+INSERT INTO UNITAT_FORMATIVA (unitat_formativa_id, nom, codi, hores, nivell, modul_professional_id) VALUES (310, 'UF1. Anàlisi i disseny d´aplicacions i programació competitiva (web)', 'UF1', 66, 2, 310);
 
 -- Desmarca MP, UF no actius
 call CreaPlaEstudis(7);
 
--- Posar data inici i data final
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOMLOE) 2024-2025 1r', 'SMX1', 43, 1);
+-- Cursos LOE i LOGSE (no LOMLOE). Posar data inici i data final
 INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Sistemes microinformàtics i xarxes (LOE) 2024-2025 2n', 'SMX2', 36, 2);
-...
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2024-2025 1r', 'DAM1', 30, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2024-2025 2n', 'DAM2', 30, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2024-2025 1r', 'FIP1', 31, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2024-2025 2n', 'FIP2', 31, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2024-2025 1r', 'APD1', 32, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2024-2025 2n', 'APD2', 32, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 1r', 'CAI1', 33, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 2n', 'CAI2', 33, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2024-2025 1r', 'FPB1', 34, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2024-2025 2n', 'FPB2', 34, 2);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2024-2025 1r', 'HBD1', 35, 1);
-INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2024-2025 2n', 'HBD2', 35, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Desenvolupament d''aplicacions multiplataforma (LOE) 2024-2025 2n', 'DAM2', 37, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Farmàcia i parafarmàcia (LOE) 2024-2025 2n', 'FIP2', 38, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Atenció a persones en situació de dependència (LOE) 2024-2025 2n', 'APD2', 39, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 1r', 'CAI1', 40, 1);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFM Cures auxiliars d''infermeria (LOGSE) 2024-2025 2n', 'CAI2', 40, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFB Informàtica d''oficina (LOE) 2024-2025 2n', 'FPB2', 41, 2);
+INSERT INTO CURS (nom, codi, cicle_formatiu_id, nivell) VALUES ('CPFS Higiene bucodental (LOE) 2024-2025 2n', 'HBD2', 42, 2);
 
+UPDATE CURS SET data_inici = '2024-09-12' WHERE curs_id>=93;
+UPDATE CURS SET data_final = '2025-05-31' WHERE curs_id>=93;
+
+-- Còpies del curs passat
+call CopiaTutors(6, 7);
+call CopiaProgramacions(6, 7);
+
+-- CopiaEquips 
+INSERT INTO EQUIP (any_academic_id, tipus, nom, cap, familia_fp_id)
+SELECT 7, tipus, nom, cap, familia_fp_id FROM EQUIP WHERE any_academic_id=6;
 
 
