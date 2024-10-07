@@ -887,6 +887,12 @@ class ProgramacioDidacticaFitxaLOE extends ProgramacioDidacticaFitxa
 		$frm->AfegeixAmagat('data_final', MySQLAData($this->AnyAcademic->data_final));
 		$frm->AfegeixAmagat('festius', json_encode($this->DiesFestius));
 
+		// Activitats d'ensenyament aprenentatge i seguiment
+		$RegistreCiclePlaEstudi = DB::CarregaRegistre($this->Connexio, 'CICLE_PLA_ESTUDI', 'cicle_pla_estudi_id', $Registre->cicle_pla_estudi_id);
+		$frm->Pestanya("Activitats d'ensenyament aprenentatge");
+		if ($RegistreCiclePlaEstudi->url_aea_seguiment !== null)
+			$frm->AfegeixEnllac('', $RegistreCiclePlaEstudi->url_aea_seguiment, $RegistreCiclePlaEstudi->url_aea_seguiment);
+
 		if ($this->Seguiment) {
 			$frm->AfegeixDetall('Unitats formatives', 'UNITAT_PLA_ESTUDI', 'unitat_pla_estudi_id', 'modul_pla_estudi_id', "
 				nom:Nom:text:400:r, 
@@ -959,6 +965,12 @@ class ProgramacioDidacticaFitxaLOGSE extends ProgramacioDidacticaFitxa
 			$frm->Pestanya("Planificació");
 			$frm->AfegeixTextRic('planificacio', '', 500, 300, $off);
 		}
+
+		// Activitats d'ensenyament aprenentatge i seguiment
+		$RegistreCiclePlaEstudi = DB::CarregaRegistre($this->Connexio, 'CICLE_PLA_ESTUDI', 'cicle_pla_estudi_id', $Registre->cicle_pla_estudi_id);
+		$frm->Pestanya("Activitats d'ensenyament aprenentatge");
+		if ($RegistreCiclePlaEstudi->url_aea_seguiment !== null)
+			$frm->AfegeixEnllac('', $RegistreCiclePlaEstudi->url_aea_seguiment, $RegistreCiclePlaEstudi->url_aea_seguiment);
 	}
 }
 
@@ -1757,6 +1769,12 @@ class ProgramacioDidacticaPDFLOE extends ProgramacioDidacticaPDF
 		$pdf->Titol2($Apartat);
 		$HTML = $this->GeneraSeccioUnitats($SeccioId);
 		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioAEA($SeccioId);
+		$pdf->writeHTML($HTML, True);
 	}
 
 	public function GeneraSeccioSequenciacio(&$section = null): string {
@@ -1806,6 +1824,12 @@ class ProgramacioDidacticaPDFLOGSE extends ProgramacioDidacticaPDF
 		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
 		$pdf->Titol2($Apartat);
 		$HTML = $this->GeneraSeccioSequenciacio($SeccioId);
+		$pdf->writeHTML($HTML, True);
+
+		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdACTIVITATS_ENSENYAMENT_APRENENTATGE];
+		$pdf->Bookmark($Apartat, 0, 0, '', '', array(0,64,128));
+		$pdf->Titol2($Apartat);
+		$HTML = $this->GeneraSeccioAEA($SeccioId);
 		$pdf->writeHTML($HTML, True);
 
 		$Apartat = $Comptador++.'. '.self::SECCIO[self::pdOBJECTIUS_CONTINGUTS];
