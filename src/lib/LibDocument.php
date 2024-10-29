@@ -160,18 +160,16 @@ print_h($this->Categoria);
 		}
 
 		if ($this->Usuari !== null) {
+			$frm->Filtre->AfegeixNovaLinia();
+
 			$aClaus = array_keys(self::SOLICITANT); array_unshift($aClaus, '');
 			$aValors = array_values(self::SOLICITANT); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('solicitant', 'Sol·licitant', 30, $aClaus, $aValors);
-		}
 
-		if ($this->Usuari !== null) {
 			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
 			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('lliurament', 'Lliurament', 40, $aClaus, $aValors);
-		}
 
-		if ($this->Usuari !== null) {
 			$aClaus = array_keys(self::LLIURAMENT_CUSTODIA); array_unshift($aClaus, '');
 			$aValors = array_values(self::LLIURAMENT_CUSTODIA); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('custodia', 'Custòdia', 40, $aClaus, $aValors);

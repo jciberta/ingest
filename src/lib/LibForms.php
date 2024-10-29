@@ -59,6 +59,7 @@ class Form extends Objecte
 	const tcCOLUMNA_SALT = 22;
 	const tcCOLUMNA_FINAL = 23;
 	const tcESPAI = 24;
+	const tcNOVA_LINIA = 25; // De moment per al filtres
 
 	// Tipus de camps calculat.
 	const tccEDAT = 1;
@@ -739,6 +740,14 @@ class Filtre
 		$this->Camps[$i]->Lookup->Id = $Id;
 		$this->Camps[$i]->Lookup->Camps = $Camps;		
 	}
+
+	/**
+	 * Afegeix una nova línia per continuar amb el filtre.
+	 * @return void
+	 */
+	public function AfegeixNovaLinia() {
+		$this->Afegeix(Form::tcNOVA_LINIA, '', '', 0, []);
+	}
 	
 	
 //echo $frmMatricula->CreaLookUp('alumne', 'Alumne', 100, 'UsuariRecerca.php?accio=Alumnes', 'USUARI', 'usuari_id', 'nom, cognom1, cognom2');
@@ -798,7 +807,10 @@ exit;*/
 						$Valor->Opcions, 
 						$CodiSeleccionat);
 					break;
-			}			
+				case Form::tcNOVA_LINIA:
+					$Retorn .= '<BR>';
+					break;
+				}			
 		}
 		$Retorn .= '</DIV><P/>'.PHP_EOL;
 		$Retorn .= '<!-- FINAL Filtre -->'.PHP_EOL;
