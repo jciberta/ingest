@@ -27,8 +27,8 @@ class Document extends Objecte
 	// Categoria
 	const CATEGORIA = array(
 		'D' => 'Document de centre',
-		'I' => 'Imprès de funcionament',
-		'N' => 'Document intern',
+		'P' => 'Document de professorat',
+		'A' => "Document d'alumnat",
 		'Q' => 'Document de qualitat'
 	);
 
@@ -37,10 +37,10 @@ class Document extends Objecte
 		'GEN' => 'General', 
 		'ESO' => 'ESO',
 		'BAT' => 'Batxillerat',
-		'CF0' => 'Cicle formatiu',
-		'CFB' => 'Cicle formatiu de grau bàsic',
-		'CFM' => 'Cicle formatiu de grau mig',
-		'CFS' => 'Cicle formatiu de grau superior'
+		'CF0' => 'Cicle formatiu'
+//		'CFB' => 'Cicle formatiu de grau bàsic',
+//		'CFM' => 'Cicle formatiu de grau mig',
+//		'CFS' => 'Cicle formatiu de grau superior'
 	);
 
 	// Subestudis
