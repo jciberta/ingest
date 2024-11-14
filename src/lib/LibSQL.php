@@ -203,7 +203,7 @@ class SQL
 	private function Parteix()
 	{
 		$parser = new PHPSQLParser($this->SQL);
-
+//echo "".$this->SQL."<br>";
 
 		// Obtener el array con las partes de la consulta
 		$partsConsulta = array(
@@ -214,6 +214,7 @@ class SQL
 			'HAVING' => isset($parser->parsed['HAVING']) ? $parser->parsed['HAVING'] : array(),
 			'ORDER' => isset($parser->parsed['ORDER']) ? $parser->parsed['ORDER'] : array()
 		);
+//print_h($partsConsulta);		
 
 		// Procesar la cláusula SELECT
 		$SELECT = '';
@@ -221,7 +222,7 @@ class SQL
 			if ($v['expr_type'] === 'colref' || $v['expr_type'] === 'alias') {
 				// Si es una referència de columna o un alies, simplement l'agreguem al SELECT
 				$SELECT .= $v['base_expr'] . (isset($v['alias']['name']) ? ' AS ' . $v['alias']['name'] : '') . ', ';
-			} elseif ($v['expr_type'] === 'function') {
+			} elseif ($v['expr_type'] === 'function' || $v['expr_type'] === 'aggregate_function') {
 				// Si es una funció, la procesem
 				$funcName = $v['base_expr'];
 				$funcArgs = '';
@@ -245,8 +246,8 @@ class SQL
 				$SELECT .= $v['base_expr'] . ', ';
 			}
 		}
-
 		$this->Select = rtrim($SELECT, ', ');
+//echo "".$this->Select."<br>";
 
 		// Procesar la cláusula FROM
 		$FROM = '';

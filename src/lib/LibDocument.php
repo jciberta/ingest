@@ -142,9 +142,9 @@ class Document extends Objecte
 			$frm->Filtre->AfegeixLlista('visibilitat', 'Visibilitat', 20, $aClaus, $aValors);
 		}
 		
-print_h($this->Categoria);		
+//print_h($this->Categoria);		
 		
-		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell ==''){
+		if ($this->Estudi ==''|| $this->Categoria ==''|| $this->Nivell =='') {
 			$aClaus = array_keys(self::ESTUDI); array_unshift($aClaus, '');
 			$aValors = array_values(self::ESTUDI); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('estudi', 'Estudi', 60, $aClaus, $aValors);
@@ -153,10 +153,11 @@ print_h($this->Categoria);
 			$aValors = array_values(self::SUBESTUDI); array_unshift($aValors, 'Tots');
 			$frm->Filtre->AfegeixLlista('subestudi', 'Nivell', 30, $aClaus, $aValors);
 
-			
-			$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
-			$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
-			$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+			if ($this->Categoria =='') {
+				$aClaus = array_keys(self::CATEGORIA); array_unshift($aClaus, '');
+				$aValors = array_values(self::CATEGORIA); array_unshift($aValors, 'Tots');
+				$frm->Filtre->AfegeixLlista('categoria', 'Categoria', 50, $aClaus, $aValors);
+			}
 		}
 
 		if ($this->Usuari !== null) {

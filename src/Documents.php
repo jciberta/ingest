@@ -53,4 +53,13 @@ if ($Usuari === null) {
        $doc-> EscriuFormulariRecerca();
     }
 }
+else {
+    // Usuari identificat
+	$doc = new Document($conn, $Usuari, $Sistema);
+    if (isset($_GET['CodiDocument'])) {
+        $codiDocument = $_GET['CodiDocument']; 
+        $doc->RetornaDocument($codiDocument);        
+    }
+}
+
 ?>
