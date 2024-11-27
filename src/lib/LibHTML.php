@@ -111,8 +111,8 @@ function CreaIniciHTML_BootstrapStarterTemplate($Usuari, $Titol, $bMenu = True, 
 		else if ($Usuari->aplicacio == 'CapGest')
 			$Retorn .= MenuCapGest::Crea($Usuari);
 	}
-	$Retorn .= '      <div class="starter-template" style="padding:20px">';
-	$Retorn .= '<H1>'.$Titol.'</H1>';
+	$Retorn .= '    <div class="starter-template" style="padding:20px">'.PHP_EOL;
+	$Retorn .= '        <H1>'.$Titol.'</H1>'.PHP_EOL;
 	return $Retorn;
 }
 

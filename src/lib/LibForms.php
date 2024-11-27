@@ -157,16 +157,17 @@ class Form extends Objecte
 	 * @return string Codi HTML de l'ajuda.
 	 */
 	public function CreaAjuda(string $Titol, string $Contingut): string {
-		$sRetorn = '<span class="text-nowrap">';
-		$sRetorn .= '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover" '.
+		$sRetorn = PHP_EOL;
+		$sRetorn = '    <span class="text-nowrap">'.PHP_EOL;
+		$sRetorn .= '        <a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover" '.
 			"title='$Titol'";
-		$sRetorn .= 'data-placement="right" data-content="&lt;div class=&quot;no-overflow&quot;&gt;&lt;p&gt;'.
+		$sRetorn .= ' data-placement="right" data-content="&lt;div class=&quot;no-overflow&quot;&gt;&lt;p&gt;'.
 			"$Contingut".
 			'&lt;/p&gt;&lt;/div&gt; "';
-		$sRetorn .= 'data-html="true" tabindex="0" data-trigger="focus">';
-		$sRetorn .= '<img src="img/help.svg">';
-		$sRetorn .= '</a>';
-		$sRetorn .= '</span>&nbsp;&nbsp;';
+		$sRetorn .= ' data-html="true" tabindex="0" data-trigger="focus">'.PHP_EOL;
+		$sRetorn .= '            <img src="img/help.svg">'.PHP_EOL;
+		$sRetorn .= '        </a>'.PHP_EOL;
+		$sRetorn .= '    </span>&nbsp;&nbsp;'.PHP_EOL;
 		return $sRetorn;
 	}	
 
@@ -812,6 +813,7 @@ exit;*/
 					break;
 				}			
 		}
+		$Retorn .= PHP_EOL;
 		$Retorn .= '</DIV><P/>'.PHP_EOL;
 		$Retorn .= '<!-- FINAL Filtre -->'.PHP_EOL;
 		$Retorn .= PHP_EOL;
@@ -1172,7 +1174,8 @@ class FormRecerca extends Form
 			$this->Descripcions = 'Id, '.$this->Descripcions;
 		}
 		
-		$sRetorn = '<DIV id=taula>';
+		$sRetorn = PHP_EOL;
+		$sRetorn = '<DIV id=taula>'.PHP_EOL;
 		$SQL = $this->CreaSQL();
 //echo 'SQL GeneraTaula:<br>';
 //print $SQL;
@@ -1282,7 +1285,8 @@ class FormRecerca extends Form
 		$URL = GeneraURL("Descarrega.php?Accio=ExportaCSV&SQL=$SQL");
 		$sRetorn .= "<input type=hidden id=urlCSV value='$URL'>";		
 		
-		$sRetorn .= '</DIV>';
+		$sRetorn .= PHP_EOL;
+		$sRetorn .= '</DIV>'.PHP_EOL;
 		return $sRetorn;
 	}
 
@@ -1407,12 +1411,12 @@ class FormRecerca extends Form
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.2" type="text/javascript"></script>';
+		echo '        <script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>'.PHP_EOL;
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
-			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+			echo '        <script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>'.PHP_EOL;
 		// Inicialització de l'ajuda
 		// https://getbootstrap.com/docs/4.0/components/popovers/
-		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+		echo '        <script>$(function(){$("[data-toggle=popover]").popover()});</script>'.PHP_EOL;
 		echo $this->GeneraSubTitol();
 		echo $this->GeneraMissatges();
 		echo $this->GeneraModalInformatiu();
@@ -1799,12 +1803,12 @@ class FormRecercaQBE extends FormRecerca
 	 */
 	public function EscriuHTML() {
 		CreaIniciHTML($this->Usuari, $this->Titol, ($this->Modalitat == self::mfLLISTA));
-		echo '<script language="javascript" src="js/Forms.js?v1.12" type="text/javascript"></script>';
+		echo '        <script language="javascript" src="js/Forms.js?v1.3" type="text/javascript"></script>'.PHP_EOL;
 		for($i = 1; $i <= count($this->FitxerJS); $i++) 
-			echo '<script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>';
+			echo '        <script language="javascript" src="js/'.$this->FitxerJS[$i].'" type="text/javascript"></script>'.PHP_EOL;
 		// Inicialització de l'ajuda
 		// https://getbootstrap.com/docs/4.0/components/popovers/
-		echo '<script>$(function(){$("[data-toggle=popover]").popover()});</script>';
+		echo '        <script>$(function(){$("[data-toggle=popover]").popover()});</script>'.PHP_EOL;
 		echo $this->GeneraSubTitol();
 		echo $this->GeneraMissatges();
 		echo $this->GeneraTaula();

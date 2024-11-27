@@ -94,6 +94,9 @@ console.log('-> ActualitzaTaula');
 			if (URLDescarregaCSV != null)
 				URLDescarregaCSV.href = urlCSV.value;
             //$('#debug').html('<textarea disabled>'+data+'</textarea>');
+
+			// Actualitza el pop-over de l'ajuda
+			$(function(){$("[data-toggle=popover]").popover()});
         }, 
 		error: function(data) {
 			$('#debug').html('Hi ha hagut un error. Dades rebudes: '+ JSON.stringify(data));
