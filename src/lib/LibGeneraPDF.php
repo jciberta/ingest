@@ -85,20 +85,11 @@ abstract class GeneraPDF extends Objecte
     protected function CreaFitxerComprimit(string $Nom) {
  
     //Netejem el directori
-<<<<<<< HEAD
-    array_map('unlink', glob("downloads/*"));
-=======
     array_map('unlink', glob("scripts/*"));
->>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
-
     // Comprimeix expedients en un arxiu ZIP
     echo "Comprimint els documents... ";
     $tempDir = sys_get_temp_dir() . '/expedients' . DIRECTORY_SEPARATOR;
-<<<<<<< HEAD
-    $zipFile ="downloads/".$Nom.".zip";
-=======
     $zipFile ="scripts/".$Nom.".zip";
->>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
 
     $zip = new ZipArchive();
     if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
@@ -116,11 +107,7 @@ abstract class GeneraPDF extends Objecte
         rmdir($tempDir);
     
         echo " Ok.<BR>";
-<<<<<<< HEAD
-        echo "Podeu descarregar els documents comprimits <a href='downloads/$Nom.zip'>aquí</a>. Mida: "
-=======
         echo "Podeu descarregar els documents comprimits <a href='scripts/$Nom.zip'>aquí</a>. Mida: "
->>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
         .FormataBytes(filesize($zipFile));       
     }
 }
@@ -211,14 +198,8 @@ class GeneraPDFProgramacio extends GeneraPDF
         $Text = $this->GeneraScript();
         echo "Ok.<BR>";
 
-<<<<<<< HEAD
-        echo "Executant l'script per als documents...<br>";
-        //$aText =$Text["modul_pla_estudi_id"];// explode("\r\n",$Text[0]);
-        //echo $aText;
-=======
         echo "Executant l'script per als documents...";
         $aText = explode("\r\n",$Text[0]);
->>>>>>> aba2ba37cfea0133a33a326614a7641043a76b45
         if (Config::Debug)
             echo "<PRE>";
         for ($i=0; $i<count($Text["modul_pla_estudi_id"])-1; $i++) {
