@@ -60,6 +60,7 @@ class ComposerStaticInitfcfdc4d8167676b9daac559be721d39a
         ),
         'C' => 
         array (
+            'Composer\\Pcre\\' => 14,
             'Complex\\' => 8,
         ),
     );
@@ -145,6 +146,10 @@ class ComposerStaticInitfcfdc4d8167676b9daac559be721d39a
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Composer\\Pcre\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/pcre/src',
         ),
         'Complex\\' => 
         array (

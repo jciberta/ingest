@@ -40,6 +40,14 @@ class Instance extends \Google\Model
   protected $encryptionConfigType = EncryptionConfig::class;
   protected $encryptionConfigDataType = '';
   /**
+   * @var bool
+   */
+  public $fipsEnabled;
+  /**
+   * @var bool
+   */
+  public $geminiEnabled;
+  /**
    * @var string
    */
   public $ingressPrivateIp;
@@ -79,6 +87,12 @@ class Instance extends \Google\Model
    * @var bool
    */
   public $privateIpEnabled;
+  protected $pscConfigType = PscConfig::class;
+  protected $pscConfigDataType = '';
+  /**
+   * @var bool
+   */
+  public $pscEnabled;
   /**
    * @var bool
    */
@@ -195,6 +209,34 @@ class Instance extends \Google\Model
   public function getEncryptionConfig()
   {
     return $this->encryptionConfig;
+  }
+  /**
+   * @param bool
+   */
+  public function setFipsEnabled($fipsEnabled)
+  {
+    $this->fipsEnabled = $fipsEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getFipsEnabled()
+  {
+    return $this->fipsEnabled;
+  }
+  /**
+   * @param bool
+   */
+  public function setGeminiEnabled($geminiEnabled)
+  {
+    $this->geminiEnabled = $geminiEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getGeminiEnabled()
+  {
+    return $this->geminiEnabled;
   }
   /**
    * @param string
@@ -363,6 +405,34 @@ class Instance extends \Google\Model
   public function getPrivateIpEnabled()
   {
     return $this->privateIpEnabled;
+  }
+  /**
+   * @param PscConfig
+   */
+  public function setPscConfig(PscConfig $pscConfig)
+  {
+    $this->pscConfig = $pscConfig;
+  }
+  /**
+   * @return PscConfig
+   */
+  public function getPscConfig()
+  {
+    return $this->pscConfig;
+  }
+  /**
+   * @param bool
+   */
+  public function setPscEnabled($pscEnabled)
+  {
+    $this->pscEnabled = $pscEnabled;
+  }
+  /**
+   * @return bool
+   */
+  public function getPscEnabled()
+  {
+    return $this->pscEnabled;
   }
   /**
    * @param bool

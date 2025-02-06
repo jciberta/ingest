@@ -32,6 +32,197 @@ use Google\Service\CloudHealthcare\SearchResourcesRequest;
 class ProjectsLocationsDatasetsFhirStoresFhir extends \Google\Service\Resource
 {
   /**
+   * Creates a FHIR Binary resource. This method can be used to create a Binary
+   * resource either by using one of the accepted FHIR JSON content types, or as a
+   * raw data stream. If a resource is created with this method using the FHIR
+   * content type this method's behavior is the same as
+   * [`fhir.create`](https://cloud.google.com/healthcare-api/docs/reference/rest/v
+   * 1/projects.locations.datasets.fhirStores.fhir/create). If a resource type
+   * other than Binary is used in the request it's treated in the same way as non-
+   * FHIR data (e.g., images, zip archives, pdf files, documents). When a non-FHIR
+   * content type is used in the request, a Binary resource will be generated, and
+   * the uploaded data will be stored in the `content` field (`DSTU2` and `STU3`),
+   * or the `data` field (`R4`). The Binary resource's `contentType` will be
+   * filled in using the value of the `Content-Type` header, and the
+   * `securityContext` field (not present in `DSTU2`) will be populated from the
+   * `X-Security-Context` header if it exists. At this time `securityContext` has
+   * no special behavior in the Cloud Healthcare API. Note: the limit on data
+   * ingested through this method is 1 GB. For best performance, use a non-FHIR
+   * data type instead of wrapping the data in a Binary resource. Some of the
+   * Healthcare API features, such as [exporting to
+   * BigQuery](https://cloud.google.com/healthcare-api/docs/how-tos/fhir-export-
+   * bigquery) or [Pub/Sub notifications](https://cloud.google.com/healthcare-
+   * api/docs/fhir-
+   * pubsub#behavior_when_a_fhir_resource_is_too_large_or_traffic_is_high) with
+   * full resource content, do not support Binary resources that are larger than
+   * 10 MB. In these cases the resource's `data` field will be omitted. Instead,
+   * the "http://hl7.org/fhir/StructureDefinition/data-absent-reason" extension
+   * will be present to indicate that including the data is `unsupported`. On
+   * success, an empty `201 Created` response is returned. The newly created
+   * resource's ID and version are returned in the Location header. Using `Prefer:
+   * representation=resource` is not allowed for this method. The definition of
+   * the Binary REST API can be found at https://hl7.org/fhir/binary.html#rest.
+   * (fhir.BinaryCreate)
+   *
+   * @param string $parent Required. The name of the FHIR store this resource
+   * belongs to.
+   * @param HttpBody $postBody
+   * @param array $optParams Optional parameters.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function BinaryCreate($parent, HttpBody $postBody, $optParams = [])
+  {
+    $params = ['parent' => $parent, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('Binary-create', [$params], HttpBody::class);
+  }
+  /**
+   * Gets the contents of a FHIR Binary resource. This method can be used to
+   * retrieve a Binary resource either by using the FHIR JSON mimetype as the
+   * value for the Accept header, or as a raw data stream. If the FHIR Accept type
+   * is used this method will return a Binary resource with the data
+   * base64-encoded, regardless of how the resource was created. The resource data
+   * can be retrieved in base64-decoded form if the Accept type of the request
+   * matches the value of the resource's `contentType` field. The definition of
+   * the Binary REST API can be found at https://hl7.org/fhir/binary.html#rest.
+   * (fhir.BinaryRead)
+   *
+   * @param string $name Required. The name of the Binary resource to retrieve.
+   * @param array $optParams Optional parameters.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function BinaryRead($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('Binary-read', [$params], HttpBody::class);
+  }
+  /**
+   * Updates the entire contents of a Binary resource. If the specified resource
+   * does not exist and the FHIR store has enable_update_create set, creates the
+   * resource with the client-specified ID. It is strongly advised not to include
+   * or encode any sensitive data such as patient identifiers in client-specified
+   * resource IDs. Those IDs are part of the FHIR resource path recorded in Cloud
+   * Audit Logs and Pub/Sub notifications. Those IDs can also be contained in
+   * reference fields within other resources. This method can be used to update a
+   * Binary resource either by using one of the accepted FHIR JSON content types,
+   * or as a raw data stream. If a resource is updated with this method using the
+   * FHIR content type this method's behavior is the same as `update`. If a
+   * resource type other than Binary is used in the request it will be treated in
+   * the same way as non-FHIR data. When a non-FHIR content type is used in the
+   * request, a Binary resource will be generated using the ID from the resource
+   * path, and the uploaded data will be stored in the `content` field (`DSTU2`
+   * and `STU3`), or the `data` field (`R4`). The Binary resource's `contentType`
+   * will be filled in using the value of the `Content-Type` header, and the
+   * `securityContext` field (not present in `DSTU2`) will be populated from the
+   * `X-Security-Context` header if it exists. At this time `securityContext` has
+   * no special behavior in the Cloud Healthcare API. Note: the limit on data
+   * ingested through this method is 2 GB. For best performance, use a non-FHIR
+   * data type instead of wrapping the data in a Binary resource. Some of the
+   * Healthcare API features, such as [exporting to
+   * BigQuery](https://cloud.google.com/healthcare-api/docs/how-tos/fhir-export-
+   * bigquery) or [Pub/Sub notifications](https://cloud.google.com/healthcare-
+   * api/docs/fhir-
+   * pubsub#behavior_when_a_fhir_resource_is_too_large_or_traffic_is_high) with
+   * full resource content, do not support Binary resources that are larger than
+   * 10 MB. In these cases the resource's `data` field will be omitted. Instead,
+   * the "http://hl7.org/fhir/StructureDefinition/data-absent-reason" extension
+   * will be present to indicate that including the data is `unsupported`. On
+   * success, an empty 200 OK response will be returned, or a 201 Created if the
+   * resource did not exit. The resource's ID and version are returned in the
+   * Location header. Using `Prefer: representation=resource` is not allowed for
+   * this method. The definition of the Binary REST API can be found at
+   * https://hl7.org/fhir/binary.html#rest. (fhir.BinaryUpdate)
+   *
+   * @param string $name Required. The name of the resource to update.
+   * @param HttpBody $postBody
+   * @param array $optParams Optional parameters.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function BinaryUpdate($name, HttpBody $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('Binary-update', [$params], HttpBody::class);
+  }
+  /**
+   * Gets the contents of a version (current or historical) of a FHIR Binary
+   * resource by version ID. This method can be used to retrieve a Binary resource
+   * version either by using the FHIR JSON mimetype as the value for the Accept
+   * header, or as a raw data stream. If the FHIR Accept type is used this method
+   * will return a Binary resource with the data base64-encoded, regardless of how
+   * the resource version was created. The resource data can be retrieved in
+   * base64-decoded form if the Accept type of the request matches the value of
+   * the resource version's `contentType` field. The definition of the Binary REST
+   * API can be found at https://hl7.org/fhir/binary.html#rest. (fhir.BinaryVread)
+   *
+   * @param string $name Required. The name of the Binary resource version to
+   * retrieve.
+   * @param array $optParams Optional parameters.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function BinaryVread($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('Binary-vread', [$params], HttpBody::class);
+  }
+  /**
+   * Returns the consent enforcement status of a single consent resource. On
+   * success, the response body contains a JSON-encoded representation of a
+   * `Parameters` (http://hl7.org/fhir/parameters.html) FHIR resource, containing
+   * the current enforcement status. Does not support DSTU2.
+   * (fhir.ConsentEnforcementStatus)
+   *
+   * @param string $name Required. The name of the consent resource to find
+   * enforcement status, in the format `projects/{project_id}/locations/{location_
+   * id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Consent/{consent_id
+   * }`
+   * @param array $optParams Optional parameters.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function ConsentEnforcementStatus($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('Consent-enforcement-status', [$params], HttpBody::class);
+  }
+  /**
+   * Returns the consent enforcement status of all consent resources for a
+   * patient. On success, the response body contains a JSON-encoded representation
+   * of a bundle of `Parameters` (http://hl7.org/fhir/parameters.html) FHIR
+   * resources, containing the current enforcement status for each consent
+   * resource of the patient. Does not support DSTU2.
+   * (fhir.PatientConsentEnforcementStatus)
+   *
+   * @param string $name Required. The name of the patient to find enforcement
+   * statuses, in the format `projects/{project_id}/locations/{location_id}/datase
+   * ts/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Patient/{patient_id}`
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param int _count Optional. The maximum number of results on a page. If
+   * not specified, 100 is used. May not be larger than 1000.
+   * @opt_param string _page_token Optional. Used to retrieve the first, previous,
+   * next, or last page of consent enforcement statuses when using pagination.
+   * Value should be set to the value of `_page_token` set in next or previous
+   * page links' URLs. Next and previous page are returned in the response
+   * bundle's links field, where `link.relation` is "previous" or "next". Omit
+   * `_page_token` if no previous request has been made.
+   * @return HttpBody
+   * @throws \Google\Service\Exception
+   */
+  public function PatientConsentEnforcementStatus($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('Patient-consent-enforcement-status', [$params], HttpBody::class);
+  }
+  /**
    * Retrieves a Patient resource and resources related to that patient.
    * Implements the FHIR extended operation Patient-everything
    * ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/patient-
@@ -144,7 +335,7 @@ class ProjectsLocationsDatasetsFhirStoresFhir extends \Google\Service\Resource
    * @param HttpBody $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string profile Required. The canonical URL of a profile that this
+   * @opt_param string profile Optional. The canonical URL of a profile that this
    * resource should be validated against. For example, to validate a Patient
    * resource against the US Core Patient profile this parameter would be
    * `http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient`. A
@@ -688,7 +879,7 @@ class ProjectsLocationsDatasetsFhirStoresFhir extends \Google\Service\Resource
    *
    * @param string $parent Required. Name of the FHIR store to retrieve resources
    * from.
-   * @param string $resourceType Required. The FHIR resource type to search, such
+   * @param string $resourceType Optional. The FHIR resource type to search, such
    * as Patient or Observation. For a complete list, see the FHIR Resource Index
    * ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/resourcelist.html),
    * [STU3](http://hl7.org/implement/standards/fhir/STU3/resourcelist.html),

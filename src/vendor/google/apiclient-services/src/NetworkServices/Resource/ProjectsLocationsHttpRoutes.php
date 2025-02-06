@@ -56,6 +56,10 @@ class ProjectsLocationsHttpRoutes extends \Google\Service\Resource
    * @param string $name Required. A name of the HttpRoute to delete. Must be in
    * the format `projects/locations/global/httpRoutes`.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string etag Optional. Etag of the resource. If this is provided,
+   * it must match the server's etag. If the provided etag does not match the
+   * server's etag, the request will fail with a 409 ABORTED error.
    * @return Operation
    * @throws \Google\Service\Exception
    */
@@ -106,7 +110,7 @@ class ProjectsLocationsHttpRoutes extends \Google\Service\Resource
   /**
    * Updates the parameters of a single HttpRoute. (httpRoutes.patch)
    *
-   * @param string $name Required. Name of the HttpRoute resource. It matches
+   * @param string $name Identifier. Name of the HttpRoute resource. It matches
    * pattern `projects/locations/global/httpRoutes/http_route_name>`.
    * @param HttpRoute $postBody
    * @param array $optParams Optional parameters.

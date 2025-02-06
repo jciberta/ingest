@@ -19,13 +19,15 @@ namespace Google\Service\CCAIPlatform;
 
 class Component extends \Google\Collection
 {
-  protected $collection_key = 'serviceAttachments';
+  protected $collection_key = 'serviceAttachmentNames';
   /**
    * @var string
    */
   public $name;
-  protected $serviceAttachmentsType = ServiceAttachment::class;
-  protected $serviceAttachmentsDataType = 'array';
+  /**
+   * @var string[]
+   */
+  public $serviceAttachmentNames;
 
   /**
    * @param string
@@ -42,18 +44,18 @@ class Component extends \Google\Collection
     return $this->name;
   }
   /**
-   * @param ServiceAttachment[]
+   * @param string[]
    */
-  public function setServiceAttachments($serviceAttachments)
+  public function setServiceAttachmentNames($serviceAttachmentNames)
   {
-    $this->serviceAttachments = $serviceAttachments;
+    $this->serviceAttachmentNames = $serviceAttachmentNames;
   }
   /**
-   * @return ServiceAttachment[]
+   * @return string[]
    */
-  public function getServiceAttachments()
+  public function getServiceAttachmentNames()
   {
-    return $this->serviceAttachments;
+    return $this->serviceAttachmentNames;
   }
 }
 

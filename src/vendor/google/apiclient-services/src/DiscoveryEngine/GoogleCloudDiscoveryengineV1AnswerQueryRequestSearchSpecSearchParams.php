@@ -17,10 +17,13 @@
 
 namespace Google\Service\DiscoveryEngine;
 
-class GoogleCloudDiscoveryengineV1AnswerQueryRequestSearchSpecSearchParams extends \Google\Model
+class GoogleCloudDiscoveryengineV1AnswerQueryRequestSearchSpecSearchParams extends \Google\Collection
 {
+  protected $collection_key = 'dataStoreSpecs';
   protected $boostSpecType = GoogleCloudDiscoveryengineV1SearchRequestBoostSpec::class;
   protected $boostSpecDataType = '';
+  protected $dataStoreSpecsType = GoogleCloudDiscoveryengineV1SearchRequestDataStoreSpec::class;
+  protected $dataStoreSpecsDataType = 'array';
   /**
    * @var string
    */
@@ -33,6 +36,10 @@ class GoogleCloudDiscoveryengineV1AnswerQueryRequestSearchSpecSearchParams exten
    * @var string
    */
   public $orderBy;
+  /**
+   * @var string
+   */
+  public $searchResultMode;
 
   /**
    * @param GoogleCloudDiscoveryengineV1SearchRequestBoostSpec
@@ -47,6 +54,20 @@ class GoogleCloudDiscoveryengineV1AnswerQueryRequestSearchSpecSearchParams exten
   public function getBoostSpec()
   {
     return $this->boostSpec;
+  }
+  /**
+   * @param GoogleCloudDiscoveryengineV1SearchRequestDataStoreSpec[]
+   */
+  public function setDataStoreSpecs($dataStoreSpecs)
+  {
+    $this->dataStoreSpecs = $dataStoreSpecs;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1SearchRequestDataStoreSpec[]
+   */
+  public function getDataStoreSpecs()
+  {
+    return $this->dataStoreSpecs;
   }
   /**
    * @param string
@@ -89,6 +110,20 @@ class GoogleCloudDiscoveryengineV1AnswerQueryRequestSearchSpecSearchParams exten
   public function getOrderBy()
   {
     return $this->orderBy;
+  }
+  /**
+   * @param string
+   */
+  public function setSearchResultMode($searchResultMode)
+  {
+    $this->searchResultMode = $searchResultMode;
+  }
+  /**
+   * @return string
+   */
+  public function getSearchResultMode()
+  {
+    return $this->searchResultMode;
   }
 }
 
