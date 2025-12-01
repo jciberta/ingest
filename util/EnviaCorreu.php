@@ -35,19 +35,22 @@ $subject = $argv[3];
 $body = $argv[4];
 $attachment = $argv[5];
 
-$mail = new PHPMailer();
+$mail = new PHPMailer(true);
 $mail->IsSMTP();
-//$mail->SMTPDebug = 2;
+$mail->SMTPDebug = 2;
 $mail->SMTPAuth = true;
 
 // Amb relay
-$mail->SMTPSecure = 'ssl';
-$mail->Port = 465;
-//$mail->SMTPSecure = 'tls';
-//$mail->Port = 587;
+//$mail->SMTPSecure = 'ssl';
+//$mail->Port = 465;
+//$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+$mail->SMTPSecure = 'tls';
+$mail->Port = 587;
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Host = 'smtp.gmail.com';
 $mail->Username = 'no.contesteu@inspalamos.cat';
-$mail->Password = '****';
+$mail->Password = 'contrasenya_app_16_digits';
+
 
 $mail->IsHTML(true);
 $mail->From = $from;
