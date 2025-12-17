@@ -56,9 +56,11 @@ class CloudHealthcare extends \Google\Service
   public $projects_locations_datasets_dicomStores_studies;
   public $projects_locations_datasets_dicomStores_studies_series;
   public $projects_locations_datasets_dicomStores_studies_series_instances;
+  public $projects_locations_datasets_dicomStores_studies_series_instances_bulkdata;
   public $projects_locations_datasets_dicomStores_studies_series_instances_frames;
   public $projects_locations_datasets_fhirStores;
   public $projects_locations_datasets_fhirStores_fhir;
+  public $projects_locations_datasets_fhirStores_operations;
   public $projects_locations_datasets_hl7V2Stores;
   public $projects_locations_datasets_hl7V2Stores_messages;
   public $projects_locations_datasets_operations;
@@ -106,6 +108,11 @@ class CloudHealthcare extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'extraLocationTypes' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ],
                 'filter' => [
                   'location' => 'query',
@@ -1327,6 +1334,35 @@ class CloudHealthcare extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'viewport' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->projects_locations_datasets_dicomStores_studies_series_instances_bulkdata = new CloudHealthcare\Resource\ProjectsLocationsDatasetsDicomStoresStudiesSeriesInstancesBulkdata(
+        $this,
+        $this->serviceName,
+        'bulkdata',
+        [
+          'methods' => [
+            'retrieveBulkdata' => [
+              'path' => 'v1/{+parent}/dicomWeb/{+dicomWebPath}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'dicomWebPath' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
               ],
             ],
           ]
@@ -1367,6 +1403,10 @@ class CloudHealthcare extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'viewport' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
               ],
             ],
           ]
@@ -1396,6 +1436,32 @@ class CloudHealthcare extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+              ],
+            ],'bulk-export-group' => [
+              'path' => 'v1/{+name}/$export',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                '_since' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                '_type' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'organizeOutputBy' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'outputFormat' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],'create' => [
@@ -1707,6 +1773,28 @@ class CloudHealthcare extends \Google\Service
                   'type' => 'string',
                 ],
               ],
+            ],'bulk-export' => [
+              'path' => 'v1/{+name}/fhir/$export',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                '_since' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                '_type' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'outputFormat' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
             ],'capabilities' => [
               'path' => 'v1/{+name}/fhir/metadata',
               'httpMethod' => 'GET',
@@ -1852,6 +1940,10 @@ class CloudHealthcare extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'resourceType' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
               ],
             ],'search-type' => [
               'path' => 'v1/{+parent}/fhir/{resourceType}/_search',
@@ -1879,6 +1971,36 @@ class CloudHealthcare extends \Google\Service
                 ],
               ],
             ],'vread' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
+    $this->projects_locations_datasets_fhirStores_operations = new CloudHealthcare\Resource\ProjectsLocationsDatasetsFhirStoresOperations(
+        $this,
+        $this->serviceName,
+        'operations',
+        [
+          'methods' => [
+            'delete-fhir-operation' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get-fhir-operation-status' => [
               'path' => 'v1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
@@ -2190,6 +2312,10 @@ class CloudHealthcare extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
+                ],
+                'returnPartialSuccess' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ],
               ],
             ],

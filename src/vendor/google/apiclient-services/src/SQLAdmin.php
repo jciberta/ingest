@@ -27,7 +27,7 @@ use Google\Client;
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://developers.google.com/cloud-sql/" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com/sql/docs" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -41,6 +41,7 @@ class SQLAdmin extends \Google\Service
   const SQLSERVICE_ADMIN =
       "https://www.googleapis.com/auth/sqlservice.admin";
 
+  public $Backups;
   public $backupRuns;
   public $connect;
   public $databases;
@@ -70,6 +71,82 @@ class SQLAdmin extends \Google\Service
     $this->version = 'v1';
     $this->serviceName = 'sqladmin';
 
+    $this->Backups = new SQLAdmin\Resource\Backups(
+        $this,
+        $this->serviceName,
+        'Backups',
+        [
+          'methods' => [
+            'CreateBackup' => [
+              'path' => 'v1/{+parent}/backups',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'DeleteBackup' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'GetBackup' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'ListBackups' => [
+              'path' => 'v1/{+parent}/backups',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'filter' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'UpdateBackup' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'updateMask' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
     $this->backupRuns = new SQLAdmin\Resource\BackupRuns(
         $this,
         $this->serviceName,
@@ -336,6 +413,10 @@ class SQLAdmin extends \Google\Service
                   'location' => 'query',
                   'type' => 'string',
                 ],
+                'flagScope' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
               ],
             ],
           ]
@@ -347,9 +428,39 @@ class SQLAdmin extends \Google\Service
         'instances',
         [
           'methods' => [
-            'ListServerCertificates' => [
+            'ListEntraIdCertificates' => [
+              'path' => 'v1/projects/{project}/instances/{instance}/listEntraIdCertificates',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'instance' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'ListServerCertificates' => [
               'path' => 'v1/projects/{project}/instances/{instance}/listServerCertificates',
               'httpMethod' => 'GET',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'instance' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'RotateEntraIdCertificate' => [
+              'path' => 'v1/projects/{project}/instances/{instance}/rotateEntraIdCertificate',
+              'httpMethod' => 'POST',
               'parameters' => [
                 'project' => [
                   'location' => 'path',
@@ -379,6 +490,21 @@ class SQLAdmin extends \Google\Service
               ],
             ],'acquireSsrsLease' => [
               'path' => 'v1/projects/{project}/instances/{instance}/acquireSsrsLease',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'instance' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'addEntraIdCertificate' => [
+              'path' => 'v1/projects/{project}/instances/{instance}/addEntraIdCertificate',
               'httpMethod' => 'POST',
               'parameters' => [
                 'project' => [
@@ -451,6 +577,22 @@ class SQLAdmin extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
+                'enableFinalBackup' => [
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ],
+                'finalBackupDescription' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'finalBackupExpiryTime' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+                'finalBackupTtlDays' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
               ],
             ],'demote' => [
               'path' => 'v1/projects/{project}/instances/{instance}/demote',
@@ -469,6 +611,21 @@ class SQLAdmin extends \Google\Service
               ],
             ],'demoteMaster' => [
               'path' => 'v1/projects/{project}/instances/{instance}/demoteMaster',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'instance' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'executeSql' => [
+              'path' => 'v1/projects/{project}/instances/{instance}/executeSql',
               'httpMethod' => 'POST',
               'parameters' => [
                 'project' => [
@@ -604,6 +761,31 @@ class SQLAdmin extends \Google\Service
                   'required' => true,
                 ],
               ],
+            ],'pointInTimeRestore' => [
+              'path' => 'v1/{+parent}:pointInTimeRestore',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'preCheckMajorVersionUpgrade' => [
+              'path' => 'v1/projects/{project}/instances/{instance}/preCheckMajorVersionUpgrade',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'project' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'instance' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
             ],'promoteReplica' => [
               'path' => 'v1/projects/{project}/instances/{instance}/promoteReplica',
               'httpMethod' => 'POST',
@@ -666,6 +848,10 @@ class SQLAdmin extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'mode' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],'restart' => [
@@ -892,6 +1078,10 @@ class SQLAdmin extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'sourceInstanceDeletionTime' => [
+                  'location' => 'query',
+                  'type' => 'string',
                 ],
               ],
             ],'performDiskShrink' => [
@@ -1184,6 +1374,11 @@ class SQLAdmin extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ],
+                'databaseRoles' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ],
                 'host' => [
                   'location' => 'query',

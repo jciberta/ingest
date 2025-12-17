@@ -22,6 +22,8 @@ use Google\Service\CloudKMS\AsymmetricDecryptResponse;
 use Google\Service\CloudKMS\AsymmetricSignRequest;
 use Google\Service\CloudKMS\AsymmetricSignResponse;
 use Google\Service\CloudKMS\CryptoKeyVersion;
+use Google\Service\CloudKMS\DecapsulateRequest;
+use Google\Service\CloudKMS\DecapsulateResponse;
 use Google\Service\CloudKMS\DestroyCryptoKeyVersionRequest;
 use Google\Service\CloudKMS\ImportCryptoKeyVersionRequest;
 use Google\Service\CloudKMS\ListCryptoKeyVersionsResponse;
@@ -101,6 +103,24 @@ class ProjectsLocationsKeyRingsCryptoKeysCryptoKeyVersions extends \Google\Servi
     return $this->call('create', [$params], CryptoKeyVersion::class);
   }
   /**
+   * Decapsulates data that was encapsulated with a public key retrieved from
+   * GetPublicKey corresponding to a CryptoKeyVersion with CryptoKey.purpose
+   * KEY_ENCAPSULATION. (cryptoKeyVersions.decapsulate)
+   *
+   * @param string $name Required. The resource name of the CryptoKeyVersion to
+   * use for decapsulation.
+   * @param DecapsulateRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return DecapsulateResponse
+   * @throws \Google\Service\Exception
+   */
+  public function decapsulate($name, DecapsulateRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('decapsulate', [$params], DecapsulateResponse::class);
+  }
+  /**
    * Schedule a CryptoKeyVersion for destruction. Upon calling this method,
    * CryptoKeyVersion.state will be set to DESTROY_SCHEDULED, and destroy_time
    * will be set to the time destroy_scheduled_duration in the future. At that
@@ -144,6 +164,12 @@ class ProjectsLocationsKeyRingsCryptoKeysCryptoKeyVersions extends \Google\Servi
    * @param string $name Required. The name of the CryptoKeyVersion public key to
    * get.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string publicKeyFormat Optional. The PublicKey format specified by
+   * the user. This field is required for PQC algorithms. If specified, the public
+   * key will be exported through the public_key field in the requested format.
+   * Otherwise, the pem field will be populated for non-PQC algorithms, and an
+   * error will be returned for PQC algorithms.
    * @return PublicKey
    * @throws \Google\Service\Exception
    */

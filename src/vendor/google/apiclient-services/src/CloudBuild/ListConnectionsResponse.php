@@ -19,16 +19,26 @@ namespace Google\Service\CloudBuild;
 
 class ListConnectionsResponse extends \Google\Collection
 {
-  protected $collection_key = 'connections';
+  protected $collection_key = 'unreachable';
   protected $connectionsType = Connection::class;
   protected $connectionsDataType = 'array';
   /**
+   * A token identifying a page of results the server should return.
+   *
    * @var string
    */
   public $nextPageToken;
+  /**
+   * Locations that could not be reached.
+   *
+   * @var string[]
+   */
+  public $unreachable;
 
   /**
-   * @param Connection[]
+   * The list of Connections.
+   *
+   * @param Connection[] $connections
    */
   public function setConnections($connections)
   {
@@ -42,7 +52,9 @@ class ListConnectionsResponse extends \Google\Collection
     return $this->connections;
   }
   /**
-   * @param string
+   * A token identifying a page of results the server should return.
+   *
+   * @param string $nextPageToken
    */
   public function setNextPageToken($nextPageToken)
   {
@@ -54,6 +66,22 @@ class ListConnectionsResponse extends \Google\Collection
   public function getNextPageToken()
   {
     return $this->nextPageToken;
+  }
+  /**
+   * Locations that could not be reached.
+   *
+   * @param string[] $unreachable
+   */
+  public function setUnreachable($unreachable)
+  {
+    $this->unreachable = $unreachable;
+  }
+  /**
+   * @return string[]
+   */
+  public function getUnreachable()
+  {
+    return $this->unreachable;
   }
 }
 

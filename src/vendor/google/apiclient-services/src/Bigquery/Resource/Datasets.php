@@ -122,7 +122,7 @@ class Datasets extends \Google\Service\Resource
    *
    * @opt_param bool all Whether to list all datasets, including hidden ones
    * @opt_param string filter An expression for filtering the results of the
-   * request by label. The syntax is `labels.[:]`. Multiple filters can be ANDed
+   * request by label. The syntax is `labels.[:]`. Multiple filters can be AND-ed
    * together by connecting with a space. Example: `labels.department:receiving
    * labels.active`. See [Filtering datasets using
    * labels](https://cloud.google.com/bigquery/docs/filtering-
@@ -167,6 +167,9 @@ class Datasets extends \Google\Service\Resource
    * be mapped to IAM Policy version
    * (https://cloud.google.com/iam/docs/policies#versions) and will be used to set
    * policy in IAM.
+   * @opt_param string updateMode Optional. Specifies the fields of dataset that
+   * update/patch operation is targeting By default, both metadata and ACL fields
+   * are updated.
    * @return Dataset
    * @throws \Google\Service\Exception
    */
@@ -219,6 +222,9 @@ class Datasets extends \Google\Service\Resource
    * be mapped to IAM Policy version
    * (https://cloud.google.com/iam/docs/policies#versions) and will be used to set
    * policy in IAM.
+   * @opt_param string updateMode Optional. Specifies the fields of dataset that
+   * update/patch operation is targeting By default, both metadata and ACL fields
+   * are updated.
    * @return Dataset
    * @throws \Google\Service\Exception
    */
